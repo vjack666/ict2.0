@@ -1,8 +1,64 @@
-.venv/
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.Thumbs.db
+
+# Data (archivos grandes no necesarios en repo)
 data/
 graphify-out/
 graphify-tmp/
+
+# Logs temporales del sistema
+logs/*.log
+tmp/
+temp/
+*.log
+
+# Test coverage
+htmlcov/
+.coverage
+.pytest_cache/
+*.cover
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Specific images/docs not needed
 docs/lectura_HTF_EURUSD.png
+
+# ═══════════════════════════════════════════════════════════
+# HERMES GOVERNANCE — ESTOS ARCHIVOS SE COMMITEAN
+# ═══════════════════════════════════════════════════════════
+# ✅ .hermes.md              (contrato operativo)
+# ✅ .hermes-index.md        (índice maestro de trabajo)
+# ✅ .hermes-worklog/        (bitácoras de ejecución)
+# ✅ .hermes-state/          (estado persistente)
+# 
+# No ignorar nada de .hermes-* para mantener trazabilidad
+# completa entre sesiones y sesiones futuras.
 

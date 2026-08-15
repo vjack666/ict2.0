@@ -45,14 +45,24 @@ ICT SYSTEM/
 │   ├── memoria_institucional.md
 │   ├── cumplimiento_operativo.md
 │   └── alertas_tempranas.md
-└── docs/             # AUTORIDAD DOCUMENTAL (migrada de SMC-SYSTEMS, auditoría 2026-08-15)
-    ├── INDICE_AUTORIDAD.md   # qué es autoridad vs qué se dejó fuera y por qué
+└── docs/             # AUTORIDAD DOCUMENTAL (tesis ICT completa + diccionarios)
+    ├── INDICE_AUTORIDAD.md   # que es autoridad vs que se dejo fuera y por que
     ├── ict/
-    │   └── SPEC_TESIS_FORMAL.md   # Contrato fuente FIRMADO (25 secc) — autoridad máxima
+    │   ├── SPEC_TESIS_FORMAL.md   # Contrato fuente FIRMADO (25 secc) — autoridad maxima
+    │   ├── 00_INDICE.md           # Indice de la biblioteca ICT
+    │   ├── 01_KILLZONES.md ... 21_POI.md  # Libros de la tesis (setups + narrativa)
+    │   └── 20_TESIS_ICT.md       # Sintesis unificadora
+    ├── tesis/                    # Hallazgos y SDD de tesis
+    │   ├── HALLAZGOS_ESTRUCTURA_BOS_CHOCH.md
+    │   ├── HALLAZGOS_SESGO_BACKTEST.md
+    │   ├── PLAN_RESCATE_POI_HTF.md
+    │   ├── SDD_LTF_ENTRY_LAYER.md
+    │   ├── SDD_M2_LINEAGE.md
+    │   └── SDD_RESCATE_POI_HTF.md
     ├── reglas/
-    │   ├── ICT_RULEBOOK.md         # Diccionario machine-readable de detección ICT
-    │   └── WYCKOFF_RULEBOOK.md     # Diccionario de detección Wyckoff
-    └── wyckoff/                    # Teoría Wyckoff vigente (compras/ventas)
+    │   ├── ICT_RULEBOOK.md         # Diccionario machine-readable de deteccion ICT
+    │   └── WYCKOFF_RULEBOOK.md     # Diccionario de deteccion Wyckoff
+    └── wyckoff/                    # Teoria Wyckoff vigente (compras/ventas)
 ```
 
 ## Mapa de imports (contratos de los subagentes)

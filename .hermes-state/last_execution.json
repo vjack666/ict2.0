@@ -1,0 +1,14 @@
+{
+  "project": "ICT SYSTEM",
+  "last_execution": {
+    "date": "2026-08-16T15:30:00",
+    "task": "creación de .hermes-index.md y estructura",
+    "status": "setup_complete",
+    "branch": "main",
+    "working_directory": "clean"
+  },
+  "current_task": null,
+  "execution_mode": "awaiting_approval",
+  "decisions": [],
+  "notes": "Estructura de Hermes inicializada. Esperando primer plan."
+}

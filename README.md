@@ -34,17 +34,25 @@ ICT SYSTEM/
 │   ├── __init__.py
 │   ├── orchestrator.py       # AgentOrchestrator, AGENT_COLUMNS
 │   └── README.md             # (del origen) notas del orquestador
-└── governance/      # Agentes de GOBERNANZA (rol + protocolo, solo docs .md)
-    ├── ROLES_GOBERNANZA.md
-    ├── ORQUESTADOR.md
-    ├── PROTOCOLO_AGENTE.md
-    ├── CONTRATO_ORDEN.md
-    ├── investigador.md
-    ├── ingeniero.md
-    ├── auditor_independiente.md
-    ├── memoria_institucional.md
-    ├── cumplimiento_operativo.md
-    └── alertas_tempranas.md
+├── governance/      # Agentes de GOBERNANZA (rol + protocolo, solo docs .md)
+│   ├── ROLES_GOBERNANZA.md
+│   ├── ORQUESTADOR.md
+│   ├── PROTOCOLO_AGENTE.md
+│   ├── CONTRATO_ORDEN.md
+│   ├── investigador.md
+│   ├── ingeniero.md
+│   ├── auditor_independiente.md
+│   ├── memoria_institucional.md
+│   ├── cumplimiento_operativo.md
+│   └── alertas_tempranas.md
+└── docs/             # AUTORIDAD DOCUMENTAL (migrada de SMC-SYSTEMS, auditoría 2026-08-15)
+    ├── INDICE_AUTORIDAD.md   # qué es autoridad vs qué se dejó fuera y por qué
+    ├── ict/
+    │   └── SPEC_TESIS_FORMAL.md   # Contrato fuente FIRMADO (25 secc) — autoridad máxima
+    ├── reglas/
+    │   ├── ICT_RULEBOOK.md         # Diccionario machine-readable de detección ICT
+    │   └── WYCKOFF_RULEBOOK.md     # Diccionario de detección Wyckoff
+    └── wyckoff/                    # Teoría Wyckoff vigente (compras/ventas)
 ```
 
 ## Mapa de imports (contratos de los subagentes)

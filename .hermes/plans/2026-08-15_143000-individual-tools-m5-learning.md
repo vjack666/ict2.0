@@ -10,6 +10,11 @@
 
 ---
 
+## DECISIONES DEL DIRECTOR (cerrdas 2026-08-15)
+1. Baseline "esperado" = 50% (umbral de sobresaliente para el informe Hermes).
+2. Agente trader humano califica EDITANDO el `.md` de muestra que genera `learning/export_review.py` (campo `human_score` por evento).
+3. Se sube al repo: código + AUDIT_REQUEST + learning (`.jsonl` de calificación y briefs). Excluidos solo artifacts pesados (graphify-out/, graphify-tmp/, png) vía .gitignore.
+
 ## RESTRICCIONES DURAS (del Director)
 - INDIVIDUAL PRIMERO: una herramienta a la vez, aislada. No ensamblar setups aún.
 - Solo M5, solo 1 mes de datos. Suficientes setups en un mes.

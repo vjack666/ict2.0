@@ -1,0 +1,25 @@
+{
+  "symbol": "EURUSD",
+  "k": 48,
+  "generated_at": "2026-08-03T20:21:25Z",
+  "summary": [
+    {
+      "category": "ALIGNED",
+      "total": 0,
+      "aligned": 0,
+      "pct": 0.0
+    },
+    {
+      "category": "PARCIAL",
+      "total": 18436,
+      "aligned": 17,
+      "pct": 0.09
+    },
+    {
+      "category": "NO_DISPONIBLE",
+      "total": 1564,
+      "aligned": 0,
+      "pct": 0.0
+    }
+  ]
+}

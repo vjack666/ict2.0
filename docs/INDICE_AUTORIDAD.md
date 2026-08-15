@@ -13,13 +13,15 @@ arquitectura/historia de SMC-SYSTEMS, no la tesis.
 ## 🟢 Autoridad vigente (tesis ICT completa + diccionarios)
 
 ### Fuente firmada (contrato)
+
 | Archivo | Rol | Estado |
-|---|---|---|
+| --- | --- | --- |
 | `docs/ict/SPEC_TESIS_FORMAL.md` | **Contrato fuente FIRMADO** (comité 2026-07-20). 25 secciones. Resuelve ambigüedades R3 (RR por setup, confirm_bars, POI bonus, exec TF). | Autoridad máxima. Precede al código. |
 
 ### Libros de la tesis (narrativa + setups)
+
 | Archivo | Rol |
-|---|---|
+| --- | --- |
 | `docs/ict/00_INDICE.md` | Índice de la biblioteca ICT. |
 | `docs/ict/01_KILLZONES.md` | Ventanas horarias (London/NY AM/PM). |
 | `docs/ict/02_MSS_CHOCH.md` | MSS / CHOCH / BOS. |
@@ -37,25 +39,22 @@ arquitectura/historia de SMC-SYSTEMS, no la tesis.
 | `docs/ict/20_TESIS_ICT.md` | Síntesis unificadora PO3+liquidez+temporalidad+POI. |
 | `docs/ict/21_POI.md` | Point of Interest (PD Array anclado a narrativa). |
 
-### Hallazgos y SDD de tesis (SON DEL MOTOR, no de backtest)
-| Archivo | Rol | Nota |
-|---|---|---|
-| `docs/tesis/HALLAZGOS_ESTRUCTURA_BOS_CHOCH.md` | Geometría/filosofía del motor (swing humano, MTF, huecos M1-M7) | Autoridad de tesis |
-| `docs/tesis/HALLAZGOS_SESGO_BACKTEST.md` | Diagnóstico del motor de sesgo (dice "backtest" en el nombre, pero el hallazgo corregido concluye que el fix es del MOTOR, no del backtest) | Autoridad de tesis; nombre engañoso |
-| `docs/tesis/SDD_LTF_ENTRY_LAYER.md` | SDD de la capa LTF del MOTOR (engine/execution, sequence) | Autoridad de motor |
-| `docs/tesis/SDD_M2_LINEAGE.md` | SDD de trazabilidad causal del MOTOR (engine/sequence, lineage) | Autoridad de motor |
-| `docs/tesis/SDD_RESCATE_POI_HTF.md` | SDD para rescatar POI al MOTOR (engine/htf_pd_index, zone_authority) | Autoridad de motor |
-| `docs/tesis/PLAN_RESCATE_POI_HTF.md` | Plan de rescate POI al MOTOR | Autoridad de motor |
+### Hallazgos y SDD de tesis — ELIMINADOS de ICT SYSTEM (2026-08-15)
 
-> **Nota importante:** estos SDD mencionan `ict_backtest/` solo como consumidor
-> desechable que obedece la Ley "motor = fuente única". Como `ict_backtest/` se
-> eliminó de ICT SYSTEM (backtest no se usa más), **estos documentos siguen
-> siendo autoridad vigente** porque describen el MOTOR (`engine/`), que SÍ está
-> en ICT SYSTEM. No pierden validez por el borrado del backtest.
+Los 6 archivos (`HALLAZGOS_ESTRUCTURA_BOS_CHOCH`, `HALLAZGOS_SESGO_BACKTEST`,
+`SDD_LTF_ENTRY_LAYER`, `SDD_M2_LINEAGE`, `SDD_RESCATE_POI_HTF`, `PLAN_RESCATE_POI_HTF`)
+eran SDDs/hallazgos de INGENIERIA del motor. Verificado contra `engine/`: TODO lo
+que describen YA está implementado (`compute_htf_bias_series`, `fine_execution`,
+`run_sequence_traced`+`lineage`, `htf_pd_index`, `zone_authority`, `poi_present`).
+Por tanto son HISTORIA de construccion, no autoridad vigente del sistema nuevo.
+El `SPEC_TESIS_FORMAL.md` ya es el contrato; `engine/` ya implementa lo descrito.
+Se eliminaron para mantener el repo pequeno (criterio: poca doc, mucha autoridad).
+Quedan en SMC-SYSTEMS como trazabilidad si se necesita.
 
 ### Diccionarios de detección
+
 | Archivo | Rol |
-|---|---|
+| --- | --- |
 | `docs/reglas/ICT_RULEBOOK.md` | Diccionario *machine-readable* de detección ICT (BOS/CHOCH/FVG/OB/sweep/displacement/premium-discount/OTE/MTF). |
 | `docs/reglas/WYCKOFF_RULEBOOK.md` | Diccionario de detección Wyckoff. |
 | `docs/wyckoff/**` | Teoría Wyckoff completa. |
@@ -85,7 +84,7 @@ Esto NO es tesis; es diseño de software / proceso / historia del repo viejo:
 ## Discrepancias conocidas (resueltas por el SPEC — el SPEC manda)
 
 | Tema | Libro / ICT_RULEBOOK | SPEC_TESIS_FORMAL | Veredicto |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | RR mínimo | libro 07 = 1:2; libro 18 = 1:3 | §20: SB=1:2, resto=1:3 (por setup) | **SPEC** |
 | POI | libro 21 §0 = "obligatorio" | §16: BONUS `quality_score+=20`, no gate | **SPEC** (evidencia PF 0.900 vs 1.511) |
 | OTE retrace | ICT_RULEBOOK §9 = 68-80% | §21 = 62-79% | **SPEC** (código usa 62-79%) |

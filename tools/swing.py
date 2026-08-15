@@ -1,18 +1,22 @@
-"""Herramienta SWING (individual, Fase 1).
+"""Herramienta SWING (individual, Fase 1) — objeto geométrico PERSISTENTE.
 
 Envuelve la lógica PURA de swings high/low (algoritmo autónomo, sin
 dependencias de engine/ ni de detect_bos). Es la base de la futura
-"plantilla de gráfico vela-a-vela": cada alto/bajo recibe una etiqueta
-HH / LH / HL / LL según la tesis ICT.
+"plantilla de gráfico vela-a-vela cartesiana": cada alto/bajo es un objeto
+persistente con su punto cartesiano (origin_bar, price) y su confirmación.
 
 CRITERIO DE AISLAMIENTO (ver veredicto Task 2): las funciones _swing_points
 y _label_swings se REENVUELVEN aquí como puras (solo pandas/numpy), NO se
 importa detectors.bos completo, para no arrastrar ATR/sweeps/BOS ni el
-legado de engine/. Esto mantiene tools/ desacoplado.
+legado de engine/.
 
-Salida: ToolEvent por cada barra donde se marca un nuevo swing, con la
-etiqueta y el nivel. Se escribe a data/learning/swing/<sym>_M5_<mes>.jsonl
-(human_score=None hasta que el trader humano califique).
+DISEÑO CARTESIANO (ver veredicto Director 2026-08-15):
+- SWING = objeto persistente: origin_bar (pivot), confirmation_bar (donde
+  queda confirmado SIN look-ahead: origin_bar + lookback), price, id, status.
+- El swing permanece "active" hasta que un BOS lo rompa (Task 3 marca break_bar).
+
+Salida: ToolEvent por cada pivot real, con event_kind="object". Se escribe a
+data/learning/swing/<sym>_M5_<mes>.jsonl (human_score=None hasta calificación).
 """
 from __future__ import annotations
 
@@ -58,6 +62,7 @@ class SwingTool(SingleTool):
 
     def __init__(self, lookback: int = 5):
         self.lookback = lookback
+        self._counter = 0
 
     def _detect(self, df: pd.DataFrame, context: dict | None = None) -> pd.DataFrame:
         data = df.copy()
@@ -67,20 +72,29 @@ class SwingTool(SingleTool):
         data["swing_label"] = _label_swings(sh, sl)
         return data
 
+    def _next_id(self, lab: str) -> str:
+        self._counter += 1
+        kind = "SH" if "H" in str(lab) else "SL"
+        return f"SW_{kind}_{self._counter:04d}"
+
     def _to_events(self, df: pd.DataFrame, symbol: str, context: dict | None) -> list[ToolEvent]:
         events: list[ToolEvent] = []
         labels = df["swing_label"]
         sh = df["swing_high"]
         sl = df["swing_low"]
-        for i in range(len(df)):
-            # solo emitir en la vela que ES pivot (swing_high o swing_low no NA)
+        n = len(df)
+        for i in range(n):
             is_pivot = (not pd.isna(sh.iloc[i])) or (not pd.isna(sl.iloc[i]))
             if not is_pivot:
                 continue
             lab = labels.iloc[i]
             if pd.isna(lab) or str(lab) == "NONE":
                 continue
-            level = float(sh.iloc[i]) if not pd.isna(sh.iloc[i]) else float(sl.iloc[i])
+            is_high = not pd.isna(sh.iloc[i])
+            price = float(sh.iloc[i]) if is_high else float(sl.iloc[i])
+            # confirmation_bar SIN look-ahead: el pivot queda confirmado
+            # lookback velas después (ventana central ya no lo reetiqueta).
+            conf = min(i + self.lookback, n - 1)
             events.append(ToolEvent(
                 bar_index=int(i),
                 time=str(df["time"].iloc[i]) if "time" in df.columns else None,
@@ -88,7 +102,14 @@ class SwingTool(SingleTool):
                 tf=self.tf,
                 tool_name=self.tool_name,
                 signal=f"SWING_{lab}",
-                detail=f"level={level:.5f}",
+                event_kind="object",
+                id=self._next_id(lab),
+                origin_bar=int(i),
+                confirmation_bar=int(conf),
+                break_bar=None,
+                price=price,
+                detail=f"level={price:.5f} type={'HIGH' if is_high else 'LOW'}",
                 confidence_raw=1.0,
+                status="active",
             ))
         return events

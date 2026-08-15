@@ -49,6 +49,28 @@ def ok(x):
     return x is not None and not pd.isna(x)
 
 
+def as_float(value):
+    """Convierte un valor a float de forma segura, devolviendo None si no aplica."""
+    if value is None:
+        return None
+    if isinstance(value, (int, float, np.integer, np.floating)):
+        return float(value)
+    if isinstance(value, str):
+        txt = value.strip()
+        if not txt:
+            return None
+        try:
+            return float(txt)
+        except ValueError:
+            return None
+    try:
+        if pd.isna(value):
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 # Ventanas killzone (documentadas en docs/ict/01_KILLZONES.md y 18).
 # ET en verano (EDT = UTC-4). Ecuador = UTC-5 => restar 1h en agosto.
 KILLZONES = [
@@ -103,7 +125,7 @@ def active_pd_array(f, side):
     col = f"fvg_{side}"
     if col not in f.columns:
         return None
-    sub = f[f[col] == True].tail(5)
+    sub = f[f[col].fillna(False).astype(bool)].tail(5)
     if len(sub) == 0:
         return None
     r = sub.iloc[-1]
@@ -124,8 +146,8 @@ def recent_sweep(f, n=30):
     if f is None:
         return None
     out = []
-    dn = f[f["liquidity_sweep_down"] == True].tail(n)
-    up = f[f["liquidity_sweep_up"] == True].tail(n)
+    dn = f[f["liquidity_sweep_down"].fillna(False).astype(bool)].tail(n)
+    up = f[f["liquidity_sweep_up"].fillna(False).astype(bool)].tail(n)
     if len(dn):
         out.append(("SSL (bear sweep / liquida largos)", dn.iloc[-1].get("sweep_low")))
     if len(up):
@@ -191,16 +213,25 @@ def build_symbol_section(sym, feats, last_dates):
 
     # Liquidez
     lines.append("### Liquidez objetivo (BSL/SSL H4)")
-    bsl = last_val(f_h4, "bsl_price"); ssl = last_val(f_h4, "ssl_price")
-    if ok(bsl) and ok(price) and abs(bsl - price) / price < 0.03:
-        lines.append(f"- BSL (target si short / techo): `{bsl:.5f}`")
-    elif ok(bsl):
-        lines.append(f"- BSL: `{bsl:.5f}` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)")
-    if ok(ssl) and ok(price) and abs(ssl - price) / price < 0.03:
-        lines.append(f"- SSL (target si long / suelo): `{ssl:.5f}`")
-    elif ok(ssl):
-        lines.append(f"- SSL: `{ssl:.5f}` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)")
-    if not ok(bsl) and not ok(ssl):
+    bsl = last_val(f_h4, "bsl_price")
+    ssl = last_val(f_h4, "ssl_price")
+    price_value = as_float(price)
+
+    bsl_value = as_float(bsl)
+    if bsl_value is not None:
+        if price_value is not None and abs(bsl_value - price_value) / price_value < 0.03:
+            lines.append(f"- BSL (target si short / techo): `{bsl_value:.5f}`")
+        else:
+            lines.append(f"- BSL: `{bsl_value:.5f}` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)")
+
+    ssl_value = as_float(ssl)
+    if ssl_value is not None:
+        if price_value is not None and abs(ssl_value - price_value) / price_value < 0.03:
+            lines.append(f"- SSL (target si long / suelo): `{ssl_value:.5f}`")
+        else:
+            lines.append(f"- SSL: `{ssl_value:.5f}` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)")
+
+    if bsl_value is None and ssl_value is None:
         lines.append("- sin niveles BSL/SSL calculados")
     lines.append("")
 
@@ -212,9 +243,11 @@ def build_symbol_section(sym, feats, last_dates):
             dist = f" ({pa['dist_atr']:.1f} ATR del precio)" if ok(pa["dist_atr"]) else ""
             tier = f" tier={pa['tier']}" if ok(pa["tier"]) else ""
             lines.append(f"- FVG {lbl}: mid `{pa['mid']:.5f}`{tier} · fill={pa['fill']}{dist}")
-    ob_b = last_val(f_m15, "ob_bullish"); ob_be = last_val(f_m15, "ob_bearish")
-    if ob_b is True or ob_be is True:
-        obt = last_val(f_m15, "ob_top"); obb = last_val(f_m15, "ob_bottom")
+    ob_b = last_val(f_m15, "ob_bullish")
+    ob_be = last_val(f_m15, "ob_bearish")
+    if bool(ob_b) or bool(ob_be):
+        obt = last_val(f_m15, "ob_top")
+        obb = last_val(f_m15, "ob_bottom")
         if ok(obt):
             lines.append(f"- OB activo: top `{obt:.5f}` · bottom `{obb:.5f}`")
     lines.append("")
@@ -266,7 +299,7 @@ def last_date_of(sym, tf):
     try:
         df = pd.read_parquet(p, columns=["time"])
         return pd.to_datetime(df["time"]).max()
-    except Exception:
+    except (FileNotFoundError, OSError, ValueError, TypeError, KeyError):
         return None
 
 
@@ -299,7 +332,7 @@ def main():
     sections = []
     last_dates_all = {}
     for sym in args.symbols:
-        feats, dates, el = compute(sym)
+        feats, dates, _ = compute(sym)
         last_dates_all.update(dates)
         sections.append(build_symbol_section(sym, feats, dates))
     body = "\n".join(sections)

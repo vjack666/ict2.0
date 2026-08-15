@@ -62,7 +62,11 @@ def _bos_real_behind(sub, i, choch_dir, choch_proj_level, tol: float = 0.0005) -
     if "bos_real" not in sub.columns:
         return True
     opp = -int(choch_dir)
-    cand = sub[(sub.index < i) & (sub["bos_dir"] == opp) & (sub["bos_real"] == True)]
+    cand = sub[
+        (sub.index < i)
+        & (sub["bos_dir"] == opp)
+        & (sub["bos_real"].fillna(False).astype(bool))
+    ]
     hit = cand[np.abs(cand["bos_level"] - choch_proj_level) <= tol]
     return len(hit) > 0
 

@@ -1,12 +1,14 @@
+"""Coordinate the ICT, Wyckoff, structure, and decision agents."""
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
-from analysis.base import AnalysisResult
-from analysis.decision_agent import DecisionAgent, DecisionConfig
+from analysis.decision_agent import DecisionAgent
 from analysis.ict_agent import ICTAgent
 from analysis.structure_agent import StructureAgent
 from analysis.wyckoff_agent import WyckoffAgent
@@ -41,6 +43,8 @@ AGENT_COLUMNS = [
 
 
 class AgentOrchestrator:
+    """Coordinate per-bar analysis across all trading agents."""
+
     def __init__(
         self,
         ict_agent: ICTAgent | None = None,
@@ -59,6 +63,7 @@ class AgentOrchestrator:
         index: int,
         ml_probability: float | None = None,
     ) -> dict[str, Any]:
+        """Analyze a single bar and return the orchestrated feature payload."""
         ict_result = self.ict.analyze(context, index)
         wyckoff_result = self.wyckoff.analyze(context, index)
         structure_result = self.structure.analyze(context, index)
@@ -75,23 +80,39 @@ class AgentOrchestrator:
             "agent_ict_events": _serialise_events(ict_result.detected_events),
             "agent_wyckoff_bias": wyckoff_result.bias,
             "agent_wyckoff_confidence": wyckoff_result.confidence,
-            "agent_wyckoff_phase": str(wyckoff_result.evidence.get("phase", "UNKNOWN")),
+            "agent_wyckoff_phase": str(
+                wyckoff_result.evidence.get("phase", "UNKNOWN")
+            ),
             "agent_wyckoff_events": _serialise_events(wyckoff_result.detected_events),
-            "agent_wyckoff_spring": int(any(e["type"] == "SPRING" for e in wyckoff_result.detected_events)),
-            "agent_wyckoff_upthrust": int(any(e["type"] == "UPTHRUST" for e in wyckoff_result.detected_events)),
-            "agent_wyckoff_sos": int(any(e["type"] == "SOS" for e in wyckoff_result.detected_events)),
-            "agent_wyckoff_sow": int(any(e["type"] == "SOW" for e in wyckoff_result.detected_events)),
+            "agent_wyckoff_spring": int(
+                any(e["type"] == "SPRING" for e in wyckoff_result.detected_events)
+            ),
+            "agent_wyckoff_upthrust": int(
+                any(e["type"] == "UPTHRUST" for e in wyckoff_result.detected_events)
+            ),
+            "agent_wyckoff_sos": int(
+                any(e["type"] == "SOS" for e in wyckoff_result.detected_events)
+            ),
+            "agent_wyckoff_sow": int(
+                any(e["type"] == "SOW" for e in wyckoff_result.detected_events)
+            ),
             "agent_wyckoff_effort_divergence": int(
                 bool(
-                    (wyckoff_result.evidence.get("effort_vs_result") or {}).get("divergence", False)
+                    (wyckoff_result.evidence.get("effort_vs_result") or {}).get(
+                        "divergence", False
+                    )
                 )
             ),
             "agent_wyckoff_stoch_exhaustion": str(
-                (wyckoff_result.evidence.get("stoch_exhaustion") or {}).get("type", "")
+                (wyckoff_result.evidence.get("stoch_exhaustion") or {}).get(
+                    "type", ""
+                )
             ),
             "agent_wyckoff_stoch_divergence": int(
                 bool(
-                    (wyckoff_result.evidence.get("stoch_exhaustion") or {}).get("divergence", False)
+                    (wyckoff_result.evidence.get("stoch_exhaustion") or {}).get(
+                        "divergence", False
+                    )
                 )
             ),
             "agent_structure_bias": structure_result.bias,
@@ -99,10 +120,18 @@ class AgentOrchestrator:
             "agent_structure_events": _serialise_events(structure_result.detected_events),
             "agent_decision_bias": decision_result.bias,
             "agent_decision_confidence": decision_result.confidence,
-            "agent_decision_reasons": "; ".join(decision_result.evidence.get("reasons", [])),
-            "agent_decision_conflicts": "; ".join(decision_result.evidence.get("conflicts", [])),
+            "agent_decision_reasons": "; ".join(
+                decision_result.evidence.get("reasons", [])
+            ),
+            "agent_decision_conflicts": "; ".join(
+                decision_result.evidence.get("conflicts", [])
+            ),
             "agent_decision_conflict_penalty": decision_record.conflict_penalty_applied,
-            "agent_decision_ml_probability": decision_record.ml_probability if decision_record.ml_probability is not None else float("nan"),
+            "agent_decision_ml_probability": (
+                decision_record.ml_probability
+                if decision_record.ml_probability is not None
+                else float("nan")
+            ),
             "agent_decision_weighted_bias_sum": decision_record.weighted_bias_sum,
             "agent_decision_total_weight": decision_record.total_weight,
         }
@@ -111,36 +140,47 @@ class AgentOrchestrator:
         self,
         context: pd.DataFrame,
         ml_probabilities: np.ndarray | None = None,
-        progress_cb: callable = None,
+        progress_cb: Callable[[int, int], None] | None = None,
     ) -> pd.DataFrame:
+        """Append orchestrated agent columns for each row in the context."""
         result = context.copy()
         n = len(result)
         agent_data: list[dict[str, Any]] = [{} for _ in range(n)]
 
         for i in range(n):
-            ml_p = float(ml_probabilities[i]) if ml_probabilities is not None and i < len(ml_probabilities) else None
+            ml_p = (
+                float(ml_probabilities[i])
+                if ml_probabilities is not None and i < len(ml_probabilities)
+                else None
+            )
             agent_data[i] = self.analyze_bar(result, i, ml_probability=ml_p)
             if progress_cb:
                 progress_cb(i + 1, n)
 
         for col in AGENT_COLUMNS:
-            result[col] = pd.Series([d.get(col, None) for d in agent_data], index=result.index)
+            result[col] = pd.Series(
+                [d.get(col, None) for d in agent_data],
+                index=result.index,
+            )
 
         return result
 
     def get_agent_confidence(self, context: pd.DataFrame, index: int) -> float:
+        """Return the decision confidence for the requested bar index."""
         row = context.iloc[index] if index < len(context) else None
         if row is None:
             return 0.0
         return float(row.get("agent_decision_confidence", 0.0))
 
     def get_agent_bias(self, context: pd.DataFrame, index: int) -> str:
+        """Return the decision bias for the requested bar index."""
         row = context.iloc[index] if index < len(context) else None
         if row is None:
             return "NEUTRAL"
         return str(row.get("agent_decision_bias", "NEUTRAL"))
 
     def get_agent_reasons(self, context: pd.DataFrame, index: int) -> list[str]:
+        """Return the decision reasons for the requested bar index."""
         row = context.iloc[index] if index < len(context) else None
         if row is None:
             return []
@@ -149,6 +189,7 @@ class AgentOrchestrator:
 
 
 def _serialise_events(events: list[dict[str, Any]]) -> str:
+    """Convert detected event dictionaries into a compact CSV-like string."""
     if not events:
         return ""
     parts = [f"{e.get('type', '?')}" for e in events[:5]]

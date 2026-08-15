@@ -2,3 +2,7 @@
 __pycache__/
 *.pyc
 data/
+graphify-out/
+graphify-tmp/
+docs/lectura_HTF_EURUSD.png
+

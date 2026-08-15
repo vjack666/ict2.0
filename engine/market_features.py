@@ -127,6 +127,10 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
                                   cast(pd.Series, d["low"]))
     d["sweep_high"] = _sweep_level(cast(pd.Series, swept["liquidity_sweep_up"]),
                                    cast(pd.Series, d["high"]))
+    # --- Dealing Range / Premium-Discount (columna que analysis/* consome) ---
+    # compute_dealing_range es geometria pura (rolling max/min), sin look-ahead.
+    from engine.dealing_range import compute_dealing_range
+    d = compute_dealing_range(d)
     return d
 
 

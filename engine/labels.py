@@ -62,25 +62,26 @@ def label_bos_outcome(
     bos_levels = d["bos_level"].to_numpy()
     bos_status = d["bos_status"].to_numpy()
 
-    invalidated_mask = bos_status == "invalidated"
     reasons[bos_discard == "INVALIDATED"] = "INVALIDATED"
 
     active_mask = bos_status == "active"
     for i in np.where(active_mask)[0]:
-        if pd.notna(reasons.iloc[i]):
+        idx = int(i)
+        if pd.notna(reasons.iloc[idx]):
             continue
-        end = min(i + config.k, n)
-        future_highs = highs[i + 1 : end] if i + 1 < n else np.array([], dtype=float)
-        future_lows = lows[i + 1 : end] if i + 1 < n else np.array([], dtype=float)
-        level = float(bos_levels[i])
-        direction = int(d["bos_dir"].iat[i])
+        end = min(idx + config.k, n)
+        future_highs = highs[idx + 1 : end] if idx + 1 < n else np.array([], dtype=float)
+        future_lows = lows[idx + 1 : end] if idx + 1 < n else np.array([], dtype=float)
+        bos_dir_raw = np.asarray(d["bos_dir"].to_numpy(dtype=np.int64), dtype=np.int64)[idx]
+        level = float(np.asarray(bos_levels, dtype=np.float64)[idx])
+        direction = int(bos_dir_raw)
         hit = False
         if direction == 1 and len(future_highs) > 0:
             hit = bool(np.nanmax(future_highs) > level)
         elif direction == -1 and len(future_lows) > 0:
             hit = bool(np.nanmin(future_lows) < level)
         if not hit:
-            reasons.iloc[i] = "NO_HIT_IN_K" if end < n else "UNRESOLVED"
+            reasons.at[d.index[idx]] = "NO_HIT_IN_K" if end < n else "UNRESOLVED"
     reasons.name = "label_bos_reason"
     return reasons
 
@@ -98,11 +99,12 @@ def label_choch_outcome(
     reasons[choch_discard == "INVALIDATED"] = "INVALIDATED"
     active_mask = choch_status == "active"
     for i in np.where(active_mask)[0]:
-        end = min(i + config.confirm_bars + 1, n)
+        idx = int(i)
+        end = min(idx + config.confirm_bars + 1, n)
         if end < n:
-            reasons.iloc[i] = "NO_CONFIRMATION"
+            reasons.at[d.index[idx]] = "NO_CONFIRMATION"
         else:
-            reasons.iloc[i] = "UNRESOLVED"
+            reasons.at[d.index[idx]] = "UNRESOLVED"
     reasons.name = "label_choch_reason"
     return reasons
 
@@ -117,16 +119,18 @@ def confirm_score(d: pd.DataFrame, i: int, k: int) -> float:
     n = len(d)
     if i < 0 or i >= n:
         return 0.0
-    direction = int(d["bos_dir"].iat[i])
-    level = float(d["bos_level"].iat[i]) if "bos_level" in d.columns else float("nan")
-    highs = d["high"].to_numpy()
-    lows = d["low"].to_numpy()
+    idx = int(i)
+    bos_dir_raw = np.asarray(d["bos_dir"].to_numpy(dtype=np.int64), dtype=np.int64)[idx]
+    direction = int(bos_dir_raw)
+    level = float(np.asarray(d["bos_level"].to_numpy(dtype=np.float64), dtype=np.float64)[idx]) if "bos_level" in d.columns else float("nan")
+    highs = d["high"].to_numpy(dtype=np.float64)
+    lows = d["low"].to_numpy(dtype=np.float64)
     if k <= 0:
         return 0.0
-    end = min(i + k + 1, n)
-    if end <= i + 1:
+    end = min(idx + k + 1, n)
+    if end <= idx + 1:
         return 0.0
-    fut = slice(i + 1, end)
+    fut = slice(idx + 1, end)
     if direction == 1:
         return 1.0 if float(np.nanmin(lows[fut])) > level else 0.0
     if direction == -1:

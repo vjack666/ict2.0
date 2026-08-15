@@ -54,7 +54,7 @@ def zone_ok_for_direction(zone_class: str, direction: int) -> bool:
 
 
 from dataclasses import dataclass, field
-from typing import Sequence, Tuple
+from typing import Tuple
 
 
 @dataclass(frozen=True)
@@ -87,7 +87,7 @@ def _is_close_to(v: float, target: float, tol: float) -> bool:
 
 def compute_zone_class(
     *,
-    sig_dir: int,
+    _sig_dir: int,
     swing_high_htf: float | None,
     swing_low_htf: float | None,
     entry: float,
@@ -127,16 +127,31 @@ def resolve_swing_from_ms(
     Anti look-ahead: solo velas con ``time <= at_time``.
     Devuelve ``(high, low)`` o ``None`` cuando no hay datos suficientes.
     """
-    df = ms.get(htf_tf)
-    if df is None or len(df) == 0:
-        return None
-    try:
-        import pandas as pd
+    import pandas as pd
 
+    df = ms.get(htf_tf)
+    if not isinstance(df, pd.DataFrame) or len(df) == 0:
+        return None
+    if at_time is None:
+        return None
+    time_value: pd.Timestamp | str | float | int | None
+    try:
+        if isinstance(at_time, pd.Timestamp):
+            time_value = at_time
+        elif isinstance(at_time, str):
+            time_value = at_time
+        elif isinstance(at_time, (int, float)):
+            time_value = pd.Timestamp(at_time)
+        else:
+            time_value = None
+        if time_value is None:
+            return None
+        tt = pd.to_datetime(time_value, utc=True, errors="coerce")
+        if pd.isna(tt):
+            return None
         times = pd.to_datetime(df["time"], utc=True, errors="coerce")
-        tt = pd.to_datetime(at_time, utc=True, errors="coerce")
         win = df.loc[times <= tt]
-    except Exception:
+    except (TypeError, ValueError, KeyError):
         return None
     if len(win) < 3:
         return None

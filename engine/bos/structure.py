@@ -131,13 +131,14 @@ class MarketStructure:
         return int(nonzero.iloc[-1]) if len(nonzero) else 0
 
     @property
-    def counts(self) -> dict[str, int]:
+    def counts(self) -> dict[str, int | dict[str, int]]:
         """Conteos de estado por vela (diagnostico rapido)."""
+        trend_counts = {str(k): int(v) for k, v in self.frame["trend"].value_counts().to_dict().items()}
         return {
             "bos_active": int((self.frame["bos_status"] == "active").sum()),
             "bos_invalidated": int((self.frame["bos_status"] == "invalidated").sum()),
             "choch_active": int((self.frame["choch_status"] == "active").sum()),
-            "trend": self.frame["trend"].value_counts().to_dict(),
+            "trend": trend_counts,
         }
 
 
@@ -261,7 +262,7 @@ def _derive_trend(d: pd.DataFrame) -> pd.Series:
 
 def _label_bos_discard(
     d: pd.DataFrame,
-    config: StructureConfig,
+    _config: StructureConfig,
     bos_discard: pd.Series,
 ) -> pd.Series:
     """Etiqueta causa de descarte para BOS sin hit en `k` velas.
@@ -271,7 +272,7 @@ def _label_bos_discard(
     columna `bos_discard_reason` de antes (regresión cero) y además deja el
     alias `label_bos_reason` para la fase de transición.
     """
-    reasons = label_bos_outcome(d, config, bos_discard)
+    reasons = label_bos_outcome(d, _config, bos_discard)
     # Alias de transición: columna `label_bos_reason` idéntica a la decisión.
     d["label_bos_reason"] = reasons
     return reasons
@@ -279,7 +280,7 @@ def _label_bos_discard(
 
 def _label_choch_discard(
     d: pd.DataFrame,
-    config: StructureConfig,
+    _config: StructureConfig,
     choch_discard: pd.Series,
 ) -> pd.Series:
     """Etiqueta causa de descarte para CHOCH.
@@ -288,7 +289,7 @@ def _label_choch_discard(
     columna `choch_discard_reason` (regresión cero) y deja el alias
     `label_choch_reason`.
     """
-    reasons = label_choch_outcome(d, config, choch_discard)
+    reasons = label_choch_outcome(d, _config, choch_discard)
     d["label_choch_reason"] = reasons
     return reasons
 
@@ -328,47 +329,45 @@ def _compute_bos_quality(
     bos_levels = d["bos_level"].to_numpy()
     bos_dir = d["bos_dir"].to_numpy()
 
-    highs = d["high"].to_numpy()
-    lows = d["low"].to_numpy()
-
     for i in np.where(bos_dir != 0)[0]:
-        direction = int(bos_dir[i])
-        level = float(bos_levels[i])
-        cr = float(avg_range[i]) if avg_range[i] > 1e-9 else float(candle_range[i])
+        idx = int(i)
+        direction = int(bos_dir[idx])
+        level = float(bos_levels[idx])
+        cr = float(avg_range[idx]) if avg_range[idx] > 1e-9 else float(candle_range[idx])
         if cr <= 0:
             cr = 1e-9
 
         # 1. displacement previo
         disp_flag = 0.0
-        if direction == 1 and i > 0 and bool(disp_bull[i]):
+        if direction == 1 and idx > 0 and bool(disp_bull[idx]):
             disp_flag = 1.0
-        elif direction == -1 and i > 0 and bool(disp_bear[i]):
+        elif direction == -1 and idx > 0 and bool(disp_bear[idx]):
             disp_flag = 1.0
 
         # 2. cuerpo del break
-        body_score = float(body_ratio[i])
+        body_score = float(body_ratio[idx])
 
         # 3. distancia del close al nivel roto
         if direction == 1:
-            close_dist = (close[i] - level) / cr
+            close_dist = (close[idx] - level) / cr
         else:
-            close_dist = (level - close[i]) / cr
+            close_dist = (level - close[idx]) / cr
         close_score = float(np.clip(close_dist / 0.5, 0.0, 1.0))
 
         # 4. no retorno inmediato (B4: delegado a engine.labels.confirm_score,
         # el único sitio autorizado a mirar i+1:).
-        confirm_score = 0.0
+        confirm_score_value = 0.0
         if config.confirm_bars > 0:
-            confirm_score = _label_confirm_score(d, i, config.confirm_bars)
+            confirm_score_value = _label_confirm_score(d, idx, config.confirm_bars)
 
         score = (
             disp_flag * 0.25 +
             body_score * 0.25 +
             close_score * 0.25 +
-            confirm_score * 0.25
+            confirm_score_value * 0.25
         )
-        quality.iloc[i] = float(np.clip(score, 0.0, 1.0))
-        real.iloc[i] = score >= config.quality_threshold
+        quality.at[d.index[idx]] = float(np.clip(score, 0.0, 1.0))
+        real.at[d.index[idx]] = score >= config.quality_threshold
 
     return quality, real
 
@@ -570,16 +569,18 @@ def detect_market_structure(
     last_choch_idx = -1
     last_choch_dir = 0
     mss_dir = np.zeros(n, dtype=int)
+    bos_dir_arr = np.asarray(d["bos_dir"].to_numpy(dtype=np.int64), dtype=np.int64)
+    choch_dir_arr = np.asarray(d["choch_dir"].to_numpy(dtype=np.int64), dtype=np.int64)
     for i in range(n):
-        if d["choch_dir"].iat[i] != 0:
+        if choch_dir_arr[i] != 0:
             last_choch_idx = i
-            last_choch_dir = d["choch_dir"].iat[i]
+            last_choch_dir = int(choch_dir_arr[i])
         if (
-            d["bos_dir"].iat[i] != 0
+            bos_dir_arr[i] != 0
             and last_choch_idx != -1
-            and d["bos_dir"].iat[i] == -last_choch_dir
+            and int(bos_dir_arr[i]) == -int(last_choch_dir)
         ):
-            mss_dir[i] = d["bos_dir"].iat[i]
+            mss_dir[i] = int(bos_dir_arr[i])
     d["mss_dir"] = mss_dir
 
     # M6 — Etiquetado de descarte desde el motor.

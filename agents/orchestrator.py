@@ -1,2 +1,5 @@
-# Compatibilidad: re-exporta desde orchestration.orchestrator
-from orchestration.orchestrator import AgentOrchestrator, AGENT_COLUMNS
+"""Compatibility re-exports for the orchestration layer."""
+
+from orchestration.orchestrator import AGENT_COLUMNS, AgentOrchestrator
+
+__all__ = ["AGENT_COLUMNS", "AgentOrchestrator"]

@@ -37,15 +37,21 @@ arquitectura/historia de SMC-SYSTEMS, no la tesis.
 | `docs/ict/20_TESIS_ICT.md` | Síntesis unificadora PO3+liquidez+temporalidad+POI. |
 | `docs/ict/21_POI.md` | Point of Interest (PD Array anclado a narrativa). |
 
-### Hallazgos y SDD de tesis
-| Archivo | Rol |
-|---|---|
-| `docs/tesis/HALLAZGOS_ESTRUCTURA_BOS_CHOCH.md` | Evidencia de estructura. |
-| `docs/tesis/HALLAZGOS_SESGO_BACKTEST.md` | Evidencia de sesgo. |
-| `docs/tesis/PLAN_RESCATE_POI_HTF.md` | Plan de rescate POI HTF. |
-| `docs/tesis/SDD_LTF_ENTRY_LAYER.md` | SDD de capa de entrada LTF. |
-| `docs/tesis/SDD_M2_LINEAGE.md` | SDD de lineage M2. |
-| `docs/tesis/SDD_RESCATE_POI_HTF.md` | SDD de rescate POI HTF. |
+### Hallazgos y SDD de tesis (SON DEL MOTOR, no de backtest)
+| Archivo | Rol | Nota |
+|---|---|---|
+| `docs/tesis/HALLAZGOS_ESTRUCTURA_BOS_CHOCH.md` | Geometría/filosofía del motor (swing humano, MTF, huecos M1-M7) | Autoridad de tesis |
+| `docs/tesis/HALLAZGOS_SESGO_BACKTEST.md` | Diagnóstico del motor de sesgo (dice "backtest" en el nombre, pero el hallazgo corregido concluye que el fix es del MOTOR, no del backtest) | Autoridad de tesis; nombre engañoso |
+| `docs/tesis/SDD_LTF_ENTRY_LAYER.md` | SDD de la capa LTF del MOTOR (engine/execution, sequence) | Autoridad de motor |
+| `docs/tesis/SDD_M2_LINEAGE.md` | SDD de trazabilidad causal del MOTOR (engine/sequence, lineage) | Autoridad de motor |
+| `docs/tesis/SDD_RESCATE_POI_HTF.md` | SDD para rescatar POI al MOTOR (engine/htf_pd_index, zone_authority) | Autoridad de motor |
+| `docs/tesis/PLAN_RESCATE_POI_HTF.md` | Plan de rescate POI al MOTOR | Autoridad de motor |
+
+> **Nota importante:** estos SDD mencionan `ict_backtest/` solo como consumidor
+> desechable que obedece la Ley "motor = fuente única". Como `ict_backtest/` se
+> eliminó de ICT SYSTEM (backtest no se usa más), **estos documentos siguen
+> siendo autoridad vigente** porque describen el MOTOR (`engine/`), que SÍ está
+> en ICT SYSTEM. No pierden validez por el borrado del backtest.
 
 ### Diccionarios de detección
 | Archivo | Rol |

@@ -1,26 +1,24 @@
-"""engine/bias_from_tools.py — Adaptador Task 5b: sesgo del motor USANDO
-las herramientas corregidas de tools/ (Fase 1).
+"""engine/bias_from_tools.py — Adaptador: sesgo del motor USANDO tools/ (Fase 1 + Task 6).
 
 PROPOSITO:
   El motor de lectura (engine/plan.py) calcula el sesgo desde un df anotado
-  con columnas bos_dir/bos_status/choch_dir/choch_status (via
-  engine.bos.detect_market_structure, motor viejo).
-  Este adaptador produce ESE MISMO formato de df anotado pero usando las
-  herramientas corregidas y certificadas de tools/ (Swing persistente,
-  BOS hijo de swing, filtro tesis, CHOCH con fallback de swings).
-  Asi la mejora de Fase 1 SIRVE para uso real del motor, no queda aislada.
+  con columnas bos_dir/bos_status/choch_dir/choch_status (via motor viejo).
+  Este adaptador produce ESE MISMO formato pero usando las herramientas
+  corregidas y PROFESIONALIZADAS de tools/:
+    - SwingTool (objeto persistente)
+    - BOSTool + apply_validation (ACTIVE/INVALIDATED)
+    - tools.displacement (geometria pura, SIN ATR)
+    - tools.quality_score (score 0-1 + is_real)
+    - CHOCHTool (fallback swings) + tools.choch_quality (EXP-012: CHOCH real)
+    - tools.swing_state (estado temporal fresh/tested/mitigated/invalidated)
+  Asi la mejora de Fase 1/Task6 SIRVE para uso real del motor (uso diario).
 
 RESPESTA AISLAMIENTO (Ley Task 2):
-  engine/ importa tools/ (permitido: el orquestador consume tools).
-  tools/ NO importa engine/ (invariante).
+  engine/ importa tools/ (permitido). tools/ NO importa engine/.
 
-USO:
-  from engine.bias_from_tools import annotate_with_tools, bias_from_tools
-  df_annot = annotate_with_tools(raw_m5, symbol="EURUSD")
-  bias = bias_from_tools(df_annot, t=some_time)   # compatible con _bias_from_frame
-  # o integrado en plan.py:
-  from engine.bias_from_tools import bias_from_tools
-  # usar en vez de _bias_from_frame para frames anotados por tools.
+METODOLOGIA (geometria de mercado, sin ATR):
+  displacement usa rango promedio high-low (no ATR). quality_score usa
+  body_ratio / distancia al nivel / rango promedio. Todo matematica pura.
 """
 from __future__ import annotations
 
@@ -34,50 +32,81 @@ from tools.bos import BOSTool
 from tools.bos_validate import apply_validation
 from tools.choch import CHOCHTool
 from tools.bos_filter import filter_bos_thesis
+from tools.displacement import detect_displacement
+from tools.quality_score import compute_quality, QualityConfig
+from tools.choch_quality import mark_choch_quality
+from tools.swing_state import ObjectState, next_state_on_test
 
 
 def annotate_with_tools(df: pd.DataFrame, symbol: str = "EURUSD",
                         max_idle_bars: int = 0, require_htf_alignment: bool = False,
                         htf_frames: dict | None = None) -> pd.DataFrame:
-    """Devuelve df con columnas bos_dir/bos_status/choch_dir/choch_status
-    calculadas por las herramientas corregidas de tools/.
+    """Devuelve df anotado compatible con engine.plan (_bias_from_frame) pero
+    usando herramientas corregidas + profesionales de tools/.
 
-    El df resultante es compatible con engine.plan._bias_from_frame.
+    Columnas: bos_dir, bos_status, bos_real, bos_level, choch_dir,
+    choch_status, choch_proj_level, displacement_*, quality_score.
     """
     out = df.copy().reset_index(drop=True)
     out["bos_dir"] = 0
     out["bos_status"] = "none"
     out["bos_real"] = False
     out["bos_level"] = np.nan
+    out["bos_quality"] = np.nan
     out["choch_dir"] = 0
     out["choch_status"] = "none"
     out["choch_proj_level"] = np.nan
+    out["choch_real"] = False
+
+    # 1. displacement (geometria pura, SIN ATR) sobre el frame
+    out = detect_displacement(out)
 
     sw = SwingTool(lookback=5)
     swe = sw.run(out, symbol=symbol)
     sids = {e.origin_bar: e.id for e in swe}
 
+    # 2. BOS (hijo de swing) + validacion geometrica + filtro tesis
     bo = BOSTool(lookback=5)
-    boe = bo.run(out, symbol=symbol, context={"swing_ids": sids})
-    boe = apply_validation(out, boe)
-    boe = filter_bos_thesis(out, boe, htf_frames=htf_frames, confirm_bars=2,
+    boe_raw = bo.run(out, symbol=symbol, context={"swing_ids": sids})
+    boe_raw = apply_validation(out, boe_raw)
+    boe = filter_bos_thesis(out, boe_raw, htf_frames=htf_frames, confirm_bars=2,
                             max_idle_bars=max_idle_bars,
                             require_htf_alignment=require_htf_alignment)
+
+    # escribir BOS en out ANTES de quality_score (lo necesita)
     for e in boe:
         i = e.break_bar if e.break_bar is not None else e.bar_index
         if i is None or i < 0 or i >= len(out):
             continue
         out.loc[i, "bos_dir"] = 1 if e.signal == "BOS_UP" else -1
-        # bos_real = paso el filtro tesis (calidad, no solo geometria)
-        out.loc[i, "bos_real"] = bool(e.extra.get("thesis_valid", False))
         out.loc[i, "bos_level"] = float(e.price) if e.price is not None else np.nan
         out.loc[i, "bos_status"] = "active" if getattr(e, "status", "") != "invalidated" else "invalidated"
 
+    # 3. quality_score sobre BOS (usa displacement ya en out + bos_dir/bos_level)
+    q, real = compute_quality(
+        out,
+        bos_dir_col="bos_dir",
+        bos_level_col="bos_level",
+        config=QualityConfig(quality_threshold=0.5, confirm_bars=2),
+    )
+    for e in boe:
+        i = e.break_bar if e.break_bar is not None else e.bar_index
+        if i is None or i < 0 or i >= len(out):
+            continue
+        out.loc[i, "bos_real"] = bool(real.iloc[i]) if not np.isnan(real.iloc[i]) else bool(e.extra.get("thesis_valid", False))
+        out.loc[i, "bos_quality"] = float(q.iloc[i]) if not np.isnan(q.iloc[i]) else np.nan
+
+    # 4. CHOCH (fallback swings) + filtro tesis
     ch = CHOCHTool()
     che = ch.run(out, symbol=symbol, context={"swings": swe, "boses": boe})
     che = filter_bos_thesis(out, che, htf_frames=htf_frames, confirm_bars=2,
                             max_idle_bars=max_idle_bars,
                             require_htf_alignment=require_htf_alignment)
+
+    # 5. CHOCH calidad (EXP-012): momentum + after-BOS + nivel HL/LH
+    #    pasamos boe_raw (todos los BOS del mercado) para after_bos robusto
+    che = mark_choch_quality(out, che, swe, boe_raw)
+
     for e in che:
         i = e.break_bar if e.break_bar is not None else e.bar_index
         if i is None or i < 0 or i >= len(out):
@@ -86,15 +115,14 @@ def annotate_with_tools(df: pd.DataFrame, symbol: str = "EURUSD",
         out.loc[i, "choch_status"] = "active" if getattr(e, "status", "") != "invalidated" else "invalidated"
         if e.price is not None:
             out.loc[i, "choch_proj_level"] = float(e.price)
+        out.loc[i, "choch_real"] = bool(e.extra.get("choch_real", False))
 
     return out
 
 
 def bias_from_tools(df: pd.DataFrame, t: Any) -> str:
-    """Sesgo por estructura (igual firma/semantica que engine.plan._bias_from_frame)
-    pero sobre df anotado por las herramientas corregidas de tools/.
-
-    CHOCH activo manda sobre BOS activo; sin ninguno => RANGING.
+    """Sesgo por estructura (igual firma que engine.plan._bias_from_frame)
+    sobre df anotado por tools/ profesionales. CHOCH real manda sobre BOS real.
     """
     if df is None or len(df) == 0 or "time" not in df.columns:
         return "RANGING"
@@ -115,10 +143,7 @@ def bias_from_tools(df: pd.DataFrame, t: Any) -> str:
             last_bos_idx, last_bos_dir = i, int(bd)
         cd = sub["choch_dir"].iloc[i]
         if cd not in (0, "0", None) and str(sub["choch_status"].iloc[i]) == "active":
-            # T9.7 (tesis S7.0): CHOCH solo cuenta si el BOS contrario que
-            # rompio era REAL (bos_real). Replica la regla del motor viejo
-            # para que la mejora de calidad (filtro tesis -> bos_real) se
-            # propague al sesgo de forma consistente.
+            # T9.7: CHOCH solo cuenta si el BOS contrario era REAL (bos_real)
             if has_real:
                 opp = -int(cd)
                 cand = sub.iloc[:i]

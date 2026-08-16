@@ -44,14 +44,16 @@ def _ctx_from_code(code: int) -> str:
     return {0: "contra", 1: "neutral", 2: "a_favor"}.get(int(code), "neutral")
 
 
-def label_file(features_path: str) -> tuple[str, dict]:
-    """Procesa un features.jsonl -> labels_human.jsonl. Devuelve ruta out."""
+def label_file(features_path: str, htf_ctx: str = "neutral") -> tuple[str, dict]:
+    """Procesa un features.jsonl -> labels_human.jsonl. Devuelve ruta out.
+    htf_ctx: sesgo HTF jerarquico del mes (Fase 5: build_daily_bias)."""
     rows = [json.loads(l) for l in open(features_path, encoding="utf-8") if l.strip()]
     out_rows = []
     for r in rows:
         signal = r.get("signal")
         cd = int(r.get("cd", 0))
-        # La rúbrica evalua CHOCH reales; si real=0, human_score=0 noise.
+        # F5: el sesgo jerarquico compuesto (D1 raiz) manda sobre htf_ctx_code
+        # por evento, para alineacion real con la estructura mayor (SPEC §47).
         inp = RubricInput(
             signal=signal,
             choch_real=bool(int(r.get("real", 0))),
@@ -59,10 +61,10 @@ def label_file(features_path: str) -> tuple[str, dict]:
             after_bos=bool(int(r.get("after_bos", 0))),
             displacement=bool(int(r.get("displacement", 0))),
             body_ratio=float(r.get("break_body_ratio", 0.0) or 0.0),
-            htf_ctx=_ctx_from_code(r.get("htf_ctx_code", 1)),
+            htf_ctx=htf_ctx,
             reclaimed=False,  # el features no trae reclaim; extensible
             conf_fill={
-                "mtf_align": _ctx_from_code(r.get("htf_ctx_code", 1)) == "a_favor",
+                "mtf_align": htf_ctx == "a_favor",
                 "displacement": bool(int(r.get("displacement", 0))),
                 "bos_afavor": bool(int(r.get("after_bos", 0))),
                 "choch_afavor": True,
@@ -104,8 +106,9 @@ def label_file(features_path: str) -> tuple[str, dict]:
     return out_path, summ
 
 
-def label_bos_file(features_path: str) -> tuple[str, dict]:
-    """Procesa features.jsonl de BOS -> labels_human.jsonl usando score_bos_rubric."""
+def label_bos_file(features_path: str, htf_ctx: str = "neutral") -> tuple[str, dict]:
+    """Procesa features.jsonl de BOS -> labels_human.jsonl usando score_bos_rubric.
+    htf_ctx: sesgo HTF jerarquico del mes (Fase 5: build_daily_bias)."""
     from tools.teacher_rubric import BosRubricInput, score_bos_rubric
     rows = [json.loads(l) for l in open(features_path, encoding="utf-8") if l.strip()]
     out_rows = []
@@ -117,7 +120,7 @@ def label_bos_file(features_path: str) -> tuple[str, dict]:
             dist_to_level=float(r.get("dist_to_level", 0.0) or 0.0),
             confirmed=bool(r.get("confirmed", False)),
             status=r.get("status", "active"),
-            htf_ctx="neutral",  # features BOS aun no trae HTF; extensible
+            htf_ctx=htf_ctx,  # F5: sesgo jerarquico real, no neutral
         )
         out = score_bos_rubric(inp)
         out_rows.append({
@@ -144,13 +147,24 @@ def label_bos_file(features_path: str) -> tuple[str, dict]:
 
 
 def main():
+    # --- Fase 5: sesgo HTF jerarquico del mes (D1 raiz, SPEC §43/§47) ---
+    htf_ctx = "neutral"
+    try:
+        from engine.bias_from_tools import build_daily_bias
+        bias = build_daily_bias(symbol="EURUSD", month="2026-08")
+        d = bias.get("direction", "RANGING")
+        htf_ctx = {"BULLISH": "a_favor", "BEARISH": "contra"}.get(d, "neutral")
+        print(f"FASE 5: sesgo HTF jerarquico 2026-08 = {d} (htf_ctx={htf_ctx})")
+    except Exception as e:
+        print(f"FASE 5: no se pudo calcular bias HTF ({e}); usando neutral")
+
     # --- CHOCH (ya generado por gen_choch_dataset) ---
     choch_feats = [f for f in glob.glob(os.path.join(CHOCH_DIR, "**", "features.jsonl"), recursive=True)
                    if "labels_human" not in f]
     if choch_feats:
         print(f"CHOCH: {len(choch_feats)} features.jsonl")
         for fp in choch_feats:
-            out_path, summ = label_file(fp)
+            out_path, summ = label_file(fp, htf_ctx=htf_ctx)
             print(f"  {fp}\n    -> {out_path}\n    {json.dumps(summ)}")
 
     # --- BOS (features generados por scripts/gen_bos_dataset.py) ---
@@ -160,7 +174,7 @@ def main():
     if bos_feats:
         print(f"\nBOS: {len(bos_feats)} features.jsonl")
         for fp in bos_feats:
-            out_path, summ = label_bos_file(fp)
+            out_path, summ = label_bos_file(fp, htf_ctx=htf_ctx)
             print(f"  {fp}\n    -> {out_path}\n    {json.dumps(summ)}")
     else:
         print("\nBOS: no hay features.jsonl. Corre scripts/gen_bos_dataset.py primero.")

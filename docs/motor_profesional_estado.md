@@ -195,6 +195,10 @@ con BOS". El 92.8% reclaim es feature del dominio (no bug). Coherente con el
 | `scripts/scan_classify.py` | escáner deficiencias (74 módulos) | `4dd90aa` |
 | `tools/bos_validate.py` | Opción B (modo sustained) | `712048b` |
 | `scripts/train_nature_head.py` | P5: nature head (test_bce 0.559) | `712048b` |
+| `tools/swing.py` | F1 lookback adaptativo + F2 swing_state cableado | `9b...` (7 fases) |
+| `scripts/gen_swing_dataset.py` | F3: datasets H4/D1 swing (nuevo) | `9b...` |
+| `engine/bias_from_tools.py` | F4 cascade + `build_daily_bias` (uso diario) | `9b...` |
+| `scripts/label_human.py` | F5 bias jerárquico → rúbrica; F6 reetiquetar | `9b...` |
 
 ### 8.4 Auditoría externa (sobre `4dd90aa`) — veredicto
 

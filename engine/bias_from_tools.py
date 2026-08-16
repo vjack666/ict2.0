@@ -24,6 +24,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import os
 import numpy as np
 import pandas as pd
 
@@ -40,12 +41,15 @@ from tools.swing_state import ObjectState, next_state_on_test
 
 def annotate_with_tools(df: pd.DataFrame, symbol: str = "EURUSD",
                         max_idle_bars: int = 0, require_htf_alignment: bool = False,
-                        htf_frames: dict | None = None) -> pd.DataFrame:
+                        htf_frames: dict | None = None, tf: str = "M5") -> pd.DataFrame:
     """Devuelve df anotado compatible con engine.plan (_bias_from_frame) pero
     usando herramientas corregidas + profesionales de tools/.
 
     Columnas: bos_dir, bos_status, bos_real, bos_level, choch_dir,
     choch_status, choch_proj_level, displacement_*, quality_score.
+
+    Fase 4: tf parametriza el lookback adaptativo del SwingTool (M5=5, H4=20,
+    D1=30) para que cada TF use su ventana de estructura MAYOR (SPEC §47, §49).
     """
     out = df.copy().reset_index(drop=True)
     out["bos_dir"] = 0
@@ -61,7 +65,8 @@ def annotate_with_tools(df: pd.DataFrame, symbol: str = "EURUSD",
     # 1. displacement (geometria pura, SIN ATR) sobre el frame
     out = detect_displacement(out)
 
-    sw = SwingTool(lookback=5)
+    # F4: SwingTool con lookback adaptativo por TF (Fase 1), no 5 ciego.
+    sw = SwingTool(tf=tf)
     swe = sw.run(out, symbol=symbol)
     sids = {e.origin_bar: e.id for e in swe}
 
@@ -193,18 +198,19 @@ def bias_from_tools_htf(
     """
     from engine.bias.narrative import _compose_htf_bias  # lazy: evita ciclo
 
-    def _one(tf_df):
+    def _one(tf_name, tf_df):
         if tf_df is None or len(tf_df) < 3:
             return "RANGING"
         ann = annotate_with_tools(
             tf_df, symbol=symbol, max_idle_bars=max_idle_bars,
             require_htf_alignment=require_htf_alignment, htf_frames=htf_frames,
+            tf=tf_name,   # F4: lookback adaptativo por TF
         )
         return bias_from_tools(ann, str(tf_df["time"].iloc[-1]))
 
-    d1b = _one(d1)
-    h4b = _one(h4)
-    h1b = _one(h1)
+    d1b = _one("D1", d1)
+    h4b = _one("H4", h4)
+    h1b = _one("H1", h1)
     direction = _compose_htf_bias(d1b, h4b, h1b)
     non_neutral = [v for v in (d1b, h4b, h1b) if v != "RANGING"]
     aligned = len(non_neutral) >= 2 and len(set(non_neutral)) == 1
@@ -212,3 +218,39 @@ def bias_from_tools_htf(
         "d1": d1b, "h4": h4b, "h1": h1b,
         "direction": direction, "aligned": aligned,
     }
+
+
+def build_daily_bias(symbol: str = "EURUSD",
+                     month: str = "2026-08",
+                     max_idle_bars: int = 0,
+                     require_htf_alignment: bool = False) -> dict:
+    """Cableado PARA USO DIARIO: sesgo HTF jerarquico listo para el motor.
+
+    Carga las velas CERRADAS de cada TF (sin look-ahead: solo cierres
+    completos, SPEC §44) desde data/raw, y compone D1->H4->H1 via
+    bias_from_tools_htf. No inventa nada: reusa el detector profesional de
+    tools/ y la autoridad D1 raiz de narrative._compose_htf_bias.
+
+    Devuelve dict con 'd1','h4','h1','direction','aligned' + 'source'.
+    """
+    from engine.bias.narrative import _compose_htf_bias  # lazy
+
+    frames = {}
+    for tf in ("D1", "H4", "H1"):
+        p = f"data/raw/{symbol}/{symbol}_{tf}.parquet"
+        if not os.path.exists(p):
+            frames[tf] = None
+            continue
+        d = pd.read_parquet(p)
+        d = d.assign(time=pd.to_datetime(d["time"])).reset_index(drop=True)
+        m = d["time"].dt.strftime("%Y-%m") == month
+        d = d[m].reset_index(drop=True)
+        frames[tf] = d if len(d) >= 3 else None
+
+    htf = bias_from_tools_htf(
+        d1=frames["D1"], h4=frames["H4"], h1=frames["H1"],
+        symbol=symbol, max_idle_bars=max_idle_bars,
+        require_htf_alignment=require_htf_alignment,
+    )
+    htf["source"] = f"tools/ profesionales + _compose_htf_bias (D1 raiz), month={month}"
+    return htf

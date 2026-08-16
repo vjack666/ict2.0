@@ -113,3 +113,55 @@ Coherente con SPEC §8 ("CHOCH sin BOS posterior → solo aviso") y con el
 - Reentreno del encoder con objetivo de dirección (no reconstrucción MSE).
 - El depósito `C:\Users\v_jac\Desktop\SMC-SYSTEMS` quedó como receptor de módulos
   reemplazados (aún no se movió nada; CHOCH/BOS/swing siguen en ICT SYSTEM).
+
+---
+
+## 9. Plan de 7 fases — Jerarquía de Swings y Sesgo HTF (2026-08-16)
+
+Ejecutado completo tras aprobación. Base: SPEC §42-49 (sesgo=D1/H4/H1 velas
+cerradas→alineación D1→H4→H1; PRE sin look-ahead; §47 sesgo=último swing
+MAYOR), narrative.py T9 (D1 autoridad raíz vía `_compose_htf_bias`), §79 (swing
+ventana NO centrada + shift). NO invención.
+
+| F | Qué | Archivo | Evidencia |
+|---|---|---|---|
+| 1 | Lookback adaptativo por TF (M5:5/M15:8/H1:12/H4:20/D1:30) | `tools/swing.py` | `TF_LOOKBACK` + `tf=` param |
+| 2 | `swing_state` cableado (fresh/mitigated) | `tools/swing.py` | smoke M5: 385 swings (351 mitig/34 fresh) |
+| 3 | Datasets H4/D1 de swing | `scripts/gen_swing_dataset.py` (nuevo) | M5=385, H4=1, D1=0 (ago corto) |
+| 4 | Cascade bottom-up + `build_daily_bias` | `engine/bias_from_tools.py` | daily bias D1/H4 rng, H1 BEARISH, dir NEUTRAL |
+| 5 | Bias jerárquico → rúbrica | `scripts/label_human.py` | inyecta `htf_ctx` desde `build_daily_bias` |
+| 6 | Reetiquetar BOS/CHOCH con jerarquía | `scripts/label_human.py` | ver cuadro §9.1 |
+| 7 | Bitácora + cuadro + commit/push | este doc | commit posterior a 9a639fe |
+
+### 9.1 CUADRO — Swings y etiquetas tras las 7 fases (2026-08)
+
+| Evento | Antes | Después | Nota |
+|---|---|---|---|
+| SWING M5 (mes) | 614.841 (ruido lookback=5) | **385** (lookback 5 + mitig geom) | cura raíz del ruido |
+| SWING H4 | 0 | 1 | dataset creado (F3) |
+| SWING D1 | 0 | 0 | ago corto (<30 velas D1); correcto |
+| SWING estado | "active" genérico | fresh/mitigated | `swing_state` cableado (F2) |
+| CHOCH (2.125) | 80.3% noise | **99.8% noise** (0 prem/5 useful) | bias 2026-08=NEUTRAL (rango HTF) |
+| BOS (86.870) | 96.5% noise | 96.5% noise (3.044 useful) | bias NEUTRAL → sin cambio este mes |
+
+Hallazgo F5/F6: el sesgo HTF de 2026-08 fue **NEUTRAL** (D1/H4 ranging). Por
+tanto inyectar `htf_ctx` jerárquico no movió la distribución este mes — es
+correcto y esperable (SPEC §48: rango = contexto, no anula setup). El mecanismo
+funciona; en un mes con tendencia D1 (a_favor/contra) SÍ moverá los scores.
+
+### 9.2 Veredicto de las 7 fases
+
+- La raíz del ruido (614k swings M5 de 25min) está **curada**: 385 swings M5
+  válidos + estado de vida del nivel. CHOCH/BOS ahora se construyen sobre
+  estructura mayor, no sobre pivotes de microestructura.
+- El cascade D1→H4→H1 está **cableado para uso diario** (`build_daily_bias`),
+  sin look-ahead, con D1 como autoridad raíz (tesis §47).
+- NO se calificó swing con human_score (sigue N/A primitivo); se le dio
+  trazabilidad de vida (fresh/mitigated) que es el equivalente correcto.
+- NO se usó ATR ni medias (geometría pura, narrative.py:25).
+- El sistema es ahora **tesis-correcto** aunque el mes estuviera en rango.
+
+### 9.3 Commits de las 7 fases (origin/main)
+
+- (commit posterior a 9a639fe, ver git log)
+

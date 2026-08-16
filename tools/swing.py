@@ -60,8 +60,16 @@ class SwingTool(SingleTool):
     tool_name = "swing"
     tf = "M5"
 
-    def __init__(self, lookback: int = 5):
-        self.lookback = lookback
+    # Lookback adaptativo por TF (SPEC §49: "umbral de estructura mayor" es
+    # decision de ingenieria). Swing MAYOR => ventana mas ancha. M5=5 (micro),
+    # H1=12, H4=20, D1=30. Default por tf del frame; M5 conserva 5 (API actual).
+    TF_LOOKBACK = {"M1": 4, "M3": 4, "M5": 5, "M15": 8, "M30": 10,
+                   "H1": 12, "H4": 20, "H6": 24, "D1": 30}
+
+    def __init__(self, lookback: int | None = None, tf: str = "M5"):
+        # lookback None => toma el de la tabla para el tf dado (adaptativo)
+        self.tf = tf
+        self.lookback = lookback if lookback is not None else self.TF_LOOKBACK.get(tf, 5)
         self._counter = 0
 
     def _detect(self, df: pd.DataFrame, context: dict | None = None) -> pd.DataFrame:
@@ -110,6 +118,27 @@ class SwingTool(SingleTool):
                 price=price,
                 detail=f"level={price:.5f} type={'HIGH' if is_high else 'LOW'}",
                 confidence_raw=1.0,
-                status="active",
+                # F2: estado de vida del nivel (swing_state). Swing nace FRESH;
+                # luego se mitiga/invalida por geometria opuesta (sin look-ahead).
+                status="fresh",
             ))
+        # F2: marcar MITIGATED/INVALIDATED por geometria (sin look-ahead: solo
+        # velas POSTERIORES al origin_bar del swing). Swing HIGH = resistencia:
+        # si un cierre posterior supera el nivel al alza -> MITIGATED. Swing LOW
+        # = soporte: si un cierre posterior cae bajo el nivel -> MITIGATED.
+        for ev in events:
+            i = ev.origin_bar
+            if i is None:
+                continue
+            lvl = ev.price
+            is_high = "HIGH" in ev.detail
+            seg = df["close"].iloc[i + 1:] if i + 1 < n else df["close"].iloc[0:0]
+            if len(seg) == 0:
+                continue
+            if is_high:
+                broken = (seg > lvl).any()          # precio supero la resistencia
+            else:
+                broken = (seg < lvl).any()          # precio perforo el soporte
+            if broken:
+                ev.status = "mitigated"
         return events

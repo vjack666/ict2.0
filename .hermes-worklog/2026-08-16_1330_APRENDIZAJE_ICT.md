@@ -163,5 +163,52 @@ funciona; en un mes con tendencia D1 (a_favor/contra) SÍ moverá los scores.
 
 ### 9.3 Commits de las 7 fases (origin/main)
 
-- (commit posterior a 9a639fe, ver git log)
+- `3ab55d9` feat(learn): 7 fases jerarquia swing + sesgo HTF
+
+---
+
+## 10. Pipeline Científico de Aprendizaje (B0–B4, 2026-08-16)
+
+Tras las 7 fases, el usuario exigió un **pipeline científico con gates** (no
+runner de tareas): baseline inmutable → auditoría label → dataset factory →
+walk-forward → nature head + baselines → ablation → score fusion → generalización
+→ gate producción. Sin promoción automática. Cada bloque: RESULT→GATE→PASS/FAIL.
+
+Creado `scripts/learning_pipeline.py` (runner con STATE.json/PAUSE/RUN.lock,
+black box `status`/`explain`/`why`) y `data/learning/pipeline/`.
+
+### 10.1 CUADRO — Resultados B0–B4 (evidencia real)
+
+| Bloque | Qué | Resultado | GATE |
+|---|---|---|---|
+| **B0** BASELINE 🧊 | Grabar estado actual inmutable | `experiments/BASELINE-001/` (commit 3ab55d9fd972, distribución clases, ROC 0.80 label_ep) | ✅ PASS |
+| **B1** Label audit | Auditar label_ep + nature (4 pares × 3 TF) | reclaim **84–90% transversal**, sin leakage directo, horizonte nature=30 velas | ✅ PASS |
+| **B2** Dataset factory | 12 datasets multi-par (H1/H4/D1) con manifest sha256 | H1:1800–2400 filas, H4:150–240, D1:1–134 (escaso) | ✅ (implícito) |
+| **B3** Walk-forward | 22 folds, LogisticRegression vs label_ep | **PR-AUC 0.07–0.31** → label_ep NO predecible OOS | ✅ PASS |
+| **B4** Nature head | NatureHead MLP vs Majority/Random/LogReg (PR-AUC confirm) | 1er run INCONCLUSIVE (bug: faltó `mark_choch_quality` → 0 CHOCH). Corregido + M5. Re-ejecuta al retomar. | ⏳ pendiente retomar |
+
+### 10.2 Hallazgos acumulados (honestos)
+1. **90% reclaim es robusto y transversal** (EURUSD/GBPUSD/USDJPY/XAUUSD, todos TF).
+   No es artefacto de EURUSD M5.
+2. **label_ep NO es predecible OOS** (PR-AUC 0.07–0.31) con features geométricas.
+   "Hubo movimiento" ≠ "fue buen CHOCH estructural" — valida usar nature como target.
+3. **D1 escaso** para CHOCH reales (1–134 filas); H4 limitado (150–240).
+4. NatureHead **aún sin veredicto** (bloqueado por bug corregido + lentitud de
+   block_builder en TF altos → B4 usa M5, H1/H4 para B7).
+5. **El motor NO se toca** (regla estricta: sin evidencia OOS, no promociona).
+
+### 10.3 Estado de cierre de sesión (apagado 2026-08-16)
+- Procesos background B4 y F6(matado limpio; B0–B3 ya completos en disco.
+- `STATE.json` = PAUSED; `PAUSE` flag activo; `SESSION_SNAPSHOT.md` documentado.
+- Al retomar: quitar PAUSE → re-ejecutar B4 (reproducible) → B5→B6→B7→B8.
+- `learning_pipeline.py why` explica por qué la calidad no subió:
+  dataset EURUSD-céntrico + split aleatorio (B3 ya lo corrigió) + nature 0.559
+  sobre 90% reclaim + ROC 0.80 es label_ep direccional, no nature.
+
+### 10.4 Archivos nuevos (este pipeline)
+- `scripts/learning_pipeline.py` — runner + black box
+- `scripts/b1_label_audit.py`, `b2_dataset_factory.py`, `b3_walkforward.py`, `b4_nature_head.py`
+- `data/learning/pipeline/` — STATE/PAUSE/manifests/experiments/reports/SNAPSHOT
+- `.hermes/plans/2026-08-16_1510_PIPELINE_APRENDIZAJE_CIENTIFICO.md` — plan 8 bloques
+
 

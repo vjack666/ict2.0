@@ -133,6 +133,9 @@ def mark_choch_quality(
         # (c) desplazamiento: en la vela de ruptura O en las 2 siguientes
         #     (confirmacion de intencion, geometria pura SIN ATR). El break
         #     suele ser por mecha; el desplazamiento confirma despues.
+        #     IMPORTANTE (decision Director 2026-08-15): el desplazamiento NO
+        #     bloquea el CHOCH (un dia de trading necesita CHOCH accionables).
+        #     Es bonus de score, no veto.
         disp_now = bool(df["displacement_bullish"].iloc[i]) if cd == 1 else bool(df["displacement_bearish"].iloc[i])
         disp_conf = False
         for j in range(i + 1, min(i + 3, len(df))):
@@ -145,9 +148,9 @@ def mark_choch_quality(
         disp = disp_now or disp_conf
         # (d) nivel HL/LH presente (el swing contrario roto)
         lvl_present = pd.notna(lvl)
-        # CHOCH REAL = nivel correcto + after_bos + desplazamiento.
-        # momentum es bonus de score (campo extra), no veto.
-        is_real = bool(after_bos and disp and lvl_present)
+        # CHOCH REAL = nivel correcto + after_bos (definicion tesis).
+        # Desplazamiento es bonus (extra), NO veto.
+        is_real = bool(after_bos and lvl_present)
         c.extra["choch_real"] = is_real
         c.extra["choch_pivot_level"] = float(lvl) if lvl_present else None
         c.extra["choch_momentum"] = bool(momentum_ok)

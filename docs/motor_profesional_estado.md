@@ -132,8 +132,9 @@ scripts/smoke_motor_lectura.py
 1. **Solo EURUSD.** Modelo no generaliza a otros pares sin re-entrenar.
 2. **Label ep es estricto (12% positivos M5).** ¿Es la definición óptima de
    "importó"? label_peak (19%) o un retorno continuo podrían ser mejores targets.
-3. **Score base over-calibrado:** is_real(70)+confirmación(15)+HTF(10)=95 base.
-   Casi todos los reales salen premium por el piso. ¿Recalibrar pesos?
+3. **Score base over-calibrado (scorer viejo `choch_quality.py`):** el scorer
+   geométrico aislado daba casi todos premium por el piso (is_real 70+conf 15+HTF 10).
+   La **rúbrica teacher nueva** (§8) corrige esto: 80.3% noise. Ver §8.5.
 4. **HTF/D1 pocos eventos (5 CHOCH D1).** El sesgo D1 se apoya en poco data.
 5. **Sin validación walk-forward.** ROC es holdout aleatorio, no temporal.
    Un backtest temporal honesto podría dar menos.
@@ -149,3 +150,73 @@ cd "C:/Users/v_jac/Desktop/ICT SYSTEM"
 .venv/Scripts/python.exe -m scripts.train_choch_full        # entrena, guarda model.joblib
 .venv/Scripts/python.exe -m scripts.smoke_motor_lectura    # brief del dia (use_tools=True)
 ```
+
+---
+
+## 8. Sistema de Aprendizaje ICT (P1–P5) — agregado 2026-08-16
+
+Capa de aprendizaje que clasifica BOS/CHOCH "como humano" y mide la naturaleza
+real del patrón. Commits: `4dd90aa` (P1–P4) + `712048b` (Opción B + P5 + etiquetas).
+Bitácora completa: `.hermes-worklog/2026-08-16_1330_APRENDIZAJE_ICT.md`.
+
+### 8.1 CUADRO — Distribución `human_score` (rúbrica teacher)
+
+| Evento | n | premium | useful | noise | mean | Nota |
+|---|---|---|---|---|---|---|
+| CHOCH | 2.125 | 0 (0.0%) | 417 (19.6%) | 1.707 (80.3%) | 61.7 | rúbrica ICT estricta, discrimina |
+| BOS | 86.870 | 0 (0.0%) | 3.044 (3.5%) | 83.826 (96.5%) | 13.96 | tras Opción B (validador sostenido) |
+| SWING | 614.841 | — | — | — | — | `N/A_PRIMITIVO` (no es setup) |
+
+BOS contexto: `strict` → 99.1% invalidated; `sustained` (Opción B) →
+**76.1% invalidated / 23.9% active**. La rúbrica BOS da scores reales tras Opción B.
+
+### 8.2 Hallazgo P3 — Naturaleza CHOCH (721 CHOCH M5 2026-08, 50 velas post)
+
+| Desenlace | % |
+|---|---|
+| Reclaim (recupera nivel, falla giro) | **92.8%** |
+| BOS confirm (excursión ≥2 rango) | **7.2%** |
+| Movimiento neto en dir del giro | 45.4% (≈ random) |
+
+El CHOCH en M5 es RUIDO en ~93% de los casos. Refuta "CHOCH siempre confirma
+con BOS". El 92.8% reclaim es feature del dominio (no bug). Coherente con el
+80.3% noise de la rúbrica y con SPEC §8.
+
+### 8.3 Componentes
+
+| Módulo | Rol | Commit |
+|---|---|---|
+| `tools/block_builder.py` | P1: bloques velas (61×7) por CHOCH | `4dd90aa` |
+| `tools/teacher_rubric.py` | rúbrica ICT (CHOCH + BOS) como código | `4dd90aa` |
+| `scripts/train_block_encoder.py` | P2: encoder CNN-1D (test_mse=0.008 plano) | `4dd90aa` |
+| `scripts/probe_choch_nature.py` | P3: naturaleza CHOCH empírica | `4dd90aa` |
+| `scripts/label_human.py` | P4: etiqueta CHOCH+BOS, SWING N/A | `4dd90aa` |
+| `scripts/gen_bos_dataset.py` | features BOS (86.870) | `4dd90aa` |
+| `scripts/scan_classify.py` | escáner deficiencias (74 módulos) | `4dd90aa` |
+| `tools/bos_validate.py` | Opción B (modo sustained) | `712048b` |
+| `scripts/train_nature_head.py` | P5: nature head (test_bce 0.559) | `712048b` |
+
+### 8.4 Auditoría externa (sobre `4dd90aa`) — veredicto
+
+1. Encoder → Head B supervisado por naturaleza ✅ (P5)
+2. `bos_validate` → Opción B sostenida ✅ (`712048b`)
+3. 92.8% reclaim = feature de dominio ✅ (target de P5)
+4. Publicar distribución rúbrica ✅ (cuadro §8.1)
+
+### 8.5 Nota de corrección (DOC_DRIFT)
+
+El punto 3 de §6 ("Casi todos los reales salen premium por el piso") describe el
+comportamiento del scorer geométrico viejo `choch_quality.py` (aislado, OVERCALIBRATED
+según el escáner). La **rúbrica teacher nueva** da 80.3% noise — no premium. El
+ROC 0.798 de §1/§4 es del modelo viejo `full/model.joblib` (GBM label_ep), NO del
+sistema de aprendizaje P1–P5. Ambos coexisten: el ROC 0.798 sigue siendo válido
+para el scorer de CHOCH cableado al motor; el sistema P1–P5 es un reemplazo
+gradual (aún no cableado al motor en vivo).
+
+---
+
+## 9. Commits de aprendizaje (origin/main)
+
+- `4dd90aa` — feat(learn): P1–P4 sistema aprendizaje ICT (encoder + rúbrica + probe + labels)
+- `712048b` — feat(learn): Opción B bos_validate (sostenida) + P5 nature head + etiquetas BOS/SWING
+

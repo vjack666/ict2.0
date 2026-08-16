@@ -149,7 +149,7 @@ def filter_bos_thesis(
     # 1. Anotar cada evento individualmente (geométrico + confirm + HTF + idle)
     # ------------------------------------------------------------------
     for ev in events:
-        if not (ev.signal or "").startswith("BOS_"):
+        if not (ev.signal or "").startswith(("BOS_", "CHOCH_")):
             continue
 
         direction = 1 if ev.signal == "BOS_UP" else -1
@@ -237,7 +237,7 @@ def filter_bos_thesis(
     groups: dict[tuple[int, float], list[ToolEvent]] = defaultdict(list)
 
     for ev in events:
-        if not (ev.signal or "").startswith("BOS_"):
+        if not (ev.signal or "").startswith(("BOS_", "CHOCH_")):
             continue
         if not ev.extra.get("thesis_valid", False):
             continue
@@ -270,17 +270,17 @@ def filter_bos_thesis(
 
 
 def summarize_bos_filter(events: list[ToolEvent]) -> dict:
-    """Resumen rápido para logs y bitácoras."""
-    bos = [e for e in events if (e.signal or "").startswith("BOS_")]
+    """Resumen rápido para logs y bitácoras (BOS y CHOCH)."""
+    bos = [e for e in events if (e.signal or "").startswith(("BOS_", "CHOCH_"))]
     total = len(bos)
     active_geo = sum(1 for e in bos if getattr(e, "status", "") != "invalidated")
     thesis_valid = sum(1 for e in bos if e.extra.get("thesis_valid") is True)
     unique = sum(1 for e in bos if e.extra.get("is_unique") is True)
-    up_unique = sum(1 for e in bos if e.extra.get("is_unique") and e.signal == "BOS_UP")
-    dn_unique = sum(1 for e in bos if e.extra.get("is_unique") and e.signal == "BOS_DOWN")
+    up_unique = sum(1 for e in bos if e.extra.get("is_unique") and e.signal.endswith("UP"))
+    dn_unique = sum(1 for e in bos if e.extra.get("is_unique") and e.signal.endswith("DOWN"))
 
     return {
-        "total_bos": total,
+        "total": total,
         "geometric_active": active_geo,
         "thesis_valid": thesis_valid,
         "unique_setups": unique,

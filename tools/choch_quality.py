@@ -32,10 +32,13 @@ def mark_choch_quality(
     choch_events: list[ToolEvent],
     swing_events: list[ToolEvent],
     bos_events: list[ToolEvent],
+    htf_frames: dict | None = None,
 ) -> list[ToolEvent]:
-    """Anota cada CHOCH con extra['choch_real'] y extra['choch_pivot_level'].
+    """Anota cada CHOCH con extra['choch_real'] y extra['choch_score'] (0-100).
 
     Usa swings (HH/HL/LH/LL) y BOS (dir, real) de las herramientas de tools/.
+    Score hibrido (plan v1.1 F2):
+      Estructura 30 + Contexto HTF 20 + Geometria 20 + Confirmacion 15 + IA 15.
     """
     n = len(df)
     if n == 0:
@@ -151,10 +154,56 @@ def mark_choch_quality(
         # CHOCH REAL = nivel correcto + after_bos (definicion tesis).
         # Desplazamiento es bonus (extra), NO veto.
         is_real = bool(after_bos and lvl_present)
+
+        # --- SCORE HIBRIDO 0-100 (plan v1.1 F2) ---
+        # Estructura 30 + Contexto HTF 20 + Geometria 20 + Confirmacion 15 + IA 15
+        # Calibracion: is_real solo ya es 'useful' (>=70); disp/momentum/htf
+        # empujan a 'premium' (>=85).
+        score = 0.0
+        # Estructura: nivel correcto + after-BOS es la base del CHOCH real.
+        # is_real solo ya es 'useful' (>=70); momentum/htf/disp empujan a premium.
+        if is_real:
+            score += 70.0
+            if momentum_ok:
+                score += 10.0
+        # Contexto HTF: a favor=20, neutral=10, contra=5
+        htf_ctx = "neutral"
+        if htf_frames:
+            _htf = next(iter(htf_frames.values()))
+            htf_trend = str(_htf.get("trend", "RANGING") if isinstance(_htf, dict) else "RANGING")
+            if htf_trend == "BULLISH" and cd == 1:
+                htf_ctx = "a_favor"; score += 20.0
+            elif htf_trend == "BEARISH" and cd == -1:
+                htf_ctx = "a_favor"; score += 20.0
+            elif htf_trend in ("BULLISH", "BEARISH"):
+                htf_ctx = "contra"; score += 5.0
+            else:
+                score += 10.0
+        else:
+            score += 10.0
+        # Geometria: desplazamiento (intencion de ruptura)
+        if disp:
+            score += 20.0
+        # Confirmacion: el CHOCH no fue invalidado (sobrevive)
+        if c.status != "invalidated":
+            score += 15.0
+        # IA 15%: pendiente fase modelo -> 0 por ahora (extensible)
+        # score += 15.0 * modelo_prob
+        score = float(np.clip(score, 0.0, 100.0))
+
         c.extra["choch_real"] = is_real
         c.extra["choch_pivot_level"] = float(lvl) if lvl_present else None
         c.extra["choch_momentum"] = bool(momentum_ok)
         c.extra["choch_after_bos"] = bool(after_bos)
         c.extra["choch_displacement"] = disp
+        c.extra["choch_htf_ctx"] = htf_ctx
+        c.extra["choch_score"] = score
+        # clasificacion operativa
+        if score >= 85:
+            c.extra["choch_class"] = "premium"
+        elif score >= 70:
+            c.extra["choch_class"] = "useful"
+        else:
+            c.extra["choch_class"] = "noise"
 
     return choch_events

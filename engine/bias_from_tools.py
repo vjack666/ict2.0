@@ -103,9 +103,9 @@ def annotate_with_tools(df: pd.DataFrame, symbol: str = "EURUSD",
                             max_idle_bars=max_idle_bars,
                             require_htf_alignment=require_htf_alignment)
 
-    # 5. CHOCH calidad (EXP-012): momentum + after-BOS + nivel HL/LH
-    #    pasamos boe_raw (todos los BOS del mercado) para after_bos robusto
-    che = mark_choch_quality(out, che, swe, boe_raw)
+    # 5. CHOCH calidad (EXP-012): momentum + after_bos + nivel HL/LH + score 0-100
+    #    pasamos boe_raw (todos los BOS del mercado) y htf_frames para el score
+    che = mark_choch_quality(out, che, swe, boe_raw, htf_frames=htf_frames)
 
     for e in che:
         i = e.break_bar if e.break_bar is not None else e.bar_index
@@ -134,8 +134,10 @@ def bias_from_tools(df: pd.DataFrame, t: Any) -> str:
     if len(sub) == 0:
         return "RANGING"
     has_real = "bos_real" in sub.columns
+    has_choch_class = "choch_class" in sub.columns
     last_bos_idx = last_bos_dir = 0
     last_choch_idx = last_choch_dir = 0
+    last_choch_class = ""
     for i in range(len(sub)):
         bd = sub["bos_dir"].iloc[i]
         if bd not in (0, "0", None) and str(sub["bos_status"].iloc[i]) == "active" \
@@ -155,8 +157,13 @@ def bias_from_tools(df: pd.DataFrame, t: Any) -> str:
                 if len(hit) == 0:
                     continue
             last_choch_idx, last_choch_dir = i, int(cd)
+            if has_choch_class:
+                last_choch_class = str(sub["choch_class"].iloc[i])
     if last_choch_dir != 0:
-        return "BULLISH" if last_choch_dir > 0 else "BEARISH"
+        base = "BULLISH" if last_choch_dir > 0 else "BEARISH"
+        if last_choch_class in ("premium", "useful", "noise"):
+            return f"{base} ({last_choch_class})"
+        return base
     if last_bos_dir != 0:
         return "BULLISH" if last_bos_dir > 0 else "BEARISH"
     return "RANGING"

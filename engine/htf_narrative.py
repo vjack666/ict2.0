@@ -117,7 +117,7 @@ def build_htf_narrative(
     htf_bias=None,
     htf_frames: dict[str, pd.DataFrame] | None = None,
     exp012: bool = True,
-    use_tools: bool = False,
+    use_tools: bool = True,
 ) -> dict:
     """Mapa ICT completo de la vela actual (la idea del dia).
 

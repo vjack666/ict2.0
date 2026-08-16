@@ -75,7 +75,9 @@ class CHOCHTool(SingleTool):
                 else:
                     break
             if last_bos is None:
-                continue
+                # No hay BOS previo: el fallback de swings (abajo) infiere la marea.
+                # No hacemos continue: dejamos que bos_dir se determine por swings.
+                pass
 
             # Determinar direccion de la marea (bos_dir):
             #  primario: ultimo BOS vigente (tesis canonica: CHOCH rompe nivel del ultimo BOS)
@@ -135,7 +137,7 @@ class CHOCHTool(SingleTool):
                 confirmation_bar=None,
                 break_bar=int(i),
                 price=level,
-                detail=f"level={level:.5f} parent={last_swing.id} last_bos={last_bos.id}",
+                detail=f"level={level:.5f} parent={last_swing.id} last_bos={last_bos.id if last_bos is not None else 'NONE(swing-fallback)'}",
                 confidence_raw=1.0,
                 status="active",
             ))

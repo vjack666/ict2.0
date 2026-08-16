@@ -152,7 +152,7 @@ def filter_bos_thesis(
         if not (ev.signal or "").startswith(("BOS_", "CHOCH_")):
             continue
 
-        direction = 1 if ev.signal == "BOS_UP" else -1
+        direction = 1 if "UP" in ev.signal else (-1 if ("DOWN" in ev.signal or "DN" in ev.signal) else 0)
         level = float(ev.price) if ev.price is not None else None
         b = ev.break_bar if ev.break_bar is not None else ev.bar_index
 
@@ -241,7 +241,7 @@ def filter_bos_thesis(
             continue
         if not ev.extra.get("thesis_valid", False):
             continue
-        direction = 1 if ev.signal == "BOS_UP" else -1
+        direction = 1 if "UP" in ev.signal else (-1 if ("DOWN" in ev.signal or "DN" in ev.signal) else 0)
         if ev.price is None:
             continue
         key = (direction, round(float(ev.price), price_decimals))

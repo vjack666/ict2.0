@@ -17,6 +17,7 @@ from __future__ import annotations
 import pandas as pd
 
 from engine.bias.narrative import BEARISH, BULLISH, NEUTRAL, HtfBias, compute_htf_bias
+from engine.bias_from_tools import bias_from_tools_htf
 from engine.bos import StructureConfig, detect_market_structure
 from engine.dealing_range import dealing_range_htf
 from engine.liquidity_levels import nearest_liquidity_target
@@ -34,7 +35,7 @@ except Exception:  # pragma: no cover
 __all__ = ["build_htf_narrative", "narrative_ready_for_trade"]
 
 
-def _resolve_bias(frame: pd.DataFrame, htf_bias=None) -> HtfBias:
+def _resolve_bias(frame: pd.DataFrame, htf_bias=None, use_tools: bool = False, htf_frames=None) -> HtfBias:
     """Sesgo HTF vigente. Si no se pasa uno, se deriva del propio frame.
 
     El frame de trabajo hace de proxy de D1/H4/H1 (misma geometría de swings);
@@ -43,11 +44,19 @@ def _resolve_bias(frame: pd.DataFrame, htf_bias=None) -> HtfBias:
     REGLA EXP-012 (camino B): el sesgo es SIEMPRE canónico (sin gate). El gate
     vive solo en detect_market_structure (estructura LTF/entrada); censurarlo
     aquí desalineaba sesgo↔estructura (ver results/motor_veltick_EURUSD_M15.json).
+
+    use_tools=True: usa el motor profesional de tools/ (bias_from_tools_htf)
+    en lugar del motor viejo (compute_htf_bias). Misma interfaz HtfBias.
     """
     if htf_bias is not None:
         return htf_bias
     if frame is None or len(frame) < 3:
         return HtfBias(d1=NEUTRAL, h4=NEUTRAL, h1=NEUTRAL)
+    if use_tools:
+        res = bias_from_tools_htf(frame, frame, frame, htf_frames=htf_frames)
+        return HtfBias(
+            d1=res["d1"], h4=res["h4"], h1=res["h1"],
+        )
     return compute_htf_bias(frame, frame, frame)
 
 
@@ -108,6 +117,7 @@ def build_htf_narrative(
     htf_bias=None,
     htf_frames: dict[str, pd.DataFrame] | None = None,
     exp012: bool = True,
+    use_tools: bool = False,
 ) -> dict:
     """Mapa ICT completo de la vela actual (la idea del dia).
 

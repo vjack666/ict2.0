@@ -59,7 +59,7 @@ def _compose_htf_bias(d1: Bias, h4: Bias, h1: Bias) -> Bias:
     d1 = d1 or NEUTRAL
     h4 = h4 or NEUTRAL
     h1 = h1 or NEUTRAL
-    
+
     if d1 in (BULLISH, BEARISH) and d1 == h4:
         return d1
     
@@ -99,7 +99,7 @@ class HtfBias:
         return _compose_htf_bias(self.d1, self.h4, self.h1)
 
 
-def _swing_points(frame: pd.DataFrame, lookback: int = 2) -> tuple[pd.Series, pd.Series]:
+def _swing_points(frame: pd.DataFrame, _lookback: int = 2) -> tuple[pd.Series, pd.Series]:
     """Swing high/low SIN look-ahead, versión humana.
 
     Confirmación por rotura/retroceso: un extremo solo cuenta como swing
@@ -152,7 +152,7 @@ def _label_swings(
     labels[new_high & (swing_high < prev_high)] = "LH"
     labels[new_low & (swing_low > prev_low)] = "HL"
     labels[new_low & (swing_low < prev_low)] = "LL"
-    return labels.where(new_high | new_low, pd.NA).ffill().fillna("NONE")
+    return labels.where(new_high | new_low, np.nan).ffill().fillna("NONE")
 
 
 def _bias_for_frame(
@@ -200,13 +200,13 @@ def _bias_for_frame(
     #     "invalidated" y no contaria. Un BOS que no lo cruza NO lo borra.
     #   - Sesgo = direccion del ULTIMO CHOCH activo (mayor indice temporal);
     #     si no hay CHOCH activo, la del ULTIMO BOS activo; sino NEUTRAL.
-    last_bos_idx = last_bos_dir = 0
-    last_choch_idx = last_choch_dir = 0
+    last_bos_dir = 0
+    last_choch_dir = 0
     for i in range(len(fr)):
         if fr["bos_dir"].iloc[i] != 0 and fr["bos_status"].iloc[i] == "active":
-            last_bos_idx, last_bos_dir = i, int(fr["bos_dir"].iloc[i])
+            last_bos_dir = int(fr["bos_dir"].iloc[i])
         if fr["choch_dir"].iloc[i] != 0 and fr["choch_status"].iloc[i] == "active":
-            last_choch_idx, last_choch_dir = i, int(fr["choch_dir"].iloc[i])
+            last_choch_dir = int(fr["choch_dir"].iloc[i])
 
     if last_choch_dir != 0:
         # CHOCH activo vigente: contexto de giro persiste (no tapado por BOS).
@@ -288,7 +288,7 @@ def compute_htf_bias_series(
     timeline = pd.DatetimeIndex(sorted(set(h1.index).union(m15.index)))
     out = out.reindex(timeline).ffill().fillna(
         {"direction": NEUTRAL, "aligned": False}
-    ).infer_objects(copy=False)
+    ).infer_objects()
     out.index.name = "timestamp"
     return out
 

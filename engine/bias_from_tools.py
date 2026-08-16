@@ -116,6 +116,10 @@ def annotate_with_tools(df: pd.DataFrame, symbol: str = "EURUSD",
         if e.price is not None:
             out.loc[i, "choch_proj_level"] = float(e.price)
         out.loc[i, "choch_real"] = bool(e.extra.get("choch_real", False))
+        # superficie del score hibrido calibrado (incluye componente IA 15%)
+        out.loc[i, "choch_score"] = float(e.extra.get("choch_score", 0.0))
+        out.loc[i, "choch_class"] = str(e.extra.get("choch_class", "noise"))
+        out.loc[i, "choch_ia_prob"] = float(e.extra.get("choch_ia_prob", 0.0))
 
     return out
 
@@ -167,3 +171,44 @@ def bias_from_tools(df: pd.DataFrame, t: Any) -> str:
     if last_bos_dir != 0:
         return "BULLISH" if last_bos_dir > 0 else "BEARISH"
     return "RANGING"
+
+
+def bias_from_tools_htf(
+    d1: pd.DataFrame,
+    h4: pd.DataFrame,
+    h1: pd.DataFrame,
+    htf_frames: dict | None = None,
+    symbol: str = "EURUSD",
+    max_idle_bars: int = 0,
+    require_htf_alignment: bool = False,
+) -> dict:
+    """Sesgo HTF unificado usando las herramientas corregidas de tools/.
+
+    Equivalente a compute_htf_bias de narrative.py PERO con el motor de
+    deteccion profesional (Swing/BOS/CHOCH + displacement + quality + score).
+    Compone D1->H4->H1 via _compose_htf_bias (misma regla de autoridad).
+
+    Devuelve dict con 'd1','h4','h1','direction','aligned' (igual interfaz
+    que HtfBias de narrative.py) para que htf_narrative lo consuma sin cambios.
+    """
+    from engine.bias.narrative import _compose_htf_bias  # lazy: evita ciclo
+
+    def _one(tf_df):
+        if tf_df is None or len(tf_df) < 3:
+            return "RANGING"
+        ann = annotate_with_tools(
+            tf_df, symbol=symbol, max_idle_bars=max_idle_bars,
+            require_htf_alignment=require_htf_alignment, htf_frames=htf_frames,
+        )
+        return bias_from_tools(ann, str(tf_df["time"].iloc[-1]))
+
+    d1b = _one(d1)
+    h4b = _one(h4)
+    h1b = _one(h1)
+    direction = _compose_htf_bias(d1b, h4b, h1b)
+    non_neutral = [v for v in (d1b, h4b, h1b) if v != "RANGING"]
+    aligned = len(non_neutral) >= 2 and len(set(non_neutral)) == 1
+    return {
+        "d1": d1b, "h4": h4b, "h1": h1b,
+        "direction": direction, "aligned": aligned,
+    }

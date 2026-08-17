@@ -21,4 +21,4 @@ PASS sólo si los detectores, anti-look-ahead, suite completa y documentación q
 
 ## Estado de ejecución
 
-Los detectores y tests están implementados en la rama `agent/fase-c-domain`. El workflow `Hermes Tests` está habilitado para esa rama y para PRs hacia `main`.
+Los detectores y tests están implementados en `agent/fase-c-domain`. El workflow de Hermes se ejecuta ahora en cualquier rama para que cada iteración de fase tenga evidencia CI reproducible.

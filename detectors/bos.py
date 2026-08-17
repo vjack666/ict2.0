@@ -68,8 +68,25 @@ def detect_bos(frame: pd.DataFrame, config: BosConfig | None = None) -> pd.DataF
         data["liquidity_sweep_up"].astype(int).rolling(config.followthrough_bars, min_periods=1).max().astype(bool)
     )
 
-    bullish_break = data["close"] > data["swing_high"].shift(1)
-    bearish_break = data["close"] < data["swing_low"].shift(1)
+    # FIX 2026-08-17: BOS = CRUCE del nivel, no "sigue por encima/debajo".
+    # Antes: close > swing_high.shift(1) con swing ffill => cada vela post-ruptura
+    # se re-marcaba BOS (flood 1 evento real -> docenas de clones = noise artificial).
+    # Ahora: solo la barra donde el close ATRAVIESA el nivel (prev <= nivel < close
+    # o prev >= nivel > close). Un nivel solo genera UN BOS hasta que cambie.
+    prior_sh = data["swing_high"].shift(1)
+    prior_sl = data["swing_low"].shift(1)
+    prev_close = data["close"].shift(1)
+
+    bullish_break = (
+        prior_sh.notna()
+        & (data["close"] > prior_sh)
+        & (prev_close.isna() | (prev_close <= prior_sh))
+    )
+    bearish_break = (
+        prior_sl.notna()
+        & (data["close"] < prior_sl)
+        & (prev_close.isna() | (prev_close >= prior_sl))
+    )
 
     data["bos_direction"] = np.select(
         [bullish_break, bearish_break],
@@ -79,8 +96,8 @@ def detect_bos(frame: pd.DataFrame, config: BosConfig | None = None) -> pd.DataF
 
     data["bos_level"] = np.where(
         data["bos_direction"] == 1,
-        data["swing_high"].shift(1),
-        np.where(data["bos_direction"] == -1, data["swing_low"].shift(1), np.nan),
+        prior_sh,
+        np.where(data["bos_direction"] == -1, prior_sl, np.nan),
     )
 
     return data

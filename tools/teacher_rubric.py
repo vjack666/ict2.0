@@ -20,8 +20,8 @@ Fuentes (cita exacta, nada de invencion):
   - Reclaim/invalidacion: tools/swing_state.py (ObjectState) -> pierde autoridad.
   - Killzone: SPEC §15 -> London/NY (bonus).
 
-Salida: human_score 0-100, clase {premium>=85, useful 70-84, noise<70}
-        (del plan 2026-08-15_220000_BOS_CHOCH_CALIDAD F2/F3).
+Salida: human_score 0-100, clase {premium>=90, useful 70-89, noise<70}
+        (calibrado 2026-08-17; plan F2/F3 original usaba 85/70).
 """
 from __future__ import annotations
 
@@ -111,12 +111,9 @@ def score_rubric(inp: RubricInput) -> RubricOutput:
     score = float(max(0.0, min(100.0, base)))
 
     # Clase (plan F2/F3)
-    if score >= 85:
-        klass = "premium"
-    elif score >= 70:
-        klass = "useful"
-    else:
-        klass = "noise"
+    # Calibrado 2026-08-17: premium>=90 (antes 85)
+    from tools.confirmation_thresholds import choch_class_from_score
+    klass = choch_class_from_score(score)
 
     return RubricOutput(score, klass, {
         "base_real": 40.0,
@@ -199,12 +196,9 @@ def score_bos_rubric(inp: BosRubricInput) -> RubricOutput:
         base = 0.0
 
     score = float(max(0.0, min(100.0, base)))
-    if score >= 85:
-        klass = "premium"
-    elif score >= 70:
-        klass = "useful"
-    else:
-        klass = "noise"
+    # Calibrado 2026-08-17: premium>=90 (antes 85)
+    from tools.confirmation_thresholds import choch_class_from_score
+    klass = choch_class_from_score(score)
     return RubricOutput(score, klass, {
         "geo_quality": round(base, 2),
         "displacement_prev": inp.displacement_prev,

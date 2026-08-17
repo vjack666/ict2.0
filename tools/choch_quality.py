@@ -355,15 +355,13 @@ def mark_choch_quality(
         except Exception:
             ia_probs = [0.0] * len(items)
 
+    from tools.confirmation_thresholds import choch_class_from_score
+
     for (c, base), p in zip(items, ia_probs):
         final = float(np.clip(base + 15.0 * p, 0.0, 100.0))
         c.extra["choch_ia_prob"] = float(p)
         c.extra["choch_score"] = final
-        if final >= 85:
-            c.extra["choch_class"] = "premium"
-        elif final >= 70:
-            c.extra["choch_class"] = "useful"
-        else:
-            c.extra["choch_class"] = "noise"
+        # Calibrado 2026-08-17: premium>=90 / useful>=70 (antes 85/70)
+        c.extra["choch_class"] = choch_class_from_score(final)
 
     return choch_events

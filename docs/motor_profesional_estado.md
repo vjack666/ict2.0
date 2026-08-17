@@ -224,3 +224,24 @@ gradual (aún no cableado al motor en vivo).
 - `4dd90aa` — feat(learn): P1–P4 sistema aprendizaje ICT (encoder + rúbrica + probe + labels)
 - `712048b` — feat(learn): Opción B bos_validate (sostenida) + P5 nature head + etiquetas BOS/SWING
 
+
+
+---
+
+## 10. Calibración umbrales 2026-08-17 (nota en el cuadro)
+
+| Parámetro | Antes | Ahora | Dónde |
+|-----------|-------|-------|-------|
+| `choch_class` premium | score ≥ 85 | **score ≥ 90** | `tools/confirmation_thresholds.py` → `choch_quality` / `teacher_rubric` |
+| `choch_class` useful | 70–84 | **70–89** | idem |
+| Excursión label (K) M5/H4/D1 | 2.0 / 1.5 / 1.0 | **4.5 / 3.0 / 2.0** (modo CONFIRM) | `scripts/gen_choch_dataset.py` |
+| CHOCH en `bias_from_tools` | cualquier active | **solo premium** | `engine/bias_from_tools.py` |
+
+Detalle y modos SCAN/CONFIRM/PREMIUM: `docs/UMBRALES_CONFIRMACION.md`.
+
+**Cuadro de lectura diaria (política):**
+
+1. Bias HTF: cascade D1→H4→H1 (`build_daily_bias`).  
+2. CHOCH LTF: aviso si useful/noise; dirección solo si **premium**.  
+3. BOS: sigue con `bos_real` + validación `sustained`.  
+4. No promocionar nature head al motor hasta B4–B8 PASS + shadow.

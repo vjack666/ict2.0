@@ -47,6 +47,7 @@ class CHOCHTool(SingleTool):
 
     def _to_events(self, df: pd.DataFrame, symbol: str, context: dict | None) -> list[ToolEvent]:
         events: list[ToolEvent] = []
+        broken_levels: set[tuple] = set()  # (dir, level) anti-flood
         if not context:
             return events
 
@@ -121,8 +122,19 @@ class CHOCHTool(SingleTool):
             else:
                 continue
 
-            # evitar duplicados consecutivos: solo el primer break de ese nivel
-            # (el loop por barra ya da el primero; los siguientes rompen otro swing)
+            # FIX 2026-08-17: un solo CHOCH por (dirección, nivel). Evita flood
+            # mientras el precio sigue al otro lado del mismo HL/LH.
+            key = (direction, round(level, 5))
+            if key in broken_levels:
+                continue
+            # cruce real: barra previa no había cerrado del otro lado
+            prev_c = float(closes.iloc[i - 1]) if i > 0 else c
+            if direction == 1 and prev_c > level:
+                continue
+            if direction == -1 and prev_c < level:
+                continue
+            broken_levels.add(key)
+
             events.append(ToolEvent(
                 bar_index=int(i),
                 time=str(times.iloc[i]) if times is not None else None,

@@ -59,12 +59,16 @@ def _trend_df(tf: str) -> pd.DataFrame:
 def _process_chunk(seg: pd.DataFrame, tf: str, htf: dict, g0: int, rows: list):
     out = detect_displacement(seg)
     sw = SwingTool(lookback=5); swe = sw.run(out, symbol=SYM)
-    sids = {e.origin_bar: e.id for e in swe}
-    bo = BOSTool(lookback=5); boe_raw = bo.run(out, symbol=SYM, context={"swing_ids": sids})
+    sids = {e.origin_bar: e.id for e in swe if e.origin_bar is not None}
+    bo = BOSTool(lookback=5); boe_raw = bo.run(out, symbol=SYM, context={"swing_ids": sids, "swings": swe})
     boe_raw = apply_validation(out, boe_raw)
     boe = filter_bos_thesis(out, boe_raw, confirm_bars=2, max_idle_bars=0)
+    # FIX 2026-08-17: BOS únicos hacia CHOCH (evita padres/flood contaminados)
+    boe = [e for e in boe if e.extra.get("is_unique") is True]
     ch = CHOCHTool(); che = ch.run(out, symbol=SYM, context={"swings": swe, "boses": boe})
     che = filter_bos_thesis(out, che, confirm_bars=2, max_idle_bars=0)
+    # solo CHOCH únicos para dataset / quality
+    che = [e for e in che if e.extra.get("is_unique") is True]
     che = mark_choch_quality(out, che, swe, boe_raw, htf_frames=htf)
 
     close = out["close"].to_numpy()

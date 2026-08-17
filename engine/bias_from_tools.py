@@ -165,12 +165,18 @@ def bias_from_tools(df: pd.DataFrame, t: Any) -> str:
                 ]
                 if len(hit) == 0:
                     continue
-            last_choch_idx, last_choch_dir = i, int(cd)
+            # Calibración 2026-08-17: CHOCH noise/useful NO mueven bias
+            # (~75-90% reclaim en LTF). Solo premium puede fijar dirección.
+            cls = ""
             if has_choch_class:
-                last_choch_class = str(sub["choch_class"].iloc[i])
+                cls = str(sub["choch_class"].iloc[i])
+            if has_choch_class and cls != "premium":
+                continue
+            last_choch_idx, last_choch_dir = i, int(cd)
+            last_choch_class = cls or "premium"
     if last_choch_dir != 0:
         base = "BULLISH" if last_choch_dir > 0 else "BEARISH"
-        if last_choch_class in ("premium", "useful", "noise"):
+        if last_choch_class:
             return f"{base} ({last_choch_class})"
         return base
     if last_bos_dir != 0:

@@ -44,10 +44,12 @@ def _process(tf: str) -> list[dict]:
     d = d.assign(time=pd.to_datetime(d["time"])).reset_index(drop=True)
     out = detect_displacement(d, DisplacementConfig())
     sw = SwingTool(lookback=5).run(out, symbol=SYM)
-    sids = {e.origin_bar: e.id for e in sw}
-    bo = BOSTool(lookback=5).run(out, symbol=SYM, context={"swing_ids": sids})
+    sids = {e.origin_bar: e.id for e in sw if e.origin_bar is not None}
+    bo = BOSTool(lookback=5).run(out, symbol=SYM, context={"swing_ids": sids, "swings": sw})
     bo = apply_validation(out, bo)
     bo = filter_bos_thesis(out, bo, confirm_bars=2, max_idle_bars=0)
+    # FIX 2026-08-17: solo representantes únicos (anti-flood residual / fusión tesis)
+    bo = [e for e in bo if e.extra.get("is_unique") is True]
 
     bos_dir = np.zeros(len(d), dtype=int)
     bos_level = np.full(len(d), np.nan)

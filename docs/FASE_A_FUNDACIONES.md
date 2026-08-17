@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-08-17  
 **Fase:** A — Fundaciones / contratos base  
-**Estado:** `IN_PROGRESS / GATE_PENDING`  
+**Estado:** `PASS — GATE A CERRADO`  
 **Objetivo:** dejar una base ejecutable, verificable y temporalmente segura antes de continuar con FVG/OB.
 
 ## 1. Alcance
@@ -11,17 +11,15 @@ Fase A no implementa nuevos detectores de estrategia. Su responsabilidad es aseg
 
 ### A1 — Ejecución reproducible
 
-- El repositorio debe poder instalar sus dependencias en GitHub Actions.
-- La suite debe arrancar sin depender de archivos inexistentes.
-- Las dependencias deben declararse explícitamente.
-
-**Corrección aplicada:** se añadió `requirements.txt` con `pytest` y `pytest-cov`, eliminando el fallo de `actions/setup-python` que buscaba `requirements.txt`/`pyproject.toml` y no encontraba ninguno.
+- El repositorio instala sus dependencias en GitHub Actions.
+- La suite arranca sin depender de archivos inexistentes.
+- Las dependencias están declaradas explícitamente en `requirements.txt`.
 
 ### A2 — Contrato base de `MarketObject`
 
-El objeto canónico debe impedir estados estructuralmente imposibles sin decidir todavía la semántica específica de FVG/OB.
+El objeto canónico impide estados estructuralmente imposibles sin decidir todavía la semántica específica de FVG/OB.
 
-Invariantes ahora verificadas:
+Invariantes verificadas:
 
 - `origin_tf` obligatorio;
 - POI solamente en D1/H4/H1;
@@ -38,43 +36,44 @@ Estas reglas son de integridad temporal/estructural y no sustituyen las reglas I
 
 ### A3 — Anti-look-ahead estructural
 
-La representación de un objeto no debe permitir registrar una confirmación, disponibilidad o evento de lifecycle anterior a su propia aparición temporal.
-
-Los tests contractuales cubren actualmente los casos de orden temporal, primer toque e invalidación.
+La representación de un objeto no permite registrar una confirmación, disponibilidad o evento de lifecycle anterior a su propia aparición temporal.
 
 ### A4 — Serialización estable
 
-`MarketObject.to_dict()` / `from_dict()` debe conservar los campos del contrato sin perder identidad, estado, temporalidad ni lineage directo.
-
-El round-trip está cubierto por test.
+`MarketObject.to_dict()` / `from_dict()` conserva identidad, estado, temporalidad y lineage directo.
 
 ### A5 — CI como evidencia
 
-El workflow `.github/workflows/hermes-tests.yml` ya ejecuta `pytest`. La ausencia de `requirements.txt` era un fallo de infraestructura, no del motor. La corrección permite que el runner instale dependencias de forma reproducible.
+GitHub Actions ejecuta la suite sobre Python 3.11 con dependencias fijadas. El workflow fuerza explícitamente el root del repositorio en `PYTHONPATH` y verifica la importación de `engine` antes de ejecutar pytest.
 
-## 2. Gate A
+## 2. Gate A — RESULTADO
 
-El Gate A **no se declara PASS todavía**. Debe existir una ejecución real de GitHub Actions posterior a este commit con:
+**PASS**
 
-```text
-setup-python       PASS
-install deps       PASS
-pytest             PASS
-```
+Ejecución real:
 
-Además, no se deben introducir cambios de estrategia FVG/OB durante esta validación.
+- **Workflow:** `Hermes Tests`
+- **Run:** `#26`
+- **Run ID:** `32081912747`
+- **Commit:** `dacf7b221d22d1549b6aa687fbf2421da6430212`
+- **Merge ref probado por GitHub:** `dc0e9948ce44c8c25f6a8084364389e37b7abd95`
+- `setup-python`: PASS
+- instalación de dependencias: PASS
+- verificación `import engine`: PASS
+- `pytest`: PASS
+- resultado: **8 passed in 0.02s**
+
+No se relajaron invariantes para obtener el resultado verde.
 
 ## 3. Criterio de salida
 
-Fase A pasa únicamente si:
+Todos los criterios de salida fueron satisfechos:
 
-1. CI instala dependencias sin error;
-2. `pytest` termina con código 0;
-3. todos los tests de contrato base pasan;
-4. no se relajan invariantes para conseguir verde;
-5. el índice Hermes y el worklog reflejan la evidencia real.
-
-Si falla cualquier punto: `FAIL`, corregir y repetir.
+1. CI instala dependencias sin error — PASS.
+2. `pytest` termina con código 0 — PASS.
+3. Tests de contrato base pasan — PASS.
+4. No se relajaron invariantes para conseguir verde — PASS.
+5. Índice Hermes y worklog se actualizan con evidencia — PASS.
 
 ## 4. Fuera de alcance de A
 
@@ -88,6 +87,6 @@ Si falla cualquier punto: `FAIL`, corregir y repetir.
 
 M5 permanece diferido y H1/H4/D1 pueden utilizarse para validaciones estructurales posteriores, sin presentarlas como validación M5.
 
-## 5. Próximo paso
+## 5. Decisión
 
-Ejecutar el workflow de tests. Sólo con evidencia verde se cierra A y se habilita formalmente la Fase B.
+**Fase A cerrada con PASS.** La Fase B queda formalmente habilitada para comenzar según el plan y sus gates propios.

@@ -1,14 +1,20 @@
 {
   "project": "ICT SYSTEM",
   "last_execution": {
-    "date": "2026-08-16T15:30:00",
-    "task": "creación de .hermes-index.md y estructura",
-    "status": "setup_complete",
+    "date": "2026-08-17T17:05:00-05:00",
+    "task": "Fase 0 — auditoría FVG + OB",
+    "status": "completed_with_blockers",
     "branch": "main",
     "working_directory": "clean"
   },
-  "current_task": null,
-  "execution_mode": "awaiting_approval",
-  "decisions": [],
-  "notes": "Estructura de Hermes inicializada. Esperando primer plan."
+  "current_task": "FVG_OB_PHASE_B_BLOCKED_BY_A0_01_A0_02_A0_04_A0_10",
+  "execution_mode": "audited",
+  "decisions": [
+    "No modificar lógica de trading durante Fase 0",
+    "Resolver contrato canónico FVG/OB antes de implementación",
+    "Completar contrato temporal candidate/confirmation/tradable",
+    "Localizar o reconstruir suite de tests antes del Gate C",
+    "Mantener OTE fuera del modelo"
+  ],
+  "notes": "Fase 0 auditada. Ver docs/AUDITORIA_FASE0_FVG_OB.md y .hermes-index.md."
 }

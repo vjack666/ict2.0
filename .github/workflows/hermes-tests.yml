@@ -2,7 +2,7 @@ name: Hermes Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, agent/fase-b-domain ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:

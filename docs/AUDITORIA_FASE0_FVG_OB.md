@@ -1,152 +1,23 @@
-# AUDITORÍA FASE 0 — FVG + ORDER BLOCKS
+# AUDITORÍA FASE 0 — FVG + ORDER BLOCKS + FUENTES EXTERNAS
 
 **Fecha:** 2026-08-17  
-**Estado:** COMPLETADA — GATE A: PASS CON BLOCKERS TÉCNICOS DOCUMENTADOS  
-**Alcance:** auditoría previa a implementación; no se modifica lógica de trading en esta fase.
+**Estado:** COMPLETADA — GATE A: PASS CON BLOCKERS DOCUMENTADOS  
+**Alcance:** auditoría previa a implementación. Esta fase no modifica lógica de trading.
 
 ## 1. Objetivo
 
-Mapear el estado real del repositorio antes de implementar el plan FVG/OB: arquitectura, detectores existentes, objetos de mercado, secuencia, datos, OTE residual, temporalidad y puntos de integración.
+Auditar el estado real de `vjack666/ict2.0` antes de implementar FVG/OB, incluyendo arquitectura, temporalidad, anti-look-ahead, lineage, lifecycle, datos, backtest, OTE residual, tests y fuentes externas.
 
-## 2. Inventario real relevante
+Fuentes externas incorporadas a la auditoría:
 
-### Estructura
+- `vjack666/SMC-SYSTEMS`, rama `main`.
+- Historia de `ict_backtest` en `vjack666/ict2.0`.
 
-- `engine/`: fuente de decisión del motor.
-- `detectors/`: detectores base, incluyendo `fvg.py`, `ob.py`, `displacement.py`, `liquidity.py`, `bos.py`, `choch.py`.
-- `tools/`: herramientas/eventos y Swing/BOS/CHOCH.
-- `engine/sequence.py`: memoria secuencial y ensamblaje de eventos.
-- `engine/market_object.py`: ontología `MarketObject`.
-- `engine/lineage.py`: auditoría de trazabilidad causal.
-- `scripts/`: generación de datasets, walk-forward y aprendizaje.
+## 2. Estado del motor ICT
 
-No se encontró un directorio `tests/` en el árbol de `main` auditado. Esto debe considerarse un riesgo para el Gate C/D y se debe localizar/reconstruir la suite efectiva antes de implementar.
+El motor ya dispone de `engine/`, `detectors/`, `tools/`, `analysis/`, `orchestration/` y una ontología `MarketObject`/lineage suficiente para construir la capa FVG/OB. También existen dos familias de detectores FVG/OB que requieren contrato canónico antes de seguir.
 
-## 3. Hallazgo crítico #1 — existen DOS implementaciones FVG/OB
-
-### FVG
-
-Existen:
-
-- `detectors/fvg.py`
-- `engine/fvg_poi.py`
-
-Ambas detectan FVG de tres velas, pero tienen responsabilidades distintas y no deben evolucionar en paralelo sin contrato de autoridad.
-
-`engine/fvg_poi.py` añade anclaje HTF y asociación con BOS, mientras `detectors/fvg.py` añade `pd_type/pd_tier` y tracking básico.
-
-**Riesgo:** divergencia semántica entre detector base y motor.
-
-### OB
-
-Existen:
-
-- `detectors/ob.py`
-- `engine/order_block.py`
-
-La divergencia es más grave que en FVG.
-
-`engine/order_block.py` implementa el canon documentado como: vela contraria + cuerpo fuerte + follow-through siguiente (`shift(-1)`), con la advertencia de que sólo puede consumirse después de la confirmación.
-
-`detectors/ob.py` contiene una implementación distinta que usa la vela actual y `prev_high/prev_low`, y además su naming/comentario de dirección no coincide con el contrato de `docs/ict/04_ORDER_BLOCKS.md`.
-
-**Conclusión:** NO seleccionar una implementación por intuición. La Fase B debe fijar un contrato único y la Fase C debe eliminar/aislar la implementación contradictoria.
-
-## 4. Hallazgo crítico #2 — clasificación OB incompleta/inconsistente
-
-`detectors/ob.py` ya tiene metadatos para:
-
-- `OB`;
-- `REJECTION_BLOCK`;
-- `PROPULSION` implícito en comentarios;
-- `MITIGATION_BLOCK` y `BREAKER` previstos para resolver posteriormente.
-
-Pero no existe todavía una representación de dominio completa que conserve la genealogía de cada transformación.
-
-**Necesidad:** `OB → invalidation/structure event → BREAKER` debe ser una relación explícita, no una etiqueta sobrescrita.
-
-## 5. Hallazgo crítico #3 — lifecycle FVG/OB demasiado limitado
-
-El tracking actual mantiene esencialmente un FVG bullish y uno bearish activos a la vez y un único OB vigente por dirección.
-
-Esto no permite representar correctamente múltiples zonas coexistentes, stacking ni historial de mitigaciones.
-
-**Impacto:** insuficiente para aprendizaje causal y para BPR/stacking multi-TF.
-
-## 6. Hallazgo crítico #4 — MarketObject aún no contiene todo el contrato temporal requerido
-
-`engine/market_object.py` ya aporta identidad, `origin_tf`, `role`, `direction`, zona, `creation_time`, estado, `parent_object`, `related_objects`, `bar_index` y `bar_time`.
-
-Faltan como campos explícitos del objeto:
-
-- `candidate_time` / `candidate_bar`;
-- `confirmation_time` / `confirmation_bar`;
-- `tradable_time` / `tradable_bar`;
-- información explícita de mitigación/invalidación cuando corresponda.
-
-Parte de esa información puede existir en `meta`, pero para el contrato FVG/OB debe quedar definida y testeable.
-
-## 7. Hallazgo crítico #5 — lineage existente es buena base, pero la cadena actual no contempla FVG/OB como eslabones explícitos
-
-`engine/lineage.py` valida la cadena canónica:
-
-`LIQUIDITY → SWEEP → DISPLACE → BOS → POI → REFINEMENT → RETURN`
-
-La infraestructura de `MarketObject.parent_object` es adecuada para extenderla, pero FVG/OB deben entrar como objetos causales explícitos, no sólo como columnas de una vela.
-
-Objetivo:
-
-`LIQUIDITY → SWEEP → DISPLACE → BOS/CHOCH → FVG/OB → POI/REFINEMENT → RETURN → CONTRACT`
-
-## 8. Hallazgo crítico #6 — secuencia ya espera FVG/OB
-
-`engine/sequence.py` declara que la entrada aparece cuando existe FVG/OB después de la secuencia de sweep → displacement → BOS/CHOCH y transporta campos `fvg_*`, `ob_*` y `pd_type/pd_tier` dentro del contexto de cada vela.
-
-Esto confirma que la integración ya existe parcialmente, pero está basada en features por vela, no en objetos FVG/OB con identidad y lifecycle.
-
-**Conclusión:** la nueva implementación debe reemplazar gradualmente esa dependencia por objetos sin romper compatibilidad durante la migración.
-
-## 9. Hallazgo crítico #7 — fuente de datos no está versionada en Git
-
-`data/` está explícitamente ignorado por `.gitignore`.
-
-`docs/DATA_INVENTARIO.md` indica que existen raw EURUSD D1/H1/H4/M1/M3/M5/M15 y que contienen OHLC + `tick_volume` + `spread`.
-
-El archivo `data/raw/EURUSD_M5.parquet` solicitado no está en el árbol de GitHub auditado. Por tanto, no puede auditarse su contenido desde GitHub en esta sesión.
-
-Esto NO es necesariamente un problema del proyecto: el diseño indica que los binarios se mantienen fuera del repo. Pero el entorno de ejecución de Hermes debe comprobar su presencia local antes de backtests.
-
-## 10. Hallazgo crítico #8 — inconsistencia de ruta de datos
-
-`docs/DATA_INVENTARIO.md` y `scripts/import_forex_data.py` describen la estructura:
-
-`data/raw/EURUSD/EURUSD_M5.parquet`
-
-pero `engine/data_feed.py` busca:
-
-`data/raw/EURUSD_M5.parquet`
-
-El nombre plano coincide con el archivo solicitado por el usuario, pero no con la estructura documentada de importación.
-
-**Decisión:** antes del backtest real, Hermes debe resolver esta discrepancia mediante un contrato único de ruta o un loader compatible con ambas formas. No se debe declarar el dataset disponible sólo porque el inventario lo enumere.
-
-## 11. Hallazgo crítico #9 — OTE todavía existe físicamente
-
-El árbol contiene `engine/ote.py` y `detectors/fib.py`.
-
-La documentación vigente prohíbe OTE. No se encontró en esta auditoría evidencia suficiente para afirmar que ambos módulos sigan siendo consumidores activos del pipeline, por lo que **no se deben borrar ciegamente en Fase 0**.
-
-Acción de Fase B/C: auditar imports/referencias y retirar módulos si están muertos; si algún consumidor existe, eliminarlo o migrarlo. No reintroducir OTE bajo otro nombre.
-
-## 12. Hallazgo crítico #10 — error documental en la ruta de umbrales
-
-`docs/00_HERMES_START_HERE.md` y `.hermes-index.md` referencian `docs/UMBRAL_CONFIRMACION.md`, pero el archivo real del repo es:
-
-`docs/UMBRALES_CONFIRMACION.md`
-
-Esto rompe el punto de entrada documental de Hermes y debe corregirse antes de delegar la ejecución autónoma.
-
-## 13. Arquitectura real observada
+### Arquitectura observada
 
 ```text
 RAW OHLC
@@ -161,47 +32,177 @@ Detectors / Tools
   ├── FVG
   └── OB
   ↓
-MarketObject / Candle meta
+MarketObject / candle metadata
   ↓
 SequenceState
   ↓
 POI / Zone Authority / Execution
   ↓
-Signal / Expediente
+Signal / expediente
   ↓
-Learning / Backtest
+Learning / evaluation
 ```
 
-La arquitectura objetivo debe insertar objetos FVG/OB persistentes entre displacement/structure y POI, manteniendo compatibilidad temporal con `sequence.py`.
+## 3. Hallazgos internos críticos
 
-## 14. Riesgos prioritarios
+### A0-01 — Duplicidad FVG/OB
 
-| ID | Riesgo | Severidad | Acción |
+Existen:
+
+- `detectors/fvg.py`
+- `engine/fvg_poi.py`
+- `detectors/ob.py`
+- `engine/order_block.py`
+
+No deben evolucionar como cuatro fuentes de verdad. Fase B debe fijar contrato canónico y Fase C debe eliminar o aislar duplicaciones.
+
+### A0-02 — Divergencia OB
+
+`engine/order_block.py` sigue el canon documentado de vela contraria + cuerpo fuerte + follow-through posterior. `detectors/ob.py` usa otra formulación y añade clasificaciones parciales. No se debe escoger por intuición: se resolverá contra tesis/rulebook y tests de comportamiento.
+
+### A0-03 — Lifecycle limitado
+
+El tracking actual no representa correctamente múltiples FVG/OB coexistentes, mitigaciones y stacking. El dominio debe soportar múltiples objetos persistentes por dirección/TF.
+
+### A0-04 — Contrato temporal incompleto
+
+`MarketObject` aporta identidad, zona, estado, parent/related objects y tiempos base, pero FVG/OB necesitan distinguir explícitamente:
+
+`candidate → confirmation → tradable → mitigation/invalidation`.
+
+No se puede consumir una entidad antes de `tradable_time`.
+
+### A0-05 — Lineage
+
+`engine/lineage.py` ya soporta una cadena causal base. Debe extenderse para que FVG/OB sean objetos causales explícitos:
+
+`LIQUIDITY → SWEEP → DISPLACEMENT → BOS/CHOCH → FVG/OB → POI → RETURN → ENTRY`.
+
+### A0-06 — Datos
+
+`data/` está ignorado por Git y `data/raw/EURUSD_M5.parquet` no está en el árbol remoto. Hermes debe comprobar disponibilidad local antes de backtest real y auditar schema, timestamps, timezone, duplicados, gaps y orden.
+
+Existe además una discrepancia histórica entre rutas documentadas y loader que debe resolverse antes del backtest.
+
+### A0-07 — OTE residual
+
+Persisten físicamente `engine/ote.py` y `detectors/fib.py`. No se borran en Fase 0. Fase B/C debe auditar imports/consumidores y retirar cualquier dependencia. OTE/Fibonacci 62–79% no puede volver al pipeline bajo otro nombre.
+
+### A0-08 — Suite de tests
+
+No aparece un directorio `tests/` en el árbol remoto auditado. Esto queda como riesgo crítico hasta localizar la suite efectiva o reconstruir los tests contractuales necesarios.
+
+## 4. Auditoría externa — `vjack666/SMC-SYSTEMS`
+
+El repositorio externo es Python modular y contiene detectores ICT, backtest y pipeline ML. Su README describe FVG, OB, displacement, premium/discount, BOS, CHOCH, liquidity sweeps, análisis multi-timeframe y un pipeline ML con validación/walk-forward.
+
+### 4.1 `detectors/fvg.py` — VALOR ALTO / RESCATE SELECTIVO
+
+Implementa FVG de tres velas, tamaño, midpoint y tracking básico de fill, además de `pd_type/pd_tier`.
+
+**Decisión:** comparar matemática contra el canon ICT actual y rescatar únicamente partes demostrablemente mejores. Su tracking también conserva sólo una zona activa bullish/bearish, por lo que no resuelve nuestro requisito de lifecycle multi-zona.
+
+### 4.2 `detectors/ob.py` — VALOR ALTO / RESCATE SELECTIVO
+
+Implementa OB, estado/edad y clasificación parcial de `OB`, `REJECTION_BLOCK` y `PROPULSION`; deja Breaker/Mitigation/BPR para integración posterior.
+
+**Decisión:** referencia comparativa, no fuente de verdad. Su `shift(-1)` y semántica de dirección deben pasar por el contrato temporal ICT antes de reutilizar código.
+
+### 4.3 `detectors/displacement.py` — VALOR ALTO / POSIBLE RESCATE
+
+Tiene configuración explícita de displacement basada en rango promedio, body ratio, wick ratio y magnitud. El código documenta que su matemática fue migrada desde una utilidad histórica de `ict_backtest` a rango puro.
+
+**Decisión:** comparar parámetros y matemática con el displacement actual de ICT. Si demuestra superioridad y compatibilidad, rescatar sólo la lógica matemática/configuración, no el módulo completo.
+
+### 4.4 `detectors/liquidity.py` / `liquidity_context.py` — REFERENCIA
+
+Existen implementaciones externas de liquidez/contexto. No se adoptan en Fase 0 porque el motor ICT ya posee su cadena de liquidez/sweep. Se compararán sólo si un blocker del dominio lo requiere.
+
+### 4.5 `detectors/zones.py` — RECHAZADO
+
+Contiene explícitamente OTE 0.62–0.79.
+
+**Decisión:** excluir completamente de cualquier migración.
+
+### 4.6 `ml/validator.py` — REFERENCIA FUTURA
+
+Aporta validación de schema, determinismo, columnas críticas y leakage. Sin embargo, su lista de features contiene OTE, por lo que no puede copiarse sin depuración.
+
+### 4.7 `ml/walk_forward.py` — REFERENCIA FUTURA
+
+Aporta ventanas cronológicas y opción de PurgedKFold. Es útil para la fase de aprendizaje/OOS, pero no debe convertirse en dependencia del motor de detección.
+
+**Decisión general sobre SMC-SYSTEMS:** usarlo como fuente comparativa; no copiar el repositorio entero ni importar módulos acoplados. Cada rescate debe demostrar equivalencia o superioridad mediante tests.
+
+## 5. Auditoría de `ict_backtest`
+
+No existe actualmente un directorio `ict_backtest/` en `main`.
+
+La historia del repositorio confirma que `ict_backtest/` fue eliminado deliberadamente en el commit `425fb5325c43bc056cd9eb80fbf103c249ed2f45` porque era un backtest desechable, no usado por `engine/` ni `detectors/`. El commit documenta que contenía backtest, simulador, optimización, costes, diagnósticos y `semantic_adapter` y que la dependencia histórica era `ict_backtest → engine`, nunca al revés.
+
+**Decisión:** NO resucitar `ict_backtest/` ni migrar módulos completos al motor.
+
+La única excepción será rescatar una utilidad matemática mínima y aislada si una auditoría comparativa demuestra que mejora el contrato actual. La matemática de `avg_candle_range` ya es un ejemplo de este patrón: fue absorbida como lógica mínima en displacement.
+
+## 6. Regla de migración entre repositorios
+
+Nada se copia por volumen ni por nombre.
+
+```text
+CANDIDATO
+  ↓
+COMPARAR CON TESIS ICT
+  ↓
+COMPARAR CON IMPLEMENTACIÓN ACTUAL
+  ↓
+TEST DE EQUIVALENCIA / SUPERIORIDAD
+  ↓
+ANTI-LOOK-AHEAD
+  ↓
+¿MEJORA REAL?
+  ├── NO → RECHAZAR Y DOCUMENTAR
+  └── SÍ → EXTRAER SÓLO MÓDULO/LÓGICA MÍNIMA
+                    ↓
+                 TESTS
+                    ↓
+                 COMMIT
+```
+
+El código externo no puede traer OTE, Fibonacci, indicadores o dependencias innecesarias al motor sólo porque vengan acoplados al módulo candidato.
+
+## 7. Mapa de rescate provisional
+
+| Fuente | Candidato | Acción | Motivo |
 |---|---|---|---|
-| A0-01 | Dos detectores FVG/OB con semánticas distintas | CRÍTICA | Unificar contrato |
-| A0-02 | OB direction/algoritmo divergente | CRÍTICA | Resolver contra tesis |
-| A0-03 | Tracking sólo de zonas activas limitadas | ALTA | Lifecycle multi-zona |
-| A0-04 | MarketObject sin contrato temporal completo | CRÍTICA | Añadir campos/metadata |
-| A0-05 | Lineage no incluye FVG/OB explícitos | ALTA | Extender genealogía |
-| A0-06 | Dataset no versionado en repo | MEDIA | Validar entorno |
-| A0-07 | Ruta raw documentada ≠ ruta del loader | ALTA | Unificar |
-| A0-08 | OTE residual en módulos | ALTA | Auditar imports y retirar |
-| A0-09 | Ruta incorrecta de UMBRALES en documentación | ALTA | Corregir antes de Hermes |
-| A0-10 | No aparece `tests/` en árbol auditado | CRÍTICA | Localizar/reconstruir suite |
+| SMC-SYSTEMS | `detectors/fvg.py` | COMPARAR / RESCATAR SELECTIVAMENTE | FVG + fill/mid metadata |
+| SMC-SYSTEMS | `detectors/ob.py` | COMPARAR / RESCATAR SELECTIVAMENTE | OB + clasificación parcial |
+| SMC-SYSTEMS | `detectors/displacement.py` | COMPARAR / POSIBLE RESCATE | matemática explícita |
+| SMC-SYSTEMS | `ml/validator.py` | REFERENCIA FUTURA | schema/leakage/determinismo |
+| SMC-SYSTEMS | `ml/walk_forward.py` | REFERENCIA FUTURA | OOS/PurgedKFold |
+| SMC-SYSTEMS | `detectors/zones.py` | RECHAZAR | contiene OTE |
+| ICT histórico | `ict_backtest/` completo | NO MIGRAR | backtest desechable eliminado |
+| ICT histórico | utilidades matemáticas aisladas | EVALUAR CASO POR CASO | sólo si son imprescindibles |
 
-## 15. Decisiones de Fase 0
+## 8. Decisiones de Fase 0
 
-1. **No modificar detectores todavía.**
-2. `docs/ict/SPEC_TESIS_FORMAL.md` + enmienda OTE siguen siendo autoridad.
-3. La implementación canónica FVG/OB debe quedar en `engine/` como fuente de decisión, pero puede reutilizar `detectors/` como capa de detección si se demuestra equivalencia y se elimina la divergencia.
-4. `MarketObject` será la representación persistente de FVG/OB.
-5. `sequence.py` será adaptado después de cerrar los contratos de dominio.
-6. No se empieza aprendizaje/ablación hasta que la semántica y temporalidad de FVG/OB estén cerradas.
+1. No modificar todavía la lógica de trading.
+2. `SPEC_TESIS_FORMAL` + enmienda OTE mantienen autoridad superior.
+3. FVG/OB deben terminar con una fuente de verdad canónica en `engine/` y objetos persistentes `MarketObject`.
+4. `SMC-SYSTEMS` queda como fuente de referencia comparativa, no como dependencia.
+5. Sólo se migrará código externo cuando un test demuestre equivalencia o superioridad y se pueda aislar el mínimo necesario.
+6. `ict_backtest/` no se revive.
+7. No se migra ningún módulo que introduzca OTE, Fibonacci, indicadores o acoplamiento innecesario.
+8. La validación ML/OOS externa se evaluará en las fases de aprendizaje/robustez, no durante la detección base.
+9. La comparación externa pasa a ser una entrada formal de Fase B.
 
-## 16. Gate A
+## 9. Gate A — cierre
 
-**PASS CON BLOCKERS DOCUMENTADOS.**
+**FASE 0 COMPLETADA.**
 
-La arquitectura real está suficientemente identificada para comenzar la Fase B, pero **no se debe iniciar implementación de producción hasta resolver los bloqueadores A0-01, A0-02, A0-04 y A0-10**.
+Resultado: `PASS CON BLOCKERS DOCUMENTADOS`.
 
-La auditoría no modifica lógica de trading.
+La auditoría cubrió el motor ICT, `SMC-SYSTEMS` y el historial de `ict_backtest`. No quedan tareas de Fase 0 pendientes.
+
+Los blockers pasan a Fase B/C y no se consideran resueltos por esta auditoría.
+
+**Siguiente fase:** Fase B — contratos de dominio FVG/OB/Breaker/BPR + temporalidad + selección de candidatos de rescate externo.

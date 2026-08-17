@@ -21,4 +21,4 @@ PASS sólo si los detectores, anti-look-ahead, suite completa y documentación q
 
 ## Estado de ejecución
 
-Los detectores y tests están implementados en la rama `agent/fase-c-domain` y esperan la ejecución verificable de GitHub Actions.
+Los detectores y tests están implementados en la rama `agent/fase-c-domain`. El workflow `Hermes Tests` está habilitado para esa rama y para PRs hacia `main`.

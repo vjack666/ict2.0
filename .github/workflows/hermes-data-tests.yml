@@ -1,0 +1,67 @@
+name: Hermes Data + Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: 'UTC start date (YYYY-MM-DD)'
+        required: true
+        default: '2020-01-01'
+      end:
+        description: 'UTC end date, exclusive (YYYY-MM-DD)'
+        required: true
+        default: '2020-02-01'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  data-and-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          if [ -f pyproject.toml ]; then pip install -e .; fi
+          if [ -f setup.py ]; then pip install -e .; fi
+          pip install pandas pyarrow requests pytest pytest-cov
+
+      - name: Acquire and validate EURUSD M5
+        env:
+          START: ${{ github.event.inputs.start || '2020-01-01' }}
+          END: ${{ github.event.inputs.end || '2020-02-01' }}
+        run: |
+          set -euo pipefail
+          python tools/data/acquire_eurusd_m5.py --start "$START" --end "$END"
+
+      - name: Run test suite
+        run: |
+          set -euo pipefail
+          pytest -q --disable-warnings --maxfail=1
+
+      - name: Upload dataset and metadata artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EURUSD_M5-${{ github.sha }}
+          path: |
+            data/raw/EURUSD/EURUSD_M5.parquet
+            data/metadata/EURUSD_M5.json
+            data/metadata/EURUSD_M5.sha256
+          if-no-files-found: error
+          retention-days: 7

@@ -20,7 +20,8 @@ Lee y respeta, en este orden:
 5. `docs/SDD_FVG_OB_ENGINE.md` — diseño técnico.
 6. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
 7. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
-8. `docs/UMBRAL_CONFIRMACION.md` — umbrales vigentes.
+8. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
+9. `docs/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
 
 La tesis ICT vigente y sus enmiendas tienen autoridad superior sobre cualquier documento de implementación. **OTE queda fuera del alcance.**
 
@@ -154,9 +155,9 @@ Al recibir **"comienza el plan"**:
 1. leer este documento;
 2. leer contrato, plan y SDD;
 3. comprobar `.hermes-index.md` y último worklog;
-4. auditar el estado real del código antes de modificarlo;
-5. actualizar `.hermes-index.md` indicando `FASE 0 — AUDIT INICIAL`;
-6. ejecutar únicamente la Fase 0 del plan;
+4. leer `docs/AUDITORIA_FASE0_FVG_OB.md` y resolver sus blockers antes de implementación;
+5. actualizar `.hermes-index.md` indicando el estado real;
+6. ejecutar únicamente la fase autorizada por el índice;
 7. documentar y cerrar el gate antes de avanzar.
 
-**No empezar por implementar FVG/OB sin completar la auditoría inicial.**
+**No empezar por implementar FVG/OB sin completar la auditoría inicial y resolver sus blockers críticos.**

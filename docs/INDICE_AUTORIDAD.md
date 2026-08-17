@@ -1,95 +1,65 @@
 # Índice de Autoridad — ICT SYSTEM
 
-Este archivo define qué documentación es **autoridad vigente** en `ICT SYSTEM`
-y qué se dejó deliberadamente fuera de `SMC-SYSTEMS`.
+Este archivo define qué documentación es **autoridad vigente** en `ICT SYSTEM` y qué se dejó deliberadamente fuera de `SMC-SYSTEMS`.
 
-Principio (ver `.hermes.md` §6, §8): **poca documentación, mucha autoridad.**
-No reconstruimos `SMC-SYSTEMS` con otro nombre. La tesis ICT completa SÍ se
-trajo (autorizada explícitamente 2026-08-15); lo que se dejó fuera es la
-arquitectura/historia de SMC-SYSTEMS, no la tesis.
+Principio: **poca documentación, mucha autoridad.**
 
 ---
 
-## 🟢 Autoridad vigente (tesis ICT completa + diccionarios)
+## 🟢 Autoridad vigente
 
-### Fuente firmada (contrato)
+### Fuente firmada y enmiendas
 
 | Archivo | Rol | Estado |
 | --- | --- | --- |
-| `docs/ict/SPEC_TESIS_FORMAL.md` | **Contrato fuente FIRMADO** (comité 2026-07-20). 25 secciones. Resuelve ambigüedades R3 (RR por setup, confirm_bars, POI bonus, exec TF). | Autoridad máxima. Precede al código. |
+| `docs/ict/SPEC_TESIS_FORMAL.md` | Contrato fuente firmado 2026-07-20. | Autoridad base. |
+| `docs/ict/SPEC_TESIS_FORMAL_V1.1_AMENDMENT_OTE_REMOVAL.md` | Enmienda operativa 2026-08-17: elimina OTE del modelo. | **Vigente y supersede cualquier regla OTE.** |
 
-### Libros de la tesis (narrativa + setups)
+**Jerarquía:** el SPEC firmado sigue siendo la fuente base; la enmienda v1.1 modifica exclusivamente el tratamiento de OTE. Ante cualquier conflicto sobre OTE, la enmienda manda.
+
+### Libros de la tesis
 
 | Archivo | Rol |
 | --- | --- |
 | `docs/ict/00_INDICE.md` | Índice de la biblioteca ICT. |
-| `docs/ict/01_KILLZONES.md` | Ventanas horarias (London/NY AM/PM). |
+| `docs/ict/01_KILLZONES.md` | Ventanas horarias. |
 | `docs/ict/02_MSS_CHOCH.md` | MSS / CHOCH / BOS. |
-| `docs/ict/03_FVG.md` | Fair Value Gap. |
-| `docs/ict/04_ORDER_BLOCKS.md` | Order Blocks. |
+| `docs/ict/03_FVG.md` | Fair Value Gap — **núcleo de entrada**. |
+| `docs/ict/04_ORDER_BLOCKS.md` | Order Blocks — **núcleo de entrada**. |
 | `docs/ict/05_LIQUIDEZ.md` | Liquidez / Sweep. |
-| `docs/ict/06_TURTLE_SOUP.md` | Turtle Soup (contratendencia). |
-| `docs/ict/07_SILVER_BULLET.md` | Silver Bullet (scalping). |
-| `docs/ict/08_POWER_OF_THREE.md` | PO3 / AMD (ciclo A/M/D). |
+| `docs/ict/06_TURTLE_SOUP.md` | Turtle Soup. |
+| `docs/ict/07_SILVER_BULLET.md` | Silver Bullet. |
+| `docs/ict/08_POWER_OF_THREE.md` | PO3 / AMD. |
 | `docs/ict/14_STOP_LOSS_ESTRUCTURAL.md` | SL estructural. |
-| `docs/ict/15_INTRADIA_ENTRADA_SL_TP.md` | Entrada/SL/TP intradía. |
+| `docs/ict/15_INTRADIA_ENTRADA_SL_TP.md` | Entrada/SL/TP. |
 | `docs/ict/16_TEMPORALIDAD_EJECUCION.md` | Temporalidad de ejecución. |
-| `docs/ict/17_SCALPING_ENTRADA_SL_TP.md` | Scalping entry/SL/TP. |
-| `docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md` | 3 capas HTF/ITF/exec, regla dura de SL/entry. |
-| `docs/ict/20_TESIS_ICT.md` | Síntesis unificadora PO3+liquidez+temporalidad+POI. |
-| `docs/ict/21_POI.md` | Point of Interest (PD Array anclado a narrativa). |
-
-### Hallazgos y SDD de tesis — ELIMINADOS de ICT SYSTEM (2026-08-15)
-
-Los 6 archivos (`HALLAZGOS_ESTRUCTURA_BOS_CHOCH`, `HALLAZGOS_SESGO_BACKTEST`,
-`SDD_LTF_ENTRY_LAYER`, `SDD_M2_LINEAGE`, `SDD_RESCATE_POI_HTF`, `PLAN_RESCATE_POI_HTF`)
-eran SDDs/hallazgos de INGENIERIA del motor. Verificado contra `engine/`: TODO lo
-que describen YA está implementado (`compute_htf_bias_series`, `fine_execution`,
-`run_sequence_traced`+`lineage`, `htf_pd_index`, `zone_authority`, `poi_present`).
-Por tanto son HISTORIA de construccion, no autoridad vigente del sistema nuevo.
-El `SPEC_TESIS_FORMAL.md` ya es el contrato; `engine/` ya implementa lo descrito.
-Se eliminaron para mantener el repo pequeno (criterio: poca doc, mucha autoridad).
-Quedan en SMC-SYSTEMS como trazabilidad si se necesita.
+| `docs/ict/17_SCALPING_ENTRADA_SL_TP.md` | Scalping. |
+| `docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md` | HTF/ITF/exec. |
+| `docs/ict/20_TESIS_ICT.md` | Síntesis unificadora. |
+| `docs/ict/21_POI.md` | POI / PD Arrays. |
 
 ### Diccionarios de detección
 
 | Archivo | Rol |
 | --- | --- |
-| `docs/reglas/ICT_RULEBOOK.md` | Diccionario *machine-readable* de detección ICT (BOS/CHOCH/FVG/OB/sweep/displacement/premium-discount/OTE/MTF). |
-| `docs/reglas/WYCKOFF_RULEBOOK.md` | Diccionario de detección Wyckoff. |
-| `docs/wyckoff/**` | Teoría Wyckoff completa. |
-
-**Jerarquía de autoridad:** `SPEC_TESIS_FORMAL.md` es la fuente firmada que
-UNIFICA los libros 01-21. Ante contradicción, **el SPEC manda** (ver abajo).
-Los libros son la explicación narrativa; el SPEC es el contrato ejecutable.
+| `docs/reglas/ICT_RULEBOOK.md` | Diccionario machine-readable ICT. **OTE eliminado.** |
+| `docs/reglas/WYCKOFF_RULEBOOK.md` | Diccionario Wyckoff. |
+| `docs/wyckoff/**` | Teoría Wyckoff. |
 
 ---
 
-## 🔴 Dejada (arquitectura / histórico de SMC-SYSTEMS — NO entra)
+## 🔴 Documentación histórica / fuera de autoridad
 
-Esto NO es tesis; es diseño de software / proceso / historia del repo viejo:
-
-- `docs/ict/SDD_ICT_BACKTEST.md`, `SDD_REFACCION_2026-07-11.md` — SDD del repo viejo.
-- `docs/ict/API_SPEC.md`, `TEST_PLAN.md` — API/tests de SMC-SYSTEMS.
-- `docs/ict/09_OPTIMIZADOR_BAYESIANO.md` — anexo de validación, no tesis.
-- `docs/ict/10_AUDITORIA_REFACCION/**`, `13_BACKTEST_PROFESIONAL/**` — auditorías/procesos viejos.
-- `docs/ict/10_SWEEP_OTE_FILTRO.md`, `11_SWEEP_OTE_MANUAL_VS_AUTO.md` — filtros de implementación vieja.
-- `docs/ict/12_ESTRATEGIAS_COMPLETAS.md` — inventario de código (`rules.py`/`engine.py`). Arquitectura disfrazada.
-- `docs/ict/_PLANTILLA_LIBRO.md` — meta-plantilla de SMC-SYSTEMS.
-- `docs/_archivo/**`, `docs/_descartado/**`, `docs/architecture/**`, `docs/specs/**` (SDD/MDS), `docs/plan/**`, `docs/planificacion/**` — historia/arquitectura obsoleta.
-- `research/`, `openspec/`, `knowledge/`, `results/`, `graphify-out/`, `tests/QUARANTINE.md` — capa científica/experimental de SMC-SYSTEMS.
+Los documentos de arquitectura, SDDs y filtros históricos de `SMC-SYSTEMS` permanecen fuera de la autoridad vigente. En particular, los antiguos documentos `10_SWEEP_OTE_FILTRO.md` y `11_SWEEP_OTE_MANUAL_VS_AUTO.md` son históricos y **no deben reintroducir OTE** en `ict2.0`.
 
 ---
 
-## Discrepancias conocidas (resueltas por el SPEC — el SPEC manda)
+## Cambio 2026-08-17 — OTE eliminado
 
-| Tema | Libro / ICT_RULEBOOK | SPEC_TESIS_FORMAL | Veredicto |
-| --- | --- | --- | --- |
-| RR mínimo | libro 07 = 1:2; libro 18 = 1:3 | §20: SB=1:2, resto=1:3 (por setup) | **SPEC** |
-| POI | libro 21 §0 = "obligatorio" | §16: BONUS `quality_score+=20`, no gate | **SPEC** (evidencia PF 0.900 vs 1.511) |
-| OTE retrace | ICT_RULEBOOK §9 = 68-80% | §21 = 62-79% | **SPEC** (código usa 62-79%) |
+La política actual de entrada es:
 
----
+`HTF bias → liquidez → sweep → displacement → BOS/CHOCH → FVG/OB → retorno/retest → entry → SL estructural → TP en liquidez`
 
-*Mantenido por Hermes. Cualquier nuevo documento en `docs/` debe justificar
-por qué es autoridad vigente, no solo "parece importante" (.hermes.md §8).*
+Premium/Discount y EQ 50% permanecen como contexto. **OTE, Fibonacci 62–79%, OTE score y OTE gate quedan fuera.**
+
+El núcleo de zonas de entrada queda concentrado en **FVG + Order Block**, con liquidez, estructura y displacement como contexto/confirmación.

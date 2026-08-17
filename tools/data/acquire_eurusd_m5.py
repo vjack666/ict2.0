@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Acquire EUR/USD M5 candles from Dukascopy and write Parquet + metadata.
 
-Dukascopy exposes native M1 candles; this pipeline downloads those candles and
-aggregates them deterministically to UTC M5. The raw dataset is intentionally
-kept outside Git.
+Dukascopy native M1 candle BI5 records are 24 bytes: 5 big-endian unsigned
+integers (seconds, OHLC) plus one float volume. The pipeline decodes M1 BID
+candles and aggregates them deterministically to UTC M5.
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-PIPELINE_VERSION = "1.1.0"
+PIPELINE_VERSION = "1.2.0"
 INSTRUMENT = "EURUSD"
 TIMEFRAME = "M5"
 TZ = "UTC"
@@ -101,13 +101,17 @@ def validate(df: pd.DataFrame) -> dict:
     if (df.high < df.low).any():
         raise ValueError("high < low")
 
+    # Validate M5 timestamps themselves, not the distance between consecutive
+    # trading candles: weekends/holidays naturally create large gaps.
+    if (df.timestamp.dt.minute % 5 != 0).any() or (df.timestamp.dt.second != 0).any():
+        raise ValueError("Timestamp is not aligned to UTC M5 boundary")
+
     delta = df.timestamp.diff().dropna().dt.total_seconds()
     return {
         "rows": int(len(df)),
         "first_timestamp": df.timestamp.iloc[0].isoformat(),
         "last_timestamp": df.timestamp.iloc[-1].isoformat(),
         "duplicate_timestamps": 0,
-        "non_5m_aligned_intervals": int((delta % 300 != 0).sum()),
         "gaps_over_5m": int((delta > 300).sum()),
         "columns": {c: str(df[c].dtype) for c in df.columns},
     }

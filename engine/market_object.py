@@ -92,15 +92,36 @@ class MarketObject:
             raise ValueError(
                 f"POI solo en HTF ({sorted(_POI_TFS)}); recibido {self.origin_tf}"
             )
+        self._validate_foundational_invariants()
         self._validate_temporal_contract()
+
+    def _validate_foundational_invariants(self) -> None:
+        """Valida invariantes estructurales sin imponer reglas de estrategia."""
+        if self.direction not in (-1, 0, 1):
+            raise ValueError("direction debe ser -1, 0 o 1")
+        if self.zone_high < self.zone_low:
+            raise ValueError("zone_high debe ser >= zone_low")
+        if self.touch_count < 0:
+            raise ValueError("touch_count no puede ser negativo")
+        if self.age_bars < 0:
+            raise ValueError("age_bars no puede ser negativo")
 
     def _validate_temporal_contract(self) -> None:
         """Garantiza candidate <= confirmation <= tradable cuando existen."""
-        bars = [b for b in (self.candidate_bar, self.confirmation_bar, self.tradable_bar) if b is not None]
+        bars = [
+            b for b in (self.candidate_bar, self.confirmation_bar, self.tradable_bar)
+            if b is not None
+        ]
         if bars != sorted(bars):
             raise ValueError("Contrato temporal inválido: candidate <= confirmation <= tradable")
         if self.tradable_bar is not None and self.confirmation_bar is None:
             raise ValueError("tradable_bar requiere confirmation_bar")
+        if self.first_touch_bar is not None and self.tradable_bar is not None:
+            if self.first_touch_bar < self.tradable_bar:
+                raise ValueError("first_touch_bar no puede preceder a tradable_bar")
+        if self.invalidated_bar is not None and self.candidate_bar is not None:
+            if self.invalidated_bar < self.candidate_bar:
+                raise ValueError("invalidated_bar no puede preceder a candidate_bar")
 
     def to_dict(self) -> dict:
         """Serialización plana y estable para lineage, worklogs y datasets."""

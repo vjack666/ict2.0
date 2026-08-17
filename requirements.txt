@@ -1,0 +1,6 @@
+# Runtime/test dependencies for ICT 2.0 CI
+# Keep this file intentionally small: the current automated suite only
+# requires pytest and pytest-cov. Add runtime packages only when the code
+# imports them in a verified execution path.
+pytest==8.3.5
+pytest-cov==6.1.1

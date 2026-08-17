@@ -4,7 +4,8 @@ Does NOT reimplement BOS/CHOCH/sweep/FVG/OB geometry. Those come from detectors
 (or market_structure) already written into the context DataFrame columns.
 
 Trade signals (entry/SL/TP) must come from ``ict_backtest.canonical.evaluate_signals``
-(sequence). This agent only scores bias/confidence for the orchestrator vote.
+(sequence). This agent only scores ICT structure/liquidity evidence for the orchestrator vote.
+OTE is intentionally excluded from the operating model.
 """
 from __future__ import annotations
 
@@ -15,8 +16,6 @@ import pandas as pd
 
 from .base import AnalysisResult
 
-# R7: trade decisions live in ict_backtest.canonical (sequence). Do NOT import
-# that package here — circular import (agents → ict_backtest → signals → agents).
 CANONICAL_ENGINE = "sequence"
 
 
@@ -25,7 +24,7 @@ class ICTAgent:
 
     def __init__(self, lookback: int = 20) -> None:
         self.lookback = lookback
-        self.decision_engine = CANONICAL_ENGINE  # R7: document who decides trades
+        self.decision_engine = CANONICAL_ENGINE
 
     def analyze(self, context: pd.DataFrame, index: int) -> AnalysisResult:
         """Read feature columns already present; do not invent structure."""
@@ -89,9 +88,6 @@ class ICTAgent:
             invalidation_conditions=invalidation,
         )
 
-    # ------------------------------------------------------------------ readers
-    # Only consume columns already produced by detectors / market_structure.
-
     def _read_trend(self, window: pd.DataFrame) -> str:
         if "swing_label" in window.columns:
             labels = window["swing_label"].dropna().unique()
@@ -140,7 +136,6 @@ class ICTAgent:
             if trend == "BEARISH" and any("BULLISH" in str(c) for c in recent):
                 return "BULLISH"
             return None
-        # market_structure style: choch_dir numeric
         if "choch_dir" in window.columns:
             try:
                 v = float(window["choch_dir"].iloc[-1])
@@ -245,7 +240,8 @@ class ICTAgent:
         if max_score == 0.0:
             return 0.0, "NEUTRAL"
         raw = score / max_score
-        zone_bonus = 0.05 if "OTE" in zone or "DISCOUNT" in zone or "PREMIUM" in zone else 0.0
+        # Premium/discount remains contextual evidence only; OTE is excluded.
+        zone_bonus = 0.05 if zone in ("DISCOUNT", "PREMIUM") else 0.0
         trend_bonus = 0.05 if trend in ("BULLISH", "BEARISH") else -0.05
         confidence = min(max(raw + zone_bonus + trend_bonus, 0.0), 0.95)
         if confidence >= 0.5 and trend in ("BULLISH", "BEARISH"):

@@ -1,61 +1,77 @@
 # Worklog — Fase A: saneamiento de fundaciones
 
 **Fecha:** 2026-08-17  
-**Objetivo:** corregir los bloqueos reales de Fase A y preparar una ejecución verificable de CI antes de habilitar Fase B.
+**Objetivo:** corregir los bloqueos reales de Fase A y cerrar el Gate A con evidencia reproducible.
 
 ## INSPECCIÓN
 
-Se revisó `main` y se comprobó que:
+Se identificaron tres bloqueos reales:
 
-- existe `tests/test_market_object_pd_contract.py`;
-- `engine/market_object.py` ya contiene el contrato temporal candidate/confirmation/tradable;
-- `.github/workflows/hermes-tests.yml` usa `actions/setup-python@v5` con `cache: pip`;
-- el repositorio no tenía `requirements.txt`, `pyproject.toml` ni `pytest.ini`.
+- `setup-python` necesitaba una dependencia declarada para su caché;
+- la suite no podía importar `engine` en CI;
+- la documentación no debía declarar A cerrada sin evidencia ejecutada.
 
-Esto explica directamente el error anterior del runner:
+## CORRECCIONES
 
-`No file ... matched to [**/requirements.txt or **/pyproject.toml]`.
+### Dependencias CI
 
-## CORRECCIÓN 1 — Dependencias CI
-
-Se añadió `requirements.txt` con dependencias mínimas y fijadas para la suite actual:
+Se añadió `requirements.txt` con:
 
 - `pytest==8.3.5`
 - `pytest-cov==6.1.1`
 
-No se agregaron paquetes por especulación. Las dependencias se limitan a lo necesario para ejecutar la suite existente.
+### Paquete `engine`
 
-## CORRECCIÓN 2 — Contrato base `MarketObject`
+Se añadió `engine/__init__.py` y se fijó `PYTHONPATH=${{ github.workspace }}` en CI.
 
-Se reforzaron invariantes estructurales:
+### Pytest
 
-- dirección válida `-1/0/1`;
-- geometría de zona no invertida;
-- contadores no negativos;
-- primer toque no anterior a la disponibilidad tradable;
-- invalidación no anterior al candidato.
+Se añadió `pytest.ini` con `pythonpath = .` y `testpaths = tests`.
 
-No se modificó la semántica de detección FVG/OB.
+El workflow ahora verifica explícitamente:
 
-## CORRECCIÓN 3 — Tests
+- existencia de `engine/__init__.py`;
+- existencia de `engine/market_object.py`;
+- import real de `engine`;
+- ejecución mediante `python -m pytest`.
 
-Se amplió `tests/test_market_object_pd_contract.py` para cubrir las nuevas invariantes y mantener los tests existentes de serialización, temporalidad y capas POI.
+### Contrato base
+
+Se mantuvieron/reforzaron las invariantes estructurales y temporales de `MarketObject` sin introducir lógica nueva de estrategia FVG/OB.
+
+## EVIDENCIA DE EJECUCIÓN
+
+**Workflow:** `Hermes Tests`  
+**Run:** `#26`  
+**Run ID:** `32081912747`  
+**Commit:** `dacf7b221d22d1549b6aa687fbf2421da6430212`  
+**Merge ref ejecutado por GitHub:** `dc0e9948ce44c8c25f6a8084364389e37b7abd95`
+
+Resultados:
+
+```text
+setup-python              PASS
+install dependencies      PASS
+verify repository/import  PASS
+pytest                    PASS
+
+8 passed in 0.02s
+```
 
 ## RESULTADO
 
-**Código corregido y preparado para CI.**
+**GATE A = PASS.**
 
-**Gate A: PENDIENTE DE EVIDENCIA CI.**
+No se relajaron invariantes para conseguir verde. El fallo anterior `ModuleNotFoundError: No module named 'engine'` fue corregido y verificado en ejecución real.
 
-No se declara PASS hasta observar un workflow real con instalación y pytest exitosos.
+## DECISIÓN
 
-## REGLA DE CONTROL
+Fase A queda **CERRADA**.
 
-Fase B permanece pausada. No se avanzará a nuevos detectores FVG/OB hasta que el Gate A sea `PASS`.
+Fase B queda **HABILITADA**, pero debe ejecutar su propio contrato y gate antes de introducir nuevos detectores FVG/OB.
 
-## Siguiente evidencia requerida
+M5 continúa `DEFERRED`; no forma parte del criterio de PASS de A.
 
-1. GitHub Actions — setup Python: PASS.
-2. Instalación de requirements: PASS.
-3. `pytest -q --disable-warnings --maxfail=1`: PASS.
-4. Actualizar `.hermes-index.md` y cerrar A únicamente con esa evidencia.
+## SIGUIENTE FASE
+
+Iniciar Fase B — contratos de dominio FVG/OB/Breaker/BPR y lifecycle, con tests reales y actualización obligatoria de índice/bitácora al finalizar el gate.

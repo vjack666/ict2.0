@@ -25,6 +25,8 @@ Lee y respeta, en este orden:
 
 La tesis ICT vigente y sus enmiendas tienen autoridad superior sobre cualquier documento de implementación. **OTE queda fuera del alcance.**
 
+`vjack666/SMC-SYSTEMS` es una fuente comparativa externa, nunca autoridad normativa. `ict_backtest/` no es una dependencia vigente y no debe restaurarse.
+
 Los documentos históricos, cierres de fases anteriores, reportes antiguos y documentos no enumerados arriba son contexto histórico, no instrucciones. No deben generar trabajo nuevo salvo que un documento normativo los cite explícitamente.
 
 ## 3. OBJETIVO
@@ -54,11 +56,36 @@ NO:
 - declarar DONE con un gate rojo;
 - eliminar evidencia histórica sin autorización contractual;
 - fabricar datos, métricas o resultados;
-- saltar una fase porque parezca innecesaria.
+- saltar una fase porque parezca innecesaria;
+- copiar código externo sólo porque parezca más completo.
 
 Si durante el trabajo aparece una necesidad fuera del alcance, regístrala como **BLOCKER / OUT-OF-SCOPE** y continúa únicamente con el plan vigente.
 
-## 5. CICLO OBLIGATORIO POR CADA FASE Y EXPERIMENTO
+## 5. POLÍTICA DE RESCATE DE CÓDIGO EXTERNO
+
+Antes de incorporar cualquier componente de `SMC-SYSTEMS` o de un histórico del proyecto:
+
+```text
+CANDIDATO
+ ↓
+COMPARAR CON TESIS ICT
+ ↓
+COMPARAR CON IMPLEMENTACIÓN ACTUAL
+ ↓
+TEST DE EQUIVALENCIA / SUPERIORIDAD
+ ↓
+ANTI-LOOK-AHEAD
+ ↓
+AISLAR MÍNIMO NECESARIO
+ ↓
+TESTS
+ ↓
+COMMIT
+```
+
+No importar módulos completos ni dependencias innecesarias. No importar OTE/Fibonacci/indicadores sólo porque estén acoplados al candidato. Si el candidato no demuestra ventaja, se rechaza y se documenta.
+
+## 6. CICLO OBLIGATORIO POR CADA FASE Y EXPERIMENTO
 
 Ninguna fase, experimento, auditoría, backtest o cambio relevante se considera cerrado hasta sincronizar la documentación.
 
@@ -94,7 +121,7 @@ SIGUIENTE FASE
 
 **Si `.hermes-index.md`, auditoría y bitácora no reflejan el resultado real, el gate de la fase es FAIL aunque el código y los tests pasen.**
 
-## 6. `.hermes-index.md` ES EL CUADRO MAESTRO
+## 7. `.hermes-index.md` ES EL CUADRO MAESTRO
 
 Después de cada fase/experimento debe quedar actualizado como mínimo:
 
@@ -117,7 +144,7 @@ Después de cada fase/experimento debe quedar actualizado como mínimo:
 
 No borrar resultados anteriores: mantener historial o enlazar al worklog.
 
-## 7. AUDITORÍA CONTINUA
+## 8. AUDITORÍA CONTINUA
 
 Cada resultado debe indicar explícitamente:
 
@@ -132,7 +159,7 @@ Cada resultado debe indicar explícitamente:
 
 Una hipótesis rechazada no debe reaparecer posteriormente como hipótesis nueva sin explicar qué cambió.
 
-## 8. POLÍTICA DE ITERACIÓN
+## 9. POLÍTICA DE ITERACIÓN
 
 El trabajo termina sólo cuando todos los gates contractuales están `PASS` y la documentación está sincronizada.
 
@@ -148,16 +175,16 @@ Si un resultado falla:
 
 Si después de iteraciones razonables la evidencia demuestra que una hipótesis no aporta edge, documentarla como `REJECTED` y continuar con la siguiente parte del plan, sin manipular los criterios de éxito.
 
-## 9. PRIMERA ACCIÓN
+## 10. PRIMERA ACCIÓN
 
 Al recibir **"comienza el plan"**:
 
 1. leer este documento;
 2. leer contrato, plan y SDD;
 3. comprobar `.hermes-index.md` y último worklog;
-4. leer `docs/AUDITORIA_FASE0_FVG_OB.md` y resolver sus blockers antes de implementación;
-5. actualizar `.hermes-index.md` indicando el estado real;
-6. ejecutar únicamente la fase autorizada por el índice;
+4. leer `docs/AUDITORIA_FASE0_FVG_OB.md` y sus decisiones;
+5. comprobar que Fase 0 esté marcada como `COMPLETADA` en el índice;
+6. ejecutar únicamente la siguiente fase autorizada por `.hermes-index.md`;
 7. documentar y cerrar el gate antes de avanzar.
 
-**No empezar por implementar FVG/OB sin completar la auditoría inicial y resolver sus blockers críticos.**
+**Fase 0 ya está completada. La siguiente fase autorizada es Fase B.**

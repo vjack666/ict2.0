@@ -2,79 +2,115 @@
 
 **Fecha:** 2026-08-17  
 **Fase:** B — Contratos de dominio  
-**Estado:** IMPLEMENTACIÓN INICIAL — GATE PENDIENTE DE EJECUCIÓN DE TESTS  
+**Estado:** `IN_PROGRESS / GATE_PENDING`  
 **Autoridad:** `docs/SDD_FVG_OB_ENGINE.md` + tesis ICT vigente
 
 ## 1. Objetivo
 
-Cerrar el modelo de dominio que utilizará el motor para representar PD Arrays como objetos persistentes, temporales y causales.
+Cerrar el modelo de dominio que utilizará el motor para representar PD Arrays como objetos persistentes, temporales y causales, sin introducir todavía detectores ni reglas de entrada.
 
-## 2. Decisiones
+## 2. Contrato canónico
 
-### 2.1 Tipos canónicos
+### 2.1 Tipos
 
-`FVG`, `ORDER_BLOCK`, `BREAKER` y `BPR` pasan a estar representados por `ObjectType`.
+`FVG`, `ORDER_BLOCK`, `BREAKER` y `BPR` son tipos canónicos de `ObjectType`.
 
-### 2.2 Estados
+### 2.2 Capas
 
-Los objetos pueden recorrer:
+Se mantiene la ontología vigente: `POI` sólo puede originarse en `D1/H4/H1`. M15/M5/M1 permanecen como refinamiento/ejecución según el contexto top-down. Fase B no cambia esa autoridad.
 
-`CREATED → ACTIVE → PARTIALLY_MITIGATED → MITIGATED`
+### 2.3 Integridad estructural
 
-o terminar en `INVALIDATED`, `EXPIRED` o `CONSUMED` según la regla específica.
+`MarketObject` debe rechazar:
 
-### 2.3 Contrato temporal
+- dirección fuera de `{-1, 0, 1}`;
+- zonas invertidas (`zone_high < zone_low`);
+- contadores negativos;
+- `quality_score` fuera de `[0,1]`;
+- `first_touch_bar` sin `touch_count >= 1`.
 
-Cada objeto puede y debe conservar, cuando aplique:
+### 2.4 Contrato temporal
 
-- `candidate_bar/time`;
-- `confirmation_bar/time`;
-- `tradable_bar/time`;
-- `first_touch_bar/time`;
-- `invalidated_bar/time`;
-- `mitigation_level`;
-- `touch_count`;
-- `age_bars`.
-
-La invariante obligatoria es:
+Cuando los campos existen:
 
 `candidate <= confirmation <= tradable`
 
-y nunca puede existir `tradable` sin `confirmation`.
+Nunca existe `tradable` sin `confirmation`.
 
-### 2.4 Linaje
+Además:
 
-Se mantiene `parent_object` y `related_objects`. Un FVG/OB futuro deberá apuntar al displacement/evento estructural que lo creó o confirmó, no reconstruirse por proximidad temporal.
+- `first_touch >= tradable`;
+- `invalidated >= candidate`;
+- `candidate_time <= confirmation_time <= tradable_time` cuando los tiempos son comparables.
 
-### 2.5 Capas
+La implementación no puede aceptar información futura sólo para construir un objeto histórico.
 
-Se mantiene la regla vigente: POI sólo en `D1/H4/H1`; M15/M5/M1 son refinamiento/ejecución según el contexto top-down. Esta fase no cambia esa autoridad.
+### 2.5 Lifecycle
 
-## 3. Tests añadidos
+Las transiciones válidas son explícitas:
+
+```text
+CREATED
+  ├─> ACTIVE
+  ├─> INVALIDATED
+  └─> EXPIRED
+
+ACTIVE
+  ├─> PARTIALLY_MITIGATED
+  ├─> MITIGATED
+  ├─> INVALIDATED
+  ├─> EXPIRED
+  └─> CONSUMED
+
+PARTIALLY_MITIGATED
+  ├─> PARTIALLY_MITIGATED
+  ├─> MITIGATED
+  ├─> INVALIDATED
+  ├─> EXPIRED
+  └─> CONSUMED
+```
+
+`MITIGATED`, `INVALIDATED`, `EXPIRED` y `CONSUMED` son terminales. No pueden reactivarse.
+
+### 2.6 Lineage
+
+`parent_object` y `related_objects` forman parte del contrato. Se prohíben autorreferencias, duplicados y IDs vacíos. La Fase D será responsable de imponer relaciones causales específicas (por ejemplo, displacement → FVG/OB) una vez definidos los detectores canónicos.
+
+## 3. Tests
 
 `tests/test_market_object_pd_contract.py` cubre:
 
-- round-trip serialización;
-- orden temporal candidato → confirmación → tradable;
-- prohibición de tradable sin confirmación;
-- preservación de la regla de POI HTF.
+- round-trip de serialización;
+- los cuatro tipos PD Array;
+- orden temporal por barras y tiempos;
+- requisitos de `tradable` y `first_touch`;
+- invalidación temporal;
+- invariantes estructurales;
+- integridad de lineage;
+- lifecycle y estados terminales;
+- regla POI HTF.
 
-## 4. Estado del gate
+## 4. Gate B
 
-No se declara PASS hasta ejecutar la suite de tests en un entorno con dependencias del proyecto.
+No se declara PASS hasta que GitHub Actions ejecute:
 
-En la sesión de implementación actual no se pudo clonar `https://github.com/vjack666/ict2.0.git` desde el entorno de ejecución por falta de resolución de red. Por ello no se inventa un resultado de pytest.
+1. instalación reproducible;
+2. verificación de importación;
+3. suite completa con código 0;
+4. todos los tests de contrato en verde.
 
-**Gate B = BLOCKED_PENDING_TEST_EXECUTION.**
+No se permite relajar el contrato para conseguir verde.
 
-## 5. Siguiente acción autorizada
+## 5. Fuera de alcance
 
-Una vez que Hermes disponga de un entorno con el repo local, ejecutar primero:
+- detector FVG;
+- detector OB;
+- Breaker/BPR como detectores;
+- scoring operativo;
+- entradas/SL/TP;
+- aprendizaje;
+- M5 como requisito de validación.
 
-```bash
-pytest -q tests/test_market_object_pd_contract.py
-```
+## 6. Próximo paso
 
-y después la suite completa disponible.
-
-Si falla cualquier prueba, corregir y repetir antes de continuar con los detectores FVG/OB.
+Ejecutar CI sobre esta fase. Si falla cualquier prueba, corregir y repetir hasta Gate B `PASS`.

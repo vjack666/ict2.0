@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Acquire EUR/USD M5 candles from Dukascopy and write Parquet + metadata.
 
-The script deliberately keeps the raw dataset outside Git. It is designed to
-be reproducible by Hermes/CI with explicit start/end dates.
+Dukascopy exposes native M1 candles; this pipeline downloads those candles and
+aggregates them deterministically to UTC M5. The raw dataset is intentionally
+kept outside Git.
 """
 from __future__ import annotations
 
@@ -10,6 +11,8 @@ import argparse
 import hashlib
 import json
 import math
+import lzma
+import struct
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -17,58 +20,63 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-PIPELINE_VERSION = "1.0.0"
+PIPELINE_VERSION = "1.1.0"
 INSTRUMENT = "EURUSD"
 TIMEFRAME = "M5"
 TZ = "UTC"
-BASE_URL = "https://datafeed.dukascopy.com/datafeed/EURUSD/5m"
+PRICE_DIVISOR = 100_000.0
+BASE_URL = "https://datafeed.dukascopy.com/datafeed/EURUSD"
 
 
-def month_iter(start: datetime, end: datetime):
-    cur = datetime(start.year, start.month, 1, tzinfo=timezone.utc)
+def day_iter(start: datetime, end: datetime):
+    cur = datetime(start.year, start.month, start.day, tzinfo=timezone.utc)
     while cur < end:
-        yield cur.year, cur.month
-        if cur.month == 12:
-            cur = datetime(cur.year + 1, 1, 1, tzinfo=timezone.utc)
-        else:
-            cur = datetime(cur.year, cur.month + 1, 1, tzinfo=timezone.utc)
+        yield cur
+        cur += timedelta(days=1)
 
 
-def dukascopy_url(year: int, month: int) -> str:
-    # Dukascopy monthly candle endpoint uses zero-based month numbers.
-    return f"{BASE_URL}/{year}/{month - 1:02d}/BID_candles_min_5.bi5"
+def m1_url(day: datetime) -> str:
+    return f"{BASE_URL}/{day.year}/{day.month - 1:02d}/{day.day:02d}/BID_candles_min_1.bi5"
 
 
-def download_month(year: int, month: int, session: requests.Session) -> bytes:
-    url = dukascopy_url(year, month)
+def download_day(day: datetime, session: requests.Session) -> tuple[str, bytes]:
+    url = m1_url(day)
     response = session.get(url, timeout=60)
+    if response.status_code in (404, 410) or not response.content:
+        return url, b""
     response.raise_for_status()
-    if not response.content:
-        raise RuntimeError(f"Empty response from {url}")
-    return response.content
+    return url, response.content
 
 
-def decode_bi5(payload: bytes) -> pd.DataFrame:
-    """Decode Dukascopy BI5 5-minute BID candles.
-
-    Dukascopy BI5 records are 20-byte blocks: timestamp delta (ms), open/high/
-    low/close integer prices and volume. The exact compression format has
-    historically varied, therefore decoding is kept isolated and validated.
-    """
-    import lzma
-    import struct
-
+def decode_m1(payload: bytes, day: datetime) -> pd.DataFrame:
     raw = lzma.decompress(payload)
-    if len(raw) % 20:
-        raise ValueError(f"Invalid BI5 payload length: {len(raw)}")
+    if len(raw) % 24:
+        raise ValueError(f"Invalid M1 BI5 payload length: {len(raw)}")
 
     rows = []
-    for offset in range(0, len(raw), 20):
-        ms, op, hi, lo, cl, vol = struct.unpack(">5i", raw[offset:offset + 20])
-        # Dukascopy candle timestamps are milliseconds from the month start.
-        rows.append((ms, op, hi, lo, cl, vol))
+    for offset in range(0, len(raw), 24):
+        seconds, op, hi, lo, cl, vol = struct.unpack(">IIIIIf", raw[offset:offset + 24])
+        rows.append((
+            day + timedelta(seconds=int(seconds)),
+            op / PRICE_DIVISOR,
+            hi / PRICE_DIVISOR,
+            lo / PRICE_DIVISOR,
+            cl / PRICE_DIVISOR,
+            float(vol),
+        ))
+    return pd.DataFrame(rows, columns=["timestamp", "open", "high", "low", "close", "volume"])
 
-    return pd.DataFrame(rows, columns=["offset_ms", "open", "high", "low", "close", "volume"])
+
+def aggregate_m5(m1: pd.DataFrame) -> pd.DataFrame:
+    if m1.empty:
+        return m1.copy()
+    x = m1.set_index("timestamp").sort_index()
+    return (
+        x.resample("5min", label="left", closed="left")
+        .agg({"open": "first", "high": "max", "low": "min", "close": "last", "volume": "sum"})
+        .dropna(subset=["open", "high", "low", "close"])
+        .reset_index()
+    )
 
 
 def validate(df: pd.DataFrame) -> dict:
@@ -76,7 +84,6 @@ def validate(df: pd.DataFrame) -> dict:
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise ValueError(f"Missing columns: {missing}")
-
     if df.empty:
         raise ValueError("Dataset is empty")
     if df["timestamp"].duplicated().any():
@@ -95,13 +102,13 @@ def validate(df: pd.DataFrame) -> dict:
         raise ValueError("high < low")
 
     delta = df.timestamp.diff().dropna().dt.total_seconds()
-    gaps = int((delta > 300).sum())
     return {
         "rows": int(len(df)),
         "first_timestamp": df.timestamp.iloc[0].isoformat(),
         "last_timestamp": df.timestamp.iloc[-1].isoformat(),
         "duplicate_timestamps": 0,
-        "gaps_over_5m": gaps,
+        "non_5m_aligned_intervals": int((delta % 300 != 0).sum()),
+        "gaps_over_5m": int((delta > 300).sum()),
         "columns": {c: str(df[c].dtype) for c in df.columns},
     }
 
@@ -136,46 +143,48 @@ def main() -> int:
     meta_path.parent.mkdir(parents=True, exist_ok=True)
 
     frames = []
+    source_urls = []
+    empty_days = []
     with requests.Session() as session:
         session.headers["User-Agent"] = "ict2.0-data-pipeline/" + PIPELINE_VERSION
-        for year, month in month_iter(start, end):
-            payload = download_month(year, month, session)
-            try:
-                frame = decode_bi5(payload)
-            except Exception as exc:
-                raise RuntimeError(f"Could not decode Dukascopy {year}-{month:02d}: {exc}") from exc
-
-            month_start = datetime(year, month, 1, tzinfo=timezone.utc)
-            frame["timestamp"] = [month_start + timedelta(milliseconds=int(x)) for x in frame.pop("offset_ms")]
-            frame["open"] = frame["open"] / 1_000_000
-            frame["high"] = frame["high"] / 1_000_000
-            frame["low"] = frame["low"] / 1_000_000
-            frame["close"] = frame["close"] / 1_000_000
-            frame = frame[(frame.timestamp >= start) & (frame.timestamp < end)]
-            frames.append(frame)
+        for day in day_iter(start, end):
+            url, payload = download_day(day, session)
+            source_urls.append(url)
+            if not payload:
+                empty_days.append(day.date().isoformat())
+                continue
+            frames.append(decode_m1(payload, day))
 
     if not frames:
-        raise RuntimeError("No monthly data downloaded")
+        raise RuntimeError("No M1 data downloaded")
 
-    df = pd.concat(frames, ignore_index=True).sort_values("timestamp")
-    df = df.drop_duplicates("timestamp", keep="first").reset_index(drop=True)
+    m1 = pd.concat(frames, ignore_index=True)
+    m1 = m1[(m1.timestamp >= start) & (m1.timestamp < end)]
+    df = aggregate_m5(m1)
+    df = df.drop_duplicates("timestamp", keep="first").sort_values("timestamp").reset_index(drop=True)
     stats = validate(df)
 
     df.to_parquet(out, index=False, engine="pyarrow")
     digest = sha256(out)
     meta = {
+        "schema_version": "1",
         "pipeline_version": PIPELINE_VERSION,
         "source": "Dukascopy Historical Data",
         "source_base_url": BASE_URL,
+        "source_urls_count": len(source_urls),
         "instrument": INSTRUMENT,
         "timeframe": TIMEFRAME,
+        "source_timeframe": "M1",
+        "aggregation": "UTC 5-minute OHLCV from native M1 BID candles",
         "timezone": TZ,
         "price_side": "BID",
+        "price_divisor": PRICE_DIVISOR,
         "requested_start": start.isoformat(),
         "requested_end_exclusive": end.isoformat(),
         "acquired_at": datetime.now(timezone.utc).isoformat(),
         "parquet_path": str(out),
         "sha256": digest,
+        "empty_days": empty_days,
         "validation": stats,
     }
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")

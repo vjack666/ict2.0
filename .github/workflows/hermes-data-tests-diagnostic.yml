@@ -1,0 +1,139 @@
+name: Hermes Data + Tests (Diagnostic)
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: 'UTC start date (YYYY-MM-DD)'
+        required: true
+        default: '2020-01-01'
+      end:
+        description: 'UTC end date, exclusive (YYYY-MM-DD)'
+        required: true
+        default: '2020-02-01'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  data-and-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: STEP 01 - Checkout
+        uses: actions/checkout@v4
+
+      - name: STEP 02 - Audit runner and repository
+        shell: bash
+        run: |
+          set -euxo pipefail
+          echo '=== RUNNER ==='
+          uname -a
+          python3 --version || true
+          echo '=== REPOSITORY ROOT ==='
+          pwd
+          ls -la
+          echo '=== WORKFLOW FILES ==='
+          find .github -maxdepth 3 -type f -print | sort
+          echo '=== DATA/TOOLS ==='
+          find tools data -maxdepth 4 -type f -print 2>/dev/null | sort || true
+          echo '=== PYTHON PROJECT FILES ==='
+          find . -maxdepth 3 -type f \( -name 'requirements*.txt' -o -name 'pyproject.toml' -o -name 'setup.py' -o -name 'Pipfile' -o -name 'environment.yml' \) -print | sort || true
+
+      - name: STEP 03 - Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: STEP 04 - Install dependencies
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python --version
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          if [ -f pyproject.toml ]; then pip install -e .; fi
+          if [ -f setup.py ]; then pip install -e .; fi
+          pip install pandas pyarrow requests pytest pytest-cov
+          python - <<'PY'
+          import pandas, pyarrow, requests, pytest
+          print('pandas', pandas.__version__)
+          print('pyarrow', pyarrow.__version__)
+          print('requests', requests.__version__)
+          print('pytest', pytest.__version__)
+          PY
+
+      - name: STEP 05 - Verify acquisition pipeline
+        shell: bash
+        run: |
+          set -euxo pipefail
+          test -f tools/data/acquire_eurusd_m5.py
+          python tools/data/acquire_eurusd_m5.py --help
+
+      - name: STEP 06 - Acquire and validate EURUSD M5
+        env:
+          START: ${{ github.event.inputs.start || '2020-01-01' }}
+          END: ${{ github.event.inputs.end || '2020-02-01' }}
+        shell: bash
+        run: |
+          set -euxo pipefail
+          echo "Requested range: ${START} -> ${END}"
+          python tools/data/acquire_eurusd_m5.py --start "$START" --end "$END"
+          echo '=== GENERATED DATA ==='
+          ls -lh data/raw/EURUSD/EURUSD_M5.parquet data/metadata/EURUSD_M5.json data/metadata/EURUSD_M5.sha256
+          echo '=== METADATA ==='
+          cat data/metadata/EURUSD_M5.json
+
+      - name: STEP 07 - Inspect Parquet integrity
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          import pandas as pd
+          p = Path('data/raw/EURUSD/EURUSD_M5.parquet')
+          m = Path('data/metadata/EURUSD_M5.json')
+          df = pd.read_parquet(p)
+          meta = json.loads(m.read_text())
+          digest = hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest == meta['sha256'], 'SHA256 mismatch'
+          assert not df.empty, 'Parquet is empty'
+          assert list(df.columns) == ['timestamp','open','high','low','close','volume']
+          assert df.timestamp.is_monotonic_increasing
+          assert not df.timestamp.duplicated().any()
+          print('rows=', len(df))
+          print('first=', df.timestamp.iloc[0])
+          print('last=', df.timestamp.iloc[-1])
+          print('sha256=', digest)
+          PY
+
+      - name: STEP 08 - Run test suite
+        shell: bash
+        run: |
+          set -euxo pipefail
+          pytest -q --disable-warnings --maxfail=1
+
+      - name: STEP 09 - Upload dataset and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: EURUSD_M5-diagnostic-${{ github.run_id }}
+          path: |
+            data/raw/EURUSD/EURUSD_M5.parquet
+            data/metadata/EURUSD_M5.json
+            data/metadata/EURUSD_M5.sha256
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: STEP 10 - Final status
+        if: always()
+        shell: bash
+        run: |
+          echo "workflow_run_id=${{ github.run_id }}"
+          echo "sha=${{ github.sha }}"
+          echo "job_status=${{ job.status }}"

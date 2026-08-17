@@ -14,18 +14,21 @@ import math
 import lzma
 import struct
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
 import requests
 
-PIPELINE_VERSION = "1.2.0"
+PIPELINE_VERSION = "1.3.0"
 INSTRUMENT = "EURUSD"
 TIMEFRAME = "M5"
 TZ = "UTC"
 PRICE_DIVISOR = 100_000.0
 BASE_URL = "https://datafeed.dukascopy.com/datafeed/EURUSD"
+MAX_DOWNLOAD_ATTEMPTS = 8
+RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
 def day_iter(start: datetime, end: datetime):
@@ -40,12 +43,57 @@ def m1_url(day: datetime) -> str:
 
 
 def download_day(day: datetime, session: requests.Session) -> tuple[str, bytes]:
+    """Download one daily M1 BI5 file with bounded retry/backoff.
+
+    Dukascopy's public datafeed can transiently return HTTP 503/429. Those
+    responses are retried with exponential backoff and optional Retry-After.
+    404/410 is treated as an empty/non-trading day; other HTTP errors fail
+    immediately because silently skipping them would corrupt the dataset.
+    """
     url = m1_url(day)
-    response = session.get(url, timeout=60)
-    if response.status_code in (404, 410) or not response.content:
-        return url, b""
-    response.raise_for_status()
-    return url, response.content
+    last_error = None
+
+    for attempt in range(1, MAX_DOWNLOAD_ATTEMPTS + 1):
+        try:
+            response = session.get(url, timeout=60)
+            if response.status_code in (404, 410) or not response.content:
+                return url, b""
+            if response.status_code in RETRY_STATUS_CODES:
+                retry_after = response.headers.get("Retry-After")
+                if retry_after:
+                    try:
+                        delay = min(float(retry_after), 60.0)
+                    except ValueError:
+                        delay = min(2.0 ** (attempt - 1), 60.0)
+                else:
+                    delay = min(2.0 ** (attempt - 1), 60.0)
+                if attempt == MAX_DOWNLOAD_ATTEMPTS:
+                    response.raise_for_status()
+                print(
+                    f"Dukascopy HTTP {response.status_code} for {day.date()} "
+                    f"(attempt {attempt}/{MAX_DOWNLOAD_ATTEMPTS}); retrying in {delay:.1f}s",
+                    file=sys.stderr,
+                )
+                time.sleep(delay)
+                continue
+            response.raise_for_status()
+            return url, response.content
+        except requests.RequestException as exc:
+            last_error = exc
+            if attempt == MAX_DOWNLOAD_ATTEMPTS:
+                raise
+            delay = min(2.0 ** (attempt - 1), 60.0)
+            print(
+                f"Dukascopy request error for {day.date()} "
+                f"(attempt {attempt}/{MAX_DOWNLOAD_ATTEMPTS}): {exc}; "
+                f"retrying in {delay:.1f}s",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
+
+    if last_error:
+        raise last_error
+    raise RuntimeError(f"Download failed without response: {url}")
 
 
 def decode_m1(payload: bytes, day: datetime) -> pd.DataFrame:

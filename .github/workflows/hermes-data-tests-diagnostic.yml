@@ -2,15 +2,6 @@ name: Hermes Data + Tests (Diagnostic)
 
 on:
   workflow_dispatch:
-    inputs:
-      start:
-        description: 'UTC start date (YYYY-MM-DD)'
-        required: true
-        default: '2020-01-01'
-      end:
-        description: 'UTC end date, exclusive (YYYY-MM-DD)'
-        required: true
-        default: '2020-02-01'
   push:
     branches: [main]
 
@@ -53,96 +44,62 @@ jobs:
           pip install pandas pyarrow requests pytest pytest-cov
           python -c "import pandas,pyarrow,requests,pytest; print('deps OK')"
 
-      - name: STEP 05 - Verify Node data client
+      - name: STEP 05 - Acquire EURUSD H1/H4/D1
         shell: bash
         run: |
           set -euxo pipefail
-          node --version
-          npm --version
-          npx --yes dukascopy-node@1.50.0 --help
+          python tools/data/acquire_eurusd_higher_tf.py
+          echo '=== GENERATED DATA ==='
+          find data/raw/EURUSD data/metadata -maxdepth 1 -type f -print | sort
+          cat data/metadata/EURUSD_H1_H4_D1.json
 
-      - name: STEP 06 - Acquire EURUSD M5 via Dukascopy JSON client
-        env:
-          START: ${{ github.event.inputs.start || '2020-01-01' }}
-          END: ${{ github.event.inputs.end || '2020-02-01' }}
-        shell: bash
-        run: |
-          set -euxo pipefail
-          mkdir -p data/raw/EURUSD data/metadata data/work/dukascopy
-          echo "Requested range: ${START} -> ${END}"
-          npx --yes dukascopy-node@1.50.0 \
-            -i eurusd \
-            -from "$START" \
-            -to "$END" \
-            -t m5 \
-            -p bid \
-            -v \
-            -f csv \
-            -dir data/work/dukascopy \
-            -bs 5 \
-            -bp 3000 \
-            -r 5 \
-            -rp 5000
-          echo '=== DOWNLOADED FILES ==='
-          find data/work/dukascopy -type f -maxdepth 4 -print | sort
-          CSV=$(find data/work/dukascopy -type f -name '*.csv' | head -n 1)
-          test -n "$CSV"
-          echo "CSV=$CSV" >> "$GITHUB_ENV"
-
-      - name: STEP 07 - Canonicalize + validate Parquet
-        env:
-          START: ${{ github.event.inputs.start || '2020-01-01' }}
-          END: ${{ github.event.inputs.end || '2020-02-01' }}
-        shell: bash
-        run: |
-          set -euxo pipefail
-          python tools/data/finalize_eurusd_m5.py --csv "$CSV" --start "$START" --end "$END"
-          ls -lh data/raw/EURUSD/EURUSD_M5.parquet data/metadata/EURUSD_M5.json data/metadata/EURUSD_M5.sha256
-          cat data/metadata/EURUSD_M5.json
-
-      - name: STEP 08 - Inspect Parquet integrity
+      - name: STEP 06 - Validate higher-timeframe datasets
         shell: bash
         run: |
           set -euxo pipefail
           python - <<'PY'
-          import json, hashlib
           from pathlib import Path
           import pandas as pd
-          p=Path('data/raw/EURUSD/EURUSD_M5.parquet'); m=Path('data/metadata/EURUSD_M5.json')
-          df=pd.read_parquet(p); meta=json.loads(m.read_text())
-          digest=hashlib.sha256(p.read_bytes()).hexdigest()
-          assert digest == meta['sha256']
-          assert not df.empty
-          assert list(df.columns)==['timestamp','open','high','low','close','volume']
-          assert df.timestamp.is_monotonic_increasing and not df.timestamp.duplicated().any()
-          assert not (df.high < df[['open','close']].max(axis=1)).any()
-          assert not (df.low > df[['open','close']].min(axis=1)).any()
-          assert not (df.high < df.low).any()
-          print('rows=',len(df)); print('first=',df.timestamp.iloc[0]); print('last=',df.timestamp.iloc[-1]); print('sha256=',digest)
+          for tf in ('H1','H4','D1'):
+              p=Path(f'data/raw/EURUSD/EURUSD_{tf}.parquet')
+              df=pd.read_parquet(p)
+              assert not df.empty
+              assert list(df.columns)==['time','open','high','low','close']
+              assert df.time.is_monotonic_increasing
+              assert not df.time.duplicated().any()
+              assert not (df.high < df[['open','close']].max(axis=1)).any()
+              assert not (df.low > df[['open','close']].min(axis=1)).any()
+              assert not (df.high < df.low).any()
+              print(tf, len(df), df.time.iloc[0], '->', df.time.iloc[-1])
           PY
 
-      - name: STEP 09 - Run test suite
+      - name: STEP 07 - Run test suite
         shell: bash
         run: |
           set -euxo pipefail
           pytest -q --disable-warnings --maxfail=1
 
-      - name: STEP 10 - Upload dataset and diagnostics
+      - name: STEP 08 - Upload higher-timeframe datasets and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: EURUSD_M5-diagnostic-${{ github.run_id }}
+          name: EURUSD-H1-H4-D1-diagnostic-${{ github.run_id }}
           path: |
-            data/raw/EURUSD/EURUSD_M5.parquet
-            data/metadata/EURUSD_M5.json
-            data/metadata/EURUSD_M5.sha256
+            data/raw/EURUSD/EURUSD_H1.csv
+            data/raw/EURUSD/EURUSD_H4.csv
+            data/raw/EURUSD/EURUSD_D1.csv
+            data/raw/EURUSD/EURUSD_H1.parquet
+            data/raw/EURUSD/EURUSD_H4.parquet
+            data/raw/EURUSD/EURUSD_D1.parquet
+            data/metadata/EURUSD_H1_H4_D1.json
           if-no-files-found: warn
           retention-days: 7
 
-      - name: STEP 11 - Final status
+      - name: STEP 09 - Final status
         if: always()
         shell: bash
         run: |
           echo "workflow_run_id=${{ github.run_id }}"
           echo "sha=${{ github.sha }}"
           echo "job_status=${{ job.status }}"
+          echo "M5_STATUS=DEFERRED_NO_STABLE_PUBLIC_SOURCE"

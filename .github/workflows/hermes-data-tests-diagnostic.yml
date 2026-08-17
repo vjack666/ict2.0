@@ -34,9 +34,8 @@ jobs:
           ls -la
           find .github -maxdepth 3 -type f -print | sort
           find tools data -maxdepth 4 -type f -print 2>/dev/null | sort || true
-          find . -maxdepth 3 -type f \( -name 'requirements*.txt' -o -name 'pyproject.toml' -o -name 'setup.py' -o -name 'Pipfile' -o -name 'environment.yml' \) -print | sort || true
 
-      - name: STEP 03 - Set up Python (NO cache)
+      - name: STEP 03 - Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
@@ -46,41 +45,62 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          python --version
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
           if [ -f pyproject.toml ]; then pip install -e .; fi
           if [ -f setup.py ]; then pip install -e .; fi
           pip install pandas pyarrow requests pytest pytest-cov
-          python - <<'PY'
-          import pandas, pyarrow, requests, pytest
-          print('pandas', pandas.__version__)
-          print('pyarrow', pyarrow.__version__)
-          print('requests', requests.__version__)
-          print('pytest', pytest.__version__)
-          PY
+          python -c "import pandas,pyarrow,requests,pytest; print('deps OK')"
 
-      - name: STEP 05 - Verify acquisition pipeline
+      - name: STEP 05 - Verify Node data client
         shell: bash
         run: |
           set -euxo pipefail
-          test -f tools/data/acquire_eurusd_m5.py
-          python tools/data/acquire_eurusd_m5.py --help
+          node --version
+          npm --version
+          npx --yes dukascopy-node@1.50.0 --help
 
-      - name: STEP 06 - Acquire and validate EURUSD M5
+      - name: STEP 06 - Acquire EURUSD M5 via Dukascopy JSON client
         env:
           START: ${{ github.event.inputs.start || '2020-01-01' }}
           END: ${{ github.event.inputs.end || '2020-02-01' }}
         shell: bash
         run: |
           set -euxo pipefail
+          mkdir -p data/raw/EURUSD data/metadata data/work/dukascopy
           echo "Requested range: ${START} -> ${END}"
-          python tools/data/acquire_eurusd_m5.py --start "$START" --end "$END"
+          npx --yes dukascopy-node@1.50.0 \
+            -i eurusd \
+            -from "$START" \
+            -to "$END" \
+            -t m5 \
+            -p bid \
+            -v \
+            -f csv \
+            -dir data/work/dukascopy \
+            -bs 5 \
+            -bp 3000 \
+            -r 5 \
+            -rp 5000
+          echo '=== DOWNLOADED FILES ==='
+          find data/work/dukascopy -type f -maxdepth 4 -print | sort
+          CSV=$(find data/work/dukascopy -type f -name '*.csv' | head -n 1)
+          test -n "$CSV"
+          echo "CSV=$CSV" >> "$GITHUB_ENV"
+
+      - name: STEP 07 - Canonicalize + validate Parquet
+        env:
+          START: ${{ github.event.inputs.start || '2020-01-01' }}
+          END: ${{ github.event.inputs.end || '2020-02-01' }}
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python tools/data/finalize_eurusd_m5.py --csv "$CSV" --start "$START" --end "$END"
           ls -lh data/raw/EURUSD/EURUSD_M5.parquet data/metadata/EURUSD_M5.json data/metadata/EURUSD_M5.sha256
           cat data/metadata/EURUSD_M5.json
 
-      - name: STEP 07 - Inspect Parquet integrity
+      - name: STEP 08 - Inspect Parquet integrity
         shell: bash
         run: |
           set -euxo pipefail
@@ -88,29 +108,26 @@ jobs:
           import json, hashlib
           from pathlib import Path
           import pandas as pd
-          p = Path('data/raw/EURUSD/EURUSD_M5.parquet')
-          m = Path('data/metadata/EURUSD_M5.json')
-          df = pd.read_parquet(p)
-          meta = json.loads(m.read_text())
-          digest = hashlib.sha256(p.read_bytes()).hexdigest()
-          assert digest == meta['sha256'], 'SHA256 mismatch'
-          assert not df.empty, 'Parquet is empty'
-          assert list(df.columns) == ['timestamp','open','high','low','close','volume']
-          assert df.timestamp.is_monotonic_increasing
-          assert not df.timestamp.duplicated().any()
-          print('rows=', len(df))
-          print('first=', df.timestamp.iloc[0])
-          print('last=', df.timestamp.iloc[-1])
-          print('sha256=', digest)
+          p=Path('data/raw/EURUSD/EURUSD_M5.parquet'); m=Path('data/metadata/EURUSD_M5.json')
+          df=pd.read_parquet(p); meta=json.loads(m.read_text())
+          digest=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert digest == meta['sha256']
+          assert not df.empty
+          assert list(df.columns)==['timestamp','open','high','low','close','volume']
+          assert df.timestamp.is_monotonic_increasing and not df.timestamp.duplicated().any()
+          assert not (df.high < df[['open','close']].max(axis=1)).any()
+          assert not (df.low > df[['open','close']].min(axis=1)).any()
+          assert not (df.high < df.low).any()
+          print('rows=',len(df)); print('first=',df.timestamp.iloc[0]); print('last=',df.timestamp.iloc[-1]); print('sha256=',digest)
           PY
 
-      - name: STEP 08 - Run test suite
+      - name: STEP 09 - Run test suite
         shell: bash
         run: |
           set -euxo pipefail
           pytest -q --disable-warnings --maxfail=1
 
-      - name: STEP 09 - Upload dataset and diagnostics
+      - name: STEP 10 - Upload dataset and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -122,7 +139,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-      - name: STEP 10 - Final status
+      - name: STEP 11 - Final status
         if: always()
         shell: bash
         run: |

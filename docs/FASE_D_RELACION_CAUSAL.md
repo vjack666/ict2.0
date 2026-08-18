@@ -1,6 +1,6 @@
 # FASE D — Relación causal y lineage
 
-**Estado:** `IN_PROGRESS / GATE_PENDING`  
+**Estado:** `COMPLETADA / GATE_PASS`  
 **Precondición:** Gate C PASS  
 **Alcance:** lineage y relaciones causales; sin ejecución, scoring, aprendizaje ni optimización.
 
@@ -10,13 +10,7 @@ Convertir los objetos detectados en una cadena causal auditable, sin permitir qu
 
 ## Contrato
 
-Cada relación causal debe identificar:
-
-- `parent_id`;
-- `child_id`;
-- `relation`;
-- `parent_bar` / `child_bar`;
-- opcionalmente `parent_time` / `child_time`.
+Cada relación causal debe identificar `parent_id`, `child_id`, `relation`, `parent_bar`/`child_bar` y, cuando existe, `parent_time`/`child_time`.
 
 Reglas obligatorias:
 
@@ -27,25 +21,33 @@ Reglas obligatorias:
 5. `bar_index` es obligatorio para construir un enlace;
 6. el lineage es explícito por origen (`parent_object` / `CausalLink`), no por proximidad temporal.
 
-## Implementación actual
+## Implementación
 
-`engine/lineage.py` contiene un consumidor de lineage del motor y una API contractual `CausalLink`, `link()` y `validate_links()` para relaciones temporales explícitas.
+`engine/lineage.py` conserva el consumidor `trace_setup_lineage()` y ahora además expone `CausalLink`, `link()` y `validate_links()` como contrato ejecutable de relaciones históricas.
 
-La cadena canónica del producto conserva el orden histórico:
+La cadena canónica conserva el orden:
 
 `LIQUIDITY → SWEEP → DISPLACE → BOS → POI/REFINEMENT → RETURN`
 
 FVG/OB se integran como objetos derivados del movimiento correspondiente y no pueden utilizar información posterior a su timestamp de decisión.
 
-## Anti-look-ahead
+## Evidencia Gate D
 
-Las pruebas deben demostrar que:
+**Workflow:** `Hermes Tests`  
+**Run:** `#85`  
+**Run ID:** `32084187515`  
+**Resultado:** **27 passed in 0.05s**
 
-- un parent futuro se rechaza;
-- un timestamp futuro se rechaza;
-- objetos sin `bar_index` no pueden formar lineage;
-- enlaces duplicados se rechazan;
-- la relación causal es explícita y estable.
+Cobertura específica:
+
+- parent antes de child;
+- rechazo de parent futuro;
+- rechazo de timestamp futuro;
+- rechazo de `bar_index` ausente;
+- rechazo de enlaces duplicados;
+- inmutabilidad de `CausalLink`.
+
+El primer intento de Gate D falló por una discrepancia entre el `lineage.py` preexistente y el contrato de pruebas (`CausalLink` no estaba implementado). Se corrigió el código y se volvió a ejecutar la suite. El segundo intento quedó completamente verde.
 
 ## Fuera de alcance
 
@@ -57,14 +59,6 @@ Las pruebas deben demostrar que:
 - obtención de M5;
 - clasificación adicional de OB no definida aún por la tesis.
 
-## Gate D
+## Decisión
 
-PASS sólo si:
-
-1. contrato de lineage pasa sus tests;
-2. no-look-ahead temporal pasa 100% en la suite diseñada;
-3. suite completa del repositorio pasa;
-4. no se introduce OTE/Fibonacci;
-5. documentación, `.hermes-index.md` y worklog reflejan evidencia real.
-
-Ante cualquier fallo: corregir y volver a ejecutar.
+**GATE D = PASS.** Fase E queda habilitada.

@@ -1,0 +1,329 @@
+{
+  "symbol": "EURUSD",
+  "n_samples": 7,
+  "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
+  "samples": [
+    {
+      "decision_time": "2007-08-07 01:00:00",
+      "status": "OK",
+      "direction_hint": "BEARISH",
+      "allow_long": false,
+      "allow_short": true,
+      "n_location_zones": 1,
+      "n_liq_targets": 24,
+      "regime_stack": {
+        "D1": "RETRACEMENT",
+        "H4": "TREND_BULL",
+        "H1": "COMPRESSION"
+      },
+      "path_len": 4,
+      "path": [
+        {
+          "layer": "D1",
+          "question": "HAS_RELEVANT_CONTEXT",
+          "answer": true,
+          "detail": "bias=BEARISH, liq_pools=True"
+        },
+        {
+          "layer": "H4",
+          "question": "WHERE_IN_CONTEXT",
+          "answer": "PREMIUM",
+          "detail": "near=[], h4_bias=BULLISH"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_STRUCTURE",
+          "answer": true,
+          "detail": "bias=MIXED, bos=1"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_SEQUENCE_DEPTH",
+          "answer": 1,
+          "detail": "proxy=structure+displacement (full sequential engine optional upstream)"
+        }
+      ],
+      "layers": [
+        "D1",
+        "H4",
+        "H1"
+      ]
+    },
+    {
+      "decision_time": "2010-10-15 00:00:00",
+      "status": "OK",
+      "direction_hint": "BULLISH",
+      "allow_long": true,
+      "allow_short": false,
+      "n_location_zones": 1,
+      "n_liq_targets": 88,
+      "regime_stack": {
+        "D1": "TREND_BULL",
+        "H4": "TREND_BULL",
+        "H1": "TREND_BEAR"
+      },
+      "path_len": 4,
+      "path": [
+        {
+          "layer": "D1",
+          "question": "HAS_RELEVANT_CONTEXT",
+          "answer": true,
+          "detail": "bias=BULLISH, liq_pools=True"
+        },
+        {
+          "layer": "H4",
+          "question": "WHERE_IN_CONTEXT",
+          "answer": "PREMIUM",
+          "detail": "near=['EQH', 'EQL', 'EQL'], h4_bias=BULLISH"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_STRUCTURE",
+          "answer": true,
+          "detail": "bias=BEARISH, bos=-1"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_SEQUENCE_DEPTH",
+          "answer": 1,
+          "detail": "proxy=structure+displacement (full sequential engine optional upstream)"
+        }
+      ],
+      "layers": [
+        "D1",
+        "H4",
+        "H1"
+      ]
+    },
+    {
+      "decision_time": "2013-12-27 00:00:00",
+      "status": "OK",
+      "direction_hint": "UNKNOWN",
+      "allow_long": null,
+      "allow_short": null,
+      "n_location_zones": 1,
+      "n_liq_targets": 127,
+      "regime_stack": {
+        "D1": "COMPRESSION",
+        "H4": "RANGE",
+        "H1": "COMPRESSION"
+      },
+      "path_len": 4,
+      "path": [
+        {
+          "layer": "D1",
+          "question": "HAS_RELEVANT_CONTEXT",
+          "answer": true,
+          "detail": "bias=MIXED, liq_pools=True"
+        },
+        {
+          "layer": "H4",
+          "question": "WHERE_IN_CONTEXT",
+          "answer": "PREMIUM",
+          "detail": "near=['EQH', 'EQH', 'EQH', 'EQL', 'EQL'], h4_bias=MIXED"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_STRUCTURE",
+          "answer": true,
+          "detail": "bias=MIXED, bos=1"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_SEQUENCE_DEPTH",
+          "answer": 1,
+          "detail": "proxy=structure+displacement (full sequential engine optional upstream)"
+        }
+      ],
+      "layers": [
+        "D1",
+        "H4",
+        "H1"
+      ]
+    },
+    {
+      "decision_time": "2017-03-14 07:00:00",
+      "status": "OK",
+      "direction_hint": "BULLISH",
+      "allow_long": true,
+      "allow_short": false,
+      "n_location_zones": 1,
+      "n_liq_targets": 166,
+      "regime_stack": {
+        "D1": "TREND_BULL",
+        "H4": "COMPRESSION",
+        "H1": "RANGE"
+      },
+      "path_len": 4,
+      "path": [
+        {
+          "layer": "D1",
+          "question": "HAS_RELEVANT_CONTEXT",
+          "answer": true,
+          "detail": "bias=BULLISH, liq_pools=True"
+        },
+        {
+          "layer": "H4",
+          "question": "WHERE_IN_CONTEXT",
+          "answer": "EQUILIBRIUM",
+          "detail": "near=['EQH', 'EQH', 'EQL'], h4_bias=MIXED"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_STRUCTURE",
+          "answer": true,
+          "detail": "bias=MIXED, bos=-1"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_SEQUENCE_DEPTH",
+          "answer": 2,
+          "detail": "proxy=structure+displacement (full sequential engine optional upstream)"
+        }
+      ],
+      "layers": [
+        "D1",
+        "H4",
+        "H1"
+      ]
+    },
+    {
+      "decision_time": "2020-05-29 11:00:00",
+      "status": "OK",
+      "direction_hint": "BULLISH",
+      "allow_long": true,
+      "allow_short": false,
+      "n_location_zones": 1,
+      "n_liq_targets": 203,
+      "regime_stack": {
+        "D1": "TREND_BULL",
+        "H4": "TREND_BULL",
+        "H1": "TREND_BULL"
+      },
+      "path_len": 4,
+      "path": [
+        {
+          "layer": "D1",
+          "question": "HAS_RELEVANT_CONTEXT",
+          "answer": true,
+          "detail": "bias=BULLISH, liq_pools=True"
+        },
+        {
+          "layer": "H4",
+          "question": "WHERE_IN_CONTEXT",
+          "answer": "PREMIUM",
+          "detail": "near=['EQH', 'EQH', 'EQH', 'EQH', 'EQH', 'EQL', 'EQL', 'EQL', 'EQL'], h4_bias=BULLISH"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_STRUCTURE",
+          "answer": true,
+          "detail": "bias=BULLISH, bos=1"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_SEQUENCE_DEPTH",
+          "answer": 1,
+          "detail": "proxy=structure+displacement (full sequential engine optional upstream)"
+        }
+      ],
+      "layers": [
+        "D1",
+        "H4",
+        "H1"
+      ]
+    },
+    {
+      "decision_time": "2023-09-08 12:00:00",
+      "status": "OK",
+      "direction_hint": "UNKNOWN",
+      "allow_long": null,
+      "allow_short": null,
+      "n_location_zones": 1,
+      "n_liq_targets": 227,
+      "regime_stack": {
+        "D1": "COMPRESSION",
+        "H4": "COMPRESSION",
+        "H1": "COMPRESSION"
+      },
+      "path_len": 4,
+      "path": [
+        {
+          "layer": "D1",
+          "question": "HAS_RELEVANT_CONTEXT",
+          "answer": true,
+          "detail": "bias=MIXED, liq_pools=True"
+        },
+        {
+          "layer": "H4",
+          "question": "WHERE_IN_CONTEXT",
+          "answer": "DISCOUNT",
+          "detail": "near=['EQH', 'EQH', 'EQH', 'EQL', 'EQL'], h4_bias=MIXED"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_STRUCTURE",
+          "answer": true,
+          "detail": "bias=MIXED, bos=-1"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_SEQUENCE_DEPTH",
+          "answer": 1,
+          "detail": "proxy=structure+displacement (full sequential engine optional upstream)"
+        }
+      ],
+      "layers": [
+        "D1",
+        "H4",
+        "H1"
+      ]
+    },
+    {
+      "decision_time": "2025-12-31 12:00:00",
+      "status": "OK",
+      "direction_hint": "BULLISH",
+      "allow_long": true,
+      "allow_short": false,
+      "n_location_zones": 1,
+      "n_liq_targets": 240,
+      "regime_stack": {
+        "D1": "TREND_BULL",
+        "H4": "TREND_BEAR",
+        "H1": "RANGE"
+      },
+      "path_len": 4,
+      "path": [
+        {
+          "layer": "D1",
+          "question": "HAS_RELEVANT_CONTEXT",
+          "answer": true,
+          "detail": "bias=BULLISH, liq_pools=True"
+        },
+        {
+          "layer": "H4",
+          "question": "WHERE_IN_CONTEXT",
+          "answer": "PREMIUM",
+          "detail": "near=['EQH', 'EQH', 'EQH', 'EQH', 'EQL', 'EQL', 'EQL'], h4_bias=BEARISH"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_STRUCTURE",
+          "answer": true,
+          "detail": "bias=MIXED, bos=-1"
+        },
+        {
+          "layer": "H1",
+          "question": "HAS_SEQUENCE_DEPTH",
+          "answer": 2,
+          "detail": "proxy=structure+displacement (full sequential engine optional upstream)"
+        }
+      ],
+      "layers": [
+        "D1",
+        "H4",
+        "H1"
+      ]
+    }
+  ]
+}

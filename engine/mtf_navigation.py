@@ -1,0 +1,681 @@
+"""Grafo de navegación multi-timeframe — Context State (no entry).
+
+Implementa la lectura normativa de
+``docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md``:
+
+- HTF produce **restricciones** (location, regime, structure), no gatillos.
+- La navegación es un grafo/árbol de preguntas D1 → H4 → H1 → LTF.
+- Solo velas HTF **cerradas** respecto del timestamp de decisión (EXEC).
+- **No** emite señales de compra/venta ni PnL.
+- **No** usa EMA como bias normativo.
+
+Uso típico::
+
+    nav = MTFNavigator({"D1": df_d1, "H4": df_h4, "H1": df_h1})
+    state = nav.navigate(decision_time=ts, exec_tf="H1")
+    # state.constraints / state.path / state.allowed_questions
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field, asdict
+from enum import Enum
+from typing import Any, Mapping, Sequence
+
+import numpy as np
+import pandas as pd
+
+from detectors.bos import BosConfig, detect_bos
+from tools.displacement import DisplacementConfig, detect_displacement
+
+
+# ---------------------------------------------------------------------------
+# Taxonomy
+# ---------------------------------------------------------------------------
+
+class TimeframeLayer(str, Enum):
+    D1 = "D1"
+    H4 = "H4"
+    H1 = "H1"
+    M15 = "M15"
+    M5 = "M5"
+
+
+# Default hierarchy for navigation (highest context → execution)
+DEFAULT_HIERARCHY: tuple[TimeframeLayer, ...] = (
+    TimeframeLayer.D1,
+    TimeframeLayer.H4,
+    TimeframeLayer.H1,
+    TimeframeLayer.M15,
+    TimeframeLayer.M5,
+)
+
+
+class NavQuestion(str, Enum):
+    """Preguntas que el grafo puede resolver en cada capa."""
+
+    HAS_RELEVANT_CONTEXT = "HAS_RELEVANT_CONTEXT"  # D1
+    WHERE_IN_CONTEXT = "WHERE_IN_CONTEXT"  # H4
+    HAS_STRUCTURE = "HAS_STRUCTURE"  # H1
+    HAS_SEQUENCE_DEPTH = "HAS_SEQUENCE_DEPTH"  # H1
+    HAS_TRIGGER = "HAS_TRIGGER"  # LTF
+    WAITING_RETEST = "WAITING_RETEST"  # LTF
+
+
+class RegimeLabel(str, Enum):
+    TREND_BULL = "TREND_BULL"
+    TREND_BEAR = "TREND_BEAR"
+    RANGE = "RANGE"
+    EXPANSION = "EXPANSION"
+    RETRACEMENT = "RETRACEMENT"
+    COMPRESSION = "COMPRESSION"
+    UNKNOWN = "UNKNOWN"
+
+
+class StructureBias(str, Enum):
+    BULLISH = "BULLISH"
+    BEARISH = "BEARISH"
+    MIXED = "MIXED"
+    UNKNOWN = "UNKNOWN"
+
+
+# ---------------------------------------------------------------------------
+# Data containers
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Zone:
+    low: float
+    high: float
+    kind: str = "POI"  # POI | BSL | SSL | DEALING
+    bar_index: int | None = None
+    detail: str = ""
+
+    @property
+    def mid(self) -> float:
+        return 0.5 * (self.low + self.high)
+
+    def contains(self, price: float) -> bool:
+        return self.low <= price <= self.high
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class LayerSnapshot:
+    """Estado point-in-time de una temporalidad (solo velas cerradas)."""
+
+    layer: TimeframeLayer
+    asof_bar: int
+    asof_time: Any
+    last_close: float
+    structure_bias: StructureBias = StructureBias.UNKNOWN
+    regime: RegimeLabel = RegimeLabel.UNKNOWN
+    zones: list[Zone] = field(default_factory=list)
+    last_bos_direction: int | None = None  # +1 / -1
+    last_bos_bar: int | None = None
+    displacement_recent: bool = False
+    range_high: float | None = None
+    range_low: float | None = None
+    answers: dict[str, Any] = field(default_factory=dict)
+    notes: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "layer": self.layer.value,
+            "asof_bar": self.asof_bar,
+            "asof_time": str(self.asof_time),
+            "last_close": self.last_close,
+            "structure_bias": self.structure_bias.value,
+            "regime": self.regime.value,
+            "zones": [z.to_dict() for z in self.zones],
+            "last_bos_direction": self.last_bos_direction,
+            "last_bos_bar": self.last_bos_bar,
+            "displacement_recent": self.displacement_recent,
+            "range_high": self.range_high,
+            "range_low": self.range_low,
+            "answers": self.answers,
+            "notes": list(self.notes),
+        }
+
+
+@dataclass
+class ContextConstraints:
+    """Mapa de restricciones emitido por el grafo (no es señal)."""
+
+    decision_time: Any
+    exec_tf: str
+    direction_hint: StructureBias = StructureBias.UNKNOWN
+    location_zones: list[Zone] = field(default_factory=list)
+    liquidity_targets: list[Zone] = field(default_factory=list)
+    regime_stack: dict[str, str] = field(default_factory=dict)
+    allow_long: bool | None = None  # None = no opinion
+    allow_short: bool | None = None
+    sequence_required: bool = True
+    notes: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "decision_time": str(self.decision_time),
+            "exec_tf": self.exec_tf,
+            "direction_hint": self.direction_hint.value,
+            "location_zones": [z.to_dict() for z in self.location_zones],
+            "liquidity_targets": [z.to_dict() for z in self.liquidity_targets],
+            "regime_stack": dict(self.regime_stack),
+            "allow_long": self.allow_long,
+            "allow_short": self.allow_short,
+            "sequence_required": self.sequence_required,
+            "notes": list(self.notes),
+            "policy": "CONTEXT_ONLY_NOT_ENTRY",
+        }
+
+
+@dataclass
+class NavigationPath:
+    """Camino recorrido en el grafo (auditoría)."""
+
+    steps: list[dict[str, Any]] = field(default_factory=list)
+
+    def add(self, layer: TimeframeLayer, question: NavQuestion, answer: Any, detail: str = "") -> None:
+        self.steps.append(
+            {
+                "layer": layer.value,
+                "question": question.value,
+                "answer": answer,
+                "detail": detail,
+            }
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"steps": list(self.steps)}
+
+
+@dataclass
+class MarketState:
+    """Estado multinivel completo en un decision_time."""
+
+    decision_time: Any
+    exec_tf: str
+    layers: dict[str, LayerSnapshot] = field(default_factory=dict)
+    constraints: ContextConstraints | None = None
+    path: NavigationPath = field(default_factory=NavigationPath)
+    status: str = "OK"  # OK | INCOMPLETE | BLOCKED
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "decision_time": str(self.decision_time),
+            "exec_tf": self.exec_tf,
+            "status": self.status,
+            "layers": {k: v.to_dict() for k, v in self.layers.items()},
+            "constraints": self.constraints.to_dict() if self.constraints else None,
+            "path": self.path.to_dict(),
+            "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
+        }
+
+
+# ---------------------------------------------------------------------------
+# Geometry helpers (causal, no EMA)
+# ---------------------------------------------------------------------------
+
+def _ensure_time(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    if "time" not in out.columns:
+        out["time"] = np.arange(len(out))
+    out["time"] = pd.to_datetime(out["time"], utc=False, errors="coerce")
+    if out["time"].isna().all():
+        out["time"] = pd.to_datetime(np.arange(len(out)), unit="s")
+    return out.sort_values("time").reset_index(drop=True)
+
+
+def _asof_index(df: pd.DataFrame, decision_time: Any) -> int | None:
+    """Última barra con time <= decision_time (vela cerrada disponible)."""
+    if df.empty:
+        return None
+    ts = pd.Timestamp(decision_time)
+    times = pd.to_datetime(df["time"])
+    # exclusive of future
+    mask = times <= ts
+    if not mask.any():
+        return None
+    return int(np.where(mask)[0][-1])
+
+
+def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[list[tuple[int, float]], list[tuple[int, float]]]:
+    n = len(high)
+    sh, sl = [], []
+    for conf in range(left * 2, n):
+        j = conf - left
+        if j < left:
+            continue
+        if high[j] >= high[j - left : j + left + 1].max():
+            sh.append((j, float(high[j])))
+        if low[j] <= low[j - left : j + left + 1].min():
+            sl.append((j, float(low[j])))
+    return sh, sl
+
+
+def _structure_bias_from_swings(
+    sh: list[tuple[int, float]], sl: list[tuple[int, float]], upto: int
+) -> StructureBias:
+    sh_u = [(b, p) for b, p in sh if b <= upto]
+    sl_u = [(b, p) for b, p in sl if b <= upto]
+    if len(sh_u) < 2 or len(sl_u) < 2:
+        return StructureBias.UNKNOWN
+    hh = sh_u[-1][1] > sh_u[-2][1]
+    hl = sl_u[-1][1] > sl_u[-2][1]
+    lh = sh_u[-1][1] < sh_u[-2][1]
+    ll = sl_u[-1][1] < sl_u[-2][1]
+    if hh and hl:
+        return StructureBias.BULLISH
+    if lh and ll:
+        return StructureBias.BEARISH
+    return StructureBias.MIXED
+
+
+def _dealing_range(high: np.ndarray, low: np.ndarray, upto: int, lookback: int = 50) -> tuple[float, float]:
+    a = max(0, upto - lookback + 1)
+    return float(high[a : upto + 1].max()), float(low[a : upto + 1].min())
+
+
+def _eq_pools(
+    swings: list[tuple[int, float]],
+    high: np.ndarray,
+    low: np.ndarray,
+    upto: int,
+    *,
+    is_high: bool,
+    min_touches: int = 2,
+    tol_mult: float = 0.25,
+) -> list[Zone]:
+    seg = [(b, p) for b, p in swings if b <= upto]
+    if len(seg) < min_touches:
+        return []
+    zones: list[Zone] = []
+    used: set[int] = set()
+    for i, (bi, pi) in enumerate(seg):
+        if i in used:
+            continue
+        rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
+        tol = max(rng * tol_mult, 1e-9)
+        group = [(bi, pi)]
+        idxs = [i]
+        for j in range(i + 1, len(seg)):
+            if abs(seg[j][1] - pi) <= tol:
+                group.append(seg[j])
+                idxs.append(j)
+        if len(group) >= min_touches:
+            for j in idxs:
+                used.add(j)
+            prices = [g[1] for g in group]
+            zones.append(
+                Zone(
+                    low=float(min(prices)),
+                    high=float(max(prices)),
+                    kind="BSL" if is_high else "SSL",
+                    bar_index=int(max(g[0] for g in group)),
+                    detail="EQH" if is_high else "EQL",
+                )
+            )
+    return zones
+
+
+def _regime_from_structure(
+    bias: StructureBias, range_high: float, range_low: float, close: float
+) -> RegimeLabel:
+    if range_high is None or range_low is None or range_high <= range_low:
+        return RegimeLabel.UNKNOWN
+    pos = (close - range_low) / (range_high - range_low)
+    if bias is StructureBias.BULLISH:
+        return RegimeLabel.TREND_BULL if pos > 0.35 else RegimeLabel.RETRACEMENT
+    if bias is StructureBias.BEARISH:
+        return RegimeLabel.TREND_BEAR if pos < 0.65 else RegimeLabel.RETRACEMENT
+    if 0.35 <= pos <= 0.65:
+        return RegimeLabel.RANGE
+    return RegimeLabel.COMPRESSION
+
+
+# ---------------------------------------------------------------------------
+# Navigator
+# ---------------------------------------------------------------------------
+
+@dataclass
+class NavigatorConfig:
+    swing_left: int = 3
+    dealing_lookback: int = 50
+    bos_lookback: int = 5
+    displacement_lookback: int = 8
+    hierarchy: tuple[TimeframeLayer, ...] = DEFAULT_HIERARCHY
+    # Minimum layers required for status OK
+    required_layers: tuple[TimeframeLayer, ...] = (
+        TimeframeLayer.D1,
+        TimeframeLayer.H4,
+        TimeframeLayer.H1,
+    )
+
+
+class MTFNavigator:
+    """Grafo de navegación Context State.
+
+    Parameters
+    ----------
+    frames:
+        Mapping TF name → OHLC DataFrame with columns open/high/low/close/time.
+    """
+
+    def __init__(
+        self,
+        frames: Mapping[str, pd.DataFrame],
+        config: NavigatorConfig | None = None,
+    ) -> None:
+        self.config = config or NavigatorConfig()
+        self._frames: dict[str, pd.DataFrame] = {}
+        for key, df in frames.items():
+            k = key.upper()
+            need = {"open", "high", "low", "close"}
+            if missing := need - set(df.columns):
+                raise KeyError(f"{k}: faltan columnas {missing}")
+            self._frames[k] = _ensure_time(df)
+
+    def available_layers(self) -> list[str]:
+        return sorted(self._frames.keys())
+
+    def _snapshot(self, layer: TimeframeLayer, decision_time: Any) -> LayerSnapshot | None:
+        df = self._frames.get(layer.value)
+        if df is None or df.empty:
+            return None
+        i = _asof_index(df, decision_time)
+        if i is None:
+            return None
+
+        high = df["high"].to_numpy(float)
+        low = df["low"].to_numpy(float)
+        close = df["close"].to_numpy(float)
+        sh, sl = _causal_swings(high, low, self.config.swing_left)
+        bias = _structure_bias_from_swings(sh, sl, i)
+        rh, rl = _dealing_range(high, low, i, self.config.dealing_lookback)
+        regime = _regime_from_structure(bias, rh, rl, float(close[i]))
+
+        zones: list[Zone] = []
+        zones.extend(_eq_pools(sh, high, low, i, is_high=True))
+        zones.extend(_eq_pools(sl, high, low, i, is_high=False))
+        # dealing range as zone
+        zones.append(Zone(low=rl, high=rh, kind="DEALING", bar_index=i, detail="dealing_range"))
+
+        # BOS last (canonical detector on prefix — note: internal center swings caveat)
+        last_bos_dir = None
+        last_bos_bar = None
+        try:
+            prefix = df.iloc[: i + 1].copy()
+            bos = detect_bos(prefix, BosConfig(swing_lookback=self.config.bos_lookback))
+            dirs = bos["bos_direction"].to_numpy()
+            for b in range(len(dirs) - 1, -1, -1):
+                if int(dirs[b]) != 0:
+                    last_bos_dir = int(dirs[b])
+                    last_bos_bar = b
+                    break
+        except Exception as exc:  # noqa: BLE001
+            notes_bos = [f"bos_skip:{exc}"]
+        else:
+            notes_bos = []
+
+        disp_recent = False
+        try:
+            prefix = df.iloc[: i + 1].copy()
+            ddf = detect_displacement(prefix, DisplacementConfig())
+            lb = self.config.displacement_lookback
+            a = max(0, i - lb + 1)
+            disp_recent = bool(
+                ddf["displacement_bullish"].iloc[a : i + 1].any()
+                or ddf["displacement_bearish"].iloc[a : i + 1].any()
+            )
+        except Exception:
+            pass
+
+        snap = LayerSnapshot(
+            layer=layer,
+            asof_bar=i,
+            asof_time=df["time"].iloc[i],
+            last_close=float(close[i]),
+            structure_bias=bias,
+            regime=regime,
+            zones=zones,
+            last_bos_direction=last_bos_dir,
+            last_bos_bar=last_bos_bar,
+            displacement_recent=disp_recent,
+            range_high=rh,
+            range_low=rl,
+            notes=notes_bos,
+        )
+        return snap
+
+    def _answer_d1(self, snap: LayerSnapshot, path: NavigationPath) -> bool:
+        # Relevant context: known structure or at least dealing range + a liquidity pool
+        has_liq = any(z.kind in ("BSL", "SSL") for z in snap.zones)
+        has_struct = snap.structure_bias is not StructureBias.UNKNOWN
+        ok = has_struct or has_liq
+        snap.answers[NavQuestion.HAS_RELEVANT_CONTEXT.value] = ok
+        path.add(
+            TimeframeLayer.D1,
+            NavQuestion.HAS_RELEVANT_CONTEXT,
+            ok,
+            detail=f"bias={snap.structure_bias.value}, liq_pools={has_liq}",
+        )
+        return ok
+
+    def _answer_h4(self, snap: LayerSnapshot, d1: LayerSnapshot | None, path: NavigationPath) -> str:
+        price = snap.last_close
+        loc = "OUTSIDE"
+        if d1 and d1.range_low is not None and d1.range_high is not None:
+            if d1.range_low <= price <= d1.range_high:
+                # position in D1 dealing range
+                span = d1.range_high - d1.range_low
+                pos = (price - d1.range_low) / span if span > 0 else 0.5
+                if pos < 0.33:
+                    loc = "DISCOUNT"
+                elif pos > 0.67:
+                    loc = "PREMIUM"
+                else:
+                    loc = "EQUILIBRIUM"
+        # near D1 liquidity?
+        near = []
+        if d1:
+            for z in d1.zones:
+                if z.kind in ("BSL", "SSL", "POI") and (
+                    abs(price - z.mid) <= max(z.high - z.low, 1e-6) * 2
+                ):
+                    near.append(z.detail or z.kind)
+        snap.answers[NavQuestion.WHERE_IN_CONTEXT.value] = {
+            "location": loc,
+            "near_d1_zones": near,
+            "h4_bias": snap.structure_bias.value,
+        }
+        path.add(
+            TimeframeLayer.H4,
+            NavQuestion.WHERE_IN_CONTEXT,
+            loc,
+            detail=f"near={near}, h4_bias={snap.structure_bias.value}",
+        )
+        return loc
+
+    def _answer_h1(self, snap: LayerSnapshot, path: NavigationPath) -> dict[str, Any]:
+        has_struct = snap.structure_bias is not StructureBias.UNKNOWN or snap.last_bos_direction is not None
+        snap.answers[NavQuestion.HAS_STRUCTURE.value] = has_struct
+        path.add(
+            TimeframeLayer.H1,
+            NavQuestion.HAS_STRUCTURE,
+            has_struct,
+            detail=f"bias={snap.structure_bias.value}, bos={snap.last_bos_direction}",
+        )
+        # sequence depth proxy: bos + displacement
+        depth_proxy = int(has_struct) + int(snap.displacement_recent)
+        snap.answers[NavQuestion.HAS_SEQUENCE_DEPTH.value] = depth_proxy
+        path.add(
+            TimeframeLayer.H1,
+            NavQuestion.HAS_SEQUENCE_DEPTH,
+            depth_proxy,
+            detail="proxy=structure+displacement (full sequential engine optional upstream)",
+        )
+        return {"has_structure": has_struct, "depth_proxy": depth_proxy}
+
+    def _answer_ltf(self, snap: LayerSnapshot, path: NavigationPath) -> dict[str, Any]:
+        # Trigger proxy: recent displacement; retest unknown without zone tracking
+        has_trigger = snap.displacement_recent
+        snap.answers[NavQuestion.HAS_TRIGGER.value] = has_trigger
+        snap.answers[NavQuestion.WAITING_RETEST.value] = None  # requires active FVG zone feed
+        path.add(
+            snap.layer,
+            NavQuestion.HAS_TRIGGER,
+            has_trigger,
+            detail="proxy=recent_displacement",
+        )
+        path.add(
+            snap.layer,
+            NavQuestion.WAITING_RETEST,
+            None,
+            detail="not_resolved_without_active_fvg_feed",
+        )
+        return {"has_trigger": has_trigger, "waiting_retest": None}
+
+    def _build_constraints(
+        self,
+        decision_time: Any,
+        exec_tf: str,
+        layers: dict[str, LayerSnapshot],
+    ) -> ContextConstraints:
+        d1 = layers.get("D1")
+        h4 = layers.get("H4")
+        h1 = layers.get("H1")
+
+        direction = StructureBias.UNKNOWN
+        if d1 and d1.structure_bias in (StructureBias.BULLISH, StructureBias.BEARISH):
+            direction = d1.structure_bias
+        elif h4 and h4.structure_bias in (StructureBias.BULLISH, StructureBias.BEARISH):
+            direction = h4.structure_bias
+
+        location_zones: list[Zone] = []
+        liquidity_targets: list[Zone] = []
+        if d1:
+            for z in d1.zones:
+                if z.kind in ("BSL", "SSL"):
+                    liquidity_targets.append(z)
+                if z.kind in ("DEALING", "POI"):
+                    location_zones.append(z)
+
+        regime_stack = {
+            k: v.regime.value for k, v in layers.items()
+        }
+
+        allow_long: bool | None = None
+        allow_short: bool | None = None
+        notes: list[str] = [
+            "Constraints only — NOT an entry signal",
+            "EMA is not used as normative HTF bias",
+        ]
+        if direction is StructureBias.BULLISH:
+            allow_long = True
+            allow_short = False
+            notes.append("direction_hint from structure (D1 preferred)")
+        elif direction is StructureBias.BEARISH:
+            allow_long = False
+            allow_short = True
+            notes.append("direction_hint from structure (D1 preferred)")
+        else:
+            notes.append("no firm direction_hint — both sides unconstrained by bias")
+
+        # Location: if H4 said DISCOUNT and bullish, location supports longs more
+        if h4:
+            loc = (h4.answers.get(NavQuestion.WHERE_IN_CONTEXT.value) or {})
+            if isinstance(loc, dict):
+                loc = loc.get("location")
+            if direction is StructureBias.BULLISH and loc == "PREMIUM":
+                notes.append("bullish bias but price in PREMIUM of D1 range — location weaker for longs")
+            if direction is StructureBias.BEARISH and loc == "DISCOUNT":
+                notes.append("bearish bias but price in DISCOUNT of D1 range — location weaker for shorts")
+
+        return ContextConstraints(
+            decision_time=decision_time,
+            exec_tf=exec_tf,
+            direction_hint=direction,
+            location_zones=location_zones,
+            liquidity_targets=liquidity_targets,
+            regime_stack=regime_stack,
+            allow_long=allow_long,
+            allow_short=allow_short,
+            sequence_required=True,
+            notes=notes,
+        )
+
+    def navigate(
+        self,
+        decision_time: Any,
+        exec_tf: str = "H1",
+        stop_if_no_d1_context: bool = False,
+    ) -> MarketState:
+        """Recorre el grafo D1→…→exec y devuelve MarketState + constraints.
+
+        Never returns an entry order.
+        """
+        path = NavigationPath()
+        layers: dict[str, LayerSnapshot] = {}
+        exec_layer = TimeframeLayer[exec_tf.upper()] if exec_tf.upper() in TimeframeLayer.__members__ else TimeframeLayer.H1
+
+        # Walk hierarchy until exec layer (inclusive)
+        walk: list[TimeframeLayer] = []
+        for lyr in self.config.hierarchy:
+            walk.append(lyr)
+            if lyr == exec_layer:
+                break
+
+        d1_snap: LayerSnapshot | None = None
+        for lyr in walk:
+            snap = self._snapshot(lyr, decision_time)
+            if snap is None:
+                path.add(lyr, NavQuestion.HAS_RELEVANT_CONTEXT, False, detail="no_data_or_no_closed_bar")
+                continue
+            layers[lyr.value] = snap
+
+            if lyr is TimeframeLayer.D1:
+                ok = self._answer_d1(snap, path)
+                d1_snap = snap
+                if stop_if_no_d1_context and not ok:
+                    state = MarketState(
+                        decision_time=decision_time,
+                        exec_tf=exec_tf.upper(),
+                        layers=layers,
+                        path=path,
+                        status="INCOMPLETE",
+                    )
+                    state.constraints = self._build_constraints(decision_time, exec_tf.upper(), layers)
+                    state.constraints.notes.append("stopped: no D1 relevant context")
+                    return state
+
+            elif lyr is TimeframeLayer.H4:
+                self._answer_h4(snap, d1_snap, path)
+
+            elif lyr is TimeframeLayer.H1:
+                self._answer_h1(snap, path)
+
+            else:
+                # M15 / M5
+                self._answer_ltf(snap, path)
+
+        missing = [L.value for L in self.config.required_layers if L.value not in layers]
+        status = "OK" if not missing else "INCOMPLETE"
+        state = MarketState(
+            decision_time=decision_time,
+            exec_tf=exec_tf.upper(),
+            layers=layers,
+            path=path,
+            status=status,
+        )
+        state.constraints = self._build_constraints(decision_time, exec_tf.upper(), layers)
+        if missing:
+            state.constraints.notes.append(f"missing_layers={missing}")
+        return state
+
+    def navigate_series(
+        self,
+        decision_times: Sequence[Any],
+        exec_tf: str = "H1",
+    ) -> list[MarketState]:
+        return [self.navigate(t, exec_tf=exec_tf) for t in decision_times]

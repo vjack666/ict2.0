@@ -20,7 +20,7 @@ def test_fvg_prefix_invariance():
     assert b[:len(a)]==a
 
 def test_bullish_ob_requires_closed_followthrough():
-    z=detect_order_blocks([c(0,1.10,1.11,1.095,1.099),c(1,1.098,1.125,1.097,1.12)],"H1",min_body_ratio=.2)
+    z=detect_order_blocks([c(0,1.110,1.112,1.095,1.096),c(1,1.097,1.125,1.097,1.120)],"H1",min_body_ratio=.2)
     assert len(z)==1 and z[0].direction==1 and z[0].candidate_bar==0 and z[0].tradable_bar==1
 
 def test_bearish_ob_requires_closed_followthrough():
@@ -28,7 +28,7 @@ def test_bearish_ob_requires_closed_followthrough():
     assert len(z)==1 and z[0].direction==-1
 
 def test_ob_prefix_invariance():
-    p=[c(0,1.10,1.11,1.095,1.099),c(1,1.098,1.125,1.097,1.12)]
+    p=[c(0,1.110,1.112,1.095,1.096),c(1,1.097,1.125,1.097,1.120)]
     a=[x.to_dict() for x in detect_order_blocks(p,"H1",min_body_ratio=.2)]
     b=[x.to_dict() for x in detect_order_blocks(p+[c(2,1.12,1.14,1.115,1.135)],"H1",min_body_ratio=.2)]
     assert b[:len(a)]==a

@@ -1,7 +1,7 @@
-"""Funnel real de FVG/OB sobre EURUSD H1/H4/D1.
+"""Funnel real FVG/OB + relación explícita sobre EURUSD H1/H4/D1.
 
-Descarga datos, ejecuta detectores canónicos y conecta FVG↔OB mediante la
-relación auditada. No usa PnL ni IA.
+Descarga CSV público de ejtraderLabs, normaliza escala y ejecuta los detectores
+canónicos FVG/OB y la relación FVG↔OB. No usa PnL ni IA.
 """
 from __future__ import annotations
 
@@ -32,69 +32,73 @@ def load_csv(url: str) -> list[dict]:
     rows = list(csv.DictReader(text.splitlines()))
     values = [float(r["open"]) for r in rows if r.get("open")]
     scale = 100000.0 if values and statistics.median(values) > 10 else 1.0
-    return [
-        {
+    out = []
+    for r in rows:
+        out.append({
             "time": r["Date"],
             "open": float(r["open"]) / scale,
             "high": float(r["high"]) / scale,
             "low": float(r["low"]) / scale,
             "close": float(r["close"]) / scale,
-        }
-        for r in rows
-    ]
+        })
+    return out
 
 
 def one_tf(tf: str, rows: list[dict]) -> dict:
-    fvgs = detect_fvg(rows, timeframe=tf, symbol="EURUSD")
-    obs = detect_order_blocks(rows, timeframe=tf, symbol="EURUSD")
-    fvg_by_id = {item.id: item for item in fvgs}
-    ob_by_id = {item.id: item for item in obs}
-    relations = relate_fvg_ob(fvgs, obs, max_bars_apart=20, same_direction=True)
-    links = relation_links(relations, fvg_by_id, ob_by_id)
+    fvg = detect_fvg(rows, timeframe=tf, symbol="EURUSD")
+    ob = detect_order_blocks(rows, timeframe=tf, symbol="EURUSD")
+    relations = relate_fvg_ob(fvg, ob, max_bars_apart=20, same_direction=True)
+    links = relation_links(
+        relations,
+        {item.id: item for item in fvg},
+        {item.id: item for item in ob},
+    )
 
-    records = [
-        {"stage": "FVG", "id": item.id, "accepted": True, "direction": item.direction, "timeframe": tf}
-        for item in fvgs
-    ]
-    records += [
-        {"stage": "OB", "id": item.id, "accepted": True, "direction": item.direction, "timeframe": tf, "ob_type": "CANONICAL"}
-        for item in obs
-    ]
-    records += [
-        {
+    records = []
+    for item in fvg:
+        records.append({"stage": "FVG", "id": item.id, "accepted": True, "direction": item.direction, "timeframe": tf})
+    for item in ob:
+        records.append({"stage": "OB", "id": item.id, "accepted": True, "direction": item.direction, "timeframe": tf, "ob_type": "CANONICAL"})
+    for rel in relations:
+        records.append({
             "stage": "CONFLUENCE",
-            "id": f"REL_{relation.fvg_id}_{relation.ob_id}",
+            "id": f"{rel.fvg_id}__{rel.ob_id}",
             "accepted": True,
-            "direction": relation.direction,
+            "direction": rel.direction,
             "timeframe": tf,
-            "relation": relation.relation,
-            "bars_apart": relation.bars_apart,
-            "overlap_low": relation.overlap_low,
-            "overlap_high": relation.overlap_high,
-        }
-        for relation in relations
-    ]
-    records += [
-        {"stage": "LINEAGE", "id": f"LINK_{link.parent_id}_{link.child_id}", "accepted": True, "direction": 0, "timeframe": tf, "relation": link.relation}
-        for link in links
-    ]
+            "bars_apart": rel.bars_apart,
+            "overlap_low": rel.overlap_low,
+            "overlap_high": rel.overlap_high,
+        })
+    related_fvg = {rel.fvg_id for rel in relations}
+    related_ob = {rel.ob_id for rel in relations}
+    for item in fvg:
+        if item.id not in related_fvg:
+            records.append({"stage": "CONFLUENCE", "id": f"FVG_NO_REL_{item.id}", "accepted": False, "rejection_reason": "NO_OB_RELATION", "direction": item.direction, "timeframe": tf})
+    for item in ob:
+        if item.id not in related_ob:
+            records.append({"stage": "CONFLUENCE", "id": f"OB_NO_REL_{item.id}", "accepted": False, "rejection_reason": "NO_FVG_RELATION", "direction": item.direction, "timeframe": tf})
 
     result, summaries = FunnelAudit(f"A7_FVG_OB_{tf}").run(records)
     return {
         "timeframe": tf,
         "bars": len(rows),
-        "fvg_count": len(fvgs),
-        "ob_count": len(obs),
+        "fvg_count": len(fvg),
+        "ob_count": len(ob),
+        "fvg_bull": sum(x.direction == 1 for x in fvg),
+        "fvg_bear": sum(x.direction == -1 for x in fvg),
+        "ob_bull": sum(x.direction == 1 for x in ob),
+        "ob_bear": sum(x.direction == -1 for x in ob),
         "relation_count": len(relations),
-        "lineage_link_count": len(links),
-        "fvg_bull": sum(x.direction == 1 for x in fvgs),
-        "fvg_bear": sum(x.direction == -1 for x in fvgs),
-        "ob_bull": sum(x.direction == 1 for x in obs),
-        "ob_bear": sum(x.direction == -1 for x in obs),
+        "relation_bull": sum(x.direction == 1 for x in relations),
+        "relation_bear": sum(x.direction == -1 for x in relations),
+        "relation_rate_vs_fvg": len(relations) / len(fvg) if fvg else 0.0,
+        "relation_rate_vs_ob": len(relations) / len(ob) if ob else 0.0,
+        "causal_links": len(links),
         "audit_status": result.status.value,
         "findings": [f.__dict__ for f in result.findings],
         "stages": [s.__dict__ for s in summaries],
-        "note": "Confluence uses the canonical FVG↔OB overlap contract: same direction, positive price overlap and <=20 bars apart; lineage is represented as CausalLink.",
+        "relation_rule": "same_direction + positive_price_overlap + <=20 bars_apart + causal ordering",
     }
 
 

@@ -20,22 +20,25 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "reports" / "audits" / "fvg_ob_funnel.json"
 BASE = "https://raw.githubusercontent.com/ejtraderLabs/historical-data/main/EURUSD/"
 SOURCES = {
-    "H1": BASE + "EURUSDh1.csv",
-    "H4": BASE + "EURUSDh4.csv",
-    "D1": BASE + "EURUSDd1.csv",
+    "H1": str(ROOT / "data/raw/EURUSD/EURUSD_H1.csv"),
+    "H4": str(ROOT / "data/raw/EURUSD/EURUSD_H4.csv"),
+    "D1": str(ROOT / "data/raw/EURUSD/EURUSD_D1.csv"),
 }
 
 
 def load_csv(url: str) -> list[dict]:
-    with urllib.request.urlopen(url, timeout=60) as response:
-        text = response.read().decode("utf-8")
+    if str(url).startswith("http"):
+        with urllib.request.urlopen(url, timeout=60) as response:
+            text = response.read().decode("utf-8")
+    else:
+        text = Path(url).read_text(encoding="utf-8")
     rows = list(csv.DictReader(text.splitlines()))
     values = [float(r["open"]) for r in rows if r.get("open")]
     scale = 100000.0 if values and statistics.median(values) > 10 else 1.0
     out = []
     for r in rows:
         out.append({
-            "time": r["Date"],
+            "time": r.get("Date") or r.get("time") or r.get("timestamp"),
             "open": float(r["open"]) / scale,
             "high": float(r["high"]) / scale,
             "low": float(r["low"]) / scale,
@@ -47,7 +50,7 @@ def load_csv(url: str) -> list[dict]:
 def one_tf(tf: str, rows: list[dict]) -> dict:
     fvg = detect_fvg(rows, timeframe=tf, symbol="EURUSD")
     ob = detect_order_blocks(rows, timeframe=tf, symbol="EURUSD")
-    relations = relate_fvg_ob(fvg, ob, max_bars_apart=20, same_direction=True)
+    relations = relate_fvg_ob(fvg, ob, max_bars_apart=20, same_direction=True, causal_mode="strict")
     links = relation_links(
         relations,
         {item.id: item for item in fvg},
@@ -98,13 +101,13 @@ def one_tf(tf: str, rows: list[dict]) -> dict:
         "audit_status": result.status.value,
         "findings": [f.__dict__ for f in result.findings],
         "stages": [s.__dict__ for s in summaries],
-        "relation_rule": "same_direction + positive_price_overlap + <=20 bars_apart + causal ordering",
+        "relation_rule": "STRICT: same_direction + price_overlap + OB_before_FVG + lag<=20 + CausalLink parent=OB",
     }
 
 
 def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    report = {"dataset": "ejtraderLabs/historical-data", "symbol": "EURUSD", "timeframes": {}}
+    report = {"dataset": "dukascopy-node EURUSD 2006-01-01..2026-01-01 (20Y) + FVG_OB relation", "symbol": "EURUSD", "timeframes": {}}
     for tf, url in SOURCES.items():
         rows = load_csv(url)
         report["timeframes"][tf] = one_tf(tf, rows)

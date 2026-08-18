@@ -1,0 +1,286 @@
+{
+  "symbol": "EURUSD",
+  "tf": "H1",
+  "bars": 124377,
+  "canonical_bos": {
+    "mode": "canonical_bos",
+    "summary": {
+      "n_chains": 1460,
+      "by_depth": {
+        "1": 767,
+        "2": 575,
+        "3": 94,
+        "4": 21,
+        "7": 3
+      },
+      "by_status": {
+        "EXPIRED": 1457,
+        "COMPLETE": 3
+      },
+      "complete_bull": 1,
+      "complete_bear": 2,
+      "stage_order": [
+        "LIQUIDITY_POOL",
+        "SWEEP",
+        "DISPLACEMENT",
+        "STRUCTURE",
+        "OB",
+        "FVG",
+        "RETEST"
+      ]
+    },
+    "top_paths": [
+      {
+        "path": [
+          "LIQUIDITY_POOL"
+        ],
+        "n": 767
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP"
+        ],
+        "n": 575
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT"
+        ],
+        "n": 94
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE"
+        ],
+        "n": 21
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "OB",
+          "FVG",
+          "RETEST"
+        ],
+        "n": 3
+      }
+    ],
+    "metrics": [
+      {
+        "bucket": "COMPLETE_RETEST",
+        "n": 3,
+        "end_pos_12": 0.0,
+        "mean_end_12": -0.001423,
+        "med_end_12": -0.00133,
+        "end_pos_24": 0.6667,
+        "mean_end_24": 0.006017,
+        "med_end_24": 0.01064,
+        "end_pos_48": 0.6667,
+        "mean_end_48": 0.00373,
+        "med_end_48": 0.00754
+      },
+      {
+        "bucket": "DEPTH_GE4_AT_BOS",
+        "n": 24,
+        "end_pos_12": 0.375,
+        "mean_end_12": -0.000689,
+        "med_end_12": -0.000575,
+        "end_pos_24": 0.5417,
+        "mean_end_24": -0.000208,
+        "med_end_24": 0.00013,
+        "end_pos_48": 0.5,
+        "mean_end_48": -7.7e-05,
+        "med_end_48": 2.5e-05
+      },
+      {
+        "bucket": "DEPTH_GE5_AT_OB",
+        "n": 3,
+        "end_pos_12": 0.0,
+        "mean_end_12": -0.004533,
+        "med_end_12": -0.00523,
+        "end_pos_24": 0.0,
+        "mean_end_24": -0.003763,
+        "med_end_24": -0.0043,
+        "end_pos_48": 0.6667,
+        "mean_end_48": 0.003153,
+        "med_end_48": 0.0076
+      },
+      {
+        "bucket": "DEPTH_GE6_AT_FVG",
+        "n": 3,
+        "end_pos_12": 0.0,
+        "mean_end_12": -0.002597,
+        "med_end_12": -0.00242,
+        "end_pos_24": 0.6667,
+        "mean_end_24": 0.00453,
+        "med_end_24": 0.00843,
+        "end_pos_48": 0.6667,
+        "mean_end_48": 0.002387,
+        "med_end_48": 0.00649
+      }
+    ]
+  },
+  "lite": {
+    "mode": "lite",
+    "summary": {
+      "n_chains": 1460,
+      "by_depth": {
+        "1": 767,
+        "2": 575,
+        "3": 52,
+        "4": 60,
+        "6": 1,
+        "7": 5
+      },
+      "by_status": {
+        "EXPIRED": 1455,
+        "COMPLETE": 5
+      },
+      "complete_bull": 2,
+      "complete_bear": 3,
+      "stage_order": [
+        "LIQUIDITY_POOL",
+        "SWEEP",
+        "DISPLACEMENT",
+        "STRUCTURE",
+        "OB",
+        "FVG",
+        "RETEST"
+      ]
+    },
+    "top_paths": [
+      {
+        "path": [
+          "LIQUIDITY_POOL"
+        ],
+        "n": 767
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP"
+        ],
+        "n": 575
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE"
+        ],
+        "n": 60
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT"
+        ],
+        "n": 52
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "OB",
+          "FVG",
+          "RETEST"
+        ],
+        "n": 5
+      },
+      {
+        "path": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "OB",
+          "FVG"
+        ],
+        "n": 1
+      }
+    ],
+    "metrics": [
+      {
+        "bucket": "COMPLETE_RETEST",
+        "n": 5,
+        "end_pos_12": 0.0,
+        "mean_end_12": -0.001286,
+        "med_end_12": -0.00133,
+        "end_pos_24": 0.8,
+        "mean_end_24": 0.004332,
+        "med_end_24": 0.00312,
+        "end_pos_48": 0.8,
+        "mean_end_48": 0.003154,
+        "med_end_48": 0.0045
+      },
+      {
+        "bucket": "DEPTH_GE4_AT_BOS",
+        "n": 66,
+        "end_pos_12": 0.6364,
+        "mean_end_12": 0.001194,
+        "med_end_12": 0.00092,
+        "end_pos_24": 0.6212,
+        "mean_end_24": 0.002295,
+        "med_end_24": 0.00214,
+        "end_pos_48": 0.6667,
+        "mean_end_48": 0.00249,
+        "med_end_48": 0.0049
+      },
+      {
+        "bucket": "DEPTH_GE5_AT_OB",
+        "n": 6,
+        "end_pos_12": 0.1667,
+        "mean_end_12": -0.000968,
+        "med_end_12": -0.002275,
+        "end_pos_24": 0.3333,
+        "mean_end_24": -0.000863,
+        "med_end_24": -0.003435,
+        "end_pos_48": 0.5,
+        "mean_end_48": 0.00336,
+        "med_end_48": 0.00371
+      },
+      {
+        "bucket": "DEPTH_GE6_AT_FVG",
+        "n": 6,
+        "end_pos_12": 0.3333,
+        "mean_end_12": -1.7e-05,
+        "med_end_12": -0.00172,
+        "end_pos_24": 0.6667,
+        "mean_end_24": 0.002998,
+        "med_end_24": 0.00425,
+        "end_pos_48": 0.6667,
+        "mean_end_48": 0.00265,
+        "med_end_48": 0.00392
+      }
+    ]
+  },
+  "baseline_fvg": {
+    "bucket": "BASELINE_FVG",
+    "n": 500,
+    "end_pos_12": 0.472,
+    "mean_end_12": 0.000201,
+    "med_end_12": -0.000165,
+    "end_pos_24": 0.496,
+    "mean_end_24": 0.000377,
+    "med_end_24": -0.00015,
+    "end_pos_48": 0.516,
+    "mean_end_48": 0.000275,
+    "med_end_48": 0.000195
+  },
+  "caveats": [
+    "detect_bos centered swings have look-ahead in pivot geometry; break uses shift(1)",
+    "small COMPLETE n; no costs"
+  ]
+}

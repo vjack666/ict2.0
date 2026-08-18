@@ -33,6 +33,7 @@ from engine.detectors.fvg import detect_fvg
 from engine.detectors.ob import detect_order_blocks
 from engine.relations import relate_fvg_ob
 from tools.displacement import detect_displacement, DisplacementConfig
+from detectors.bos import detect_bos, BosConfig
 
 
 class Stage(str, Enum):
@@ -72,6 +73,8 @@ class SeqConfig:
     displacement: DisplacementConfig = field(default_factory=DisplacementConfig)
     require_ob_fvg_causal: bool = True
     max_active_chains: int = 64
+    structure_mode: str = "canonical_bos"  # canonical_bos | lite
+    bos_lookback: int = 5
 
 
 @dataclass
@@ -272,25 +275,41 @@ def _detect_atomics(df: pd.DataFrame, cfg: SeqConfig) -> _Atomic:
         if bool(disp_df["displacement_bearish"].iloc[i]):
             displ.setdefault(i, []).append({"direction": -1, "detail": "disp_bear"})
 
-    # Structure BOS-lite: close beyond last confirmed opposite swing
+    # Structure: canonical BOS (detectors.bos) or lite fallback
     structs: dict[int, list[dict[str, Any]]] = {}
-    last_sh = np.nan
-    last_sl = np.nan
-    sh_set = {b: p for b, p in sh}
-    sl_set = {b: p for b, p in sl}
-    for i in range(n):
-        if i in sh_set:
-            last_sh = sh_set[i]
-        if i in sl_set:
-            last_sl = sl_set[i]
-        if not np.isnan(last_sh) and close[i] > last_sh:
+    mode = getattr(cfg, "structure_mode", "canonical_bos")
+    if mode == "canonical_bos":
+        bos_df = detect_bos(df, BosConfig(swing_lookback=getattr(cfg, "bos_lookback", 5)))
+        for i in range(n):
+            d = int(bos_df["bos_direction"].iloc[i]) if not pd.isna(bos_df["bos_direction"].iloc[i]) else 0
+            if d == 0:
+                continue
+            lvl = bos_df["bos_level"].iloc[i]
             structs.setdefault(i, []).append(
-                {"direction": 1, "level": float(last_sh), "detail": "bos_up_lite"}
+                {
+                    "direction": d,
+                    "level": float(lvl) if pd.notna(lvl) else None,
+                    "detail": "bos_up_canonical" if d == 1 else "bos_down_canonical",
+                }
             )
-        if not np.isnan(last_sl) and close[i] < last_sl:
-            structs.setdefault(i, []).append(
-                {"direction": -1, "level": float(last_sl), "detail": "bos_down_lite"}
-            )
+    else:
+        last_sh = np.nan
+        last_sl = np.nan
+        sh_set = {b: p for b, p in sh}
+        sl_set = {b: p for b, p in sl}
+        for i in range(n):
+            if i in sh_set:
+                last_sh = sh_set[i]
+            if i in sl_set:
+                last_sl = sl_set[i]
+            if not np.isnan(last_sh) and close[i] > last_sh:
+                structs.setdefault(i, []).append(
+                    {"direction": 1, "level": float(last_sh), "detail": "bos_up_lite"}
+                )
+            if not np.isnan(last_sl) and close[i] < last_sl:
+                structs.setdefault(i, []).append(
+                    {"direction": -1, "level": float(last_sl), "detail": "bos_down_lite"}
+                )
 
     # OB / FVG canonical detectors
     # Monotonic numeric times so MarketObject temporal contract sorts correctly

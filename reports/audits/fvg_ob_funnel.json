@@ -1,0 +1,213 @@
+{
+  "dataset": "dukascopy-node EURUSD 2006-01-01..2026-01-01 (20Y)",
+  "symbol": "EURUSD",
+  "timeframes": {
+    "H1": {
+      "timeframe": "H1",
+      "bars": 124390,
+      "fvg_count": 22478,
+      "ob_count": 2799,
+      "fvg_bull": 11253,
+      "fvg_bear": 11225,
+      "ob_bull": 1346,
+      "ob_bear": 1453,
+      "audit_status": "PASS",
+      "findings": [],
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 22478,
+          "accepted_count": 22478,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 2799,
+          "accepted_count": 2799,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 25277,
+          "accepted_count": 0,
+          "rejected_count": 25277
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "note": "Confluence is intentionally not inferred: current run measures detector populations only; FVG↔OB relation requires Fase D/E relation rules beyond this detector-only pass."
+    },
+    "H4": {
+      "timeframe": "H4",
+      "bars": 32137,
+      "fvg_count": 6497,
+      "ob_count": 862,
+      "fvg_bull": 3218,
+      "fvg_bear": 3279,
+      "ob_bull": 436,
+      "ob_bear": 426,
+      "audit_status": "PASS",
+      "findings": [],
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 6497,
+          "accepted_count": 6497,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 862,
+          "accepted_count": 862,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 7359,
+          "accepted_count": 0,
+          "rejected_count": 7359
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "note": "Confluence is intentionally not inferred: current run measures detector populations only; FVG↔OB relation requires Fase D/E relation rules beyond this detector-only pass."
+    },
+    "D1": {
+      "timeframe": "D1",
+      "bars": 6258,
+      "fvg_count": 1543,
+      "ob_count": 214,
+      "fvg_bull": 757,
+      "fvg_bear": 786,
+      "ob_bull": 85,
+      "ob_bear": 129,
+      "audit_status": "PASS",
+      "findings": [],
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 1543,
+          "accepted_count": 1543,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 214,
+          "accepted_count": 214,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 1757,
+          "accepted_count": 0,
+          "rejected_count": 1757
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "note": "Confluence is intentionally not inferred: current run measures detector populations only; FVG↔OB relation requires Fase D/E relation rules beyond this detector-only pass."
+    }
+  }
+}

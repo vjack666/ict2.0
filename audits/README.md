@@ -2,6 +2,16 @@
 
 Esta carpeta contiene el subsistema normativo de auditoría previo al backtest.
 
+## Arranque obligatorio
+
+El primer paso de Hermes es siempre:
+
+```bash
+python start_hermes.py
+```
+
+Ese comando ejecuta primero `python -m audits.codigo.bootstrap`. Si el estado no alcanza el umbral mínimo, Hermes debe corregir y volver a auditar antes de continuar.
+
 ## Orden de ejecución
 
 ```text
@@ -21,11 +31,31 @@ No se ejecuta backtest de performance hasta superar los Gates A0-A9 según el co
 
 ## Estructura
 
-- `contracts/` — contratos de entrada/salida y Gates.
-- `core/` — utilidades comunes de auditoría.
-- `checks/` — checks deterministas por dominio.
-- `funnel/` — auditoría Funnel.
-- `reports/` — generadores de reportes. Los reportes grandes derivados no se versionan aquí salvo decisión explícita.
+- `codigo/` — **única ubicación para código ejecutable de auditorías**.
+- `reports/` — reportes derivados; no se versionan reportes grandes salvo decisión explícita.
+- `MANIFEST.md` — mapa de componentes y estado de implementación.
+
+Las antiguas rutas `contracts/`, `core/`, `checks/` y `funnel/` quedan fuera de servicio como ubicaciones de código.
+
+## Loop Hermes
+
+```text
+AUDIT
+ ↓
+FINDINGS
+ ↓
+FIX
+ ↓
+TEST
+ ↓
+UPDATE SDD / INDEX / WORKLOG
+ ↓
+AUDIT AGAIN
+ ↓
+PASS MEDIANAMENTE BUENO
+ ↓
+CONTINUE
+```
 
 ## Reglas
 

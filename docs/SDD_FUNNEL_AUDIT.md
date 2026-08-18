@@ -2,6 +2,8 @@
 
 **Estado:** NORMATIVO
 **Fase:** Pre-backtest
+**Código canónico:** `audits/codigo/funnel.py`
+**Bootstrap:** `audits/codigo/bootstrap.py`
 **Propósito:** auditar la transformación causal de OHLC a candidatos ICT sin evaluar todavía rentabilidad.
 
 ## 1. Principio
@@ -103,7 +105,11 @@ Un candidato debe poder rastrearse hasta sus padres sin ciclos ni enlaces futuro
 ### 5.6 Explicabilidad de pérdidas
 Toda reducción de población debe poder atribuirse a una regla explícita.
 
-## 6. Segmentación obligatoria
+## 6. Arranque Hermes
+
+`start_hermes.py` ejecuta el bootstrap de auditorías antes de habilitar cualquier fase. El bootstrap utiliza el contrato de "medianamente bueno": cero CRITICAL/HIGH, cero look-ahead y `audit_score >= 0.80`.
+
+## 7. Segmentación obligatoria
 
 Los reportes se segmentan por:
 
@@ -115,7 +121,7 @@ Los reportes se segmentan por:
 - tipo de OB implementado;
 - combinación FVG/OB.
 
-## 7. Señales de alarma
+## 8. Señales de alarma
 
 No se establece un umbral universal de "buen" funnel. Se generan `WARN` cuando aparece:
 
@@ -129,36 +135,6 @@ No se establece un umbral universal de "buen" funnel. Se generan `WARN` cuando a
 - cambio de resultados con reordenamiento permitido equivalente.
 
 Un `WARN` crítico requiere investigación antes del backtest.
-
-## 8. Resultado
-
-El reporte final debe producir:
-
-```text
-Funnel Audit Report
--------------------
-Dataset: <id/hash>
-Code: <commit>
-Config: <hash>
-
-Stage             Input   Accepted   Rejected   Pass%
-VALID_BARS        ...     ...        ...        ...
-STRUCTURE         ...     ...        ...        ...
-BOS_CHOCH         ...     ...        ...        ...
-DISPLACEMENT      ...     ...        ...        ...
-FVG               ...     ...        ...        ...
-OB                ...     ...        ...        ...
-CONFLUENCE        ...     ...        ...        ...
-LINEAGE           ...     ...        ...        ...
-SETUP             ...     ...        ...        ...
-
-Temporal violations: 0
-Duplicate logical events: 0
-Orphan candidates: 0
-Reproducibility: PASS
-
-GATE: PASS / WARN / FAIL
-```
 
 ## 9. Lo que el Funnel NO demuestra
 

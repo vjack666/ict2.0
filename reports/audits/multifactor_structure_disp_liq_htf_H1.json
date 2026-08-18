@@ -1,0 +1,183 @@
+{
+  "symbol": "EURUSD",
+  "tf": "H1",
+  "horizon_bars": 24,
+  "n_fvg": 22468,
+  "notes": [
+    "HTF trend via EMA20/50 merge_asof backward (point-in-time)",
+    "Structure: causal swing HH/HL vs LH/LL lookback=5",
+    "Displacement: tools.detect_displacement in FVG 3-candle window",
+    "Liquidity: simple sweep proxy (take prior 20-bar extreme then close back)",
+    "NOT a trading system; exploratory stratification only"
+  ],
+  "buckets": [
+    {
+      "bucket": "ALL_FVG",
+      "n": 22468,
+      "end_pos": 0.5002,
+      "mfe_gt_mae": 0.5057,
+      "med_end": 1e-05,
+      "med_mfe": 0.0037,
+      "med_mae": 0.0036
+    },
+    {
+      "bucket": "CAUSAL_ONLY",
+      "n": 677,
+      "end_pos": 0.5052,
+      "mfe_gt_mae": 0.514,
+      "med_end": 0.00011,
+      "med_mfe": 0.00386,
+      "med_mae": 0.00357
+    },
+    {
+      "bucket": "DISPLACEMENT_IN_WINDOW",
+      "n": 5768,
+      "end_pos": 0.5069,
+      "mfe_gt_mae": 0.5243,
+      "med_end": 9e-05,
+      "med_mfe": 0.00375,
+      "med_mae": 0.00339
+    },
+    {
+      "bucket": "NO_DISPLACEMENT",
+      "n": 16700,
+      "end_pos": 0.4978,
+      "mfe_gt_mae": 0.4992,
+      "med_end": -2e-05,
+      "med_mfe": 0.00368,
+      "med_mae": 0.00366
+    },
+    {
+      "bucket": "STRUCTURE_ALIGNED",
+      "n": 3926,
+      "end_pos": 0.5084,
+      "mfe_gt_mae": 0.4969,
+      "med_end": 0.0001,
+      "med_mfe": 0.003565,
+      "med_mae": 0.00367
+    },
+    {
+      "bucket": "STRUCTURE_AGAINST",
+      "n": 2717,
+      "end_pos": 0.4925,
+      "mfe_gt_mae": 0.5075,
+      "med_end": -0.0001,
+      "med_mfe": 0.00371,
+      "med_mae": 0.00367
+    },
+    {
+      "bucket": "H4_ALIGNED",
+      "n": 6690,
+      "end_pos": 0.4922,
+      "mfe_gt_mae": 0.4886,
+      "med_end": -0.0001,
+      "med_mfe": 0.0036,
+      "med_mae": 0.003725
+    },
+    {
+      "bucket": "D1_ALIGNED",
+      "n": 6546,
+      "end_pos": 0.4904,
+      "mfe_gt_mae": 0.502,
+      "med_end": -0.000125,
+      "med_mfe": 0.00368,
+      "med_mae": 0.00365
+    },
+    {
+      "bucket": "H4_AND_D1_ALIGNED",
+      "n": 2143,
+      "end_pos": 0.469,
+      "mfe_gt_mae": 0.4797,
+      "med_end": -0.00043,
+      "med_mfe": 0.00363,
+      "med_mae": 0.00385
+    },
+    {
+      "bucket": "HTF_NOT_ALIGNED",
+      "n": 11375,
+      "end_pos": 0.5046,
+      "mfe_gt_mae": 0.5129,
+      "med_end": 7e-05,
+      "med_mfe": 0.00375,
+      "med_mae": 0.00353
+    },
+    {
+      "bucket": "LIQ_SWEEP_RECENT",
+      "n": 5735,
+      "end_pos": 0.4929,
+      "mfe_gt_mae": 0.5051,
+      "med_end": -0.0001,
+      "med_mfe": 0.00365,
+      "med_mae": 0.00363
+    },
+    {
+      "bucket": "NO_LIQ_SWEEP",
+      "n": 16733,
+      "end_pos": 0.5027,
+      "mfe_gt_mae": 0.5058,
+      "med_end": 6e-05,
+      "med_mfe": 0.00371,
+      "med_mae": 0.00358
+    },
+    {
+      "bucket": "DISP+STRUCT",
+      "n": 1108,
+      "end_pos": 0.5099,
+      "mfe_gt_mae": 0.5,
+      "med_end": 8e-05,
+      "med_mfe": 0.0035,
+      "med_mae": 0.00353
+    },
+    {
+      "bucket": "DISP+HTF_BOTH",
+      "n": 507,
+      "end_pos": 0.4734,
+      "mfe_gt_mae": 0.4951,
+      "med_end": -0.00022,
+      "med_mfe": 0.00368,
+      "med_mae": 0.0036
+    },
+    {
+      "bucket": "STRUCT+HTF_BOTH",
+      "n": 400,
+      "end_pos": 0.4325,
+      "mfe_gt_mae": 0.4375,
+      "med_end": -0.00077,
+      "med_mfe": 0.00323,
+      "med_mae": 0.00401
+    },
+    {
+      "bucket": "DISP+STRUCT+HTF",
+      "n": 99,
+      "end_pos": 0.4646,
+      "mfe_gt_mae": 0.4646,
+      "med_end": -0.00022,
+      "med_mfe": 0.0032,
+      "med_mae": 0.00351
+    },
+    {
+      "bucket": "DISP+STRUCT+HTF+LIQ",
+      "n": 0,
+      "end_pos": null,
+      "mfe_gt_mae": null,
+      "med_end": null,
+      "note": "n<30"
+    },
+    {
+      "bucket": "CAUSAL+DISP+STRUCT+HTF",
+      "n": 3,
+      "end_pos": null,
+      "mfe_gt_mae": null,
+      "med_end": null,
+      "note": "n<30"
+    },
+    {
+      "bucket": "FULL_STACK",
+      "n": 0,
+      "end_pos": null,
+      "mfe_gt_mae": null,
+      "med_end": null,
+      "note": "n<30"
+    }
+  ]
+}

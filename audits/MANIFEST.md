@@ -1,5 +1,7 @@
 # Audit Subsystem Manifest
 
+**CI verification:** required before declaring any audit Gate complete.
+
 ## Implemented
 
 - A0: `audits/checks/data_integrity.py`

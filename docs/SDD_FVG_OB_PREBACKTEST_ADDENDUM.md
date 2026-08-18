@@ -36,10 +36,34 @@ BACKTEST ELIGIBLE
 
 El backtest mide comportamiento de una especificación de ejecución. Si la población de FVG/OB, su causalidad o sus datos no son confiables, la performance no es evidencia limpia del motor. La auditoría Funnel y sus predecesoras buscan demostrar primero la integridad de esa población.
 
+## Subsistema implementado
+
+La ejecución de auditorías vive en `audits/` y está desacoplada de la lógica de trading:
+
+```text
+`audits/`
+├── contracts/   # GateStatus, Finding, AuditResult
+├── core/        # invariantes temporales reutilizables
+├── checks/      # checks por dominio, empezando por A0
+├── funnel/      # motor A7
+└── reports/     # artefactos derivados no versionados por defecto
+```
+
+Implementación inicial:
+
+- `audits/contracts/gate.py`
+- `audits/core/temporal.py`
+- `audits/checks/data_integrity.py`
+- `audits/funnel/engine.py`
+- `tests/test_audit_subsystem.py`
+
 ## Estado
 
 - A0-A9: definidos contractualmente.
-- A7 Funnel: definido como Gate central.
+- A0: primera implementación ejecutable.
+- A2: utilidades temporales ejecutables.
+- A7 Funnel: primera implementación ejecutable y con contrato de findings.
+- Tests de subsistema: añadidos; Gate CI pendiente de evidencia.
 - Backtest: bloqueado hasta PASS de la pila.
 - M5: sigue diferido.
 - OTE/Fibonacci: siguen prohibidos.

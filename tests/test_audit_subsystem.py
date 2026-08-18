@@ -1,6 +1,7 @@
-from audits.checks.data_integrity import audit_ohlc
-from audits.core.temporal import audit_ordered_events
-from audits.funnel.engine import FunnelAudit, GateStatus
+from audits.codigo.data_integrity import audit_ohlc
+from audits.codigo.temporal import audit_events
+from audits.codigo.funnel import FunnelAudit
+from audits.codigo.gate import GateStatus
 
 
 def candle(i, o=1.1, h=1.2, l=1.0, c=1.15):
@@ -28,7 +29,7 @@ def test_temporal_audit_rejects_future_parent():
         "observation_time": 11,
         "parent_time": 12,
     }]
-    violations = audit_ordered_events(events)
+    violations = audit_events(events)
     assert any(v.code == "LOOK_AHEAD" for v in violations)
 
 

@@ -1,206 +1,81 @@
 # Plan de Auditorías Pre-Backtest — ICT FVG/OB
 
-**Estado:** NORMATIVO — subsistema de auditorías dedicado
+**Estado:** ACTIVO / EJECUCIÓN OBLIGATORIA ANTES DE BACKTEST
 **Última actualización:** 2026-08-18
-**Implementación:** `audits/`
-**Objetivo:** demostrar que datos, semántica, causalidad, detectores, relaciones y distribución del motor son suficientemente confiables antes de evaluar una estrategia con un backtest.
+**Implementación:** `audits/codigo/`
 
-## 1. Decisión
+## 1. Objetivo
 
-El backtest deja de ser el siguiente Gate inmediato. Antes se ejecutará una **pila de auditorías pre-backtest** implementada en `audits/`.
+Demostrar que datos, semántica, causalidad, detectores, relaciones y distribución del motor son confiables antes de evaluar performance.
 
-El backtest no se elimina: queda condicionado a que la pila pre-backtest pase sus Gates.
-
-## 2. Orden obligatorio
+## 2. Secuencia obligatoria
 
 ```text
-A0 Data Integrity Audit
-        ↓
-A1 Schema / Canonical Data Audit
-        ↓
-A2 Temporal & Point-in-Time Audit
-        ↓
-A3 Semantic / Contract Audit
-        ↓
-A4 Detector & Metamorphic Audit
-        ↓
-A5 Cross-Timeframe Alignment Audit
-        ↓
-A6 Lineage / Causal Audit
-        ↓
-A7 Funnel Audit
-        ↓
-A8 Coverage / Regime / Concentration Audit
-        ↓
-A9 Selection & Experiment Governance Audit
-        ↓
+A0 Data Integrity
+↓
+A1 Schema / Canonical Data
+↓
+A2 Point-in-Time / Look-Ahead
+↓
+A3 Semantic / Contract
+↓
+A4 Detector / Metamorphic
+↓
+A5 Cross-Timeframe Alignment
+↓
+A6 Lineage / Causal
+↓
+A7 Funnel
+↓
+A8 Coverage / Regime / Concentration
+↓
+A9 Selection / Experiment Governance
+↓
 BACKTEST ELIGIBLE
 ```
 
-No se permite saltar A0-A7 para obtener métricas de rentabilidad.
+No se permite saltar un Gate. Un Gate en `FAIL` bloquea el siguiente.
 
-## 3. Auditorías
+## 3. Implementación canónica
 
-### A0 — Data Integrity
-Verifica existencia, formato, timestamps, duplicados, orden, OHLC invariantes, NaN/inf, gaps, escala, timezone, rango y hash/versionado.
+- `audits/codigo/audit_stack.py` — A0→A9.
+- `audits/codigo/run_full_stack.py` — CLI reproducible.
+- `audits/codigo/data_integrity.py` — A0.
+- `audits/codigo/temporal.py` — A2.
+- `audits/codigo/funnel.py` — contrato A7.
+- `audits/codigo/fvg_ob_funnel.py` — Funnel real de FVG/OB sobre EURUSD H1/H4/D1 usando los detectores canónicos.
 
-**Implementación inicial:** `audits/checks/data_integrity.py`.
+## 4. Regla de evidencia
 
-**Gate:** cero corrupción crítica; toda excepción documentada.
+La existencia del código no equivale a Gate PASS. Cada ejecución necesita evidencia CI o local reproducible, fingerprint del stack y worklog.
 
-### A1 — Schema / Canonical Data
-Verifica que todos los loaders produzcan el mismo contrato (`time, open, high, low, close`), unidades de precio consistentes y ninguna ruta alternativa silenciosa.
+## 5. Funnel FVG/OB
 
-**Gate:** un único contrato canónico por dataset.
+La primera ejecución real disponible usa:
 
-### A2 — Temporal / Point-in-Time
-Verifica que cada objeto, feature y relación sólo use información disponible en su `observation_time`. Incluye truncation/prefix invariance y detección de joins futuros.
+- EURUSD H1/H4/D1;
+- dataset público `ejtraderLabs/historical-data`;
+- normalización ×100000 → precio EURUSD;
+- detector canónico FVG de tres velas;
+- detector canónico OB huella + follow-through;
+- IA desactivada;
+- sin PnL ni backtest.
 
-**Implementación inicial compartida:** `audits/core/temporal.py`.
+La relación FVG↔OB no se inventa: el runner reporta poblaciones separadas y marca como no auditada la confluencia hasta tener una regla de relación implementada. Esto evita falsos resultados de confluencia.
 
-**Gate:** cero violaciones de causalidad.
+## 6. Cierre del stack
 
-### A3 — Semantic / Contract
-Compara implementación contra los contratos FVG/OB y la tesis. Detecta ambigüedad, campos obligatorios ausentes, tipos inventados y mezcla de conceptos legacy.
+A0-A9 sólo puede declararse `PASS` cuando:
 
-**Gate:** cada detector tiene una definición única y verificable.
+- no existen hallazgos CRITICAL/HIGH;
+- no existen violaciones LOOK_AHEAD;
+- los contratos son deterministas;
+- A7 Funnel se ejecutó con evidencia real;
+- A8/A9 no presentan blockers;
+- el reporte y `.hermes-index.md` están sincronizados.
 
-### A4 — Detector / Metamorphic
-No sólo prueba ejemplos. Prueba propiedades: invariancia por prefijo, monotonicidad temporal, ausencia de duplicados, sensibilidad controlada a modificaciones que deberían/no deberían cambiar el resultado y casos límite.
+## 7. Backtest
 
-**Gate:** propiedades críticas PASS.
+`BACKTEST_BLOCKED` hasta cerrar el stack completo.
 
-### A5 — Cross-Timeframe Alignment
-Verifica HTF→ITF→EXEC: timestamps, ventanas cerradas, as-of joins, propagación de objetos y ausencia de uso de una vela HTF todavía abierta.
-
-**Gate:** cero alineaciones futuras.
-
-### A6 — Lineage / Causal
-Audita `parent → child`, relaciones, huérfanos, ciclos, duplicados y trazabilidad de setups.
-
-**Gate:** todo setup candidato es reconstruible desde sus eventos.
-
-### A7 — Funnel Audit
-Mide el embudo causal sin optimizar rentabilidad:
-
-```text
-market bars
-→ structure
-→ BOS/CHOCH/MSS
-→ displacement
-→ FVG
-→ OB
-→ FVG+OB / confluence
-→ valid lineage
-→ candidate setup
-```
-
-**Implementación inicial:** `audits/funnel/engine.py`.
-
-Cada etapa reporta conteo absoluto, tasa de paso, tasa de rechazo y razones de rechazo. Se segmenta por dirección, timeframe, tipo de OB y contexto.
-
-**Gate:** no se exige una tasa de éxito arbitraria; se exige consistencia, explicabilidad, ausencia de explosiones/colapsos inexplicables y reproducibilidad.
-
-### A8 — Coverage / Regime / Concentration
-Audita dónde aparecen los objetos: tendencia, rango, volatilidad, sesión, año, dirección y régimen. Detecta concentración accidental en pocas fechas o periodos.
-
-**Gate:** toda concentración material queda explicada y documentada antes del backtest.
-
-### A9 — Selection / Experiment Governance
-Audita que los umbrales no hayan sido elegidos mirando resultados de performance. Registra versiones, parámetros, semillas, datasets y número de experimentos exploratorios.
-
-**Gate:** snapshot congelado de la especificación antes del backtest.
-
-## 4. Arquitectura del subsistema de auditorías
-
-```text
- audits/
- ├── README.md
- ├── contracts/
- │   ├── README.md
- │   └── gate.py
- ├── core/
- │   ├── __init__.py
- │   └── temporal.py
- ├── checks/
- │   ├── __init__.py
- │   └── data_integrity.py
- ├── funnel/
- │   ├── __init__.py
- │   └── engine.py
- └── reports/
-     └── (reportes derivados; no se versionan por defecto)
-```
-
-El subsistema debe permanecer desacoplado de la lógica de trading. Audita objetos/eventos; no ejecuta posiciones ni optimiza parámetros.
-
-## 5. Contrato de findings y Gates
-
-`audits/contracts/gate.py` define:
-
-- `Finding` — anomalía individual;
-- `AuditResult` — resultado agregado;
-- `StageSummary` — resumen de Funnel;
-- `GateStatus` — `PASS/WARN/FAIL`;
-- `gate_from_findings()` — política determinista de severidad.
-
-`CRITICAL` bloquea el Gate. `HIGH/MEDIUM` produce `WARN` y exige decisión documentada antes del siguiente Gate.
-
-## 6. Auditorías que NO deben adelantarse
-
-Estas pertenecen a una etapa posterior y no se deben presentar como pre-backtest:
-
-- Sharpe/Sortino/Profit Factor.
-- PBO/DSR/PSR.
-- Monte Carlo de trades.
-- Walk-forward de estrategia.
-- OOS de performance.
-- optimización de parámetros.
-
-Son válidas después de existir una ejecución reproducible y un conjunto de resultados. SMC-SYSTEMS contiene implementaciones de algunas de estas técnicas, pero su existencia no justifica ejecutarlas antes de tener un motor de ejecución estable. Su Completion Report registra, entre otras, PurgedKFold, CVaR, DSR y PBO. Eso es material de validación posterior, no sustituto de las auditorías estructurales.
-
-## 7. Funnel como Gate central
-
-El Funnel no debe responder "¿gana dinero?". Debe responder:
-
-> ¿El motor transforma el mercado en una población de objetos ICT coherente, causal, reproducible y auditable?
-
-Una tasa de paso alta no es buena por sí misma. Una tasa baja tampoco es mala. El objetivo es detectar comportamientos imposibles, sesgos de implementación, objetos huérfanos, concentración artificial y pérdidas de población no explicadas.
-
-## 8. Criterio de BACKTEST ELIGIBLE
-
-Sólo se habilita backtest cuando:
-
-- A0-A6 = PASS;
-- A7 Funnel = PASS;
-- A8 = PASS o WARN formalmente aceptado y documentado;
-- A9 = PASS;
-- dataset y configuración quedan congelados;
-- existe evidencia reproducible de los Gates;
-- no quedan blockers críticos.
-
-## 9. Política de FAIL
-
-Si cualquier auditoría falla:
-
-```text
-FAIL
- ↓
-Diagnóstico
- ↓
-Localizar causa raíz
- ↓
-Corregir código / contrato / datos
- ↓
-Agregar o reforzar test
- ↓
-Ejecutar auditoría nuevamente
-```
-
-No se permite relajar criterios sólo para obtener PASS. Si un FAIL persiste, el proyecto queda bloqueado en ese Gate y el backtest no se ejecuta.
-
-## 10. Referencia comparativa SMC-SYSTEMS
-
-`vjack666/SMC-SYSTEMS` se utiliza como fuente comparativa. Se rescatan ideas sólo si mejoran una auditoría del ICT y pasan pruebas propias. No se copia su arquitectura completa ni se toma su backtest como evidencia de edge del ICT.
-
-El Completion Report de SMC-SYSTEMS documenta validación de integración, split cronológico, backtest, walk-forward y técnicas cuantitativas posteriores; también muestra por qué una métrica de performance puede existir con una muestra pequeña. Esto refuerza nuestra decisión de auditar primero el pipeline y el funnel antes de interpretar performance.
+M5 permanece diferido y no puede utilizarse como evidencia hasta disponer de una fuente reproducible.

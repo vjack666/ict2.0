@@ -1,0 +1,108 @@
+{
+  "symbol": "EURUSD",
+  "tf": "H1",
+  "bars": 124377,
+  "range": [
+    "2006-01-01 21:00:00",
+    "2025-12-31 21:00:00"
+  ],
+  "config": {
+    "max_bars_pool_to_sweep": 40,
+    "max_bars_sweep_to_disp": 8,
+    "max_bars_disp_to_struct": 12,
+    "max_bars_struct_to_ob": 8,
+    "max_bars_ob_to_fvg": 20,
+    "max_bars_fvg_to_retest": 48
+  },
+  "summary": {
+    "n_chains": 1460,
+    "by_depth": {
+      "1": 767,
+      "2": 575,
+      "3": 52,
+      "4": 60,
+      "6": 1,
+      "7": 5
+    },
+    "by_status": {
+      "EXPIRED": 1455,
+      "COMPLETE": 5
+    },
+    "complete_bull": 2,
+    "complete_bear": 3,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "top_paths": [
+    {
+      "path": [
+        "LIQUIDITY_POOL"
+      ],
+      "n": 767
+    },
+    {
+      "path": [
+        "LIQUIDITY_POOL",
+        "SWEEP"
+      ],
+      "n": 575
+    },
+    {
+      "path": [
+        "LIQUIDITY_POOL",
+        "SWEEP",
+        "DISPLACEMENT",
+        "STRUCTURE"
+      ],
+      "n": 60
+    },
+    {
+      "path": [
+        "LIQUIDITY_POOL",
+        "SWEEP",
+        "DISPLACEMENT"
+      ],
+      "n": 52
+    },
+    {
+      "path": [
+        "LIQUIDITY_POOL",
+        "SWEEP",
+        "DISPLACEMENT",
+        "STRUCTURE",
+        "OB",
+        "FVG",
+        "RETEST"
+      ],
+      "n": 5
+    },
+    {
+      "path": [
+        "LIQUIDITY_POOL",
+        "SWEEP",
+        "DISPLACEMENT",
+        "STRUCTURE",
+        "OB",
+        "FVG"
+      ],
+      "n": 1
+    }
+  ],
+  "stage_order": [
+    "LIQUIDITY_POOL",
+    "SWEEP",
+    "DISPLACEMENT",
+    "STRUCTURE",
+    "OB",
+    "FVG",
+    "RETEST"
+  ],
+  "note": "Sequential engine v1 \u2014 structure is BOS-lite; liquidity is EQH/EQL causal clusters. No PnL."
+}

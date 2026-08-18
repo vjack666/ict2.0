@@ -1,12 +1,13 @@
 # Plan de Auditorías Pre-Backtest — ICT FVG/OB
 
-**Estado:** PROPUESTA NORMATIVA — sustituye el backtest temprano como siguiente objetivo
+**Estado:** NORMATIVO — subsistema de auditorías dedicado
 **Última actualización:** 2026-08-18
+**Implementación:** `audits/`
 **Objetivo:** demostrar que datos, semántica, causalidad, detectores, relaciones y distribución del motor son suficientemente confiables antes de evaluar una estrategia con un backtest.
 
 ## 1. Decisión
 
-El backtest deja de ser el siguiente Gate inmediato. Antes se ejecutará una **pila de auditorías pre-backtest**.
+El backtest deja de ser el siguiente Gate inmediato. Antes se ejecutará una **pila de auditorías pre-backtest** implementada en `audits/`.
 
 El backtest no se elimina: queda condicionado a que la pila pre-backtest pase sus Gates.
 
@@ -43,6 +44,8 @@ No se permite saltar A0-A7 para obtener métricas de rentabilidad.
 ### A0 — Data Integrity
 Verifica existencia, formato, timestamps, duplicados, orden, OHLC invariantes, NaN/inf, gaps, escala, timezone, rango y hash/versionado.
 
+**Implementación inicial:** `audits/checks/data_integrity.py`.
+
 **Gate:** cero corrupción crítica; toda excepción documentada.
 
 ### A1 — Schema / Canonical Data
@@ -52,6 +55,8 @@ Verifica que todos los loaders produzcan el mismo contrato (`time, open, high, l
 
 ### A2 — Temporal / Point-in-Time
 Verifica que cada objeto, feature y relación sólo use información disponible en su `observation_time`. Incluye truncation/prefix invariance y detección de joins futuros.
+
+**Implementación inicial compartida:** `audits/core/temporal.py`.
 
 **Gate:** cero violaciones de causalidad.
 
@@ -90,6 +95,8 @@ market bars
 → candidate setup
 ```
 
+**Implementación inicial:** `audits/funnel/engine.py`.
+
 Cada etapa reporta conteo absoluto, tasa de paso, tasa de rechazo y razones de rechazo. Se segmenta por dirección, timeframe, tipo de OB y contexto.
 
 **Gate:** no se exige una tasa de éxito arbitraria; se exige consistencia, explicabilidad, ausencia de explosiones/colapsos inexplicables y reproducibilidad.
@@ -104,7 +111,42 @@ Audita que los umbrales no hayan sido elegidos mirando resultados de performance
 
 **Gate:** snapshot congelado de la especificación antes del backtest.
 
-## 4. Auditorías que NO deben adelantarse
+## 4. Arquitectura del subsistema de auditorías
+
+```text
+ audits/
+ ├── README.md
+ ├── contracts/
+ │   ├── README.md
+ │   └── gate.py
+ ├── core/
+ │   ├── __init__.py
+ │   └── temporal.py
+ ├── checks/
+ │   ├── __init__.py
+ │   └── data_integrity.py
+ ├── funnel/
+ │   ├── __init__.py
+ │   └── engine.py
+ └── reports/
+     └── (reportes derivados; no se versionan por defecto)
+```
+
+El subsistema debe permanecer desacoplado de la lógica de trading. Audita objetos/eventos; no ejecuta posiciones ni optimiza parámetros.
+
+## 5. Contrato de findings y Gates
+
+`audits/contracts/gate.py` define:
+
+- `Finding` — anomalía individual;
+- `AuditResult` — resultado agregado;
+- `StageSummary` — resumen de Funnel;
+- `GateStatus` — `PASS/WARN/FAIL`;
+- `gate_from_findings()` — política determinista de severidad.
+
+`CRITICAL` bloquea el Gate. `HIGH/MEDIUM` produce `WARN` y exige decisión documentada antes del siguiente Gate.
+
+## 6. Auditorías que NO deben adelantarse
 
 Estas pertenecen a una etapa posterior y no se deben presentar como pre-backtest:
 
@@ -115,9 +157,9 @@ Estas pertenecen a una etapa posterior y no se deben presentar como pre-backtest
 - OOS de performance.
 - optimización de parámetros.
 
-Son válidas después de existir una ejecución reproducible y un conjunto de resultados. SMC-SYSTEMS contiene implementaciones de algunas de estas técnicas, pero su existencia no justifica ejecutarlas antes de tener un motor de ejecución estable. Su Completion Report registra, entre otras, PurgedKFold, CVaR, DSR y PBO. Eso es material de validación posterior, no sustituto de las auditorías estructurales. 
+Son válidas después de existir una ejecución reproducible y un conjunto de resultados. SMC-SYSTEMS contiene implementaciones de algunas de estas técnicas, pero su existencia no justifica ejecutarlas antes de tener un motor de ejecución estable. Su Completion Report registra, entre otras, PurgedKFold, CVaR, DSR y PBO. Eso es material de validación posterior, no sustituto de las auditorías estructurales.
 
-## 5. Funnel como Gate central
+## 7. Funnel como Gate central
 
 El Funnel no debe responder "¿gana dinero?". Debe responder:
 
@@ -125,7 +167,7 @@ El Funnel no debe responder "¿gana dinero?". Debe responder:
 
 Una tasa de paso alta no es buena por sí misma. Una tasa baja tampoco es mala. El objetivo es detectar comportamientos imposibles, sesgos de implementación, objetos huérfanos, concentración artificial y pérdidas de población no explicadas.
 
-## 6. Criterio de BACKTEST ELIGIBLE
+## 8. Criterio de BACKTEST ELIGIBLE
 
 Sólo se habilita backtest cuando:
 
@@ -137,7 +179,27 @@ Sólo se habilita backtest cuando:
 - existe evidencia reproducible de los Gates;
 - no quedan blockers críticos.
 
-## 7. Referencia comparativa SMC-SYSTEMS
+## 9. Política de FAIL
+
+Si cualquier auditoría falla:
+
+```text
+FAIL
+ ↓
+Diagnóstico
+ ↓
+Localizar causa raíz
+ ↓
+Corregir código / contrato / datos
+ ↓
+Agregar o reforzar test
+ ↓
+Ejecutar auditoría nuevamente
+```
+
+No se permite relajar criterios sólo para obtener PASS. Si un FAIL persiste, el proyecto queda bloqueado en ese Gate y el backtest no se ejecuta.
+
+## 10. Referencia comparativa SMC-SYSTEMS
 
 `vjack666/SMC-SYSTEMS` se utiliza como fuente comparativa. Se rescatan ideas sólo si mejoran una auditoría del ICT y pasan pruebas propias. No se copia su arquitectura completa ni se toma su backtest como evidencia de edge del ICT.
 

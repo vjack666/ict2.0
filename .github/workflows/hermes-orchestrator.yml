@@ -1,0 +1,121 @@
+name: Hermes Orchestrator — Audit First
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_iterations:
+        description: 'Máximo de iteraciones del gate de auditoría'
+        required: false
+        default: '5'
+      run_tests:
+        description: 'Ejecutar suite pytest después del gate'
+        required: false
+        default: 'true'
+  push:
+    branches: [main]
+    paths:
+      - 'audits/**'
+      - 'engine/**'
+      - 'tests/**'
+      - '.hermes-index.md'
+      - 'docs/**'
+      - '.github/workflows/hermes-orchestrator.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hermes-orchestrator-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+  HERMES_AUDIT_MAX_ITER: ${{ github.event.inputs.max_iterations || '5' }}
+
+jobs:
+  audit-first:
+    name: Hermes — A0→A9 gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install audit/test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest numpy pandas pyarrow scikit-learn requests
+
+      - name: Repository diagnostics
+        run: |
+          set -euxo pipefail
+          echo '=== repository ==='
+          git rev-parse HEAD
+          test -f .hermes-index.md
+          test -f docs/00_HERMES_START_HERE.md
+          test -f start_hermes.py
+          test -f audits/codigo/bootstrap.py
+          echo '=== audit inventory ==='
+          find audits -maxdepth 3 -type f | sort
+          echo '=== master index ==='
+          sed -n '1,220p' .hermes-index.md
+
+      - name: Run mandatory Hermes audit gate
+        run: |
+          set -euxo pipefail
+          python start_hermes.py
+
+      - name: Verify audit evidence
+        run: |
+          set -euxo pipefail
+          test -f .hermes/audit_state.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('.hermes/audit_state.json')
+          data = json.loads(p.read_text())
+          print(json.dumps(data, indent=2, ensure_ascii=False))
+          if data.get('status') not in {'PASS', 'MEDIANAMENTE_BUENO'}:
+              raise SystemExit('Hermes audit state is not acceptable')
+          if float(data.get('audit_score', 0)) < 0.80:
+              raise SystemExit('Hermes audit score below 0.80')
+          PY
+
+      - name: Run test suite
+        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run_tests == 'true' }}
+        run: |
+          set -euxo pipefail
+          python -m pytest -q --disable-warnings --maxfail=1
+
+      - name: Upload Hermes evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hermes-audit-${{ github.run_id }}
+          path: |
+            .hermes/audit_state.json
+            .hermes-worklog/**
+          if-no-files-found: ignore
+
+  governance:
+    name: Hermes — governance gate
+    needs: audit-first
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify mandatory documentation contract
+        run: |
+          set -euxo pipefail
+          test -f .hermes-index.md
+          test -f docs/00_HERMES_START_HERE.md
+          test -f docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md
+          test -f docs/CONTRATO_FUNNEL_AUDIT.md
+          test -d audits/codigo
+          echo 'GOVERNANCE GATE: PASS'
+          echo 'No backtest is authorized by this workflow; the pre-backtest audit stack remains the gate of record.'

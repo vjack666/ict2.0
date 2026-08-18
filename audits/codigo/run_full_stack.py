@@ -1,12 +1,8 @@
 """CLI reproducible para ejecutar A0-A9 en secuencia y luego A7 Funnel.
 
-Uso:
-    python -m audits.codigo.run_full_stack
-
-El runner usa un smoke dataset para probar el contrato de todos los gates y,
-si se encuentra el reporte histórico del Funnel, lo registra como evidencia
-preexistente. No inventa un Funnel de FVG/OB si no existe una extracción de
-objetos disponible.
+El stack ejecuta contratos y smoke tests reproducibles. La evidencia histórica
+real del Funnel EURUSD H1/H4/D1 se referencia por separado; no se inventan
+conteos FVG/OB que no hayan sido extraídos por un pipeline real.
 """
 from __future__ import annotations
 
@@ -45,6 +41,7 @@ def smoke_funnel():
         {"stage": "CONFLUENCE", "id": "x1", "accepted": True, "direction": 1},
         {"stage": "LINEAGE", "id": "l1", "accepted": True, "direction": 1},
         {"stage": "SETUP", "id": "u1", "accepted": True, "direction": 1},
+        {"stage": "SETUP", "id": "u2", "accepted": True, "direction": -1},
     ]
 
 

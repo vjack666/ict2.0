@@ -23,12 +23,27 @@ def _compute_atr(frame: pd.DataFrame, period: int) -> pd.Series:
 
 
 def _swing_points(frame: pd.DataFrame, lookback: int) -> tuple[pd.Series, pd.Series]:
-    window = lookback * 2 + 1
-    rolling_high = frame["high"].rolling(window=window, center=True)
-    rolling_low = frame["low"].rolling(window=window, center=True)
-    swing_high = frame["high"].where(frame["high"] == rolling_high.max())
-    swing_low = frame["low"].where(frame["low"] == rolling_low.min())
-    return swing_high.ffill(), swing_low.ffill()
+    """Causal pivots: a bar j is a swing only once lookback bars to its RIGHT have closed.
+
+    Confirmation bar = j + lookback. No center=True (no future bars beyond confirmation).
+    Levels are ffilled from confirmation onward for BOS break tests.
+    """
+    high = frame["high"].to_numpy(float)
+    low = frame["low"].to_numpy(float)
+    n = len(frame)
+    sh = np.full(n, np.nan)
+    sl = np.full(n, np.nan)
+    for conf in range(lookback * 2, n):
+        j = conf - lookback
+        if j < lookback:
+            continue
+        if high[j] >= high[j - lookback : j + lookback + 1].max():
+            sh[conf] = high[j]  # publish at confirmation bar
+        if low[j] <= low[j - lookback : j + lookback + 1].min():
+            sl[conf] = low[j]
+    swing_high = pd.Series(sh, index=frame.index).ffill()
+    swing_low = pd.Series(sl, index=frame.index).ffill()
+    return swing_high, swing_low
 
 
 def _label_swings(swing_high: pd.Series, swing_low: pd.Series) -> pd.Series:

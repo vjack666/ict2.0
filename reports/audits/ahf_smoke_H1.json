@@ -1,0 +1,12 @@
+{
+  "state_histogram": {
+    "WAIT_H4": 1,
+    "WAIT_H1": 1,
+    "WAIT_LTF": 8,
+    "SETUP_READY": 190
+  },
+  "final_state": "SETUP_READY",
+  "n_transitions": 6,
+  "policy": "AHF_STATE_NOT_ENTRY",
+  "note": "precompute_sequences=False for smoke speed"
+}

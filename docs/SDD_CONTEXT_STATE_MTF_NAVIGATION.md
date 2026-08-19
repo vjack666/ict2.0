@@ -3,7 +3,7 @@
 **Estado:** NORMATIVO (borrador de arquitectura — **no** autoriza entrenamiento multi-TF ni entry)  
 **Fecha:** 2026-08-18  
 **Extiende:** `SDD_FVG_OB_ARCHITECTURE_MAP.md`, `PLAN_HERMES_FVG_OB.md`, `SPEC_TESIS_FORMAL.md`  
-**Motivo:** separar *contexto HTF* de *timing LTF* antes de que cualquier agente “se pasee” entre temporalidades.
+**Motivo:** separar *contexto HTF* de *timing LTF* y formalizar la navegación jerárquica antes de que cualquier agente “se pasee” entre temporalidades.
 
 ---
 
@@ -174,12 +174,6 @@ LTF:
   waiting_retest = true | false
 ```
 
-Flujo de decisión:
-
-```text
-CONTEXTO → RESTRICCIONES → OPORTUNIDAD → TRIGGER → RISK/TARGET → OUTCOME
-```
-
 ### 4.2 Navegación jerárquica temporal (definición de “pasearse”)
 
 **No** es concatenar features D1+H4+H1 en un vector tabular.
@@ -195,13 +189,80 @@ LTF → ¿Hay trigger / retest?
 
 La IA **sube o baja** de TF según la pregunta; no “mezcla” timestamps de velas no cerradas.
 
-### 4.3 Anti-look-ahead multi-TF (norma)
+### 4.3 AHF — Adaptive Hierarchical MTF Funnel
 
-Al timestamp de decisión en TF de ejecución \(t\):
+**Definición normativa:** el Funnel MTF no es un loop secuencial que recorre todos los timeframes en cada vela. Es una **máquina de estados jerárquica, dirigida por eventos**, que navega top-down entre capas temporales. Cada capa tiene condiciones de entrada, condiciones de confirmación y reglas explícitas de invalidación.
+
+La progresión canónica es:
+
+```text
+WAIT_D1
+  │ D1_PASS
+  ▼
+D1_LOCKED
+  ▼
+WAIT_H4
+  │ H4_PASS
+  ▼
+H4_LOCKED
+  ▼
+WAIT_H1
+  │ H1_PASS
+  ▼
+WAIT_LTF
+  │ LTF_CONFIRMATION
+  ▼
+SETUP_READY
+  ▼
+OUTCOME
+```
+
+Reglas obligatorias:
+
+1. **Una capa inferior sólo queda habilitada después de que la capa superior alcance su estado de confirmación.**
+2. Mientras una capa está `LOCKED`, su contexto confirmado se conserva como snapshot y no se reescribe retroactivamente por eventos LTF.
+3. La capa activa es la única que responde a la pregunta operativa actual; las demás sólo aportan el estado ya confirmado que sea legal leer.
+4. Una invalidación de una capa superior puede hacer retroceder el estado a esa capa:
+
+```text
+LTF → H1_INVALIDATED → WAIT_H1
+H1  → H4_INVALIDATED → WAIT_H4
+H4  → D1_INVALIDATED → WAIT_D1
+```
+
+5. El retroceso debe quedar registrado como evento de transición; no se permite “borrar” el contexto previo para maquillar la trayectoria.
+6. `Context State`, `constraints` y `navigation state` **no son entradas**. La entrada sólo puede existir después de que E/F definan un trigger y una regla de ejecución explícitos.
+7. El AHF debe conservar `state`, `active_tf`, `confirmed_context`, `transition_event`, `transition_time`, `parent_state` e `invalidation_reason` para auditoría.
+
+Ejemplo conceptual:
+
+```text
+D1 confirma contexto bullish + POI
+        ↓
+D1_LOCKED
+        ↓
+H4 busca estructura compatible
+        ↓
+H4 confirma → H4_LOCKED
+        ↓
+H1 busca secuencia
+        ↓
+H1 confirma profundidad k
+        ↓
+LTF busca retest/trigger
+```
+
+La navegación es **dirigida por preguntas**: la máquina no inspecciona ciegamente todos los TF; resuelve la pregunta de la capa activa y sólo al resolverla habilita la siguiente.
+
+### 4.4 Anti-look-ahead multi-TF (norma)
+
+Al timestamp de decisión en TF de ejecución `t`:
 
 - Solo velas **cerradas** de HTF con `close_time ≤ t`.
-- Ningún pivot HTF centrado que use barras futuras respecto de \(t\).
+- Ningún pivot HTF centrado que use barras futuras respecto de `t`.
 - El stacking es **lectura de estado**, no reescritura del pasado LTF.
+- Una transición de estado sólo puede utilizar evidencia disponible en el snapshot `as-of(t)` de la capa activa y los snapshots ya confirmados de sus ancestros.
+- La invalidación de una capa sólo puede ocurrir por evidencia posterior al momento de confirmación, nunca por una observación futura introducida retrospectivamente.
 
 Hasta que exista contrato ejecutable de capas `htf / itf / exec_tf` separados (deuda en tesis formal), el “paseo” de la IA **no está autorizado** en código de producción ni en entrenamiento con labels de entry.
 
@@ -270,6 +331,7 @@ PASS documental cuando:
 2. El índice deje de tratar “siguiente = solo secuencia” como si no estuviera explorada.
 3. Quede explícito: **Context State ≠ entry**; **EMA proxy ≠ HTF ICT**.
 4. Ningún entrenamiento multi-TF arranque sin contrato de capas + anti-look-ahead cruzado.
+5. La semántica AHF quede versionada: estados, transiciones, snapshots, retroceso por invalidación y evidencia de transición.
 
 ---
 
@@ -277,5 +339,7 @@ PASS documental cuando:
 
 1. `CONTRATO_MULTI_TF_LAYERS.md` — `htf` / `itf` / `exec_tf`, timestamps cerrados.  
 2. Implementar **Context State** mínimo (structure + liquidity HTF, sin EMA normativa).  
-3. Experimento: `SEQUENCE depth ≥ k × Context State` → distribución de outcome (con stop fijo).  
-4. Solo entonces: políticas de navegación para la IA (grafo de contexto), no labels de “buy/sell” crudos multi-TF.
+3. Implementar el contrato ejecutable AHF: estados, transiciones, snapshots `as-of`, invalidaciones y lineage de navegación.  
+4. Corregir **BOS/CHOCH a pivotes 100% causales** antes de autorizar entrenamiento/navegación IA.  
+5. Experimento: `SEQUENCE depth ≥ k × Context State` → distribución de outcome (con stop fijo).  
+6. Solo entonces: políticas de navegación para la IA (grafo de contexto), no labels de “buy/sell” crudos multi-TF.

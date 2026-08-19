@@ -27,6 +27,14 @@ import pandas as pd
 from detectors.bos import BosConfig, detect_bos
 from tools.displacement import DisplacementConfig, detect_displacement
 
+try:
+    from engine.sequential_events import SequentialChain, Stage as SeqStage, run_sequential, SeqConfig
+except ImportError:  # pragma: no cover
+    SequentialChain = None  # type: ignore
+    SeqStage = None  # type: ignore
+    run_sequential = None  # type: ignore
+    SeqConfig = None  # type: ignore
+
 
 # ---------------------------------------------------------------------------
 # Taxonomy
@@ -351,6 +359,10 @@ class NavigatorConfig:
         TimeframeLayer.H4,
         TimeframeLayer.H1,
     )
+    # When True, MTFNavigator runs sequential engine on H1 once and indexes by bar
+    precompute_sequences: bool = True
+    sequence_tf: str = "H1"
+    seq_config: Any = None  # optional SeqConfig
 
 
 class MTFNavigator:
@@ -375,6 +387,13 @@ class MTFNavigator:
             if missing := need - set(df.columns):
                 raise KeyError(f"{k}: faltan columnas {missing}")
             self._frames[k] = _ensure_time(df)
+
+        # bar -> max sequence depth of chains whose last_bar <= bar (point-in-time)
+        self._seq_depth_by_bar: dict[int, int] = {}
+        self._seq_complete_by_bar: dict[int, int] = {}
+        self._seq_chains: list[Any] = []
+        if self.config.precompute_sequences and run_sequential is not None:
+            self._build_sequence_index()
 
     def available_layers(self) -> list[str]:
         return sorted(self._frames.keys())
@@ -506,16 +525,34 @@ class MTFNavigator:
             has_struct,
             detail=f"bias={snap.structure_bias.value}, bos={snap.last_bos_direction}",
         )
-        # sequence depth proxy: bos + displacement
-        depth_proxy = int(has_struct) + int(snap.displacement_recent)
-        snap.answers[NavQuestion.HAS_SEQUENCE_DEPTH.value] = depth_proxy
+        # Sequence depth: prefer sequential engine index (point-in-time); else proxy
+        seq_depth = self.sequence_depth_at(snap.asof_bar)
+        seq_complete_n = self.sequence_complete_count_at(snap.asof_bar)
+        if seq_depth > 0 or self._seq_chains:
+            depth_val = seq_depth
+            detail = f"sequential_engine max_depth_visible={seq_depth}, complete_chains_seen={seq_complete_n}"
+            source = "sequential_events"
+        else:
+            depth_val = int(has_struct) + int(snap.displacement_recent)
+            detail = "proxy=structure+displacement (sequential index empty)"
+            source = "proxy"
+        snap.answers[NavQuestion.HAS_SEQUENCE_DEPTH.value] = {
+            "depth": depth_val,
+            "complete_chains_seen": seq_complete_n,
+            "source": source,
+        }
         path.add(
             TimeframeLayer.H1,
             NavQuestion.HAS_SEQUENCE_DEPTH,
-            depth_proxy,
-            detail="proxy=structure+displacement (full sequential engine optional upstream)",
+            depth_val,
+            detail=detail,
         )
-        return {"has_structure": has_struct, "depth_proxy": depth_proxy}
+        return {
+            "has_structure": has_struct,
+            "depth": depth_val,
+            "complete_chains_seen": seq_complete_n,
+            "source": source,
+        }
 
     def _answer_ltf(self, snap: LayerSnapshot, path: NavigationPath) -> dict[str, Any]:
         # Trigger proxy: recent displacement; retest unknown without zone tracking
@@ -604,6 +641,47 @@ class MTFNavigator:
             sequence_required=True,
             notes=notes,
         )
+
+
+    def _build_sequence_index(self) -> None:
+        """Run sequential engine on sequence_tf; index max depth visible at each bar.
+
+        Anti-look-ahead: a chain only contributes to bar i if chain.last_bar <= i.
+        """
+        tf = self.config.sequence_tf.upper()
+        df = self._frames.get(tf)
+        if df is None or df.empty or run_sequential is None:
+            return
+        cfg = self.config.seq_config
+        if cfg is None and SeqConfig is not None:
+            cfg = SeqConfig(structure_mode="canonical_bos", max_active_chains=128)
+        chains = run_sequential(df, cfg, symbol="", timeframe=tf)
+        self._seq_chains = chains
+        n = len(df)
+        ends = sorted(
+            (
+                (int(ch.last_bar), len(ch.nodes), 1 if ch.status == "COMPLETE" else 0)
+                for ch in chains
+                if 0 <= int(ch.last_bar) < n
+            ),
+            key=lambda x: x[0],
+        )
+        j = 0
+        max_d = 0
+        n_complete = 0
+        for i in range(n):
+            while j < len(ends) and ends[j][0] <= i:
+                max_d = max(max_d, ends[j][1])
+                n_complete += ends[j][2]
+                j += 1
+            self._seq_depth_by_bar[i] = max_d
+            self._seq_complete_by_bar[i] = n_complete
+
+    def sequence_depth_at(self, bar_index: int) -> int:
+        return int(self._seq_depth_by_bar.get(bar_index, 0))
+
+    def sequence_complete_count_at(self, bar_index: int) -> int:
+        return int(self._seq_complete_by_bar.get(bar_index, 0))
 
     def navigate(
         self,

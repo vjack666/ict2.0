@@ -1,0 +1,557 @@
+{
+  "dataset": "dukascopy EURUSD 20Y",
+  "symbol": "EURUSD",
+  "policy": "AUDIT_FUNNEL_NO_PNL_NO_ENTRY",
+  "fvg_ob": {
+    "H1": {
+      "timeframe": "H1",
+      "bars": 124377,
+      "fvg_count": 22477,
+      "ob_count": 2799,
+      "relation_count": 702,
+      "causal_links": 702,
+      "relation_rate_vs_fvg": 0.031231925968768073,
+      "relation_rule": "STRICT FVG_OB_CAUSAL",
+      "audit_status": "GateStatus.PASS",
+      "audit_score": 0.6770666666666667,
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 22477,
+          "accepted_count": 22477,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 2799,
+          "accepted_count": 2799,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 22500,
+          "accepted_count": 702,
+          "rejected_count": 21798
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "extra_stage_counts": {
+        "CONFLUENCE": {
+          "n": 22500,
+          "accepted": 702,
+          "rejected": 21798
+        },
+        "FVG": {
+          "n": 22477,
+          "accepted": 22477,
+          "rejected": 0
+        },
+        "OB": {
+          "n": 2799,
+          "accepted": 2799,
+          "rejected": 0
+        }
+      }
+    },
+    "H4": {
+      "timeframe": "H4",
+      "bars": 32133,
+      "fvg_count": 6497,
+      "ob_count": 862,
+      "relation_count": 206,
+      "causal_links": 206,
+      "relation_rate_vs_fvg": 0.03170694166538402,
+      "relation_rule": "STRICT FVG_OB_CAUSAL",
+      "audit_status": "GateStatus.PASS",
+      "audit_score": 0.6772323947273939,
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 6497,
+          "accepted_count": 6497,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 862,
+          "accepted_count": 862,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 6499,
+          "accepted_count": 206,
+          "rejected_count": 6293
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "extra_stage_counts": {
+        "CONFLUENCE": {
+          "n": 6499,
+          "accepted": 206,
+          "rejected": 6293
+        },
+        "FVG": {
+          "n": 6497,
+          "accepted": 6497,
+          "rejected": 0
+        },
+        "OB": {
+          "n": 862,
+          "accepted": 862,
+          "rejected": 0
+        }
+      }
+    },
+    "D1": {
+      "timeframe": "D1",
+      "bars": 6258,
+      "fvg_count": 1543,
+      "ob_count": 214,
+      "relation_count": 58,
+      "causal_links": 58,
+      "relation_rate_vs_fvg": 0.037589112119248216,
+      "relation_rule": "STRICT FVG_OB_CAUSAL",
+      "audit_status": "GateStatus.PASS",
+      "audit_score": 0.6791801510248113,
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 1543,
+          "accepted_count": 1543,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 214,
+          "accepted_count": 214,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 1545,
+          "accepted_count": 58,
+          "rejected_count": 1487
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "extra_stage_counts": {
+        "CONFLUENCE": {
+          "n": 1545,
+          "accepted": 58,
+          "rejected": 1487
+        },
+        "FVG": {
+          "n": 1543,
+          "accepted": 1543,
+          "rejected": 0
+        },
+        "OB": {
+          "n": 214,
+          "accepted": 214,
+          "rejected": 0
+        }
+      }
+    }
+  },
+  "sequence": {
+    "H1": {
+      "timeframe": "H1",
+      "summary": {
+        "n_chains": 1460,
+        "by_depth": {
+          "1": 767,
+          "2": 575,
+          "3": 94,
+          "4": 21,
+          "7": 3
+        },
+        "by_status": {
+          "EXPIRED": 1457,
+          "COMPLETE": 3
+        },
+        "complete_bull": 1,
+        "complete_bear": 2,
+        "stage_order": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "OB",
+          "FVG",
+          "RETEST"
+        ]
+      },
+      "n_complete": 3,
+      "n_chains": 1460,
+      "audit_status": "PASS",
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "extra_stage_counts": {
+        "SEQ_CHAIN": {
+          "n": 1460,
+          "accepted": 3,
+          "rejected": 1457
+        },
+        "SEQ_DISPLACEMENT": {
+          "n": 118,
+          "accepted": 118,
+          "rejected": 0
+        },
+        "SEQ_FVG": {
+          "n": 3,
+          "accepted": 3,
+          "rejected": 0
+        },
+        "SEQ_LIQUIDITY_POOL": {
+          "n": 1460,
+          "accepted": 1460,
+          "rejected": 0
+        },
+        "SEQ_OB": {
+          "n": 3,
+          "accepted": 3,
+          "rejected": 0
+        },
+        "SEQ_RETEST": {
+          "n": 3,
+          "accepted": 3,
+          "rejected": 0
+        },
+        "SEQ_STRUCTURE": {
+          "n": 24,
+          "accepted": 24,
+          "rejected": 0
+        },
+        "SEQ_SWEEP": {
+          "n": 693,
+          "accepted": 693,
+          "rejected": 0
+        }
+      },
+      "findings": []
+    }
+  },
+  "mtf_navigation": {
+    "n_samples": 50,
+    "sample_every": 2500,
+    "samples_preview": [
+      {
+        "decision_time": "2006-01-30 17:00:00",
+        "status": "OK",
+        "direction_hint": "BULLISH",
+        "path_len": 4,
+        "seq_depth": {
+          "depth": 0,
+          "complete_chains_seen": 0,
+          "source": "sequential_events"
+        },
+        "regime_stack": {
+          "D1": "TREND_BULL",
+          "H4": "COMPRESSION",
+          "H1": "TREND_BEAR"
+        }
+      },
+      {
+        "decision_time": "2006-06-23 20:00:00",
+        "status": "OK",
+        "direction_hint": "UNKNOWN",
+        "path_len": 4,
+        "seq_depth": {
+          "depth": 0,
+          "complete_chains_seen": 0,
+          "source": "sequential_events"
+        },
+        "regime_stack": {
+          "D1": "COMPRESSION",
+          "H4": "COMPRESSION",
+          "H1": "TREND_BEAR"
+        }
+      },
+      {
+        "decision_time": "2006-11-17 00:00:00",
+        "status": "OK",
+        "direction_hint": "BULLISH",
+        "path_len": 4,
+        "seq_depth": {
+          "depth": 0,
+          "complete_chains_seen": 0,
+          "source": "sequential_events"
+        },
+        "regime_stack": {
+          "D1": "TREND_BULL",
+          "H4": "COMPRESSION",
+          "H1": "TREND_BEAR"
+        }
+      },
+      {
+        "decision_time": "2007-04-11 17:00:00",
+        "status": "OK",
+        "direction_hint": "BULLISH",
+        "path_len": 4,
+        "seq_depth": {
+          "depth": 0,
+          "complete_chains_seen": 0,
+          "source": "sequential_events"
+        },
+        "regime_stack": {
+          "D1": "TREND_BULL",
+          "H4": "TREND_BULL",
+          "H1": "COMPRESSION"
+        }
+      },
+      {
+        "decision_time": "2007-09-04 21:00:00",
+        "status": "OK",
+        "direction_hint": "BEARISH",
+        "path_len": 4,
+        "seq_depth": {
+          "depth": 0,
+          "complete_chains_seen": 0,
+          "source": "sequential_events"
+        },
+        "regime_stack": {
+          "D1": "RANGE",
+          "H4": "TREND_BEAR",
+          "H1": "RANGE"
+        }
+      }
+    ],
+    "anti_lookahead": "docs/ANTI_LOOKAHEAD_MTF_SEQUENCE.md",
+    "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
+    "audit_status": "PASS",
+    "stages": [
+      {
+        "stage": "VALID_BARS",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "STRUCTURE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "BOS_CHOCH",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "DISPLACEMENT",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "FVG",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "OB",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "CONFLUENCE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "LINEAGE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "stage": "SETUP",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0
+      }
+    ],
+    "extra_stage_counts": {
+      "MTF_CONSTRAINTS": {
+        "n": 50,
+        "accepted": 50,
+        "rejected": 0
+      },
+      "MTF_NAV": {
+        "n": 50,
+        "accepted": 50,
+        "rejected": 0
+      },
+      "MTF_SEQ_DEPTH": {
+        "n": 50,
+        "accepted": 44,
+        "rejected": 6
+      }
+    },
+    "findings": []
+  }
+}

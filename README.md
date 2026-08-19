@@ -5,12 +5,20 @@ Objetivo de esta primera pasada: **reunir los subagentes en una estructura
 ordenada y autónoma**, siguiendo el ciclo de migración controlada
 (auditar → diseñar → autorizar → ejecutar).
 
-> ⚠️ **Estado: andamiaje, NO sistema funcional.**
-> Estos agentes son **consumidores del motor** (`ict_backtest.canonical`,
-> `detectors`, `engine`). En esta carpeta aislada aún NO se copió el motor,
-> así que los imports de `analysis.*` / `orchestration.*` / `agents.*` solo
-> resolverán una vez que en fases siguientes se traiga el motor al árbol.
-> La copia fue literal y verificada contra el origen; no se reescribió lógica.
+> **Estado: sistema funcional — motor presente y cableado.**
+> El motor ICT (`engine/`, `detectors/`, `analysis/`, `agents/`, `orchestration/`)
+> ya fue rescatado y arranca dentro de ICT SYSTEM. Los agentes de `analysis.*`
+> consumen el motor (`CANONICAL_ENGINE = sequence`); la capa de consenso
+> (`AgentOrchestrator`) resuelve imports y produce columnas `agent_*`.
+> Fase D (FVG/OB canónicos + lineage causal) = PASS; AHF (navegación MTF) =
+> implementado. El motor **NO emite órdenes**: AHF llega a `SETUP_READY` y se
+> detiene (`AHF_STATE_NOT_ENTRY`). Puedes verificar con `pytest tests/` (52 PASS)
+> y `python -c "import engine.ahf, engine.sequence, agents.orchestrator"`.
+>
+> 📌 Este README es contexto de arranque, **no autoridad normativa**. La
+> autoridad vigente está en `docs/INDICE_AUTORIDAD.md` y los documentos que ese
+> índice lista (contratos/SDDs de FVG/OB, MTF, auditoría). Si este README
+> contradice un documento de `docs/`, manda el documento de `docs/`.
 
 ## Estructura
 
@@ -76,32 +84,27 @@ ICT SYSTEM/
 | `agents/wyckoff_agent.py` | `analysis.wyckoff_agent` | `WyckoffAgent` |
 | `agents/orchestrator.py` | `orchestration.orchestrator` | `AgentOrchestrator`, `AGENT_COLUMNS` |
 
-Consumidores internos conocidos (en el origen `SMC-SYSTEMS`):
+## Consumidores internos conocidos
+
 - `orchestration/orchestrator.py` importa de `analysis.*` (ICTAgent, StructureAgent,
-  WyckoffAgent, DecisionAgent, DecisionConfig, AnalysisResult).
-- `legacy/harness/__main__.py` y `scripts/live_market_read.py` importan
-  `orchestration.backtest_validation_graph` / `orchestration.harness_adapter`.
+  WyckoffAgent, DecisionAgent, DecisionConfig, AnalysisResult) — **resuelve OK**.
+- `analysis/ict_agent.py` expone `CANONICAL_ENGINE = sequence` (motor en `engine/`).
 
-## Dependencias rotas / pendientes (NO copiadas)
+> Nota: menciones previas a `orchestration.backtest_validation_graph` /
+> `orchestration.harness_adapter` como "dependencias rotas" eran de un estado
+> temprano del repo. En el árbol actual **ningún módulo activo los importa**
+> (verificado por grep 2026-08-19), por lo que ya no son deuda viva.
 
-Estos módulos son importados por consumidores legacy pero **NO existen en
-`orchestration/` activo** — solo viven en `legacy/` del repo origen:
+## Estado y siguientes pasos
 
-- `orchestration/backtest_validation_graph.py` → existe solo en `legacy/orchestration/`
-- `orchestration/harness_adapter.py` → existe solo en `legacy/**/harness_adapter.py`
+El motor (`engine/`) ya es capa permanente y está cableado a los agentes. El
+trabajo en curso (ver `.hermes-index.md` y `docs/`) se centra en:
 
-Decisión de orden: **no se copiaron** para no arrastrar código legacy roto al
-andamiaje limpio. Resolver en una fase posterior (promover a capa permanente o
-eliminar el consumidor). Ver auditoría de consumidores en `SMC-SYSTEMS`.
+1. **Auditoría temporal AHF/MTF (TNA)** sobre EURUSD 20Y — navegación, rollback,
+   duración por estado, tamaño FVG/OB en pips. **No es backtest.**
+2. **SEQUENCE × CONTEXT STATE** — tras TNA, medir si la secuencia bajo contexto
+   HTF cambia la distribución del outcome (con stop fijo).
+3. **Backtest / Entry** — solo después de cerrar A0-A9 + Funnel + TNA.
 
-## Siguientes fases sugeridas (fuera de alcance de esta pasada)
-
-1. Traer el **motor** (`engine/`) como capa permanente — es la única fuente de
-   decisión; los agentes de `analysis/` lo consumen, no lo reimplementan.
-2. Resolver `backtest_validation_graph` / `harness_adapter` (promover de legacy o
-   cortar el import).
-3. Copiar `detectors/`, `signals/`, `ict_backtest/` según el mismo principio de
-   fachada-sobre-borrado y matriz de 12 dimensiones.
-4. (`agents/governance/` del origen ya está en `governance/` aquí, fuera de la
-   carpeta de código, porque es dominio de rol/protocolo, no de ejecución.)
-```
+El README no define el plan de trabajo; para eso ver
+`docs/00_HERMES_START_HERE.md` y `docs/PLAN_HERMES_FVG_OB.md`.

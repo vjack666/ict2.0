@@ -109,11 +109,19 @@ Tests unitarios cubren el caso D1 futuro ignorado (`test_asof_ignores_future_htf
 
 ## 5. Caveats conocidos (no ocultar)
 
-| Componente | Riesgo | Mitigación |
-|------------|--------|------------|
-| `detectors.bos.detect_bos` | Swings `center=True` usan velas futuras *dentro del prefijo* para etiquetar pivotes | Documentado; deuda PIT: portar pivotes solo causales al BOS |
+| Componente | Riesgo | Estado |
+|------------|--------|--------|
+| `detectors.bos.detect_bos` (pivotes) | **RESUELTO 2026-08-19** — `_swing_points` publica el pivote en la barra de confirmación `conf = j + lookback`, usando solo barras ya cerradas. Sin `center=True`. Verificado en `detectors/bos.py:25-46` y tests anti-look-ahead (5/5 PASS). | NO es deuda viva; eliminado de la lista de riesgos tras auditoría de código. |
 | Prefijo BOS en snapshot | Al cortar en `asof_bar`, el centrado cerca del borde es incompleto | Aceptable como conservador; no usa datos `> t` del frame multi-TF |
 | `WAITING_RETEST` | Requiere feed FVG activo | Respuesta `None` hasta cablear zonas FVG al grafo |
+
+> **Nota de auditoría 2026-08-19:** una versión previa de este SDD listaba
+> `detectors.bos.detect_bos` con swings `center=True` (velas futuras) como riesgo
+> abierto. La auditoría de código confirma que el detector actual es **causal**:
+> el pivote se confirma `lookback` barras después de su formación y no se usa
+> información posterior a la barra de confirmación. El caveat quedó marcado como
+> RESUELTO; no debe reaparecer como riesgo abierto sin evidencia nueva de lo
+> contrario. Esto desbloquea TNA y experimentos dependientes de BOS.
 
 ---
 

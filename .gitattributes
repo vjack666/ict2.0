@@ -1,0 +1,2 @@
+data/raw/EURUSD/EURUSD_M1.parquet filter=lfs diff=lfs merge=lfs -text
+data/raw/EURUSD/EURUSD_M5.parquet filter=lfs diff=lfs merge=lfs -text

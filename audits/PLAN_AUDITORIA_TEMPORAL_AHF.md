@@ -4,7 +4,7 @@
 **Comando gatillo exacto:** `ejecuta auditoria temporal`
 **Dataset:** EURUSD 20Y de `datasets/eurusd_dukascopy_20y/` (2006–2025), con SHA256/metadata del snapshot versionado.
 **Auditor canónico:** `audits/codigo/ahf_temporal_navigation_audit.py`
-**SDD relacionado:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`, `docs/CONTRATO_AHF.md`
+**SDD relacionado:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`, `docs/CONTRATO_AHF.md`, `docs/AUDITORIA_TEMPORAL_AHF_MTF.md`
 
 ## 1. Regla de ejecución
 
@@ -57,6 +57,27 @@ La auditoría es pre-backtest y **no es un backtest**: no produce PnL, no autori
 - porcentaje de cadenas que se recuperan tras rollback;
 - porcentaje que termina bloqueada/abandonada.
 
+### Magnitud FVG / OB — descriptiva, no TP/SL
+
+Para cada FVG y OB observado en un trace y para cada timeframe disponible:
+
+- tamaño de la zona en pips (`size_pips`);
+- precio de referencia y regla de referencia;
+- máxima distancia posterior a favor (`max_favorable_pips`);
+- máxima distancia posterior en contra (`max_adverse_pips`);
+- desplazamiento firmado al cierre de la ventana (`end_move_pips`);
+- barras hasta máximo favorable/adverso, cuando sea posible reconstruirlas sin futuro.
+
+Ventanas mínimas:
+
+```text
++1, +3, +6, +12, +24, +48 barras
+```
+
+Para EURUSD, usar `pip_size=0.0001` salvo metadata explícita del símbolo. El movimiento debe empezar estrictamente **después** de `birth_bar`; nunca se usan barras anteriores para medir excursión posterior.
+
+Estas métricas sirven para describir la geometría y dinámica del objeto. **No son TP, SL, entrada, R, expectancy ni PnL.**
+
 ### Integridad temporal
 
 - `as_of(t)` correcto por timeframe;
@@ -64,7 +85,8 @@ La auditoría es pre-backtest y **no es un backtest**: no produce PnL, no autori
 - ningún estado reescrito retrospectivamente;
 - coherencia `transition_time <= decision_time`;
 - monotonicidad temporal del trace;
-- eventos de invalidación con causa y timestamp verificables.
+- eventos de invalidación con causa y timestamp verificables;
+- excursiones FVG/OB calculadas sólo con barras posteriores al nacimiento/confirmación del objeto.
 
 ## 4. Definición operativa del "paseo"
 
@@ -107,9 +129,12 @@ La auditoría temporal puede marcar **PASS** sólo si:
 - todo rollback tiene causa explícita;
 - las duraciones y retrocesos son calculables sin ambigüedad;
 - los estados bloqueados/unfinished quedan contabilizados;
+- FVG/OB tienen tamaño en pips reproducible;
+- las excursiones posteriores respetan estrictamente `birth_bar + 1` en adelante;
+- las métricas descriptivas no se convierten en reglas TP/SL/entrada;
 - el reporte se genera y queda versionado.
 
-**PASS de esta auditoría no significa edge ni rentabilidad.** Significa que la navegación temporal del AHF es observable, reproducible y temporalmente íntegra.
+**PASS de esta auditoría no significa edge ni rentabilidad.** Significa que la navegación temporal del AHF y la medición descriptiva de FVG/OB son observables, reproducibles y temporalmente íntegras.
 
 ## 6. Ubicación obligatoria de resultados
 
@@ -133,6 +158,7 @@ Si el repositorio ya usa otra subestructura canónica para artefactos JSON de au
 - No relajar thresholds después de mirar resultados.
 - Cada ejecución debe dejar commit, dataset/hash, timestamp y worklog.
 - El resultado debe actualizar `.hermes-index.md` inmediatamente.
+- No reutilizar una distancia positiva medida después de FVG/OB como TP implícito.
 
 ## 8. Entrega final esperada
 
@@ -152,6 +178,10 @@ Rollback P95: <n>
 Revisitas MTF: <n>
 Violaciones PIT: <n>
 Estados bloqueados: <n>
+FVG size mediana/p90 por TF: <...>
+OB size mediana/p90 por TF: <...>
+FVG favorable/adverso por ventana: <...>
+OB favorable/adverso por ventana: <...>
 Reporte: audits/AUDITORIA_TEMPORAL_AHF_20Y.md
 JSON: audits/reports/AUDITORIA_TEMPORAL_AHF_20Y.json
 ```

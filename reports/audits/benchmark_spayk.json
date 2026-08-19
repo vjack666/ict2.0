@@ -1,0 +1,52 @@
+{
+  "host": "spayk",
+  "ts": "2026-08-19T21:38:28.966438+00:00",
+  "cpu_logical": 20,
+  "cpu_physical": 14,
+  "ram_gb": 16.8,
+  "python": "3.11.15",
+  "results": [
+    {
+      "name": "A0_A9_1core",
+      "rc": 0,
+      "seconds": 0.12,
+      "n_proc": 1,
+      "tail": "Hermes audit iteration 1: status=PASS score=1.000\nAUDIT GATE: MEDIANAMENTE BUENO \u2014 Hermes puede continuar.\n"
+    },
+    {
+      "name": "A0_A9_20",
+      "rc": 0,
+      "seconds": 0.12,
+      "n_proc": 20,
+      "tail": "Hermes audit iteration 1: status=PASS score=1.000\nAUDIT GATE: MEDIANAMENTE BUENO \u2014 Hermes puede continuar.\n"
+    },
+    {
+      "name": "FUNNEL_20Y_1core",
+      "rc": 1,
+      "seconds": 0.72,
+      "n_proc": 1,
+      "tail": "Traceback (most recent call last):\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\audits\\codigo\\mtf_seq_funnel.py\", line 15, in <module>\n    from engine.detectors.fvg import detect_fvg\nModuleNotFoundError: No module named 'engine'\n"
+    },
+    {
+      "name": "FUNNEL_20Y_20",
+      "rc": 1,
+      "seconds": 0.7,
+      "n_proc": 20,
+      "tail": "Traceback (most recent call last):\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\audits\\codigo\\mtf_seq_funnel.py\", line 15, in <module>\n    from engine.detectors.fvg import detect_fvg\nModuleNotFoundError: No module named 'engine'\n"
+    },
+    {
+      "name": "AHF_TEMPORAL_1core",
+      "rc": -1,
+      "seconds": 1800.03,
+      "n_proc": 1,
+      "tail": "TIMEOUT(1800s)"
+    },
+    {
+      "name": "AHF_TEMPORAL_20",
+      "rc": -1,
+      "seconds": 1800.03,
+      "n_proc": 20,
+      "tail": "TIMEOUT(1800s)"
+    }
+  ]
+}

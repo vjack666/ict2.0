@@ -1,11 +1,11 @@
-# AUDITORÍA TEMPORAL AHF / MTF — Duración, transiciones y retrocesos
+# AUDITORÍA TEMPORAL AHF / MTF — Duración, transiciones, retrocesos y magnitud de eventos
 
-**Estado:** NORMATIVO — diseño de auditoría; no es backtest ni auditoría de PnL  
+**Estado:** NORMATIVO — diseño de auditoría; no es backtest ni auditoría de PnL
 **Objetivo:** medir si el AHF se comporta como un analista humano que recorre temporalidades, espera condiciones, baja de TF, vuelve atrás cuando una condición se invalida y reanuda desde la capa correcta.
 
 ## 1. Qué audita
 
-Esta auditoría no pregunta si una señal gana dinero. Pregunta **cómo navega el motor en el tiempo**:
+Esta auditoría no pregunta si una señal gana dinero. Pregunta **cómo navega el motor en el tiempo** y qué magnitud de movimiento existe alrededor de FVG/OB:
 
 ```text
 ¿cuántas velas espera?
@@ -16,9 +16,12 @@ Esta auditoría no pregunta si una señal gana dinero. Pregunta **cómo navega e
 ¿cuántas veces reabre una capa?
 ¿cuánto tarda en completar una cadena?
 ¿cuándo se queda atascado?
+¿qué tamaño tiene el FVG/OB en pips?
+¿cuántos pips recorre a favor después de FVG/OB?
+¿cuántos pips recorre en contra después de FVG/OB?
 ```
 
-El marco conceptual es el de un proceso de estados con **holding/sojourn times** y transiciones. Para esta auditoría nos interesa especialmente la duración condicionada a la transición y no sólo el estado final; por eso la lectura es más cercana a un análisis semi-Markov que a un loop fijo. La literatura financiera muestra que las duraciones de estados pueden contener información adicional y que la hipótesis de duración sin memoria puede ser demasiado restrictiva. cite-local-placeholder
+El marco conceptual es el de un proceso de estados con **holding/sojourn times** y transiciones. Para esta auditoría nos interesa especialmente la duración condicionada a la transición y no sólo el estado final; la lectura es más cercana a un análisis semi-Markov que a un loop fijo.
 
 ## 2. Unidad de observación
 
@@ -36,7 +39,21 @@ invalidation_reason
 context_snapshot_id
 ```
 
-La auditoría trabaja sobre esos traces, nunca reconstruye retrospectivamente un estado utilizando información posterior.
+Además, los eventos FVG/OB observados durante el trace pueden adjuntarse como objetos descriptivos:
+
+```text
+object_id
+object_type = FVG | OB
+symbol
+TF
+birth_bar
+birth_time
+direction
+zone_low
+zone_high
+```
+
+La auditoría trabaja sobre esos traces y objetos con su `as_of(t)` correspondiente; nunca reconstruye retrospectivamente un estado utilizando información posterior.
 
 ## 3. Estados auditados
 
@@ -69,15 +86,7 @@ Para cada capa:
 
 `T_find = first_confirmed_bar - state_enter_bar`
 
-Reportar:
-
-- mínimo;
-- mediana;
-- media;
-- p75;
-- p90;
-- p95;
-- máximo.
+Reportar mínimo, mediana, media, p75, p90, p95 y máximo.
 
 ### 4.2 Duración de estado
 
@@ -120,23 +129,11 @@ D1(0) → H4(1) → H1(2) → invalidación H4
 rollback_depth = 1
 ```
 
-También medir:
-
-`rollback_bars = rollback_bar - invalidation_origin_bar`
-
-y:
-
-`recovery_bars = next_reconfirmation_bar - rollback_bar`
+También medir `rollback_bars` y `recovery_bars`.
 
 ### 4.6 Reentradas
 
-Contar:
-
-- reentry_count por TF;
-- invalidation_count por TF;
-- revisits al mismo estado;
-- revisits al mismo contexto congelado;
-- ciclos completos `WAIT → LOCKED → INVALIDATED → WAIT`.
+Contar reentry_count por TF, invalidation_count por TF, revisits al mismo estado, revisits al mismo contexto congelado y ciclos completos `WAIT → LOCKED → INVALIDATED → WAIT`.
 
 ## 5. Métricas de comportamiento tipo trader
 
@@ -156,31 +153,15 @@ No es una métrica de rentabilidad; mide cuánto movimiento del grafo fue necesa
 
 ### D. Backtracking excesivo
 
-Identificar trayectorias con muchos retrocesos:
-
-```text
-D1 → H4 → H1 → H4 → H1 → H4 ...
-```
-
-Esto puede indicar un contrato demasiado inestable o una condición mal definida.
+Identificar trayectorias con muchos retrocesos, por ejemplo `D1 → H4 → H1 → H4 → H1 ...`.
 
 ### E. Stuck states
 
-Detectar estados donde:
-
-`T_hold > p95 histórico`
-
-sin confirmación ni invalidación.
+Detectar estados donde `T_hold > p95 histórico` sin confirmación ni invalidación.
 
 ### F. Zonas de indecisión
 
-Contar alternancias rápidas:
-
-```text
-LOCKED → WAIT → LOCKED → WAIT
-```
-
-dentro de una ventana corta.
+Contar alternancias rápidas `LOCKED → WAIT → LOCKED → WAIT` dentro de una ventana corta.
 
 ## 6. Métricas de navegación multi-TF
 
@@ -190,17 +171,13 @@ Para cada trace:
 TF visits
 TF switches
 upward switches
- downward switches
+downward switches
 same-TF revisits
 max depth reached
 min depth after rollback
 ```
 
-También:
-
-`TF_dwell_share = dwell_time_at_tf / total_trace_time`
-
-Esto permite responder si el AHF realmente “pasea” entre escalas o simplemente cae una vez a LTF y ya no vuelve.
+También `TF_dwell_share = dwell_time_at_tf / total_trace_time`.
 
 ## 7. Métricas de cadena
 
@@ -218,17 +195,102 @@ reopen_count
 complete = true|false
 ```
 
-Separar estrictamente:
+Separar estrictamente existencia de cadena, duración de cadena, profundidad alcanzada, completitud y outcome.
 
-- existencia de cadena;
-- duración de cadena;
-- profundidad alcanzada;
-- completitud;
-- outcome.
+## 8. Magnitud FVG / OB y recorrido posterior (DESCRIPTIVO, NO TP)
 
-No convertir estos números en edge de trading.
+Esta sección responde a una necesidad específica de auditoría: medir **qué tamaño tenía el objeto** y **qué distancia recorrió el precio después de que el objeto apareció**, sin convertir ninguna distancia en target, stop o regla de entrada.
 
-## 8. Auditoría de causalidad temporal
+### 8.1 Tamaño del FVG en pips
+
+Para un objeto FVG con límites `[zone_low, zone_high]`:
+
+`fvg_size_pips = abs(zone_high - zone_low) / pip_size(TF, symbol)`
+
+### 8.2 Tamaño del OB en pips
+
+Para un OB con límites `[zone_low, zone_high]`:
+
+`ob_size_pips = abs(zone_high - zone_low) / pip_size(TF, symbol)`
+
+Para EURUSD se usará por defecto `pip_size = 0.0001`, salvo que la metadata del símbolo indique otra convención.
+
+### 8.3 Movimiento posterior a favor y en contra
+
+Desde la barra de nacimiento/confirmación del objeto `b0`, medir en una ventana descriptiva `H`:
+
+- `max_favorable_pips`: máxima excursión posterior en la dirección del objeto.
+- `max_adverse_pips`: máxima excursión posterior en contra de la dirección del objeto.
+- `end_move_pips`: desplazamiento firmado al cierre de la barra final de la ventana.
+- `bars_to_max_favorable`.
+- `bars_to_max_adverse`.
+
+Para un objeto bullish:
+
+```text
+favorable = future_high - reference_price
+adverse   = reference_price - future_low
+```
+
+Para un objeto bearish se invierten las direcciones.
+
+### 8.4 Ventanas de observación
+
+Reportar al menos:
+
+```text
++1 barra
++3 barras
++6 barras
++12 barras
++24 barras
++48 barras
+```
+
+La auditoría debe poder comparar el mismo objeto en varias ventanas sin llamar a ninguna de ellas `TP`.
+
+### 8.5 Precio de referencia
+
+El JSON debe guardar explícitamente `reference_price` y `reference_rule`.
+
+Regla por defecto:
+
+```text
+FVG → close de la barra de confirmación del FVG
+OB  → close de la barra de nacimiento/confirmación del OB
+```
+
+No se permite cambiar la regla de referencia después de observar resultados.
+
+### 8.6 Métricas agregadas
+
+Por `TF × object_type × direction` reportar:
+
+```text
+object_count
+size_pips_stats
+favorable_pips_stats
+adverse_pips_stats
+end_move_pips_stats
+bars_to_favorable_stats
+bars_to_adverse_stats
+favorable/adverse ratio descriptivo
+```
+
+### 8.7 Lo que NO significa
+
+Estas métricas **no son**:
+
+- Take Profit;
+- Stop Loss;
+- entrada;
+- expectancy;
+- R de sistema;
+- edge de trading.
+
+Su propósito es caracterizar la **geometría y dinámica posterior del objeto**. Podrán utilizarse después como evidencia para diseñar hipótesis, pero no para declarar una estrategia.
+
+## 9. Auditoría de causalidad temporal
 
 Cada transición debe satisfacer:
 
@@ -243,11 +305,10 @@ Además:
 - ninguna capa inferior puede usar una confirmación HTF posterior;
 - una invalidación sólo existe desde el momento en que fue observable;
 - un rollback no puede aparecer en el trace antes de su evento causal;
-- un contexto LOCKED no puede cambiar silenciosamente: debe existir un evento de actualización o invalidación.
+- un contexto LOCKED no puede cambiar silenciosamente: debe existir un evento de actualización o invalidación;
+- las métricas FVG/OB posteriores sólo usan barras `> birth_bar`; nunca se permite usar barras anteriores para medir movimiento posterior.
 
-## 9. Auditoría de capacidad de corrección
-
-Ésta es la parte central de la petición del usuario.
+## 10. Auditoría de capacidad de corrección
 
 Para cada fallo de condición:
 
@@ -265,21 +326,17 @@ CONDICIÓN FALLA
 ¿reutiliza contexto válido o lo recalcula?
 ```
 
-El resultado debe permitir distinguir:
+Distinguir:
 
 ```text
 CORRECCIÓN LOCAL
 H1 → WAIT_H1
 ```
 
-frente a:
-
 ```text
 CORRECCIÓN PROFUNDA
 H1 → H4 → WAIT_H4
 ```
-
-frente a:
 
 ```text
 RESET TOTAL
@@ -288,7 +345,7 @@ LTF → WAIT_D1
 
 Los tres comportamientos deben ser cuantificados por separado.
 
-## 10. Métricas mínimas de salida
+## 11. Métricas mínimas de salida
 
 El JSON de auditoría debe contener como mínimo:
 
@@ -313,15 +370,22 @@ stuck_state_rate
 causal_violations
 asof_violations
 context_rewrite_violations
+fvg_size_pips_by_tf
+ob_size_pips_by_tf
+fvg_favorable_pips_by_tf
+fvg_adverse_pips_by_tf
+ob_favorable_pips_by_tf
+ob_adverse_pips_by_tf
+object_move_windows
 ```
 
-## 11. Gates propuestos
+## 12. Gates propuestos
 
 ### TNA-01 — Integridad del trace
 PASS si todos los estados tienen enter/exit coherentes y no existen timestamps imposibles.
 
 ### TNA-02 — PIT
-PASS si no existen transiciones, invalidaciones o snapshots que dependan del futuro.
+PASS si no existen transiciones, invalidaciones, snapshots u objetos que dependan del futuro.
 
 ### TNA-03 — Rollback determinista
 PASS si una invalidación conduce al estado definido por contrato y conserva historial.
@@ -333,9 +397,15 @@ PASS si el AHF puede reabrir una capa sin borrar el contexto histórico previo.
 PASS si todas las transiciones reportan barras y timestamps comparables.
 
 ### TNA-06 — No-stuck / clasificación
-No exige cero estados atascados. Exige que estén identificados y cuantificados para poder decidir si son comportamiento esperado o defecto.
+No exige cero estados atascados. Exige que estén identificados y cuantificados.
 
-## 12. Qué NO mide
+### TNA-07 — Magnitud de objetos
+PASS si FVG/OB tienen tamaño en pips reproducible y las ventanas posteriores están estrictamente después del `birth_bar`.
+
+### TNA-08 — Separación de medición y trading
+PASS si ninguna métrica de distancia posterior es interpretada por el auditor como TP/SL/entrada.
+
+## 13. Qué NO mide
 
 Esta auditoría **NO** demuestra:
 
@@ -344,18 +414,19 @@ Esta auditoría **NO** demuestra:
 - profit factor;
 - Sharpe;
 - edge de trading;
-- rentabilidad de la navegación.
+- rentabilidad de la navegación;
+- que una distancia recorrida sea un TP.
 
-Su función es comprobar que, antes del backtest, el motor sabe **navegar, esperar, corregirse y volver atrás** de forma temporalmente auditable.
+Su función es comprobar que, antes del backtest, el motor sabe **navegar, esperar, corregirse y volver atrás** y, además, permite caracterizar la geometría posterior de FVG/OB de forma reproducible.
 
-## 13. Artefactos
+## 14. Artefactos
 
 ```text
 reports/audits/ahf_temporal_navigation.json
 docs/AUDITORIA_TEMPORAL_AHF_MTF.md
 ```
 
-## 14. Gate antes de backtest
+## 15. Gate antes de backtest
 
 El backtest multi-TF queda bloqueado si:
 
@@ -363,14 +434,27 @@ El backtest multi-TF queda bloqueado si:
 - hay rollback sin evento causal;
 - existen reescrituras de contexto LOCKED;
 - no se puede reconstruir el trace completo;
-- las duraciones no pueden medirse de forma reproducible.
+- las duraciones no pueden medirse de forma reproducible;
+- la medición de magnitud usa barras anteriores al nacimiento del objeto;
+- la implementación convierte estas métricas descriptivas en reglas de TP/SL sin un EXP separado.
 
-## 15. Siguiente ejecución
+## 16. Siguiente ejecución
 
-1. Instrumentar el AHF para emitir traces persistentes.
-2. Ejecutar esta auditoría sobre el universo 20Y y por TF/cadena.
-3. Analizar distribución de duración y rollback.
-4. Clasificar stuck/revisit patterns.
-5. Corregir el AHF si la navegación real no coincide con el contrato.
-6. Repetir hasta Gate TNA PASS.
-7. Sólo después ejecutar el experimento `SEQUENCE depth × Context State` con stop fijo.
+Cuando Hermes reciba exactamente:
+
+> **`ejecuta auditoria temporal`**
+
+debe:
+
+1. verificar dataset EURUSD 20Y + SHA256/metadata;
+2. instrumentar/consumir traces AHF reales;
+3. ejecutar TNA-01..TNA-08;
+4. calcular duración, latencia, rollback, revisitas y estados atascados;
+5. calcular tamaño FVG/OB en pips;
+6. calcular recorrido posterior favorable/adverso y `end_move_pips` en ventanas descriptivas;
+7. generar JSON + Markdown;
+8. guardar los artefactos bajo `audits/` / `reports/audits/`;
+9. actualizar `.hermes-index.md` y worklog;
+10. si algún gate falla, corregir, probar y volver a auditar hasta obtener un resultado aceptable.
+
+Sólo después de un Gate TNA aceptable se habilita el experimento `SEQUENCE depth × Context State` con stop fijo.

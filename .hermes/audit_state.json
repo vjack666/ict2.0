@@ -1,0 +1,95 @@
+{
+  "timestamp": "2026-08-19T20:38:27.418876+00:00",
+  "status": "PASS",
+  "audit_score": 1.0,
+  "temporal_violations": [],
+  "a0": {
+    "audit_id": "A0_DATA_INTEGRITY",
+    "status": "PASS",
+    "input_count": 2,
+    "accepted_count": 2,
+    "rejected_count": 0,
+    "findings": [],
+    "metrics": {
+      "invalid_rate": 0.0,
+      "audit_score": 1.0
+    }
+  },
+  "a7": {
+    "audit_id": "A7_FUNNEL",
+    "status": "PASS",
+    "input_count": 5,
+    "accepted_count": 5,
+    "rejected_count": 0,
+    "findings": [],
+    "metrics": {
+      "audit_score": 1.0,
+      "valid_bars_pass_rate": 1.0,
+      "structure_pass_rate": 1.0,
+      "bos_choch_pass_rate": 1.0,
+      "displacement_pass_rate": 1.0,
+      "fvg_pass_rate": 1.0,
+      "ob_pass_rate": 1.0,
+      "confluence_pass_rate": 1.0,
+      "lineage_pass_rate": 1.0,
+      "setup_pass_rate": 1.0
+    }
+  },
+  "funnel_summary": [
+    {
+      "stage": "VALID_BARS",
+      "input_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0
+    },
+    {
+      "stage": "STRUCTURE",
+      "input_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0
+    },
+    {
+      "stage": "BOS_CHOCH",
+      "input_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0
+    },
+    {
+      "stage": "DISPLACEMENT",
+      "input_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0
+    },
+    {
+      "stage": "FVG",
+      "input_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0
+    },
+    {
+      "stage": "OB",
+      "input_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0
+    },
+    {
+      "stage": "CONFLUENCE",
+      "input_count": 0,
+      "accepted_count": 0,
+      "rejected_count": 0
+    },
+    {
+      "stage": "LINEAGE",
+      "input_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0
+    },
+    {
+      "stage": "SETUP",
+      "input_count": 1,
+      "accepted_count": 1,
+      "rejected_count": 0
+    }
+  ],
+  "iteration": 1
+}

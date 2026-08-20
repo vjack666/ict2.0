@@ -123,9 +123,10 @@ una copia histórica o un output generado.
 
 | Elementos | Motivo | Estado |
 |---|---|---|
-| `engine/ote.py` | OTE fue eliminado de la política vigente | Físicamente presente; requiere cuarentena o eliminación posterior |
-| `detectors/fib.py` | Fibonacci residual | Físicamente presente; requiere auditoría de consumidores |
-| `engine/htf_narrative.py` y `engine/rr_by_setup.py` | Referencias históricas a OTE | Revisar y retirar dependencias |
+| `engine/ote.py` | OTE fue eliminado de la política vigente | Retirado de ICT; copia exacta conservada en `SMC-SYSTEMS` |
+| `detectors/fib.py` | Fibonacci residual | Retirado de ICT; copia exacta conservada en `SMC-SYSTEMS` |
+| `engine/rr_by_setup.py` | RR legacy con referencia OTE | Retirado de ICT; copia exacta conservada en `SMC-SYSTEMS` |
+| `engine/htf_narrative.py` | Implementación distinta con consumidores activos | Mantener y auditar; no es una copia segura para borrar |
 | briefs del 15 y 19 de agosto | Generados antes de la eliminación normativa de OTE | Históricos, no autoridad actual |
 | `analysis/wyckoff_agent.py` | Implementación de agente anterior al `engine/Wyckoff/` | Activo como adaptador; migración progresiva |
 

@@ -86,7 +86,10 @@ Existe además una discrepancia histórica entre rutas documentadas y loader que
 
 ### A0-07 — OTE residual
 
-Persisten físicamente `engine/ote.py` y `detectors/fib.py`. No se borran en Fase 0. Fase B/C debe auditar imports/consumidores y retirar cualquier dependencia. OTE/Fibonacci 62–79% no puede volver al pipeline bajo otro nombre.
+En la auditoría inicial persistían físicamente `engine/ote.py` y
+`detectors/fib.py`. Tras verificar SHA256 y consumidores, ambos fueron retirados
+de `ICT SYSTEM`; sus copias exactas se conservan en el depósito externo
+`SMC-SYSTEMS`. OTE/Fibonacci 62–79% no puede volver al pipeline bajo otro nombre.
 
 ### A0-08 — Suite de tests
 

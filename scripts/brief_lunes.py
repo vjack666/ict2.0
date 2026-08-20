@@ -209,8 +209,13 @@ def build_symbol_section(sym, feats, last_dates):
     lines.append(f"- Contexto permitido: `{ctx.get('allowed', False)}` · razón: `{ctx.get('reason', 'n/a')}`")
     lines.append(
         f"- Estructura a favor: `{ltf.get('structure_confirmed', False)}` · "
-        f"zona presente: `{ltf.get('zone_present', False)}` · "
-        f"retest observado: `{ltf.get('retest_observed', False)}`"
+        f"zonas canónicas: `{len(ltf.get('zone_refs', []))}` · "
+        f"retest: `{ltf.get('retest_state', 'NO_ZONE')}`"
+    )
+    lines.append(
+        f"- Marcadores legacy de DataFrame (no promocionan estado): "
+        f"zona=`{ltf.get('legacy_zone_marker', False)}` · "
+        f"retest=`{ltf.get('legacy_retest_marker', False)}`"
     )
     lines.append("- Política: `OBSERVE_ONLY_NO_ORDER` — no es entry ni autorización de operación.")
     lines.append("")

@@ -96,6 +96,19 @@ exec_tf
 
 No se permite inferir roles por nombre de variable, orden de diccionario o existencia de un único `ltf`.
 
+El adaptador puede recibir además, siempre como datos de solo lectura de sus
+fuentes de autoridad:
+
+```text
+canonical_zones      # MarketObject FVG/OB por timeframe
+sequence_snapshot   # refs/depth de Sequence canónica
+navigation_snapshot  # snapshot/evento producido por AHF
+context_snapshot     # Context State/POI ya resuelto
+```
+
+La capa LTF no construye esos objetos, no ejecuta otra FSM y no convierte
+marcadores legacy del DataFrame en evidencia canónica.
+
 La entrada de LTF requiere, cuando existan:
 
 ```text
@@ -273,6 +286,10 @@ state
 ### 8.4 Retest
 
 `retest_state` solo puede pasar a observado cuando exista evidencia canónica de touch/mitigation/retest. Un string como `ACTIVE`, por sí solo, no es evidencia de retest.
+
+La implementación conserva `legacy_zone_marker` y `legacy_retest_marker`
+únicamente para auditoría de compatibilidad. Esos campos no pueden llenar
+`zone_refs`, `retest_state` ni promover el snapshot.
 
 ---
 
@@ -533,6 +550,9 @@ entry_authorized=True
 
 Mismo dataset + commit + configuración → mismo snapshot.
 
+La salida del adaptador se normaliza a tipos JSON, ordena referencias y
+expone los cuatro `asof_times_by_tf` del perfil diario.
+
 ### API
 
 El test debe fallar si aparece `entry_authorized=True` o una ruta de `order/fill/sizing`.
@@ -576,6 +596,12 @@ PASS cuando:
 - integración del brief sin lógica paralela;
 - determinismo sintético.
 
+**Avance verificado:** los tests sintéticos de `tests/test_daily_motor.py`
+cubren schema, futuro HTF/ITF/EXEC, serialización, determinismo, autoridad
+LTF, zona canónica y retest. La suite completa pasa, pero el gate LTF-1 sigue
+pendiente de evidencia histórica versionada y de la integración con las
+fuentes productivas de Context State/AHF.
+
 ### Gate LTF-2
 
 PASS cuando:
@@ -614,7 +640,7 @@ No se abre hasta que LTF-4 esté PASS y existan datos M5/M1 suficientes y versio
 
 ## 20. Estado de cierre
 
-**Estado actual:** `LTF-READING IMPLEMENTADA / LTF-1 CIERRE INTEGRAL PENDIENTE / LTF-2..4 PENDIENTES`.
+**Estado actual:** `LTF-READING IMPLEMENTADA / LTF-1 EN PROGRESO / LTF-2 INTERFAZ INICIADA / LTF-3..4 PENDIENTES`.
 
 Este estado no implica fallo del motor. Significa que el adaptador existe, pero aún no tiene toda la evidencia requerida para declararse un componente LTF canónico completo según la tesis.
 

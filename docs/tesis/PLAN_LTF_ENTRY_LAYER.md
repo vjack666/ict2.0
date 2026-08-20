@@ -67,14 +67,15 @@ LTF jamás reescribe retrospectivamente HTF/ITF.
 ### Implementado
 
 - `engine/plan.py`: snapshots closed-only, bias estructural, dealing range D1/H4, `ltf_structure_at()`, `ltf_confirms()`, `build_context_stack()`.
-- `engine/daily_motor.py`: `DailyMotorConfig`, perfil D1→H4→H1→M15, snapshot observacional y `entry_authorized=False`.
-- `tests/test_daily_motor.py`: observación, futuro ignorado y contexto incompleto.
-- `scripts/brief_lunes.py`: consume la lectura diaria.
+- `engine/daily_motor.py`: `DailyMotorConfig` con `profile_id` explícito, snapshot serializable con `asof_times_by_tf`, navegación/contexto/Sequence/lineage y `entry_authorized=False`.
+- `engine/daily_motor.py`: consume `MarketObject` canónicos de FVG/OB como entrada de solo lectura; no promueve flags arbitrarios del DataFrame ni crea detectores/FSM paralelos.
+- `tests/test_daily_motor.py`: observación, futuro ignorado, contexto incompleto, esquema canónico, retest con touch, determinismo y autoridad LTF.
+- `scripts/brief_lunes.py`: consume el mismo snapshot y diferencia zonas canónicas de marcadores legacy.
 
 ### Parcial / pendiente
 
-- FVG/OB LTF deben exponerse desde objetos/detectores y lineage canónicos, no solo desde columnas anotadas del frame.
-- `retest_observed` debe depender de eventos/estado canónico de touch/mitigation/retest, no de flags ambiguos.
+- La integración productiva de FVG/OB LTF aún debe conectar los detectores canónicos al caller; el adaptador ya rechaza columnas como fuente de verdad.
+- `retest_observed` debe depender de eventos/estado canónico de touch/mitigation/retest; el adaptador ya exige `MarketObject.first_touch_time` + `touch_count` y orden temporal válido.
 - Sequence debe consumirse sin duplicarla y conservar refs/lineage.
 - Debe materializarse un snapshot auditable único `Context State → POI ITF → LTF confirmation → retest`.
 - Falta validación histórica extremo a extremo D1→H4→H1→M15.
@@ -258,9 +259,13 @@ Si falta evidencia, el estado es `WAIT_*`/`NO_EVIDENCE`, nunca una promoción si
 
 ### LTF-1 — Cierre integral del snapshot observacional
 
-**Estado:** implementado técnicamente; cierre integral pendiente.
+**Estado:** en progreso; contrato de salida reforzado, gate integral pendiente.
 
 - Mantener `build_daily_motor_snapshot()`.
+- Exponer `profile_id`, roles temporales y `asof_times_by_tf` de forma explícita.
+- Exponer `navigation`, `context`, `sequence`, `ltf.zone_refs`, `retest_state` y `lineage_refs` sin crear una FSM paralela.
+- Hacer que el snapshot sea JSON-serializable y determinista para entradas equivalentes.
+- Tratar los marcadores legacy del DataFrame como diagnóstico; nunca como promoción canónica.
 - Tests PIT mediante futuro añadido.
 - Tests de serialización/determinismo.
 - No existe salida de orden.
@@ -269,6 +274,8 @@ Si falta evidencia, el estado es `WAIT_*`/`NO_EVIDENCE`, nunca una promoción si
 **Gate:** tests sintéticos + PIT + serialización + integración.
 
 ### LTF-2 — Integración canónica de zonas y retest
+
+**Estado:** interfaz de consumo iniciada; integración productiva completa pendiente.
 
 - Obtener FVG/OB/POI desde objetos/detectores canónicos.
 - Resolver refs y lineage.

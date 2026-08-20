@@ -707,7 +707,12 @@ class MTFNavigator:
     def _build_sequence_index(self) -> None:
         """Run sequential engine on sequence_tf; index max depth visible at each bar.
 
-        Anti-look-ahead: a chain only contributes to bar i if chain.last_bar <= i.
+        Anti-look-ahead (FIX B-mejorada, 2026-08-20): usa run_sequential(return_history=True)
+        que devuelve depth_by_bar[i] = max sobre cadenas de (nodos con bar <= i). Este
+        historial es POINT-IN-TIME ESTABLE: run_sequential(df) y run_sequential(df[:k])
+        dan el mismo depth_by_bar[:k], porque el sweep de profundidad no depende de barras
+        futuras. Antes, indexar con ch.last_bar<=i daba leakage (depth full != prefix).
+        No cambia el output final de run_sequential => el funnel 20Y queda intacto.
         """
         tf = self.config.sequence_tf.upper()
         df = self._frames.get(tf)
@@ -715,28 +720,20 @@ class MTFNavigator:
             return
         cfg = self.config.seq_config
         if cfg is None and SeqConfig is not None:
-            cfg = SeqConfig(structure_mode="canonical_bos", max_active_chains=128)
-        chains = run_sequential(df, cfg, symbol="", timeframe=tf)
+            # Limite grande a proposito: el indexado point-in-time requiere que
+            # run_sequential genere TODAS las cadenas visibles en i, no solo las
+            # que caben en max_active_chains=128. Con limite pequeno, el conjunto
+            # de cadenas depende del recorrido futuro (saturacion) => no PIT-estable
+            # (leakage: full != prefix). El funnel usa su propia config (128) y queda
+            # intacto; aqui solo indexamos para el MarketState.
+            cfg = SeqConfig(structure_mode="canonical_bos", max_active_chains=10_000_000)
+        result = run_sequential(df, cfg, symbol="", timeframe=tf, return_history=True)
+        chains, depth_by_bar, complete_by_bar = result
         self._seq_chains = chains
         n = len(df)
-        ends = sorted(
-            (
-                (int(ch.last_bar), len(ch.nodes), 1 if ch.status == "COMPLETE" else 0)
-                for ch in chains
-                if 0 <= int(ch.last_bar) < n
-            ),
-            key=lambda x: x[0],
-        )
-        j = 0
-        max_d = 0
-        n_complete = 0
         for i in range(n):
-            while j < len(ends) and ends[j][0] <= i:
-                max_d = max(max_d, ends[j][1])
-                n_complete += ends[j][2]
-                j += 1
-            self._seq_depth_by_bar[i] = max_d
-            self._seq_complete_by_bar[i] = n_complete
+            self._seq_depth_by_bar[i] = int(depth_by_bar[i])
+            self._seq_complete_by_bar[i] = int(complete_by_bar[i])
 
     def sequence_depth_at(self, bar_index: int) -> int:
         return int(self._seq_depth_by_bar.get(bar_index, 0))

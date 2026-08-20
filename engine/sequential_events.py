@@ -357,12 +357,18 @@ def run_sequential(
     cfg: SeqConfig | None = None,
     symbol: str = "",
     timeframe: str = "H1",
-) -> list[SequentialChain]:
+    return_history: bool = False,
+) -> list[SequentialChain] | tuple[list[SequentialChain], list[int], list[int]]:
     """Ejecuta el motor secuencial sobre OHLC point-in-time.
 
     Parameters
     ----------
     df : DataFrame con open/high/low/close y opcionalmente time.
+    return_history : si True, devuelve tupla (chains, depth_by_bar, complete_by_bar)
+        donde depth_by_bar[i] = maxima profundidad POINT-IN-TIME en i (nodos con bar <= i)
+        sobre TODAS las cadenas (activas o ya cerradas en i). Esto permite indexado
+        PIT estable: run_sequential(df) y run_sequential(df[:k]) dan el mismo depth_by_bar[:k].
+        NO cambia el output final de chains (el funnel queda intacto).
     """
     if cfg is None:
         cfg = SeqConfig()
@@ -593,7 +599,28 @@ def run_sequential(
         chains.append(ch)
 
     chains.sort(key=lambda c: (c.created_bar, c.chain_id))
-    return chains
+
+    if not return_history:
+        return chains
+
+    # --- Historial PIT (B-mejorada, 2026-08-20) ---
+    # depth_by_bar[i] = max sobre cadenas de (nodos con bar <= i).
+    # Una cadena que existe y tiene nodos <= i aporta, sin importar si luego
+    # expira o crece. Esto hace el indexado point-in-time estable bajo truncamiento.
+    depth_by_bar = np.zeros(n, dtype="int32")
+    complete_by_bar = np.zeros(n, dtype="int32")
+    idx = np.arange(n)
+    for ch in chains:
+        bars = np.array(sorted(int(nd.bar) for nd in ch.nodes), dtype="int32")
+        if bars.size == 0:
+            continue
+        arr = np.searchsorted(bars, idx, side="right").astype("int32")
+        np.maximum(depth_by_bar, arr, out=depth_by_bar)
+        if ch.status == "COMPLETE":
+            cb = int(ch.last_bar)
+            if 0 <= cb < n:
+                complete_by_bar[cb:] += 1
+    return chains, depth_by_bar, complete_by_bar
 
 
 def summarize_chains(chains: Sequence[SequentialChain]) -> dict[str, Any]:

@@ -55,6 +55,11 @@ ICT SYSTEM/
 │   └── alertas_tempranas.md
 └── docs/             # AUTORIDAD DOCUMENTAL (tesis ICT completa + diccionarios)
     ├── INDICE_AUTORIDAD.md   # que es autoridad vs que se dejo fuera y por que
+    ├── 00_HERMES_START_HERE.md   # punto de entrada operativo
+    ├── auditoria/          # AUDITORIA_* (FVG/OB, AHF/MTF, Funnel, Fase0, A0-A9, estado)
+    ├── contratos/          # CONTRATO_* (AHF, Context State, Multi-TF Layers, Sequential Events, FVG/OB, Funnel, Hermes FVG/OB, MTF Navigation Graph)
+    ├── experimentos/       # EXP_* (Sequence×Context State, FVG/OB Causal, Multifactor, Sequential Canonical BOS, Sequential Expectancy Complete)
+    ├── planificacion/      # SDD_* (Context State MTF, Funnel Audit, FVG/OB Architecture Map, FVG/OB Engine, FVG/OB Prebacktest Addendum)
     ├── ict/
     │   ├── SPEC_TESIS_FORMAL.md   # Contrato fuente FIRMADO (25 secc) — autoridad maxima
     │   ├── 00_INDICE.md           # Indice de la biblioteca ICT
@@ -70,7 +75,8 @@ ICT SYSTEM/
     ├── reglas/
     │   ├── ICT_RULEBOOK.md         # Diccionario machine-readable de deteccion ICT
     │   └── WYCKOFF_RULEBOOK.md     # Diccionario de deteccion Wyckoff
-    └── wyckoff/                    # Teoria Wyckoff vigente (compras/ventas)
+    ├── wyckoff/                    # Teoria Wyckoff vigente (compras/ventas)
+    └── briefs/                     # Briefs de sesion generados
 ```
 
 ## Mapa de imports (contratos de los subagentes)

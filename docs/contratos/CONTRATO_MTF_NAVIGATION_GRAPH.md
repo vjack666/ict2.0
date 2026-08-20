@@ -2,7 +2,7 @@
 
 **Estado:** NORMATIVO v1  
 **Módulo:** `engine/mtf_navigation.py`  
-**SDD padre:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`
+**SDD padre:** `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`
 
 ## Qué implementa
 

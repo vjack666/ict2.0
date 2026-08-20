@@ -91,9 +91,9 @@ Cualquier fuga futura, duplicación no explicada, lineage inválido, no determin
 
 Al terminar el Gate A7 Hermes debe actualizar:
 
-- `docs/SDD_FUNNEL_AUDIT.md`;
+- `docs/planificacion/SDD_FUNNEL_AUDIT.md`;
 - `docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md` si cambia el alcance;
-- `docs/SDD_FVG_OB_ARCHITECTURE_MAP.md`;
+- `docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md`;
 - `.hermes-index.md`;
 - `.hermes-worklog/<timestamp>_FUNNEL_AUDIT.md`.
 

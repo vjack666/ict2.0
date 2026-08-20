@@ -2,7 +2,7 @@
 
 **Estado:** NORMATIVO v1  
 **Fecha:** 2026-08-19  
-**SDD padre:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`  
+**SDD padre:** `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`  
 **Implementación de referencia:** `engine/mtf_navigation.py` (`LayerSnapshot`, `ContextConstraints`, `MTFNavigator`)  
 **Capas:** `CONTRATO_MULTI_TF_LAYERS.md`
 

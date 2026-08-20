@@ -16,8 +16,8 @@ Lee y respeta, en este orden:
 1. `docs/00_HERMES_START_HERE.md` — punto de entrada operativo.
 2. `docs/contratos/CONTRATO_HERMES_FVG_OB.md` — definición contractual de DONE.
 3. `docs/PLAN_HERMES_FVG_OB.md` — fases y gates.
-4. `docs/SDD_FVG_OB_ARCHITECTURE_MAP.md` — mapa de arquitectura y archivos afectados.
-5. `docs/SDD_FVG_OB_ENGINE.md` — diseño técnico.
+4. `docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md` — mapa de arquitectura y archivos afectados.
+5. `docs/planificacion/SDD_FVG_OB_ENGINE.md` — diseño técnico.
 6. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
 7. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
 8. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.

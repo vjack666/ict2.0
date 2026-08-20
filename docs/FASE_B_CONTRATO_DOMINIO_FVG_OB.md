@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-17  
 **Fase:** B — Contratos de dominio  
 **Estado:** `IN_PROGRESS / GATE_PENDING`  
-**Autoridad:** `docs/SDD_FVG_OB_ENGINE.md` + tesis ICT vigente
+**Autoridad:** `docs/planificacion/SDD_FVG_OB_ENGINE.md` + tesis ICT vigente
 
 ## 1. Objetivo
 

@@ -2,7 +2,7 @@
 
 **Estado:** NORMATIVO v1  
 **Módulo:** `engine/ahf.py`  
-**SDD:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md` §4.3  
+**SDD:** `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md` §4.3  
 **Capas:** `docs/contratos/CONTRATO_MULTI_TF_LAYERS.md`
 
 ---

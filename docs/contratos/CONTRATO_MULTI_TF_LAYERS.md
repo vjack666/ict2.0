@@ -1,7 +1,7 @@
 # Contrato — Capas Multi-TF (`htf` / `itf` / `exec_tf`)
 
 **Estado:** NORMATIVO  
-**SDD padre:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md` (§4.3 AHF, §4.4 anti-look-ahead)  
+**SDD padre:** `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md` (§4.3 AHF, §4.4 anti-look-ahead)  
 **Fecha:** 2026-08-18
 
 ---

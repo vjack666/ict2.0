@@ -59,6 +59,13 @@ en [`REPOSITORY_MAP.md`](REPOSITORY_MAP.md) y
 | `docs/tesis/PLAN_LTF_ENTRY_LAYER.md` | Plan de trabajo para conectar LTF/EXEC al uso diario. | Activo |
 | `docs/tesis/SDD_LTF_ENTRY_LAYER.md` | Contrato de diseño LTF-1; observación, no órdenes. | Normativo LTF-1 |
 
+### Motor autónomo de misiones Hermes
+
+| Archivo | Rol | Estado |
+|---|---|---|
+| `docs/planificacion/SDD_HERMES_MISSION_CONTROLLER.md` | Contrato normativo del motor de misiones autónomas, persistencia, delegación, recuperación y terminación. | Diseño autorizado; implementación pendiente |
+| `.hermes/plans/2026-08-20_HERMES_MISSION_CONTROLLER.md` | Plan MC-0..MC-8 con gates obligatorios. | Autorizado para ejecución por fases |
+
 ### Contratos con ruta canónica
 
 | Concepto | Ruta canónica | Ruta de compatibilidad |

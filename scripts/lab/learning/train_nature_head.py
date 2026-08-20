@@ -50,15 +50,18 @@ def _nature_targets():
     """Re-mide la naturaleza P3 (confirm vs reclaim) y devuelve (bars, cds, labels)."""
     d = pd.read_parquet(PARQUET)
     d = d.assign(time=pd.to_datetime(d["time"])).reset_index(drop=True)
-    m = d["time"].dt.strftime("%Y-%m") == "2026-08"
-    d = d[m].reset_index(drop=True)
+    # OPCION A (2026-08-20): usar TODO el rango (no solo 2026-08) y NO filtrar
+    # CHOCH por filter_bos_thesis (anulaba CHOCH). Suff samples para baselines.
     out = detect_displacement(d)
     sw = SwingTool(lookback=5).run(out, symbol=SYM)
-    sids = {e.origin_bar: e.id for e in sw}
-    bo = BOSTool(lookback=5).run(out, symbol=SYM, context={"swing_ids": sids})
+    sids = {e.origin_bar: e.id for e in sw if e.origin_bar is not None}
+    bo = BOSTool(lookback=5).run(out, symbol=SYM, context={"swing_ids": sids, "swings": sw})
     bo = apply_validation(out, bo)
+    # anti-flood BOS (Opción A: solo BOS)
     bo = filter_bos_thesis(out, bo, confirm_bars=2, max_idle_bars=0)
+    bo = [e for e in bo if e.extra.get("is_unique") is True]
     che = CHOCHTool().run(out, symbol=SYM, context={"swings": sw, "boses": bo})
+    # OPCION A: NO filter_bos_thesis sobre CHOCH
     evs = []
     for e in che:
         bb = e.break_bar if e.break_bar is not None else e.bar_index

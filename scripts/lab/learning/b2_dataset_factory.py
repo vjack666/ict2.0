@@ -34,10 +34,10 @@ from tools.displacement import detect_displacement
 
 MAN_DIR = "data/learning/pipeline/manifests"
 OUT_ROOT = "data/learning/choch"
-SYMS = ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD"]
-TFS = ["H1", "H4", "D1"]
-FWD = {"H1": 24, "H4": 20, "D1": 10}
-K = {"H1": 1.5, "H4": 1.5, "D1": 1.0}
+SYMS = ["EURUSD"]  # B2 fase 1: aislar variable TF primero (plan: EURUSD multitf -> luego 8 simbolos)
+TFS = ["M5", "H4", "D1"]
+FWD = {"M5": 50, "H4": 20, "D1": 10}
+K = {"M5": 2.0, "H4": 1.5, "D1": 1.0}
 CHUNK = 20000
 OVERLAP = 200
 
@@ -65,13 +65,14 @@ def _process(df, tf, rows):
     bo = apply_validation(out, bo)
     bo = filter_bos_thesis(out, bo, confirm_bars=2, max_idle_bars=0)
     che = CHOCHTool().run(out, symbol="X", context={"swings": sw, "boses": bo})
-    che = filter_bos_thesis(out, che, confirm_bars=2, max_idle_bars=0)
+    # OPCION A (2026-08-20): NO filter_bos_thesis ni is_unique sobre CHOCH (anulaba CHOCH)
     che = mark_choch_quality(out, che, sw, bo, htf_frames={})
     close = out["close"].to_numpy(float)
     rng = (out["high"] - out["low"]).clip(lower=0).rolling(14, min_periods=1).mean().to_numpy()
     n = len(out); fwd = FWD[tf]; kk = K[tf]
     for c in che:
-        if not c.extra.get("choch_real"):
+        # OPCION A: NO filtrar por choch_real; incluir todo CHOCH, choch_real como flag
+        if c.extra.get("choch_real") is None:
             continue
         i = c.break_bar if c.break_bar is not None else c.bar_index
         if i is None or i < 0 or i > n - fwd - 1:

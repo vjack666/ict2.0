@@ -66,9 +66,9 @@ def _process_chunk(seg: pd.DataFrame, tf: str, htf: dict, g0: int, rows: list):
     # FIX 2026-08-17: BOS únicos hacia CHOCH (evita padres/flood contaminados)
     boe = [e for e in boe if e.extra.get("is_unique") is True]
     ch = CHOCHTool(); che = ch.run(out, symbol=SYM, context={"swings": swe, "boses": boe})
-    che = filter_bos_thesis(out, che, confirm_bars=2, max_idle_bars=0)
-    # solo CHOCH únicos para dataset / quality
-    che = [e for e in che if e.extra.get("is_unique") is True]
+    # OPCION A (2026-08-20): anti-flood is_unique SOLO en BOS (arriba), NO en CHOCH.
+    # filter_bos_thesis aplica reglas de tesis BOS (HTF align/confirm) que anulan CHOCH
+    # (0/572 pasaban thesis_valid). CHOCH conserva geometria + choch_real de mark_choch_quality.
     che = mark_choch_quality(out, che, swe, boe_raw, htf_frames=htf)
 
     close = out["close"].to_numpy()
@@ -81,7 +81,10 @@ def _process_chunk(seg: pd.DataFrame, tf: str, htf: dict, g0: int, rows: list):
     hi = n - fwd - 1
 
     for c in che:
-        if not c.extra.get("choch_real"):
+        # OPCION A (2026-08-20): NO filtrar por choch_real aqui. Se incluye TODO CHOCH
+        # detectado y choch_real queda como feature/flag para que B1 (label audit)
+        # decida la definicion real. Antes este `continue` mataba 562/571 CHOCH.
+        if c.extra.get("choch_real") is None:
             continue
         i = c.break_bar if c.break_bar is not None else c.bar_index
         if i is None or i < 0:

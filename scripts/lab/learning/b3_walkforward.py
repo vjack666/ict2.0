@@ -23,13 +23,19 @@ from sklearn.metrics import roc_auc_score, average_precision_score, recall_score
 
 OUT = "data/learning/pipeline/experiments/EXP-004_walkforward"
 os.makedirs(OUT, exist_ok=True)
-SYMS = ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD"]
-TFS = ["H1", "H4"]  # D1 excluido (insuficiente, B2)
-FEATS = ["score", "momentum", "after_bos", "displacement", "break_body_ratio"]
+# B3 fase 1: EURUSD M5 (DS-001, 4706 filas) — aislar variable temporal primero.
+SYMS = ["EURUSD"]
+TFS = ["M5"]
+# Features consistentes con B0 (gen_choch_monetario / train_choch_full)
+FEATS = ["score_n", "momentum", "after_bos", "displacement", "htf_ctx_code",
+         "htf_trend_int", "cd", "break_body_ratio", "dist_to_level",
+         "bos_age_bars", "tf_code"]
 
 
 def _load(sym, tf):
-    p = f"data/learning/choch/{sym}/{tf}/features.jsonl"
+    # Usa el dataset de B0 (gen_choch_dataset corregido) que tiene las 11 features
+    # consistentes con train_choch_full (score_n, momentum, ...). EURUSD M5-centric.
+    p = "data/learning/choch/full/features.jsonl"
     if not os.path.exists(p):
         return None
     rows = [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
@@ -39,8 +45,9 @@ def _load(sym, tf):
 
 
 def _folds():
-    cuts = [(2018, 2019, 2022), (2019, 2022, 2023), (2020, 2023, 2024),
-            (2021, 2024, 2025), (2022, 2025, 2026)]
+    # Roll-forward anual: TRAIN<=Y-?  TEST=Y
+    cuts = [(2020, 2021, 2022), (2021, 2022, 2023), (2022, 2023, 2024),
+            (2023, 2024, 2025), (2024, 2025, 2026)]
     return cuts
 
 

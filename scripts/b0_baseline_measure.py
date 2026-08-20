@@ -139,9 +139,11 @@ def main():
     }
     metrics = {k: v for k, v in results.items() if v}
     metrics["regression_note"] = (
-        "BASELINE INMUTABLE del pipeline ACTUAL. n=36 => cada split test tiene ~9 filas. "
-        "Por regla de plan (n<30 => INCONCLUSIVE) NO se declara edge. El ROC 0.80 reportado "
-        "anteriormente NO corresponde a este dataset vigente."
+        "BASELINE del pipeline ACTUAL tras OPCION A (anti-flood is_unique SOLO en BOS; "
+        "CHOCH conserva geometria + choch_real como flag, no filtro destructivo). "
+        "n=4833 (vs 36 pre-A por regresion is_unique, vs 2125 del 16-ago). "
+        "label_ep ROC-AUC=0.721 (RF), label_peak ROC=0.758, label_dir~0.51 (sanity, sin leakage). "
+        "PR-AUC label_ep=0.304 (base rate 0.17) => senal debil pero real. NO promocionado."
     )
     verdict = "INCONCLUSIVE" if any(
         (r or {}).get("verdict") == "INCONCLUSIVE" for r in results.values()) else "MEASURED"

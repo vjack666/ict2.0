@@ -1,113 +1,424 @@
-# PLAN — Capa LTF de lectura del motor diario
+# PLAN — Capa LTF / EXEC: lectura canónica y futura ejecución
 
-**Estado:** ACTIVO — Lectura de mercado únicamente
-**Fecha:** 2026-08-20
-**Fuente normativa:** `docs/ict/16_TEMPORALIDAD_EJECUCION.md`, `docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md`, `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`
-**SDD:** `docs/tesis/SDD_LTF_ENTRY_LAYER.md`
+**Estado:** ACTIVO — FASE LTF-READING; ejecución de órdenes permanece fuera de este plan  
+**Fecha:** 2026-08-20  
+**Fuente de autoridad:** `docs/ict/SPEC_TESIS_FORMAL.md` + libros ICT de temporalidad/ejecución 16 y 18  
+**Contexto MTF:** `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`  
+**Contratos:** `docs/contratos/CONTRATO_MULTI_TF_LAYERS.md`, `docs/contratos/CONTRATO_AHF.md`, `docs/CONTRATO_CONTEXT_STATE.md`  
+**SDD LTF:** `docs/tesis/SDD_LTF_ENTRY_LAYER.md`
 
-## 1. Hallazgo inicial
+## Objetivo
 
-No existía un plan ni un SDD dedicado a la capa LTF. El repositorio sí contenía:
-
-- la jerarquía HTF/ITF/EXEC en los libros ICT 16 y 18;
-- el contexto MTF/AHF en `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`;
-- piezas LTF dispersas en `engine/plan.py`, `engine/sequence.py` y `engine/plan_driver.py`;
-- un brief diario que explícitamente decía que no emitía señales ejecutables.
-
-Este documento y su SDD cierran el hueco documental para lectura de mercado.
-La ejecución, entry, SL y TP están fuera de alcance y no se implementarán aquí.
-
-## 2. Objetivo
-
-Conectar la lectura LTF al motor diario respetando la cadena:
+Construir una capa LTF/EXEC que una correctamente la lectura top-down de la tesis con el motor existente, sin crear una segunda estrategia, una segunda máquina de estados ni una segunda interpretación de FVG/OB/Sequence.
 
 ```text
-HTF: contexto / sesgo / liquidez
-  -> ITF: estructura / zona
-  -> EXEC-LTF: confirmación / zona activa / estado de retest
+HTF
+  ↓
+Context State / constraints
+  ↓
+ITF
+  ↓
+POI / zona / estructura
+  ↓
+EXEC-LTF
+  ↓
+confirmación estructural
+  ↓
+zona activa / retorno / retest
+  ↓
+estado observable del setup
 ```
 
-La implementación entrega un snapshot auditable de observación. No entrega
-entry, SL, TP, fill ni autorización operativa.
+La ejecución financiera es un contrato separado. Este plan no autoriza órdenes.
 
-## 3. Configuración operativa inicial
+## 1. Responsabilidades de capas derivadas de la tesis
 
-| Perfil | HTF | ITF | Contexto | EXEC/LTF |
-| --- | --- | --- | --- | --- |
-| Intradía diario | D1 | H4 | H1 | M15 |
-| Scalping futuro | M15/H1 | M5 | — | M5/M1 |
+La tesis exige separar `htf`, `itf` y `exec_tf`; no se permite asumir `exec_tf == ltf` sin declararlo.
 
-El perfil implementado en esta fase es **intradía diario D1→H4→H1→M15**.
-M5/M1 permanecen disponibles como extensión, pero no se promocionan sin datos,
-pruebas y evidencia propios.
+### Perfil diario vigente
 
-## 4. Fases y gates
+```text
+HTF     = D1
+ITF     = H4
+CONTEXT = H1
+EXEC    = M15
+```
 
-### LTF-0 — Contrato y auditoría de integración
+Este es el perfil actual de lectura diaria, no una ley universal.
 
-- Crear este plan y `SDD_LTF_ENTRY_LAYER.md`.
-- Declarar el motor diario canónico y separar legado de autoridad.
-- Mantener `Context State ≠ entry` y `SETUP_READY ≠ order`.
+### Extensión fina de la tesis
 
-**Gate:** documentación consistente y sin OTE/Fibonacci.
+```text
+D1 → H4 → H1 → M15 → M5 → M1
+```
 
-### LTF-1 — Snapshot LTF conectado al motor diario
+M5/M1 quedan diferidos como perfiles productivos hasta disponer de datos, PIT, contratos y evidencia específica.
 
-- Implementar `engine.daily_motor.build_daily_motor_snapshot`.
-- Usar únicamente barras cerradas `as-of(t)`.
-- Exponer estado de contexto, estructura LTF, zona/retest y razón de espera.
-- Conectar el snapshot al brief diario.
+Regla fundamental:
 
-**Gate:** tests sintéticos de contrato y no-look-ahead; el snapshot nunca
-contiene una orden.
+```text
+HTF/ITF definen contexto y restricciones.
+EXEC/LTF observa confirmación y retest.
+LTF jamás reescribe retrospectivamente HTF/ITF.
+```
 
-### LTF-2 — Lectura secuencial y estado de zonas
+## 2. Estado real de implementación
 
-- Consumir `engine.sequence` como fuente de secuencia/lineage cuando se use para
-  lectura histórica.
-- Exponer estados de zona y retest solo como observación.
-- No duplicar la máquina de estados en el brief ni en un agente.
+### Implementado
 
-**Gate:** tests temporales y de lineage; ninguna salida de ejecución.
+- `engine/plan.py`: snapshots closed-only, bias estructural, dealing range D1/H4, `ltf_structure_at()`, `ltf_confirms()`, `build_context_stack()`.
+- `engine/daily_motor.py`: `DailyMotorConfig`, perfil D1→H4→H1→M15, snapshot observacional y `entry_authorized=False`.
+- `tests/test_daily_motor.py`: observación, futuro ignorado y contexto incompleto.
+- `scripts/brief_lunes.py`: consume la lectura diaria.
 
-### LTF-3 — Validación de lectura
+### Parcial / pendiente
 
-- Comparar baseline sin LTF, LTF de confirmación y secuencia con retest
-  únicamente como lecturas de estado.
-- Usar split temporal/OOS cuando el dataset lo permita.
-- No declarar edge por un snapshot o por un gate formal.
+- FVG/OB LTF deben exponerse desde objetos/detectores y lineage canónicos, no solo desde columnas anotadas del frame.
+- `retest_observed` debe depender de eventos/estado canónico de touch/mitigation/retest, no de flags ambiguos.
+- Sequence debe consumirse sin duplicarla y conservar refs/lineage.
+- Debe materializarse un snapshot auditable único `Context State → POI ITF → LTF confirmation → retest`.
+- Falta validación histórica extremo a extremo D1→H4→H1→M15.
+- M5/M1 siguen diferidos.
 
-**Gate:** evidencia reproducible, métricas y auditoría documentadas.
+## 3. Principios para una IA autónoma
 
-## 5. Fuera de alcance permanente de este plan
+1. Una sola fuente por concepto: estructura en `engine.bos`/`engine.plan`; Context State en `engine.mtf_navigation`; FVG/OB en detectores canónicos; lineage en `engine.lineage`; Sequence en su motor canónico; navegación en `engine.ahf`.
+2. No crear detectores paralelos en `daily_motor.py`, `brief_lunes.py` o agentes.
+3. No crear una segunda FSM para retest.
+4. Toda observación debe ser `as-of(t)`.
+5. Contexto, zonas, confirmación y retest conservan timestamps.
+6. Ningún dato futuro puede modificar un snapshot histórico.
+7. Estado observable nunca equivale a orden.
+8. EMA/ATR/OTE/Fibonacci no pueden convertirse en bias o veto normativo.
+9. Falta de datos se representa como espera/degradación explícita; nunca se inventa evidencia.
+10. Una fase solo puede marcarse `PASS` con código, tests y evidencia versionada.
 
-- No emitir órdenes ni señales ejecutables.
-- No calcular entry, SL, TP, fill, sizing o gestión de posición.
-- No conectar brokers, backtests de ejecución ni walk-forward de ejecución.
-- No reintroducir OTE, Fibonacci, EMA o ATR como gate normativo.
-- No reactivar `ict_backtest/`.
-- No declarar que M1 mejora M5 sin experimento comparativo.
-- No desbloquear el backtest antes de los gates A0-A9, Funnel y TNA.
+## 4. Contrato temporal
 
-## 6. Archivos de implementación
+```text
+as_of(tf, t) = última vela cerrada con time ≤ t
+```
 
-| Rol | Archivo |
-| --- | --- |
-| Contrato de diseño | `docs/tesis/SDD_LTF_ENTRY_LAYER.md` |
-| Adaptador del motor diario | `engine/daily_motor.py` |
-| Pruebas | `tests/test_daily_motor.py` |
-| Consumidor diario | `scripts/brief_lunes.py` |
-| Secuencia canónica futura | `engine/sequence.py` |
+Debe cumplirse:
 
-## 7. Criterio de cierre de lectura LTF
+```text
+context_htf_time   ≤ t
+context_itf_time   ≤ t
+sequence_time      ≤ t
+zone_confirmation  ≤ t
+ltf_structure_time ≤ t
+retest_time        ≤ t
+```
 
-LTF-1 solo puede marcarse `PASS` cuando:
+Cadena histórica completa:
 
-1. el snapshot funciona con frames sintéticos;
-2. datos futuros HTF/LTF no cambian el resultado en `t`;
-3. el perfil diario devuelve estado y razón explicables;
-4. `entry_authorized` no forma parte de una API ejecutable y, en el snapshot
-   de compatibilidad, es siempre `False`;
-5. el brief deja de inventar una señal y muestra el estado LTF real;
-6. el índice maestro y el worklog reflejan el cambio;
-7. no existe ninguna dependencia de ejecución para usar esta lectura.
+```text
+candidate_time
+≤ confirmation_time
+≤ tradable_time
+≤ ltf_confirmation_time
+≤ retest_time
+≤ entry_time
+```
+
+`entry_time` pertenece a un contrato de ejecución futuro y no se produce desde esta capa.
+
+## 5. Snapshot LTF mínimo
+
+Debe conservar, como mínimo:
+
+```text
+profile_id
+htf_tf / itf_tf / context_tf / exec_tf
+decision_time
+asof_times_by_tf
+context_state
+navigation_state
+active_tf / parent_state
+transition_event / transition_time / invalidation_reason
+direction_hint
+location
+regime_stack
+constraints
+poi_refs
+sequence_refs / sequence_depth
+ltf_structure
+ltf_confirmation
+active_zone_refs
+retest_state
+lineage_refs
+policy
+```
+
+Política:
+
+```text
+policy = OBSERVE_ONLY_NO_ORDER
+entry_authorized = false
+```
+
+El snapshot debe ser serializable y reconstruible sin consultar datos posteriores a `decision_time`.
+
+## 6. Máquina de lectura LTF
+
+```text
+NO_LTF_DATA
+   │ datos disponibles
+   ▼
+WAIT_CONTEXT
+   │ Context State válido + capa superior locked
+   ▼
+WAIT_LTF_CONFIRMATION
+   │ estructura LTF compatible
+   ▼
+WAIT_LTF_ZONE
+   │ zona canónica FVG/OB/POI observable
+   ▼
+WAIT_RETEST
+   │ touch/retest canónico observable
+   ▼
+OBSERVABLE_SETUP
+```
+
+Las invalidaciones superiores se procesan por AHF; LTF no muta localmente el contexto de D1/H4.
+
+## 7. Integración MTF/HTF
+
+### LTF recibe
+
+```text
+Context State confirmado
++ direction_hint
++ regime_stack
++ location
++ constraints
++ POI refs
++ parent navigation state
+```
+
+### LTF puede
+
+- confirmar/no confirmar estructura compatible;
+- observar displacement/momentum si el motor lo expone como hecho canónico;
+- observar zona canónica activa;
+- observar touch/retest;
+- devolver razón de espera;
+- emitir eventos que el AHF sea capaz de consumir.
+
+### LTF no puede
+
+- cambiar `direction_hint` de D1/H4;
+- invalidar HTF por contradicción microestructural aislada;
+- convertir `SETUP_READY` en orden;
+- leer futuro;
+- sustituir Context State por un bias LTF.
+
+## 8. FVG / OB / Sequence / retest
+
+```text
+Sequence / structure
+        ↓
+PD array / FVG / OB canónicos
+        ↓
+POI / zone refs
+        ↓
+LTF observa estado
+        ↓
+retorno / retest
+```
+
+No se acepta `zone_present=True` por un string arbitrario del DataFrame si no existe un objeto/ref canónico auditable.
+
+El snapshot debe poder responder:
+
+```text
+¿Qué zona?
+¿Quién la creó?
+¿Cuándo se confirmó?
+¿Cuándo fue tradable?
+¿Qué padre tiene?
+¿Qué eventos/sequence la explican?
+¿Fue tocada/mitigada/retestada?
+¿Cuándo?
+```
+
+Si falta evidencia, el estado es `WAIT_*`/`NO_EVIDENCE`, nunca una promoción silenciosa.
+
+## 9. Fases de trabajo
+
+### LTF-0 — Normalización contractual
+
+- Congelar perfil D1/H4/H1/M15.
+- Congelar esquema del snapshot.
+- Formalizar `as_of` por TF.
+- Enlazar AHF/Context State/Sequence/Lineage.
+- Separar explícitamente `EXEC`, `LTF` y `context_tf`.
+
+**Gate:** sin contradicción con tesis ni contratos MTF/AHF.
+
+### LTF-1 — Cierre integral del snapshot observacional
+
+**Estado:** implementado técnicamente; cierre integral pendiente.
+
+- Mantener `build_daily_motor_snapshot()`.
+- Tests PIT mediante futuro añadido.
+- Tests de serialización/determinismo.
+- No existe salida de orden.
+- Brief consume el mismo snapshot.
+
+**Gate:** tests sintéticos + PIT + serialización + integración.
+
+### LTF-2 — Integración canónica de zonas y retest
+
+- Obtener FVG/OB/POI desde objetos/detectores canónicos.
+- Resolver refs y lineage.
+- Transportar candidate/confirmation/tradable.
+- Conectar touch/mitigation/retest al estado canónico.
+- Consumir Sequence sin duplicarla.
+- Exponer `active_zone_refs` y `retest_state`.
+
+**Gate:** cada zona/retest tiene identidad, timestamps y lineage.
+
+### LTF-3 — Integración AHF
+
+- Recibir snapshots locked de ancestros.
+- Respetar `active_tf`.
+- Emitir solo eventos permitidos por AHF.
+- Probar rollback H1/H4/D1.
+- Preservar historial y `parent_state`.
+
+**Gate:** avance + rollback + revisita + no reescritura.
+
+### LTF-4 — Validación histórica
+
+- Dataset versionado D1/H4/H1/M15.
+- Corridas deterministas.
+- Invariancia por prefijo/truncación.
+- Comparación antes/después de añadir futuro.
+- Cobertura por estado y errores de navegación.
+- Distribución `NO_LTF_DATA`, `WAIT_*`, `OBSERVABLE_SETUP`.
+
+**Gate:** cero violaciones PIT, cero mutaciones históricas inexplicadas, reporte versionado.
+
+### LTF-5 — M5/M1
+
+Solo después de LTF-0..4: datos, perfil explícito, microestructura sin redefinir HTF/ITF y repetición de todos los gates.
+
+### LTF-6 — Ejecución separada
+
+No pertenece al actual trabajo de lectura. Un futuro plan/SDD separado deberá definir trigger, entry, SL, TP, fill, sizing, hold_limit, timing y fallos.
+
+## 10. Tests obligatorios
+
+### PIT
+
+Añadir futuro HTF, ITF, M15 y todos a la vez; el snapshot histórico debe permanecer idéntico.
+
+### Prefijo
+
+```text
+snapshot(prefix, t) == snapshot(full, t)
+```
+
+### Autoridad de capas
+
+- LTF contrario no cambia `direction_hint`.
+- M15/M5/M1 no reescriben D1/H4.
+- Solo AHF puede provocar rollback superior.
+- Context State nunca se transforma en entry.
+
+### Lineage
+
+- `active_zone_ref` siempre resuelve.
+- Retest siempre resuelve a zone/POI padre.
+- Cero enlaces futuros/ciclos.
+
+### Retest
+
+- zona sin touch → `WAIT_RETEST`;
+- touch sin evento canónico → no promover;
+- retest válido + demás condiciones → `OBSERVABLE_SETUP`;
+- invalidación superior → rollback + historial preservado.
+
+### Ausencia de datos
+
+- sin M15 → `NO_LTF_DATA`/degradación explícita;
+- sin zona → `WAIT_LTF_ZONE`;
+- sin Context State → `WAIT_CONTEXT`;
+- nunca completar mediante supuestos.
+
+### Determinismo
+
+Mismo dataset + commit + configuración → mismo snapshot.
+
+### Seguridad de API
+
+No deben existir desde esta capa:
+
+```text
+order
+fill
+broker
+sizing
+position
+entry_authorized=True
+```
+
+## 11. Observabilidad
+
+Cada snapshot debe explicar:
+
+```text
+HTF: direction / location / regime
+ITF: structure / POI
+Sequence: depth / refs
+LTF: structure / zone / retest / status
+Navigation: state / active_tf / parent_state / transition_event
+```
+
+La IA debe preferir `WAIT_*` con causa explícita frente a una clasificación no demostrable.
+
+## 12. Cierre LTF Reading
+
+`PASS` únicamente cuando:
+
+1. D1→H4→H1→M15 sea explícito y reproducible;
+2. Context State/AHF se consuman correctamente;
+3. FVG/OB/Sequence lleguen por fuentes canónicas;
+4. toda zona/retest tenga lineage + timestamps;
+5. cero look-ahead cross-TF;
+6. cero reescritura de ancestros por LTF;
+7. rollback AHF sea determinista/auditable;
+8. PIT/prefijo/lineage/determinismo pasen;
+9. el brief consuma el mismo snapshot sin lógica paralela;
+10. no exista ruta de orden en lectura LTF;
+11. exista reporte histórico versionado;
+12. índice/worklog coincidan con el estado.
+
+**PASS LTF Reading no significa edge, entry ni rentabilidad.**
+
+## 13. Orden obligatorio para una IA autónoma
+
+```text
+LTF-0
+  ↓
+LTF-1 cierre integral
+  ↓
+LTF-2 zonas + retest + lineage
+  ↓
+LTF-3 integración AHF
+  ↓
+LTF-4 validación histórica
+  ↓
+LTF-5 M5/M1 solo con datos/evidencia
+  ↓
+NUEVO SDD DE EJECUCIÓN
+```
+
+Cada fase termina con:
+
+```text
+código → tests → evidencia → SDD/PLAN → worklog → commit → gate
+```
+
+Nunca se cambia el criterio después de observar un resultado para obtener `PASS`.

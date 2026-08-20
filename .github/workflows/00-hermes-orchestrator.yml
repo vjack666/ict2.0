@@ -19,7 +19,7 @@ on:
       - 'tests/**'
       - '.hermes-index.md'
       - 'docs/**'
-      - '.github/workflows/hermes-orchestrator.yml'
+      - '.github/workflows/00-hermes-orchestrator.yml'
 
 permissions:
   contents: read

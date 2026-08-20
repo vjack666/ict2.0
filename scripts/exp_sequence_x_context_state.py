@@ -6,7 +6,7 @@ distinta según Context State (ALIGNED / AGAINST / NEUTRAL)?
 
 - NO emite entradas ni PnL de sistema.
 - Context State vía MTFNavigator (estructura/BOS, regime, location) — NO EMA.
-- Contrato: docs/CONTRATO_CONTEXT_STATE.md
+- Contrato: docs/contratos/CONTRATO_CONTEXT_STATE.md
 """
 from __future__ import annotations
 
@@ -221,7 +221,7 @@ def main():
         "symbol": "EURUSD",
         "exec_tf": "H1",
         "policy": "STUDY_DISTRIBUTION_NOT_ENTRY",
-        "contract": "docs/CONTRATO_CONTEXT_STATE.md",
+        "contract": "docs/contratos/CONTRATO_CONTEXT_STATE.md",
         "sequence": {
             "module": "engine/sequential_events.py",
             "structure_mode": "canonical_bos",

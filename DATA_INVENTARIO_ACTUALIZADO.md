@@ -1,4 +1,8 @@
-# Inventario de datos — estado actual
+# Compatibilidad — inventario de datos histórico
+
+> La ruta canónica vigente es [`docs/DATA_INVENTARIO.md`](docs/DATA_INVENTARIO.md).
+> Este archivo conserva el inventario de la fase inicial y no debe recibir
+> nuevas decisiones normativas.
 
 **Actualizado:** 2026-08-17
 

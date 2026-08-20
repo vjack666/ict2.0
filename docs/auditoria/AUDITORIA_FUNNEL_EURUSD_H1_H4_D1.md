@@ -116,7 +116,7 @@ Artefacto: `data/metadata/funnel_audit_H1_H4_D1.json`
 | --- | --------------- | --------- | ------ |
 | R1 | **Inyectar HTF bias y re-medir funnel** | Sin D1/H4 el score geométrico subestima premium | Correr de nuevo `mark_choch_quality` con `htf_frames` desde `detect_trend` H4/D1 |
 | R2 | **No usar CHOCH real como señal de alta frecuencia** | 1–2 % de conversión; ~1 premium/año en H1 | Tratar CHOCH real/premium como **filtro de contexto**, no como trigger |
-| R3 | **Mantener M5 DEFERRED** | Esta data no es M5; afirmar edge M5 sería falso | Seguir `DATA_INVENTARIO_ACTUALIZADO.md` |
+| R3 | **Mantener M5 DEFERRED** | Esta data no es M5; afirmar edge M5 sería falso | Seguir `docs/DATA_INVENTARIO.md` |
 | R4 | **No promocionar el 15 % IA hasta walk-forward estricto del GBM** | ROC 0.798 es split aleatorio; B3 dio PR-AUC 0.07–0.31 OOS | Ejecutar `b3_walkforward_strict.py` cuando haya features H1 generadas |
 
 ### Prioridad MEDIA

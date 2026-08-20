@@ -1,4 +1,9 @@
-# Contrato — Context State (v1)
+# Compatibilidad — Context State (v1)
+
+> La ruta normativa canónica es
+> [`docs/contratos/CONTRATO_CONTEXT_STATE.md`](contratos/CONTRATO_CONTEXT_STATE.md).
+> Este archivo se conserva temporalmente para compatibilidad con referencias
+> históricas. Las nuevas modificaciones deben hacerse en la ruta canónica.
 
 **Estado:** NORMATIVO v1  
 **Fecha:** 2026-08-19  

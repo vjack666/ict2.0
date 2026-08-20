@@ -22,6 +22,11 @@ ordenada y autónoma**, siguiendo el ciclo de migración controlada
 
 ## Estructura
 
+El mapa completo de carpetas, autoridad y separación entre motor, agentes,
+orquestación, laboratorio y uso diario está en
+[`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md). La política de migración
+segura está en [`docs/REPOSITORY_ORDER.md`](docs/REPOSITORY_ORDER.md).
+
 ```text
 ICT SYSTEM/
 ├── agents/          # SHIMs de compatibilidad (2 líneas) → reexportan de analysis/ y orchestration/

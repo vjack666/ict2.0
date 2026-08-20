@@ -128,7 +128,7 @@ MTF dense: **1239 samples, `sample_every=100`, `ok_rate=1.0`**, interpretado com
 
 Artifact: `reports/audits/mtf_seq_funnel.json`.
 
-Gate CI: `.github/workflows/hermes-fvg-ob-funnel.yml` valida `status=COMPLETE`, PASS por TF, `causal_links == relation_count`, Sequence PASS y cobertura MTF mínima.
+Gate CI: `.github/workflows/30-hermes-fvg-ob-funnel.yml` valida `status=COMPLETE`, PASS por TF, `causal_links == relation_count`, Sequence PASS y cobertura MTF mínima.
 
 ## 7. Estado del pre-backtest
 

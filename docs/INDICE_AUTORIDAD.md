@@ -4,6 +4,12 @@ Este archivo define qué documentación es **autoridad vigente** en `ICT SYSTEM`
 
 Principio: **poca documentación, mucha autoridad.**
 
+## Mapa de estructura
+
+La descripción completa de carpetas, capas activas y reglas de migración está
+en [`REPOSITORY_MAP.md`](REPOSITORY_MAP.md) y
+[`REPOSITORY_ORDER.md`](REPOSITORY_ORDER.md).
+
 ---
 
 ## 🟢 Autoridad vigente
@@ -52,6 +58,17 @@ Principio: **poca documentación, mucha autoridad.**
 | --- | --- | --- |
 | `docs/tesis/PLAN_LTF_ENTRY_LAYER.md` | Plan de trabajo para conectar LTF/EXEC al uso diario. | Activo |
 | `docs/tesis/SDD_LTF_ENTRY_LAYER.md` | Contrato de diseño LTF-1; observación, no órdenes. | Normativo LTF-1 |
+
+### Contratos con ruta canónica
+
+| Concepto | Ruta canónica | Ruta de compatibilidad |
+|---|---|---|
+| Context State | `docs/contratos/CONTRATO_CONTEXT_STATE.md` | `docs/CONTRATO_CONTEXT_STATE.md` |
+| Inventario de datos | `docs/DATA_INVENTARIO.md` | `DATA_INVENTARIO_ACTUALIZADO.md` |
+
+Las rutas de compatibilidad no deben recibir nuevas reglas normativas. Se
+conservan temporalmente para no romper referencias históricas y serán
+consolidadas en una migración posterior.
 
 ---
 

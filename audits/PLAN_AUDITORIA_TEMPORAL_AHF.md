@@ -1,6 +1,6 @@
 # PLAN — Auditoría Temporal AHF/MTF
 
-**Estado:** NORMATIVO — ejecución estratificada PASS; full-span behavioral pendiente
+**Estado:** NORMATIVO — estratificada PASS + sandbox multi-ventana PASS (rollback fix validado); full-span 20Y pendiente
 **Comando gatillo exacto:** `ejecuta auditoria temporal`
 **Dataset:** EURUSD 20Y de `datasets/eurusd_dukascopy_20y/` (2006–2025), con SHA256/metadata del snapshot versionado.
 **Auditor canónico:** `audits/codigo/ahf_temporal_navigation_audit.py`
@@ -96,9 +96,11 @@ Invalidaciones pueden devolver a una capa superior. El contexto confirmado perma
 
 ## 5. Evidencia ya obtenida
 
-Existe un resultado versionado en `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` con estado `PASS_TRACE_INTEGRITY`, 750 trazas, 501 transiciones, 193 invalidaciones y 6 observaciones `SETUP_READY`. Está clasificado como **muestra estratificada**, no como full-span behavioral. 
+1. **Muestra 2017 (Hermes 1762746):** `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` — `PASS_TRACE_INTEGRITY`, 750 steps, 501 transiciones, 193 invalidaciones. Estratificada; `rollback_depth` estaba roto (siempre 0).
 
-Esta evidencia permite afirmar integridad del trace observado, no cobertura conductual completa de 20 años.
+2. **Sandbox multi-ventana (Grok 2026-08-20):** `reports/audits/ahf_temporal_navigation_SANDBOX.json` — 3 ventanas (2017/2020/2024), 170 steps, 51 invalidaciones, **rollback_depth max = 2.0**. Overall sandbox **PASS**. Valida el fix de instrumentación (`state_to_tf`). Runner: `scripts/tna_sandbox_runner.py`.
+
+Ninguna de las dos declara cobertura full-span de 20 años. La corrida definitiva sigue siendo `scripts/tna_audit_runner.py` sobre las 124k barras H1.
 
 ## 6. Criterios de PASS full-span
 

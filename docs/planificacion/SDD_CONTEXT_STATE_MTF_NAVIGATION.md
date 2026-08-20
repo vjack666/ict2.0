@@ -67,7 +67,7 @@ CONTEXTO HTF (location + regime + constraints)
 ¿cambia la distribución del outcome?
 ```
 
-Ya existe una primera corrida `SEQUENCE × CONTEXT STATE` en H1 20Y, pero su gate es **INSUFFICIENT_N**: 24 cadenas deduplicadas de depth≥4, con buckets demasiado pequeños para declarar diferencia de distribución. fileciteturn36file0
+Ya existe una primera corrida `SEQUENCE × CONTEXT STATE` en H1 20Y, pero su gate es **INSUFFICIENT_N**: 24 cadenas deduplicadas de depth≥4, con buckets demasiado pequeños para declarar diferencia de distribución.
 
 Por tanto, la hipótesis queda **ABIERTA**, no aceptada ni falsada.
 
@@ -126,7 +126,7 @@ Reglas:
 6. `Context State`, `constraints` y `navigation state` no son entradas.
 7. El trace debe conservar estado, `active_tf`, contexto confirmado, evento/tiempo de transición, parent state y causa de invalidación.
 
-El AHF está **implementado v1** y existe evidencia de auditoría temporal: `AUDITORIA_TEMPORAL_AHF_RESULT.json` tiene `PASS_TRACE_INTEGRITY`, 750 trazas, 501 transiciones y 193 invalidaciones. Esta evidencia es **estratificada**, no una validación full-span conductual. fileciteturn35file0
+El AHF está **implementado v1** y existe evidencia de auditoría temporal en `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json`: estado `PASS_TRACE_INTEGRITY`, 750 trazas, 501 transiciones y 193 invalidaciones. Esta evidencia es **estratificada**, no una validación full-span conductual.
 
 ---
 

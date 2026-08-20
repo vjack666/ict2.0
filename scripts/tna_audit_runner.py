@@ -42,18 +42,30 @@ from audits.codigo.ahf_temporal_navigation_audit import (  # noqa: E402
 
 
 DATA = ROOT / "data" / "raw" / "EURUSD"
+DATASET_CSV = ROOT / "datasets" / "eurusd_dukascopy_20y"
 OUT_JSON = ROOT / "reports" / "audits" / "ahf_temporal_navigation_20Y.json"
 OUT_MD = ROOT / "reports" / "audits" / "ahf_temporal_navigation_20Y_audit.md"
 
 
 def _load_tf(tf: str) -> pd.DataFrame:
-    p = DATA / f"EURUSD_{tf}.parquet"
-    if not p.exists():
-        raise FileNotFoundError(f"No existe {p}. El dataset 20Y debe estar versionado.")
-    df = pd.read_parquet(p)
+    """Load TF preferring complete Dukascopy CSV snapshot; fallback to parquet."""
+    csv_p = DATASET_CSV / f"EURUSD_{tf}.csv"
+    pq_p = DATA / f"EURUSD_{tf}.parquet"
+    if csv_p.exists():
+        df = pd.read_csv(csv_p, parse_dates=["time"])
+        src = str(csv_p.relative_to(ROOT))
+    elif pq_p.exists():
+        df = pd.read_parquet(pq_p)
+        src = str(pq_p.relative_to(ROOT))
+    else:
+        raise FileNotFoundError(
+            f"No existe CSV versionado ({csv_p}) ni parquet ({pq_p}). "
+            "Use datasets/eurusd_dukascopy_20y/ (SHA256SUMS)."
+        )
     if "time" not in df.columns:
-        raise ValueError(f"{p} no tiene columna 'time'")
+        raise ValueError(f"{src} no tiene columna 'time'")
     df = df.sort_values("time").reset_index(drop=True)
+    print(f"  loaded {tf}: n={len(df)} from {src}", flush=True)
     return df
 
 

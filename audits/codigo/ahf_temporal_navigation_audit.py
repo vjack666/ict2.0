@@ -213,11 +213,20 @@ def audit_snapshots(
             transition_latencies[(state, str(next_tr.get("state")))].append(float(next_tr["transition_bar"] - start))
         if "INVALIDATED" in event:
             invalidations += 1
+            # parent_state is an AHFState name (e.g. WAIT_LTF, SETUP_READY), not a TF.
+            # Map state → TF level so rollback depth is meaningful.
             order = {"D1": 0, "H4": 1, "H1": 2, "M15": 3, "M5": 4}
-            parent_tf = str(parent) if parent else ""
+            state_to_tf = {
+                "WAIT_D1": "D1", "D1_LOCKED": "D1",
+                "WAIT_H4": "H4", "H4_LOCKED": "H4",
+                "WAIT_H1": "H1", "WAIT_LTF": "H1", "SETUP_READY": "H1", "OUTCOME": "H1",
+            }
+            parent_name = str(parent) if parent else ""
+            parent_tf = state_to_tf.get(parent_name, parent_name.replace("_LOCKED", "").replace("WAIT_", ""))
             target_tf = {"D1_INVALIDATED": "D1", "H4_INVALIDATED": "H4", "H1_INVALIDATED": "H1"}.get(event, tf)
-            prev_level = order.get(parent_tf.replace("_LOCKED", ""), order.get(parent_tf, 0))
+            prev_level = order.get(parent_tf, order.get(tf, 0))
             target_level = order.get(target_tf, prev_level)
+            # Depth = how many layers we went back (positive when going to coarser TF)
             rollback_depths.append(float(max(0, prev_level - target_level)))
             if start is not None and next_tr and next_tr.get("transition_bar") is not None:
                 rollback_bars.append(float(max(0, next_tr["transition_bar"] - start)))

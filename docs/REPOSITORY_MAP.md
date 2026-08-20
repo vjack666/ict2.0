@@ -29,11 +29,13 @@ posterior que los sustituye y el cambio está documentado.
 | 09 | `detectors/` | Features por DataFrame | Activo | Contrato de features |
 | 10 | `tools/` | Herramientas aisladas y aprendizaje base | Activo | Contratos de tools |
 | 11 | `audits/` | Código ejecutable de auditorías | Activo | Gates A0–A9/Funnel/TNA |
-| 12 | `scripts/` | Entrypoints, datos, briefs y experimentos | Activo, pendiente de subclasificar | Cada script declara su función |
+| 12 | `scripts/` | Entrypoints clasificados y wrappers de compatibilidad | Activo, clasificado | Cada script declara su función |
 | 13 | `tests/` | Tests automatizados | Activo | Pytest/CI |
 | 14 | `reports/` | Evidencia generada legible | Activo | Reportes publicados |
 | 15 | `datasets/` | Fixtures o datasets pequeños versionados | Activo | Metadata del dataset |
 | 16 | `data/` | Datos locales grandes, ignorados por Git | Local | Inventario en [`DATA_INVENTARIO.md`](DATA_INVENTARIO.md) |
+| 17 | `lab/` | Entrada ordenada para experimentos y aprendizaje | Activo | README del laboratorio; no autoriza runtime |
+| 18 | `runtime/` | Punto de entrada del uso diario de lectura | Activo | README de runtime; solo observación |
 
 ## Capas activas de agentes
 
@@ -67,19 +69,22 @@ segunda autoridad de Context State o AHF.
 | `docs/experimentos/` | Interpretación de experimentos |
 | `docs/wyckoff/` | Biblioteca teórica Wyckoff |
 | `docs/briefs/` | Lecturas publicadas |
+| `docs/historical/` | Documentos retirados o de compatibilidad, sin autoridad normativa |
 
-Los archivos duplicados en la raíz de `docs/` se mantienen solamente como
-compatibilidad hasta que se complete la consolidación documental; la autoridad
-se declara en `docs/INDICE_AUTORIDAD.md`.
+Los documentos retirados se conservan bajo `docs/historical/` con fecha y
+motivo. No reciben nuevas reglas; la autoridad se declara en
+`docs/INDICE_AUTORIDAD.md`.
 
 ## Laboratorio y uso diario
 
-El repositorio todavía conserva los scripts de laboratorio dentro de
-`scripts/` por compatibilidad. La separación lógica vigente es:
+La separación de uso diario y laboratorio se expresa en `runtime/` y `lab/`.
+Los scripts físicos siguen agrupados por función bajo `scripts/`; las rutas
+antiguas se conservan solo mediante wrappers cuando un consumidor existente lo
+requiere. La separación vigente es:
 
 ```text
-Uso diario: engine/ → scripts/brief_lunes.py → docs/briefs/ y reports/
-Laboratorio: scripts/b*.py, train_*.py, data/learning/ y reports de experimentos
+Uso diario: engine/ → runtime/ → scripts/daily/ y scripts/presentation/
+Laboratorio: lab/ → scripts/lab/ → data/learning/
 ```
 
 La siguiente migración puede crear `lab/` con wrappers compatibles; no se deben
@@ -103,8 +108,8 @@ una copia histórica o un output generado.
 
 | Elementos | Clasificación | Ruta canónica | Acción actual |
 |---|---|---|---|
-| `docs/CONTRATO_CONTEXT_STATE.md` / `docs/contratos/CONTRATO_CONTEXT_STATE.md` | Copias normativas no idénticas | `docs/contratos/CONTRATO_CONTEXT_STATE.md` | La raíz quedó marcada como compatibilidad |
-| `DATA_INVENTARIO_ACTUALIZADO.md` / `docs/DATA_INVENTARIO.md` | Inventarios de fases distintas | `docs/DATA_INVENTARIO.md` | La raíz quedó marcada como histórico |
+| `docs/historical/compatibility/CONTRATO_CONTEXT_STATE_legacy_2026-08-20.md` / `docs/contratos/CONTRATO_CONTEXT_STATE.md` | Copia histórica no normativa | `docs/contratos/CONTRATO_CONTEXT_STATE.md` | Retirada de la ruta normativa |
+| `docs/historical/compatibility/DATA_INVENTARIO_legacy_2026-08-20.md` / `docs/DATA_INVENTARIO.md` | Inventarios de fases distintas | `docs/DATA_INVENTARIO.md` | Histórico fechado |
 | `docs/briefs/*.md` / `docs/briefs/*.txt` | Mismo brief en dos formatos | `.md` para documentación; `.txt` para consumo plano | Mantener hasta definir consumidor único |
 | Referencias a `CONTRATO_CONTEXT_STATE.md` en scripts y SDDs | Rutas históricas o relativas | `docs/contratos/...` | Las referencias activas ya fueron actualizadas |
 
@@ -126,7 +131,7 @@ una copia histórica o un output generado.
 | `engine/ote.py` | OTE fue eliminado de la política vigente | Retirado de ICT; copia exacta conservada en `SMC-SYSTEMS` |
 | `detectors/fib.py` | Fibonacci residual | Retirado de ICT; copia exacta conservada en `SMC-SYSTEMS` |
 | `engine/rr_by_setup.py` | RR legacy con referencia OTE | Retirado de ICT; copia exacta conservada en `SMC-SYSTEMS` |
-| `engine/htf_narrative.py` | Implementación distinta con consumidores activos | Mantener y auditar; no es una copia segura para borrar |
+| `engine/compat/htf_narrative.py` + wrapper `engine/htf_narrative.py` | Implementación narrativa anterior con consumidores activos | Compatibilidad explícita; autoridad actual en `engine/daily_motor.py` y `engine/mtf_navigation.py` |
 | briefs del 15 y 19 de agosto | Generados antes de la eliminación normativa de OTE | Históricos, no autoridad actual |
 | `analysis/wyckoff_agent.py` | Implementación de agente anterior al `engine/Wyckoff/` | Activo como adaptador; migración progresiva |
 

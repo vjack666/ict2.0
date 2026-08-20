@@ -30,6 +30,9 @@ Thumbs.db
 
 # Data (archivos grandes no necesarios en repo)
 data/
+!scripts/data/
+!scripts/data/*.py
+scripts/audit/_diag_choch_filter.py
 graphify-out/
 graphify-tmp/
 
@@ -61,4 +64,3 @@ docs/lectura_HTF_EURUSD.png
 # 
 # No ignorar nada de .hermes-* para mantener trazabilidad
 # completa entre sesiones y sesiones futuras.
-

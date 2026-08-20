@@ -57,9 +57,9 @@ El backtest mide comportamiento de una especificación de ejecución. Si la pobl
 
 ## Runners
 
-El Funnel 20Y fue producido por `scripts/grok_run_funnel_20y_full.py`, que orquesta las funciones canónicas de `audits/codigo/mtf_seq_funnel.py`. El artifact está protegido por un assert CI.
+El Funnel 20Y fue producido por `scripts/audit/grok_run_funnel_20y_full.py`, que orquesta las funciones canónicas de `audits/codigo/mtf_seq_funnel.py`. El artifact está protegido por un assert CI.
 
-El TNA full-span tiene driver versionado `scripts/tna_20y_parallel.py`. Su PASS behavioral actual en código no debe declararse como resultado empírico hasta ejecutar el driver y versionar el reporte correspondiente.
+El TNA full-span tiene driver versionado `scripts/audit/tna_20y_parallel.py`. Su PASS behavioral actual en código no debe declararse como resultado empírico hasta ejecutar el driver y versionar el reporte correspondiente.
 
 ## Regla
 

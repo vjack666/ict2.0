@@ -46,7 +46,8 @@ De GRID SCAPL 2/datasets: `structural_labels`, `structural_ml_train/test/validat
 
 ## Reproducir la importación
 
-`python scripts/import_forex_data.py` (lee las fuentes de arriba y puebla data/).
+`python scripts/data/import_forex_data.py` (la ruta antigua queda como wrapper;
+lee las fuentes de arriba y puebla data/).
 
 ## Nota para el motor
 

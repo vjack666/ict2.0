@@ -18,8 +18,9 @@ profesional** con las siguientes propiedades verificadas:
 - Modelo de IA calibrado con **TODA la data EURUSD disponible**
   (M5 334.852 velas 2022–2026 + H4 + D1).
 - **ROC-AUC 0.798** del modelo sobre holdout (edge real, no ruido).
-- Motor de lectura día a día (`engine/htf_narrative.build_htf_narrative`)
-  **ENCENDIDO por defecto** con `use_tools=True`.
+- El uso diario se sirve desde `engine/daily_motor.py`; la narrativa histórica
+  queda en `engine/compat/htf_narrative.py` con wrapper de compatibilidad en
+  `engine/htf_narrative.py`.
 
 ---
 
@@ -42,8 +43,8 @@ tools/                        # DETECCION AISLADA (geometria pura, SIN ATR)
 engine/                      # CONSUMO (unico puente tools->motor)
   bias_from_tools.py         # annotate_with_tools + bias_from_tools
                               #   + bias_from_tools_htf (sesgo HTF con tools)
-  htf_narrative.py           # build_htf_narrative (motor de lectura dia a dia)
-                              #   default use_tools=True -> usa bias_from_tools_htf
+  htf_narrative.py           # wrapper compatible; no es autoridad normativa
+  compat/htf_narrative.py    # implementación histórica/adaptadora
   bias/narrative.py          # motor VIEJO (legacy, aun en uso como fallback)
 
 data/learning/choch/full/    # (gitignore) dataset + model.joblib
@@ -87,7 +88,7 @@ choch_class:
 ### 4.1 Generación de dataset (TODA la data)
 
 ```
-scripts/gen_choch_dataset.py  (CHOCH_IA_DISABLE=1 para features estables)
+scripts/data/gen_choch_dataset.py  (CHOCH_IA_DISABLE=1 para features estables)
 -> data/learning/choch/full/features.jsonl
    M5: 2037 CHOCH REAL | label_ep=1:253 (12.4%) label_peak=1:391 (19.2%)
    H4: 83 CHOCH REAL   | label_ep=1:15 (18.1%)
@@ -102,7 +103,7 @@ Y el CHOCH no fue invalidado.
 ### 4.2 Entrenamiento y ROC
 
 ```
-scripts/train_choch_full.py
+scripts/lab/learning/train_choch_full.py
   label_ep | RF: 0.795 | GBM: 0.798 | LR: 0.742   -> MEJOR GBM 0.798
   label_peak | RF: 0.790 | GBM: 0.786 | LR: 0.764
   label_dir  | RF: 0.594 | GBM: 0.570 | LR: 0.556
@@ -114,8 +115,9 @@ ROC 0.798 >> 0.55 umbral mínimo útil. **Edge real confirmado.**
 ### 4.3 Integración activa (smoke test)
 
 ```
-scripts/smoke_motor_lectura.py
-  build_htf_narrative(m15, htf_frames={D1,H4}, use_tools=True)
+scripts/smoke/smoke_motor_lectura.py
+  build_daily_motor_snapshot(...)
+  build_htf_narrative(...)  # solo compatibilidad histórica/adaptación
   -> bias BEARISH, objetivo SSL 1.15261, POI FVG anclado HTF
   choch_ia_prob rango 0.001-0.909, mean 0.12 (discrimina)
 ```
@@ -193,17 +195,17 @@ con BOS". El 92.8% reclaim es feature del dominio (no bug). Coherente con el
 | --- | --- | --- |
 | `tools/block_builder.py` | P1: bloques velas (61×7) por CHOCH | `4dd90aa` |
 | `tools/teacher_rubric.py` | rúbrica ICT (CHOCH + BOS) como código | `4dd90aa` |
-| `scripts/train_block_encoder.py` | P2: encoder CNN-1D (test_mse=0.008 plano) | `4dd90aa` |
-| `scripts/probe_choch_nature.py` | P3: naturaleza CHOCH empírica | `4dd90aa` |
-| `scripts/label_human.py` | P4: etiqueta CHOCH+BOS, SWING N/A | `4dd90aa` |
-| `scripts/gen_bos_dataset.py` | features BOS (86.870) | `4dd90aa` |
-| `scripts/scan_classify.py` | escáner deficiencias (74 módulos) | `4dd90aa` |
+| `scripts/lab/learning/train_block_encoder.py` | P2: encoder CNN-1D (test_mse=0.008 plano) | `4dd90aa` |
+| `scripts/lab/learning/probe_choch_nature.py` | P3: naturaleza CHOCH empírica | `4dd90aa` |
+| `scripts/lab/learning/label_human.py` | P4: etiqueta CHOCH+BOS, SWING N/A | `4dd90aa` |
+| `scripts/data/gen_bos_dataset.py` | features BOS (86.870) | `4dd90aa` |
+| `scripts/lab/learning/scan_classify.py` | escáner deficiencias (74 módulos) | `4dd90aa` |
 | `tools/bos_validate.py` | Opción B (modo sustained) | `712048b` |
-| `scripts/train_nature_head.py` | P5: nature head (test_bce 0.559) | `712048b` |
+| `scripts/lab/learning/train_nature_head.py` | P5: nature head (test_bce 0.559) | `712048b` |
 | `tools/swing.py` | F1 lookback adaptativo + F2 swing_state cableado | `9b...` (7 fases) |
-| `scripts/gen_swing_dataset.py` | F3: datasets H4/D1 swing (nuevo) | `9b...` |
+| `scripts/data/gen_swing_dataset.py` | F3: datasets H4/D1 swing (nuevo) | `9b...` |
 | `engine/bias_from_tools.py` | F4 cascade + `build_daily_bias` (uso diario) | `9b...` |
-| `scripts/label_human.py` | F5 bias jerárquico → rúbrica; F6 reetiquetar | `9b...` |
+| `scripts/lab/learning/label_human.py` | F5 bias jerárquico → rúbrica; F6 reetiquetar | `9b...` |
 
 ### 8.4 Auditoría externa (sobre `4dd90aa`) — veredicto
 
@@ -237,7 +239,7 @@ gradual (aún no cableado al motor en vivo).
 | ----------- | ------- | ------- | ------- |
 | `choch_class` premium | score ≥ 85 | **score ≥ 90** | `tools/confirmation_thresholds.py` → `choch_quality` / `teacher_rubric` |
 | `choch_class` useful | 70–84 | **70–89** | idem |
-| Excursión label (K) M5/H4/D1 | 2.0 / 1.5 / 1.0 | **4.5 / 3.0 / 2.0** (modo CONFIRM) | `scripts/gen_choch_dataset.py` |
+| Excursión label (K) M5/H4/D1 | 2.0 / 1.5 / 1.0 | **4.5 / 3.0 / 2.0** (modo CONFIRM) | `scripts/data/gen_choch_dataset.py` |
 | CHOCH en `bias_from_tools` | cualquier active | **solo premium** | `engine/bias_from_tools.py` |
 
 Detalle y modos SCAN/CONFIRM/PREMIUM: `docs/UMBRALES_CONFIRMACION.md`.

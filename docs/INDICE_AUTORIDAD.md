@@ -63,12 +63,12 @@ en [`REPOSITORY_MAP.md`](REPOSITORY_MAP.md) y
 
 | Concepto | Ruta canónica | Ruta de compatibilidad |
 |---|---|---|
-| Context State | `docs/contratos/CONTRATO_CONTEXT_STATE.md` | `docs/CONTRATO_CONTEXT_STATE.md` |
-| Inventario de datos | `docs/DATA_INVENTARIO.md` | `DATA_INVENTARIO_ACTUALIZADO.md` |
+| Context State | `docs/contratos/CONTRATO_CONTEXT_STATE.md` | `docs/historical/compatibility/CONTRATO_CONTEXT_STATE_legacy_2026-08-20.md` |
+| Inventario de datos | `docs/DATA_INVENTARIO.md` | `docs/historical/compatibility/DATA_INVENTARIO_legacy_2026-08-20.md` |
 
-Las rutas de compatibilidad no deben recibir nuevas reglas normativas. Se
-conservan temporalmente para no romper referencias históricas y serán
-consolidadas en una migración posterior.
+Las rutas históricas no deben recibir nuevas reglas normativas. Se conservan
+bajo `docs/historical/` para auditoría y trazabilidad, no como interfaces
+activas.
 
 ---
 

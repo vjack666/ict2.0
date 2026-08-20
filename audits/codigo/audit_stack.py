@@ -48,8 +48,8 @@ def a3_semantics() -> AuditResult:
     # Contrato mínimo: las cuatro etapas ICT/FVG/OB/lineage deben estar expresadas
     # por objetos explícitos; no usamos nombres legacy como sustitutos silenciosos.
     findings: list[Finding] = []
-    contract_doc = ROOT / "docs" / "CONTRATO_FUNNEL_AUDIT.md"
-    sdd = ROOT / "docs" / "SDD_FVG_OB_ARCHITECTURE_MAP.md"
+    contract_doc = ROOT / "docs" / "contratos" / "CONTRATO_FUNNEL_AUDIT.md"
+    sdd = ROOT / "docs" / "planificacion" / "SDD_FVG_OB_ARCHITECTURE_MAP.md"
     if not contract_doc.exists():
         findings.append(Finding("CONTRACT_MISSING", "HIGH", "Contrato Funnel ausente", "A3"))
     if not sdd.exists():

@@ -109,12 +109,15 @@ def _bias_from_frame(df: pd.DataFrame, t: Any) -> str:
             and (not has_real or bool(sub["bos_real"].iloc[i]))
         ):
             last_bos_idx, last_bos_dir = i, int(bd)
-        cd = sub["choch_dir"].iloc[i]
-        if cd not in (0, "0", None) and str(sub["choch_status"].iloc[i]) == "active":
+        # Algunos feeds del motor diario traen BOS sin columnas CHOCH. La
+        # ausencia de CHOCH significa "sin evento", no un frame inválido.
+        cd = sub["choch_dir"].iloc[i] if "choch_dir" in sub.columns else 0
+        choch_status = sub["choch_status"].iloc[i] if "choch_status" in sub.columns else "none"
+        if cd not in (0, "0", None) and str(choch_status) == "active":
             # T9.7 (tesis S7.0, extension T9.5): el CHOCH solo cuenta si el BOS
             # contrario que rompio era REAL (bos_real). Un CHOCH sobre BOS de
             # ruido es un giro falso que el humano ignora -> no manda sesgo.
-            if has_real and not _bos_real_behind(
+            if has_real and "choch_proj_level" in sub.columns and not _bos_real_behind(
                 sub, i, int(cd), float(sub["choch_proj_level"].iloc[i])
             ):
                 continue

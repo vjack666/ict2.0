@@ -3,12 +3,11 @@ BRIEF DE LECTURA ICT/WYCKOFF — preparado para revisar ANTES de la sesión NY.
 
 ESTADO HONESTO (leer antes de usar):
   - Este script NO emite señales ejecutables. Es un MAPA DE CONTEXTO: sesgo HTF,
-    zonas (dealing range / OTE), liquidez BSL/SSL, PD arrays activos (FVG/OB con
-    tier), sweeps recientes, killzones a vigilar y setups a BUSCAR + nivel de
-    invalidación por estructura.
-  - El motor de SEÑALES (entry retorno-a-zona, TP liquidez cercana, exec_tf separado,
-    RR 1:3, POI bonus anclado) está PENDIENTE (v30, ver docs/ict/CIERRE_FASE2.md).
-    Por eso el brief dice "VIGILAR", no "ENTRA AHORA".
+    zona EQ50/premium/discount, liquidez BSL/SSL, PD arrays activos (FVG/OB con
+    tier), sweeps recientes, killzones a vigilar y estado LTF de observación.
+  - El motor diario ahora expone el estado LTF/EXEC y la espera de retest, pero
+    sigue siendo `OBSERVE_ONLY_NO_ORDER`; entry, SL y TP están fuera del alcance
+    de este motor de lectura.
   - Sin feed en vivo: usa data/raw/*.parquet (corte al 2026-08-06 aprox). El brief
     marca la fecha del dato para que veas el desfase.
   - macro_direction / market_regime / divergence / volume_confirmed NO se producen
@@ -196,19 +195,33 @@ def build_symbol_section(sym, feats, last_dates):
     lines.append(f"- **Datos hasta:** D1 {ld['D1']} · H4 {ld['H4']} · H1 {ld['H1']} · M15 {ld['M15']}")
     lines.append("")
 
+    # Capa LTF conectada al motor diario: observación closed-only, nunca orden.
+    from engine.daily_motor import build_daily_motor_snapshot
+    ltf_read = build_daily_motor_snapshot(
+        feats,
+        decision_time=last_dates.get("M15"),
+    )
+    ltf = ltf_read.get("ltf", {})
+    ctx = ltf_read.get("context", {})
+    lines.append("### LTF / exec M15 (motor diario)")
+    lines.append(f"- Estado: `{ltf_read.get('status', 'NO_LTF_DATA')}`")
+    lines.append(f"- Dirección heredada del contexto: `{ltf_read.get('direction_label', 'RANGING')}`")
+    lines.append(f"- Contexto permitido: `{ctx.get('allowed', False)}` · razón: `{ctx.get('reason', 'n/a')}`")
+    lines.append(
+        f"- Estructura a favor: `{ltf.get('structure_confirmed', False)}` · "
+        f"zona presente: `{ltf.get('zone_present', False)}` · "
+        f"retest observado: `{ltf.get('retest_observed', False)}`"
+    )
+    lines.append("- Política: `OBSERVE_ONLY_NO_ORDER` — no es entry ni autorización de operación.")
+    lines.append("")
+
     # Dealing range (H4)
     lines.append("### Zona (dealing range H4)")
     pdr = last_val(f_h4, "premium_discount_zone")
     zh = last_val(f_h4, "zone_high"); zl = last_val(f_h4, "zone_low"); zm = last_val(f_h4, "zone_mid")
-    olmin = last_val(f_h4, "ote_long_min"); olmax = last_val(f_h4, "ote_long_max")
-    osmin = last_val(f_h4, "ote_short_min"); osmax = last_val(f_h4, "ote_short_max")
     lines.append(f"- Zona premium/discount: `{pdr}`")
     if ok(zh) and ok(zl):
         lines.append(f"- Rango H4: high `{zh:.5f}` · low `{zl:.5f}` · mid `{zm:.5f}`")
-    if ok(olmin):
-        lines.append(f"- OTE LONG (62-79% retrace): `{olmin:.5f}` – `{olmax:.5f}`")
-    if ok(osmin):
-        lines.append(f"- OTE SHORT (62-79% retrace): `{osmin:.5f}` – `{osmax:.5f}`")
     lines.append("")
 
     # Liquidez
@@ -272,16 +285,16 @@ def build_symbol_section(sym, feats, last_dates):
     # Setups a BUSCAR (no entrar)
     lines.append("### Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS)")
     if bias == "BULLISH":
-        if pdr in ("DISCOUNT", "OTE_LONG", "OTE"):
-            lines.append("- **PO3 a-favor LONG**: precio en discount/OTE. Buscar en M15: sweep SSL + CHoCH/BOS alcista + retorno a FVG/OB. Invalidación: bajo último swing low / mecha del sweep.")
-        elif pdr in ("PREMIUM", "OTE_SHORT"):
-            lines.append("- Sesgo alcista pero precio en PREMIUM: NO comprar aquí. Esperar retracción a discount/OTE antes de buscar long.")
+        if pdr == "DISCOUNT":
+            lines.append("- **PO3 a-favor LONG**: precio en DISCOUNT. Buscar en M15: sweep SSL + CHoCH/BOS alcista + retorno a FVG/OB. Invalidación: bajo último swing low / mecha del sweep.")
+        elif pdr == "PREMIUM":
+            lines.append("- Sesgo alcista pero precio en PREMIUM: NO comprar aquí. Esperar retracción a DISCOUNT antes de buscar long.")
         else:
             lines.append("- Sesgo alcista, precio neutro: vigilar reacción en discount para buscar long.")
     elif bias == "BEARISH":
-        if pdr in ("PREMIUM", "OTE_SHORT", "OTE"):
-            lines.append("- **PO3 a-favor SHORT**: precio en premium/OTE. Buscar en M15: sweep BSL + CHoCH/BOS bajista + retorno a FVG/OB. Invalidación: sobre último swing high / mecha del sweep.")
-        elif pdr in ("DISCOUNT", "OTE_LONG"):
+        if pdr == "PREMIUM":
+            lines.append("- **PO3 a-favor SHORT**: precio en PREMIUM. Buscar en M15: sweep BSL + CHoCH/BOS bajista + retorno a FVG/OB. Invalidación: sobre último swing high / mecha del sweep.")
+        elif pdr == "DISCOUNT":
             lines.append("- Sesgo bajista pero precio en DISCOUNT: NO vender aquí. Esperar rebote a premium antes de buscar short.")
         else:
             lines.append("- Sesgo bajista, precio neutro: vigilar reacción en premium para buscar short.")
@@ -325,7 +338,7 @@ def main():
     header.append(f"# BRIEF DE LECTURA ICT/WYCKOFF — generado {GENERATED.astimezone(dt.timezone(dt.timedelta(hours=-5))):%Y-%m-%d %H:%M} (Ecuador)\n")
     header.append("> **AVISO:** mapa de contexto, NO señal ejecutable. Motor de señales en construcción (v30).")
     header.append(f"> Datos: `data/raw/*.parquet` (corte {cut_str}, actualizado vía MT5 en vivo). El sesgo HTF se infiere de `trend` D1/H4.")
-    header.append("> Regla dura de ejecución (libro 18): SL y entry SIEMPRE en el exec TF; HTF/ITF solo sesgo y zona.\n")
+    header.append("> Regla informativa (libro 18): HTF/ITF aportan sesgo y zona; este brief solo lee mercado y no calcula ejecución.\n")
     header.append(f"**Símbolos:** {', '.join(args.symbols)}\n")
 
     t0_all = time.time()
@@ -339,8 +352,8 @@ def main():
     total = time.time() - t0_all
 
     footer = f"\n\n---\n*Generado por scripts/brief_lunes.py en {total:.1f}s. "
-    footer += "Para señal ejecutable falta cablear entry retorno-a-zona, TP liquidez cercana, "
-    footer += "exec_tf separado y RR 1:3 (docs/ict/CIERRE_FASE2.md).*\n"
+    footer += "La capa de ejecución (entry/SL/TP) está fuera del alcance de esta lectura; "
+    footer += "ver docs/tesis/PLAN_LTF_ENTRY_LAYER.md para el límite de responsabilidad.*\n"
 
     content = "\n".join(header) + "\n" + body + footer
     with open(out_md, "w", encoding="utf-8") as fh:

@@ -46,6 +46,13 @@ Principio: **poca documentación, mucha autoridad.**
 | `docs/reglas/WYCKOFF_RULEBOOK.md` | Diccionario Wyckoff. |
 | `docs/wyckoff/**` | Teoría Wyckoff. |
 
+### Capa LTF del motor diario
+
+| Archivo | Rol | Estado |
+| --- | --- | --- |
+| `docs/tesis/PLAN_LTF_ENTRY_LAYER.md` | Plan de trabajo para conectar LTF/EXEC al uso diario. | Activo |
+| `docs/tesis/SDD_LTF_ENTRY_LAYER.md` | Contrato de diseño LTF-1; observación, no órdenes. | Normativo LTF-1 |
+
 ---
 
 ## 🔴 Documentación histórica / fuera de autoridad

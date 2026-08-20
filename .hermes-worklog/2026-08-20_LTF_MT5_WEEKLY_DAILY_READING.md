@@ -4,6 +4,14 @@
 **Objetivo:** avanzar el contrato de cierre LTF end-to-end para la prueba MT5
 semanal + diaria, sin ejecución financiera.
 
+## Publicación
+
+- Commit publicado en `main`: `cac9494`
+- Mensaje: `feat: connect canonical LTF market reading to MT5 brief`
+- Push a GitHub: completado correctamente.
+- `.hermes/audit_state.json`: excluido del commit por ser estado local de
+  ejecución.
+
 ## Cambios
 
 1. `engine.daily_motor.build_daily_motor_snapshot()` ahora recibe
@@ -48,6 +56,16 @@ semanal + diaria, sin ejecución financiera.
 - `reports/audits/ltf_mt5_weekly_daily_2026-08-20.md`
 - `docs/briefs/brief_2026-08-20.md`
 - suite: `64 passed, 1 warning`
+
+## Muestra efectivamente producida
+
+- Context State: `BULLISH`, location `PREMIUM`.
+- Semana: `2026-08-17T00:00:00+00:00` →
+  `2026-08-20T17:00:00+00:00`; OHLC `1.15619 / 1.17106 / 1.15614 / 1.16721`.
+- Sequence: `200 refs`, profundidad `4`.
+- Zonas canónicas M15: `411`; retest/touch: `OBSERVED`.
+- Estado final de lectura: `WAIT_LTF_CONFIRMATION` porque M15 no confirmó la
+  estructura heredada.
 
 ## Política y límites
 

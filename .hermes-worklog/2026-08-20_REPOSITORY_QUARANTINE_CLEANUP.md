@@ -1,6 +1,6 @@
 # Limpieza de cuarentena del repositorio
 
-**Fecha:** 2026-08-20  
+**Fecha:** 2026-08-20
 **Alcance:** retirar de `ICT SYSTEM` copias exactas de módulos ya conservados
 en `C:\Users\v_jac\Desktop\SMC-SYSTEMS`.
 
@@ -34,6 +34,5 @@ eliminación segura.
 ## Validación
 
 - búsqueda de imports: sin consumidores de los tres archivos retirados;
-- suite local: `68 passed` antes de la eliminación;
-- siguiente validación obligatoria: suite completa después del cambio;
+- suite local después de la eliminación: `68 passed`;
 - `.hermes/audit_state.json` era un cambio preexistente y queda fuera del commit.

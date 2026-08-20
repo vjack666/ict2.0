@@ -1,1 +1,81 @@
-PLACEHOLDER
+{
+  "dataset": "dukascopy EURUSD 20Y",
+  "symbol": "EURUSD",
+  "policy": "AUDIT_FUNNEL_NO_PNL_NO_ENTRY",
+  "anti_indicators": {
+    "ema": false,
+    "atr_as_bias": false,
+    "ote_fibonacci": false,
+    "source": "structure/BOS + FVG/OB detectors + sequential + MTFNavigator",
+    "dealing_range": "EQ50_ONLY_NO_OTE"
+  },
+  "fvg_ob": {
+    "H1": {
+      "timeframe": "H1",
+      "bars": 124377,
+      "fvg_count": 22477,
+      "ob_count": 2799,
+      "relation_count": 702,
+      "causal_links": 702,
+      "relation_rate_vs_fvg": 0.03123,
+      "relation_rule": "STRICT FVG_OB_CAUSAL",
+      "audit_status": "GateStatus.PASS",
+      "elapsed_s": 30.95
+    },
+    "H4": {
+      "timeframe": "H4",
+      "bars": 32133,
+      "fvg_count": 6497,
+      "ob_count": 862,
+      "relation_count": 206,
+      "causal_links": 206,
+      "relation_rule": "STRICT FVG_OB_CAUSAL",
+      "audit_status": "GateStatus.PASS",
+      "elapsed_s": 2.77
+    },
+    "D1": {
+      "timeframe": "D1",
+      "bars": 6258,
+      "fvg_count": 1543,
+      "ob_count": 214,
+      "relation_count": 58,
+      "causal_links": 58,
+      "relation_rule": "STRICT FVG_OB_CAUSAL",
+      "audit_status": "GateStatus.PASS",
+      "elapsed_s": 0.19
+    }
+  },
+  "sequence": {
+    "H1": {
+      "timeframe": "H1",
+      "summary": {
+        "n_chains": 1460,
+        "by_depth": {"1": 767, "2": 575, "3": 86, "4": 29, "7": 3},
+        "by_status": {"EXPIRED": 1457, "COMPLETE": 3},
+        "complete_bull": 1,
+        "complete_bear": 2,
+        "stage_order": ["LIQUIDITY_POOL", "SWEEP", "DISPLACEMENT", "STRUCTURE", "OB", "FVG", "RETEST"]
+      },
+      "n_complete": 3,
+      "n_chains": 1460,
+      "audit_status": "PASS",
+      "elapsed_s": 12.64
+    }
+  },
+  "mtf_navigation": {
+    "n_samples": 1239,
+    "sample_every": 100,
+    "anti_lookahead": "docs/ANTI_LOOKAHEAD_MTF_SEQUENCE.md",
+    "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
+    "precompute_sequences": false,
+    "note": "Dense MTF full span; FVG/OB + sequence audited on full 20Y bars (no truncation)",
+    "audit_status": "PASS",
+    "findings": [],
+    "ok_rate": 1.0,
+    "complete": true
+  },
+  "started_at": "2026-08-20T00:09:16.727557+00:00",
+  "checkpoint": "COMPLETE",
+  "updated_at": "2026-08-20T01:02:57.426777+00:00",
+  "status": "COMPLETE"
+}

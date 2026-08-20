@@ -1,10 +1,10 @@
 # Addendum SDD — Pre-Backtest Audit Stack
 
-Este documento extiende `SDD_FVG_OB_ARCHITECTURE_MAP.md` y es normativo mientras se implementa la etapa pre-backtest.
+Este documento extiende `SDD_FVG_OB_ARCHITECTURE_MAP.md` y es normativo mientras se completa la etapa pre-backtest.
 
 ## Cambio de arquitectura del plan
 
-La ejecución deja de ser el siguiente Gate inmediato. Antes del backtest se introduce una capa de auditoría estructural:
+La ejecución/backtest no es el siguiente Gate inmediato. Antes se mantiene una capa de auditoría estructural:
 
 ```text
 DATA
@@ -29,49 +29,40 @@ COVERAGE / REGIME
  ↓
 EXPERIMENT GOVERNANCE
  ↓
+TNA TRACE / BEHAVIORAL
+ ↓
 BACKTEST ELIGIBLE
 ```
 
 ## Motivo
 
-El backtest mide comportamiento de una especificación de ejecución. Si la población de FVG/OB, su causalidad o sus datos no son confiables, la performance no es evidencia limpia del motor. La auditoría Funnel y sus predecesoras buscan demostrar primero la integridad de esa población.
+El backtest mide comportamiento de una especificación de ejecución. Si la población de FVG/OB, su causalidad, navegación o datos no son confiables, la performance no es evidencia limpia del motor.
 
-## Subsistema implementado
+## Estado actualizado
 
-La ejecución de auditorías vive en `audits/` y está desacoplada de la lógica de trading:
+- **A0-A9:** definidos e implementados; evidencia CI full-stack sigue pendiente de cierre formal.
+- **Funnel MTF+Sequence 20Y:** **CERRADO — PASS + GATE CI**.
+- **TNA TRACE:** **PASS estratificado** (`PASS_TRACE_INTEGRITY`); no equivale a behavioral/full-span.
+- **TNA BEHAVIORAL/full-span:** **PENDIENTE**.
+- **Sequence × Context State:** **INSUFFICIENT_N**; no declarar diferencia de distribución.
+- **Backtest:** **BLOQUEADO** hasta satisfacer la pila pre-backtest vigente + Funnel + TNA aceptables.
+- **M5:** diferido.
+- **OTE/Fibonacci:** prohibidos.
 
-```text
-`audits/`
-├── contracts/   # GateStatus, Finding, AuditResult
-├── core/        # invariantes temporales reutilizables
-├── checks/      # checks por dominio, empezando por A0
-├── funnel/      # motor A7
-└── reports/     # artefactos derivados no versionados por defecto
-```
+## Artefactos canónicos actuales
 
-Implementación inicial:
+- Funnel: `reports/audits/mtf_seq_funnel.json`.
+- TNA trace estratificado: `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json`.
+- Sequence × Context State: `reports/audits/exp_sequence_x_context_state_H1_20Y.json`.
 
-- `audits/contracts/gate.py`
-- `audits/core/temporal.py`
-- `audits/checks/data_integrity.py`
-- `audits/funnel/engine.py`
-- `tests/test_audit_subsystem.py`
+## Runners
 
-## Estado
+El Funnel 20Y fue producido por `scripts/grok_run_funnel_20y_full.py`, que orquesta las funciones canónicas de `audits/codigo/mtf_seq_funnel.py`. El artifact está protegido por un assert CI.
 
-- A0-A9: definidos contractualmente.
-- A0: primera implementación ejecutable.
-- A2: utilidades temporales ejecutables.
-- A7 Funnel: primera implementación ejecutable y con contrato de findings.
-- Tests de subsistema: añadidos; Gate CI pendiente de evidencia.
-- Backtest: bloqueado hasta PASS de la pila.
-- M5: sigue diferido.
-- OTE/Fibonacci: siguen prohibidos.
-
-## Referencia SMC-SYSTEMS
-
-La auditoría comparativa de `vjack666/SMC-SYSTEMS` identificó material útil de validación posterior (split cronológico, walk-forward, PBO/DSR/PurgedKFold/CVaR), pero no se adelanta al Funnel. El repositorio externo es referencia comparativa, no autoridad normativa.
+El TNA full-span tiene driver versionado `scripts/tna_20y_parallel.py`. Su PASS behavioral actual en código no debe declararse como resultado empírico hasta ejecutar el driver y versionar el reporte correspondiente.
 
 ## Regla
 
 Cualquier modificación de la pila de auditorías requiere actualizar este addendum, el SDD principal, `.hermes-index.md` y el worklog antes de cambiar el Gate.
+
+Un PASS de integridad nunca se convierte en edge por documentación. Un gate rojo no se convierte en verde cambiando el criterio después de observar el resultado.

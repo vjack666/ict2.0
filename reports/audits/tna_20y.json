@@ -1,0 +1,38 @@
+{
+  "audit": "TNA_20Y",
+  "generated_at": "2026-08-20T19:42:12.335982+00:00",
+  "policy": "CONTEXT_STATE_NOT_ENTRY",
+  "n_bars": 124377,
+  "cores": 20,
+  "elapsed_s": 18649.2,
+  "gates": {
+    "TNA_TRACE_INTEGRITY": "PASS",
+    "TNA_BEHAVIORAL": "PASS"
+  },
+  "trace_integrity": {
+    "asof_violations": 0,
+    "asof_ok_rate": 1.0
+  },
+  "behavioral": {
+    "status_distribution": {
+      "OK": 124377
+    },
+    "bias_d1_distribution": {
+      "UNKNOWN": 339,
+      "MIXED": 47136,
+      "BULLISH": 39759,
+      "BEARISH": 37143
+    },
+    "bias_h1_distribution": {
+      "UNKNOWN": 17,
+      "MIXED": 54904,
+      "BULLISH": 34878,
+      "BEARISH": 34578
+    },
+    "layer_combinations": {
+      "('D1', 'H1', 'H4')": 124377
+    },
+    "avg_zones_per_state": 1640.73,
+    "avg_path_steps": 4.0
+  }
+}

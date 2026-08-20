@@ -1,30 +1,30 @@
-# SDD — Capa LTF / EXEC de lectura canónica
+# SDD — Capa LTF / EXEC + Wyckoff especializada
 
-**Versión:** 2.0  
-**Estado:** NORMATIVO para LTF-READING; no contiene contrato de ejecución  
+**Versión:** 3.0  
+**Estado:** NORMATIVO para lectura de mercado; no contiene contrato de ejecución  
 **Fecha:** 2026-08-20  
-**Fuente de autoridad:** `docs/ict/SPEC_TESIS_FORMAL.md` + libros ICT 16/18  
+**Autoridad:** `docs/ict/SPEC_TESIS_FORMAL.md` + ICT 16/18  
 **Plan:** `docs/tesis/PLAN_LTF_ENTRY_LAYER.md`  
 **Padre MTF:** `docs/planificacion/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`  
-**Contratos relacionados:** `docs/contratos/CONTRATO_MULTI_TF_LAYERS.md`, `docs/contratos/CONTRATO_AHF.md`, `docs/CONTRATO_CONTEXT_STATE.md`
+**Contratos:** `CONTRATO_MULTI_TF_LAYERS.md`, `CONTRATO_AHF.md`, `CONTRATO_CONTEXT_STATE.md`  
+**Biblioteca Wyckoff:** `docs/reglas/WYCKOFF_RULEBOOK.md`, `docs/wyckoff/**`
 
 ## 1. Propósito
 
-Definir una capa LTF/EXEC que observe y confirme el estado de mercado después de que HTF/ITF hayan emitido contexto y restricciones. La capa debe conectar la tesis con el motor real sin duplicar detectores, lineage ni máquinas de estados.
+Definir una única lectura top-down ICT/MTF/LTF en la que Wyckoff sea una capa especializada de interpretación del proceso de mercado.
 
 ```text
 Context State       != entry
+Wyckoff state       != entry
 SETUP_READY         != order
 LTF confirmation    != fill
 ```
 
-La capa LTF es **subordinada** al estado confirmado de sus ancestros. No redefine D1/H4, no convierte un snapshot en una orden y no utiliza datos posteriores a `decision_time`.
+La capa Wyckoff no es un segundo motor. No crea otro AHF, otro Context State, otra FSM de Sequence ni otra definición de FVG/OB.
 
----
+## 2. Perfil temporal
 
-## 2. Roles temporales
-
-### Perfil diario vigente
+Perfil diario:
 
 ```text
 HTF     = D1
@@ -33,480 +33,344 @@ CONTEXT = H1
 EXEC    = M15
 ```
 
-`CONTEXT=H1` es una capa intermedia del perfil diario actual; no sustituye el contrato universal `htf/itf/exec_tf`.
-
-### Extensión de tesis
+Extensión de tesis:
 
 ```text
 D1 → H4 → H1 → M15 → M5 → M1
 ```
 
-M5/M1 pueden actuar como confirmación fina/microestructura, pero requieren perfil explícito y todos los gates de este SDD antes de promoción.
+Autoridad Wyckoff:
 
----
+| TF | Responsabilidad | Autoridad |
+|---|---|---:|
+| D1 | fase/regimen macro | 4 |
+| H4 | rango/causa/transición | 3 |
+| H1 | confirmación de proceso | 2 |
+| M15 | comportamiento local | 1 |
+| M5/M1 | microcontexto | 0 / diferido |
 
-## 3. Autoridad de cada nivel
+`authority_tf` debe ser explícito en todo `WyckoffSnapshot`.
 
-```text
-HTF Context State
-   ↓
-AHF / navigation state
-   ↓
-ITF structure + POI
-   ↓
-Sequence / FVG / OB / lineage
-   ↓
-EXEC-LTF confirmation
-   ↓
-zone/retest observation
-```
+## 3. Contrato de entrada
 
-Reglas:
-
-1. HTF emite `direction_hint`, `location`, `regime_stack`, `constraints` y referencias de liquidez/POI cuando estén disponibles.
-2. ITF interpreta estructura y zonas dentro del contexto HTF.
-3. EXEC/LTF solo confirma/espera respecto de las restricciones heredadas.
-4. LTF no cambia `direction_hint` de D1/H4.
-5. Rollback de una capa superior se realiza mediante AHF, no mediante mutación local de LTF.
-6. El historial de navegación nunca se borra.
-
----
-
-## 4. Entrada del componente
-
-La interfaz lógica es:
-
-```python
-build_daily_motor_snapshot(
-    frames,
-    decision_time,
-    config,
-) -> snapshot
-```
-
-`config` debe declarar explícitamente:
+La capa puede recibir solamente snapshots/objetos producidos por fuentes de autoridad:
 
 ```text
-profile_id
-htf
-itf
-context_tf
-exec_tf
+context_state        ← engine.mtf_navigation
+navigation_snapshot  ← engine.ahf
+POI/MarketObject     ← detectores canónicos
+sequence_snapshot    ← engine.sequential_events
+lineage              ← engine.lineage
+OHLC prefix          ← feed as-of(t)
 ```
 
-No se permite inferir roles por nombre de variable, orden de diccionario o existencia de un único `ltf`.
+No debe consultar directamente un agente legacy para decidir estado canónico si existe el adaptador runtime.
 
-El adaptador puede recibir además, siempre como datos de solo lectura de sus
-fuentes de autoridad:
-
-```text
-canonical_zones      # MarketObject FVG/OB por timeframe
-sequence_snapshot   # refs/depth de Sequence canónica
-navigation_snapshot  # snapshot/evento producido por AHF
-context_snapshot     # Context State/POI ya resuelto
-context_state        # MarketState producido por MTFNavigator (autoritativo)
-```
-
-La capa LTF no construye esos objetos, no ejecuta otra FSM y no convierte
-marcadores legacy del DataFrame en evidencia canónica.
-
-Cuando se necesite ensamblar una lectura desde frames OHLC, el único adaptador
-permitido es `engine.ltf_canonical_feed.build_ltf_canonical_feed()`. Reutiliza
-los detectores, relaciones y Sequence canónicos, trabaja solo sobre el prefijo
-`time <= decision_time` y entrega objetos de solo lectura al motor diario. No
-define otra semántica de FVG/OB, retest o FSM.
-
-La entrada de LTF requiere, cuando existan:
+## 4. Contrato de salida Wyckoff
 
 ```text
-Context State locked
-POI refs
-Sequence refs/depth
-parent navigation state
-active_tf
-```
-
----
-
-## 5. Regla `as-of(t)` / PIT
-
-Definición única:
-
-```text
-as_of(tf, t) = última barra de tf con time ≤ t
-```
-
-Para cualquier snapshot:
-
-```text
-asof_time[HTF]    ≤ t
-asof_time[ITF]    ≤ t
-asof_time[CONTEXT]≤ t
-asof_time[EXEC]   ≤ t
-```
-
-No se permite:
-
-- usar una vela posterior a `t`;
-- centrar un pivote con barras futuras;
-- recalcular un ancestro usando evidencia posterior;
-- mezclar relojes para favorecer una confirmación;
-- cambiar un snapshot histórico al añadir datos posteriores.
-
-La detección LTF estructural debe ejecutarse sobre el prefijo `time <= t` antes de cualquier cálculo derivado.
-
----
-
-## 6. Salida canónica
-
-El snapshot debe ser serializable y contener como mínimo:
-
-```text
-{
-  policy: OBSERVE_ONLY_NO_ORDER,
-  profile_id,
-  htf_tf,
-  itf_tf,
-  context_tf,
-  exec_tf,
-  decision_time,
-  asof_times_by_tf,
-
-  navigation: {
-    state,
-    active_tf,
-    parent_state,
-    transition_event,
-    transition_time,
-    invalidation_reason
-  },
-
-  context: {
-    direction_hint,
-    location,
-    regime_stack,
-    constraints,
-    poi_refs
-  },
-
-  sequence: {
-    refs,
-    depth
-  },
-
-  ltf: {
-    available,
-    structure,
-    direction_compatible,
-    confirmation_state,
-    zone_refs,
-    retest_state,
-    retest_time
-  },
-
-  lineage_refs,
-  entry_authorized: false
+WyckoffSnapshot {
+  phase
+  phase_state
+  authority_tf
+  range_ref
+  events[]
+  evidence_refs[]
+  effort_result
+  volume_mode
+  ict_alignment
+  conflict
+  explanation
 }
 ```
 
-Los nombres pueden adaptarse a la implementación, pero la semántica no puede cambiarse sin actualizar este SDD y el contrato/plan relacionados.
-
----
-
-## 7. Estados observacionales
-
-Los estados mínimos son:
+### `phase`
 
 ```text
-NO_LTF_DATA
-WAIT_CONTEXT
-WAIT_LTF_CONFIRMATION
-WAIT_LTF_ZONE
-WAIT_RETEST
-OBSERVABLE_SETUP
+ACCUMULATION
+MARKUP
+DISTRIBUTION
+MARKDOWN
+RANGE_UNCLASSIFIED
+TRANSITION
+UNKNOWN
 ```
 
-### Reglas
-
-`NO_LTF_DATA`:
-- no existe una barra EXEC válida en `as-of(t)`;
-- no debe inventarse confirmación.
-
-`WAIT_CONTEXT`:
-- falta Context State válido o un ancestro necesario no está locked;
-- LTF no puede promover el estado por sí solo.
-
-`WAIT_LTF_CONFIRMATION`:
-- contexto válido;
-- estructura LTF aún no confirma compatibilidad suficiente.
-
-`WAIT_LTF_ZONE`:
-- estructura compatible;
-- no existe una zona FVG/OB/POI canónica activa y tradable/observable.
-
-`WAIT_RETEST`:
-- zona válida;
-- todavía no existe un touch/mitigation/retest canónico observable.
-
-`OBSERVABLE_SETUP`:
-- contexto válido;
-- navegación compatible;
-- estructura LTF compatible;
-- zona canónica resuelta;
-- retest canónico observado según las reglas vigentes;
-- no significa entry ni fill.
-
----
-
-## 8. FVG / OB / Sequence: autoridad y lineage
-
-### 8.1 FVG/OB
-
-LTF no debe convertir columnas arbitrarias del DataFrame en “verdad de zona”. Una zona válida debe resolver a un objeto/ref producido por los detectores canónicos y, cuando corresponda, a su `CausalLink`/lineage.
-
-### 8.2 Sequence
-
-Cuando la tesis/plan requiera secuencia, LTF consume la Sequence canónica. No debe volver a implementar:
+### `phase_state`
 
 ```text
-LIQUIDITY_POOL → SWEEP → DISPLACEMENT → STRUCTURE → OB → FVG → RETEST
+PRO_TREND
+COUNTERTREND
+TRANSITION
+NEUTRAL
 ```
 
-El snapshot puede exponer `sequence_refs` y `depth`, pero la construcción de la cadena pertenece a su fuente canónica.
-
-### 8.3 Zona
-
-Una zona expuesta por LTF debe poder responder:
+### Eventos
 
 ```text
-zone_id
-zone_type
-origin_tf
-candidate_time
-confirmation_time
-tradable_time
-parent_refs
-lineage_refs
-state
+SPRING
+UPTHRUST
+UTAD
+SOS
+SOW
+LPS
+LPSY
+TEST
+FAILED_TEST
+RANGE_BREAK
+EFFORT_RESULT_DIVERGENCE
 ```
 
-### 8.4 Retest
-
-`retest_state` solo puede pasar a observado cuando exista evidencia canónica de touch/mitigation/retest. Un string como `ACTIVE`, por sí solo, no es evidencia de retest.
-
-La implementación conserva `legacy_zone_marker` y `legacy_retest_marker`
-únicamente para auditoría de compatibilidad. Esos campos no pueden llenar
-`zone_refs`, `retest_state` ni promover el snapshot.
-
----
-
-## 9. Integración con AHF
-
-LTF no implementa otra máquina jerárquica. Consume la máquina `engine.ahf`.
-
-La navegación esperada es:
+Cada evento debe contener, como mínimo:
 
 ```text
-WAIT_D1
-  ↓
+event_id
+event_type
+tf
+event_time
+source_ref
+evidence_refs
+confirmation_status
+```
+
+## 5. Definición semántica de la capa
+
+Wyckoff responde:
+
+> “¿Qué proceso de oferta/demanda/rango está describiendo el mercado?”
+
+ICT responde:
+
+> “¿Qué estructura, liquidez, POI y confirmación existen?”
+
+La integración responde:
+
+> “¿La lectura ICT ocurre a favor del proceso Wyckoff, contra él o durante una transición?”
+
+No se exige que ambos sistemas produzcan la misma etiqueta.
+
+## 6. Mapeos autorizados
+
+Estos son **analogías operativas**, no equivalencias matemáticas:
+
+```text
+Spring/reclaim       ↔ liquidity sweep + reclaim
+Spring + Test        ↔ CHOCH/MSS bullish
+SOS                   ↔ bullish displacement/BOS
+LPS                   ↔ pullback/retest hacia POI
+UTAD/rejection       ↔ BSL sweep + bearish rejection
+SOW                   ↔ bearish displacement/BOS
+LPSY                  ↔ bearish pullback/retest
+```
+
+La capa debe conservar qué evidencia pertenece a cada sistema.
+
+## 7. Clasificación ICT/Wyckoff
+
+### `PRO_TREND`
+
+Usar cuando el proceso Wyckoff y la dirección/estructura ICT son compatibles.
+
+Ejemplo:
+
+```text
+D1/H4 bearish
+Wyckoff markdown/distribution
+ICT bearish structure
+```
+
+### `COUNTERTREND`
+
+Usar cuando Wyckoff sugiere acumulación/markup contra un contexto bajista o distribución/markdown contra uno alcista y existe evidencia inicial ICT compatible con la transición.
+
+Ejemplo:
+
+```text
+D1 bearish
+H4 accumulation + Spring/SOS
+H1/M15 bullish confirmation
+```
+
+`COUNTERTREND` nunca autoriza entry.
+
+### `TRANSITION`
+
+Hay indicios de cambio de fase pero la estructura ICT todavía no confirma la nueva dirección.
+
+### `NEUTRAL`
+
+Wyckoff no tiene evidencia suficiente. No se debe inventar sesgo ni penalizar artificialmente la lectura ICT.
+
+## 8. Política de conflicto
+
+```text
+ICT bullish + Wyckoff bearish
+   → conflict = true
+   → phase_state = COUNTERTREND o TRANSITION
+   → mantener direction_hint ICT
+   → esperar/elevar evidencia LTF según plan
+```
+
+No permitido:
+
+```text
+Wyckoff bearish → direction_hint = BEARISH
+Wyckoff bearish → AHF rollback
+Wyckoff bullish → bloquear shorts
+```
+
+Solo AHF puede realizar rollback de una capa superior y solo con evidencia contractual de AHF.
+
+Wyckoff nunca genera `entry_authorized=True`.
+
+## 9. Volumen y esfuerzo/resultado
+
+`tick_volume` de MT5 es evidencia relativa del feed, no volumen centralizado del mercado FX.
+
+```text
+volume_mode = AVAILABLE | UNAVAILABLE | RELATIVE_ONLY
+```
+
+Sin volumen:
+
+```text
+volume_mode = UNAVAILABLE
+```
+
+No se permite fabricar una confirmación de volumen.
+
+ATR, si aparece por la implementación histórica, solo puede servir para normalización de rango/esfuerzo. No puede transformarse en bias/veto. EMA, OTE y Fibonacci están fuera de la capa normativa.
+
+## 10. Integración con LTF
+
+El flujo obligatorio es:
+
+```text
+D1 Context State
+      ↓
+H4 ITF / POI
+      ↓
+H1 context / Sequence
+      ↓
+Wyckoff D1/H4/H1 evidence
+      ↓
+M15 ICT structure
+      ↓
+FVG/OB canonical zone
+      ↓
+touch / retest
+      ↓
+WAIT_* / OBSERVABLE_SETUP
+```
+
+Wyckoff puede aportar:
+
+```text
+phase_state
+conflict
+context explanation
+required evidence level
+```
+
+pero no puede sustituir:
+
+```text
+Context State
+Sequence
+FVG/OB
+lineage
+LTF confirmation
+```
+
+## 11. Integración con AHF
+
+El AHF sigue siendo la única máquina jerárquica:
+
+```text
+WAIT_D1 → D1_LOCKED → WAIT_H4 → H4_LOCKED → WAIT_H1 → WAIT_LTF → SETUP_READY
+```
+
+Wyckoff se ejecuta como lectura dentro del snapshot de la capa activa.
+
+No crear estados padre Wyckoff.
+
+Si Wyckoff detecta transición o conflicto, debe expresarlo en datos:
+
+```text
+wyckoff.conflict
+wyckoff.phase_state
+wyckoff.authority_tf
+```
+
+No escribir directamente:
+
+```text
 D1_LOCKED
-  ↓
-WAIT_H4
-  ↓
 H4_LOCKED
-  ↓
-WAIT_H1
-  ↓
-WAIT_LTF
-  ↓
-SETUP_READY
+WAIT_H4
+WAIT_D1
 ```
 
-Dentro de `WAIT_LTF`, el SDD LTF puede distinguir:
+## 12. PIT
+
+Regla única:
 
 ```text
-WAIT_CONTEXT
-WAIT_LTF_CONFIRMATION
-WAIT_LTF_ZONE
-WAIT_RETEST
-OBSERVABLE_SETUP
+as_of(tf,t) = última vela cerrada con time <= t
 ```
 
-pero esas distinciones no crean estados padres nuevos de AHF.
-
-### Rollback
-
-Ejemplos válidos:
-
-```text
-H1_INVALIDATED → WAIT_H1
-H4_INVALIDATED → WAIT_H4
-D1_INVALIDATED → WAIT_D1
-```
-
-El evento debe conservar:
-
-```text
-state
-active_tf
-parent_state
-transition_event
-transition_time
-invalidation_reason
-```
-
-LTF nunca debe escribir directamente un nuevo `D1_LOCKED` o `H4_LOCKED`.
-
----
-
-## 10. Autoridad de dirección
-
-La dirección LTF se evalúa como **compatibilidad**, no como nuevo bias normativo.
-
-Ejemplo conceptual:
-
-```text
-D1 direction = BULLISH
-H4 constraints = compatible
-LTF trend = BULLISH
-    → compatible
-
-D1 direction = BULLISH
-H4 constraints = compatible
-LTF trend = BEARISH
-    → WAIT_LTF_CONFIRMATION
-```
-
-Un LTF contrario no puede cambiar:
-
-```text
-D1 direction
-H4 locked context
-Context State direction_hint
-```
-
-Si la tesis o AHF requieren una invalidación superior, debe utilizarse el mecanismo superior documentado, no una inversión silenciosa desde LTF.
-
----
-
-## 11. Integridad temporal de la cadena de setup
-
-Para cualquier candidato histórico:
-
-```text
-candidate_time
-≤ confirmation_time
-≤ tradable_time
-≤ ltf_confirmation_time
-≤ retest_time
-```
-
-No se puede considerar un retest anterior a la creación/tradabilidad de la zona.
-
-Si en algún punto la implementación no puede determinar el orden temporal, el snapshot debe degradar a `NO_EVIDENCE`/`WAIT_*` y dejar un finding auditable.
-
----
-
-## 12. No-look-ahead y truncation invariance
+Todo detector Wyckoff debe recibir el prefijo de datos disponible en `t`.
 
 Debe cumplirse:
 
 ```text
-snapshot(prefix_to_t, t)
-==
-snapshot(full_series, t)
+candidate/event/phase confirmation times <= decision_time
 ```
 
-para toda información que pertenezca al pasado de `t`.
-
-Casos obligatorios:
-
-1. agregar futuro solo a HTF;
-2. agregar futuro solo a ITF;
-3. agregar futuro solo a EXEC;
-4. agregar futuro a todos;
-5. reordenamiento equivalente permitido por el contrato de datos.
-
-Una diferencia histórica constituye fallo hasta ser explicada por una regla explícita de snapshot.
-
----
-
-## 13. No duplicación de lógica
-
-La siguiente tabla es normativa:
-
-| Concepto | Fuente única esperada | LTF puede recalcularlo |
-|---|---|---|
-| BOS/CHOCH | `engine.bos` / `engine.plan` | No |
-| Context State | `engine.mtf_navigation` | No |
-| AHF state | `engine.ahf` | No |
-| FVG | detector canónico | No |
-| OB | detector canónico | No |
-| Lineage | `engine.lineage` | No |
-| Sequence | `engine.sequential_events` / fuente canónica | No |
-| Presentación LTF | adaptador LTF | Sí |
-| Estado `WAIT_*` LTF | adaptador según este SDD | Sí |
-
-La capa LTF puede transformar/normalizar datos de esas fuentes, pero no puede redefinir su semántica.
-
----
-
-## 14. Perfil M15 actual
-
-El perfil diario actual es:
+Y:
 
 ```text
-D1  → Context State
-H4  → estructura / POI
-H1  → contexto intermedio / sequence
-M15 → confirmación / zona / retest
+wyckoff(prefix_to_t,t) == wyckoff(full_series,t)
 ```
 
-Esto es un **perfil**, no una regla universal para toda la tesis.
+para campos históricos.
 
-Antes de introducir otro perfil, el agente debe declarar:
+## 13. Fuente única de conceptos
+
+| Concepto | Fuente de autoridad |
+|---|---|
+| BOS/CHOCH | `engine.bos` / `engine.plan` |
+| Context State | `engine.mtf_navigation` |
+| AHF | `engine.ahf` |
+| FVG/OB | detectores canónicos / `MarketObject` |
+| Sequence | `engine.sequential_events` |
+| Lineage | `engine.lineage` |
+| Wyckoff phase/events | `engine/Wyckoff/` después del gate de consolidación |
+| Presentación | `daily_motor` / `brief_lunes.py` |
+
+Si el código legacy y el motor canónico producen estados diferentes, el agente debe detener la promoción, registrar el conflicto y resolver la autoridad documental antes de marcar PASS.
+
+## 14. Migración de legacy
+
+`analysis/wyckoff_agent.py` debe tratarse como fuente candidata/legacy hasta concluir auditoría.
+
+`agents/wyckoff_agent.py` y cualquier `orchestrator` antiguo no pueden seguir siendo la autoridad silenciosa del brief.
+
+Cuando haya consumidores existentes:
 
 ```text
-profile_id
-htf
-itf
-context_tf
-exec_tf
-purpose
-required_data
+legacy import
+   ↓
+compat wrapper
+   ↓
+engine/Wyckoff canonical API
 ```
 
-Y debe ejecutar de nuevo los gates PIT, lineage, determinismo y autoridad de capas.
+Cuando no haya consumidores, eliminar después de documentar la migración.
 
----
+## 15. Seguridad de interfaz
 
-## 15. Datos ausentes y degradación
-
-La ausencia de un TF no permite inventar sustitutos.
-
-Ejemplos:
-
-```text
-M15 ausente
-  → NO_LTF_DATA / modo degradado explícito
-
-FVG/OB ausente
-  → WAIT_LTF_ZONE
-
-Context State ausente
-  → WAIT_CONTEXT
-
-Retest no demostrado
-  → WAIT_RETEST
-```
-
-No se permite convertir `UNKNOWN` en `PASS` mediante defaults silenciosos.
-
----
-
-## 16. Seguridad de interfaz
-
-Este SDD prohíbe que el componente LTF de lectura exponga una ruta de ejecución. No debe generar ni aceptar como salida normativa:
+El componente LTF/Wyckoff no debe exponer:
 
 ```text
 order
@@ -517,145 +381,85 @@ sizing
 entry_authorized=True
 ```
 
-`OBSERVABLE_SETUP` no es una señal de broker.
+`OBSERVABLE_SETUP`, `PRO_TREND` y `COUNTERTREND` son estados de lectura.
 
----
+## 16. Tests obligatorios
 
-## 17. Tests obligatorios
+### Inventario/migración
 
-### PIT
+- cero imports funcionales a una implementación duplicada;
+- wrappers legacy comprobados;
+- todos los consumidores identificados.
+
+### Wyckoff
+
+- fase con ventanas sintéticas;
+- Spring/Upthrust;
+- SOS/SOW;
+- LPS/LPSY;
+- esfuerzo/resultado;
+- ausencia de volumen;
+- autoridad temporal.
+
+### Integración
+
+- Context State → Wyckoff → LTF;
+- PRO_TREND;
+- COUNTERTREND;
+- TRANSITION;
+- NEUTRAL;
+- conflicto sin mutar direction_hint;
+- AHF sin segunda FSM;
+- retest/lineage intactos.
+
+### PIT/determinismo
 
 - future-only HTF;
 - future-only ITF;
-- future-only EXEC;
+- future-only M15;
 - future-all;
-- comparación exacta de snapshots históricos.
+- prefix invariance;
+- mismo dataset+commit+config → mismo snapshot.
 
-### Autoridad
+## 17. Observabilidad
 
-- LTF contrario no cambia el bias heredado;
-- M5/M1 no reescriben D1/H4;
-- rollback solo por AHF;
-- `SETUP_READY` no crea orden.
-
-### Lineage
-
-- toda zona resuelve a objeto;
-- todo retest resuelve a zona/POI padre;
-- cero ciclos;
-- cero links a futuro;
-- timestamps monotónicos.
-
-### Retest
-
-- zona sin touch → espera;
-- touch no canónico → no promoción;
-- retest canónico + contexto compatible → observable;
-- invalidación superior → rollback.
-
-### Determinismo
-
-Mismo dataset + commit + configuración → mismo snapshot.
-
-La salida del adaptador se normaliza a tipos JSON, ordena referencias y
-expone los cuatro `asof_times_by_tf` del perfil diario.
-
-### API
-
-El test debe fallar si aparece `entry_authorized=True` o una ruta de `order/fill/sizing`.
-
----
-
-## 18. Observabilidad y auditoría
-
-Cada snapshot debe permitir reconstruir:
+El brief debe poder explicar:
 
 ```text
-HTF
-  direction/location/regime
+HTF:
+  direction / location / regime
 
-ITF
-  structure/POI
+ITF:
+  structure / POI
 
-Sequence
-  depth/refs
+Wyckoff:
+  phase / phase_state / authority_tf
+  events / evidence / conflict
 
-LTF
-  structure/confirmation/zone/retest/status
+Sequence:
+  depth / refs
 
-AHF
-  state/active_tf/parent_state/transition_event
+LTF:
+  structure / zone / retest / status
 ```
 
-Cuando falte evidencia, el sistema debe conservar el vacío y la causa. No se permiten explicaciones retroactivas.
+Si falta evidencia, usar `UNKNOWN`, `NEUTRAL` o `WAIT_*` con causa. Nunca rellenar huecos para producir una lectura más convincente.
 
----
+## 18. Gate de aceptación
 
-## 19. Gates de aceptación
+`PASS` solo cuando:
 
-### Gate LTF-1
+1. inventario de código/documentación/historia completo;
+2. `engine/Wyckoff/` o equivalente es la única autoridad runtime;
+3. biblioteca `docs/wyckoff/**` conserva y documenta el conocimiento;
+4. `WyckoffSnapshot` se integra al snapshot LTF sin segundo motor;
+5. `authority_tf` explícito;
+6. PRO_TREND/COUNTERTREND/TRANSITION/NEUTRAL reproducibles;
+7. conflictos transparentes y no bloqueantes por defecto;
+8. cero look-ahead;
+9. lineage/timestamps resolubles;
+10. tests de migración/integración/PIT/determinismo PASS;
+11. brief semanal+diario muestra la capa;
+12. worklog final y commits trazables.
 
-PASS cuando:
-
-- snapshot serializable;
-- PIT probado;
-- `entry_authorized=False`;
-- integración del brief sin lógica paralela;
-- determinismo sintético.
-
-**Avance verificado:** los tests sintéticos de `tests/test_daily_motor.py`
-cubren schema, futuro HTF/ITF/EXEC, serialización, determinismo, autoridad
-LTF, zona canónica y retest. `MTFNavigator` ya se consume como `context_state`
-autoritativo y `tests/test_ltf_canonical_feed.py` cubre prefijo, detectores
-canónicos y touch posterior a tradable. El gate LTF-1 sigue pendiente de
-evidencia histórica versionada y caller AHF productivo.
-
-### Gate LTF-2
-
-PASS cuando:
-
-- FVG/OB son objetos canónicos;
-- `active_zone_refs` resuelven;
-- candidate/confirmation/tradable son temporales;
-- retest proviene de estado canónico;
-- Sequence/lineage son trazables;
-- cero duplicación de FSM.
-
-**Avance verificado:** el brief MT5 ejecuta el adaptador canónico de FVG/OB,
-relaciones y `engine.sequential_events`; el gate sigue abierto hasta cerrar
-POI ITF, lineage completo y evidencia histórica.
-
-### Gate LTF-3
-
-PASS cuando:
-
-- LTF consume AHF;
-- rollback es determinista;
-- parent state e invalidation reason quedan registrados;
-- LTF no reescribe ancestros.
-
-### Gate LTF-4
-
-PASS cuando:
-
-- perfil histórico D1→H4→H1→M15 reproducible;
-- truncation invariance PASS;
-- cero PIT violations;
-- cobertura de estados documentada;
-- reporte versionado.
-
-### Gate LTF-5
-
-No se abre hasta que LTF-4 esté PASS y existan datos M5/M1 suficientes y versionados.
-
----
-
-## 20. Estado de cierre
-
-**Estado actual:** `LTF-READING IMPLEMENTADA / LTF-1 EN PROGRESO / LTF-2 INTEGRACIÓN INICIAL / LTF-3..4 PENDIENTES`.
-
-Este estado no implica fallo del motor. Significa que el adaptador existe, pero aún no tiene toda la evidencia requerida para declararse un componente LTF canónico completo según la tesis.
-
-**Criterio final:** LTF Reading queda cerrada solo cuando la lectura `Context State → ITF POI → LTF structure → zone → retest` es íntegramente trazable, PIT, determinista y subordinada a AHF.
-
-La ejecución (`entry/SL/TP/fill`) requiere otro SDD y otro gate.
+**Este PASS es de arquitectura/lectura. No demuestra edge, PnL ni rentabilidad.**

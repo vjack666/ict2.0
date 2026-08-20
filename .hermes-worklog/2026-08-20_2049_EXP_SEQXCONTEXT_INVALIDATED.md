@@ -179,3 +179,36 @@ funnel 20Y usan el OUTPUT FINAL de run_sequential (no afectado). Requiere trabaj
 BITACORA motor: el fix C, B-mejorada y limite grande NO alcanzaron 0 violaciones en
 el test causal del navigator (15/15). La raiz es el motor de secuencias, no el indexado.
 El EXP lo compensa con PIT-dentro-del-rango.
+
+## [AISLAMIENTO DE RAIZ — diag_seq_root_isolate.py]
+
+Test dirigido (scripts/diag_seq_root_isolate.py): para barras t muestreadas (100..1400),
+comparar ATOMOS en t entre run_sequential(FULL) y run_sequential(PREFIX hasta t).
+
+RESULTADO: los atomos en t (sweeps/displ/structs/obs/fvgs) SON IDENTICOS FULL vs PREFIX
+en todas las barras muestreadas. Ej t=200 -> (0,0,1,0,0) en ambos; t=300 -> (0,0,0,1,0)
+en ambos.
+
+CONCLUSION: la raiz NO esta en _detect_atomics / _build_eq_pools / _causal_swings
+(la hipotesis de que los atomos miran adelante QUEDA REFUTADA por evidencia). Los atomos
+son causales. La divergencia de cadenas (FULL 0 cadenas con nodos <=853 vs PREFIX 39) esta
+en la LOGICA DE CADENA (bucle 428-593) o en _build_eq_pools con confirmacion de swings a
+la derecha (pivot en i requiere swing_right barras a la derecha; en PREFIX corto el pivot
+no se confirma -> el PREFIX deberia tener MENOS atomos, pero el diag de raiz uso PREFIX
+hasta t con margen y no lo capturo). Falta pinpoint exacto en la barra del leakage (853).
+
+PENDIENTE: comparar POOLS y atomos en t=853 exacto (FULL vs PREFIX=iloc[:854]) para
+decidir si la raiz es _build_eq_pools/swings (confirmacion a derecha) o estado acumulado
+de open_chains.
+
+## [EXCEPCION Y AUTORIZADA — motor run_sequential PIT-stable]
+
+Ruben aprobo excepcion Y: modificar run_sequential EXCLUSIVAMENTE para eliminar dependencia
+del futuro (PIT-stable). Frontera: NO modificar para buscar edge. Plan de 3 fases:
+- FASE 1: aislar raiz exacta + corregir en rama engine-seq-v2-causal.
+- FASE 2: revalidar funnel 20Y / distribucion / COMPLETE / depth en v2.
+- FASE 3: re-ejecutar EXP-v2 (motor causal + context causal + outcome futuro).
+
+Ramas: engine-seq-v1 (baseline actual, conservar) / engine-seq-v2-causal (correccion).
+Mantener EXP-v1 (PIT por prefix, NO-EDGE) y producir EXP-v2 para responder:
+"¿el NO-EDGE era del Context State o consecuencia de la representacion anterior de S?".

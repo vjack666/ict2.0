@@ -29,6 +29,9 @@ La salida versionada queda en [`docs/briefs/brief_2026-08-20.md`](../../docs/bri
   `1.16721`.
 - Context State: `BULLISH`, location `PREMIUM`, fuente
   `engine.mtf_navigation.MTFNavigator`.
+- Wyckoff D1: fase `DISTRIBUTION`, `phase_state=COUNTERTREND`,
+  `authority_tf=D1`, `ict_alignment=CONFLICT`. Esta capa agrega contexto y no
+  cambia el `direction_hint` ICT.
 - Snapshot diario: D1/H4/H1/M15 con `asof_time` independiente.
 - Sequence canónica: disponible, `200 refs`, profundidad máxima `4`.
 - Zonas canónicas M15: `411` objetos consumidos por el snapshot; marcadores

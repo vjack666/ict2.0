@@ -317,6 +317,41 @@ def _sequence_payload(sequence_snapshot: Any) -> dict[str, Any]:
     return {"available": bool(raw), "refs": sorted({str(ref) for ref in refs}), "depth": int(depth)}
 
 
+def _wyckoff_payload(wyckoff_snapshot: Any) -> dict[str, Any]:
+    """Conserva Wyckoff como evidencia especializada, nunca como veto."""
+    raw = wyckoff_snapshot.to_dict() if hasattr(wyckoff_snapshot, "to_dict") else wyckoff_snapshot
+    if not isinstance(raw, Mapping) or not raw:
+        return {
+            "available": False,
+            "phase": "UNKNOWN",
+            "phase_state": "NEUTRAL",
+            "authority_tf": None,
+            "events": [],
+            "evidence_refs": [],
+            "volume_mode": "UNAVAILABLE",
+            "ict_alignment": "UNRESOLVED",
+            "conflict": False,
+            "explanation": "wyckoff_snapshot_unavailable",
+        }
+    return {
+        "available": True,
+        "phase": raw.get("phase", "UNKNOWN"),
+        "phase_state": raw.get("phase_state", "NEUTRAL"),
+        "authority_tf": raw.get("authority_tf"),
+        "events": raw.get("events", []) or [],
+        "range_ref": raw.get("range_ref", {}),
+        "evidence_refs": sorted({str(ref) for ref in raw.get("evidence_refs", []) or []}),
+        "effort_result": raw.get("effort_result", {}),
+        "volume_mode": raw.get("volume_mode", "UNAVAILABLE"),
+        "ict_alignment": raw.get("ict_alignment", "UNRESOLVED"),
+        "conflict": bool(raw.get("conflict", False)),
+        "explanation": raw.get("explanation", ""),
+        "layers": raw.get("layers", {}),
+        "decision_time": raw.get("decision_time"),
+        "policy": raw.get("policy", "WYCKOFF_CONTEXT_ONLY_NOT_ENTRY"),
+    }
+
+
 def build_daily_motor_snapshot(
     frames: Mapping[str, pd.DataFrame],
     decision_time: Any = None,
@@ -327,6 +362,7 @@ def build_daily_motor_snapshot(
     navigation_snapshot: Any = None,
     context_snapshot: Mapping[str, Any] | None = None,
     context_state: Any = None,
+    wyckoff_snapshot: Any = None,
 ) -> dict[str, Any]:
     """Build a closed-only, canonical daily context + LTF snapshot.
 
@@ -354,6 +390,7 @@ def build_daily_motor_snapshot(
         "navigation": _navigation_payload(navigation_snapshot, config),
         "context": {"allowed": False, "reason": "invalid_decision_time", "stack": {}},
         "sequence": _sequence_payload(sequence_snapshot),
+        "wyckoff": _wyckoff_payload(wyckoff_snapshot),
         "lineage_refs": [],
         "ltf": {"tf": config.exec_tf, "available": False, "zone_refs": [], "retest_state": "NO_ZONE"},
     }
@@ -485,6 +522,7 @@ def build_daily_motor_snapshot(
         "decision_time": _timestamp_text(tt),
         "asof_times_by_tf": {tf: _timestamp_text(_closed_time(frames.get(tf), tt)) for tf in config.tfs},
         "navigation": navigation,
+        "wyckoff": _wyckoff_payload(wyckoff_snapshot),
         "direction": direction,
         "direction_label": want,
         "context": {

@@ -7,6 +7,17 @@
 **Contratos:** `docs/contratos/CONTRATO_MULTI_TF_LAYERS.md`, `docs/contratos/CONTRATO_AHF.md`, `docs/contratos/CONTRATO_CONTEXT_STATE.md`  
 **SDD:** `docs/tesis/SDD_LTF_ENTRY_LAYER.md`
 
+## Estado de implementación Wyckoff
+
+| Fase | Estado | Evidencia |
+|---|---|---|
+| WYCKOFF-0 Inventario | `PASS` | `reports/audits/wyckoff_runtime_inventory_2026-08-20.md` |
+| WYCKOFF-1 Runtime | `IN PROGRESS` | `engine/Wyckoff/` creado; wrappers legacy aún tienen consumidores |
+| WYCKOFF-2 LTF/MTF | `IN PROGRESS` | `daily_motor` y `brief_lunes.py` consumen `WyckoffSnapshot` |
+| WYCKOFF-3 Clasificación ICT | `IN PROGRESS` | PRO_TREND/COUNTERTREND y conflicto probados; transición/neutral requieren cobertura ampliada |
+| WYCKOFF-4 Retest | `PARTIAL` | snapshot Wyckoff convive con zona/retest canónicos; lineage completo pendiente |
+| WYCKOFF-5 Histórico/MT5 | `PENDING` | falta evidencia versionada con la nueva capa |
+
 ## Objetivo rector
 
 Construir una sola lectura ICT/MTF/LTF en la que Wyckoff sea una **capa especializada de lectura**. No se crea un segundo motor, segunda FSM, segundo Context State ni segundo sistema de señales.

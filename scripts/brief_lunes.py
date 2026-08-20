@@ -225,6 +225,7 @@ def build_symbol_section(sym, feats, last_dates):
     from engine.daily_motor import build_daily_motor_snapshot
     from engine.ltf_canonical_feed import build_ltf_canonical_feed
     from engine.mtf_navigation import MTFNavigator, NavigatorConfig
+    from engine.Wyckoff import build_wyckoff_snapshot
     decision_time = last_dates.get("M15")
     nav_frames = {tf: frame for tf, frame in feats.items() if frame is not None}
     market_state = None
@@ -241,12 +242,20 @@ def build_symbol_section(sym, feats, last_dates):
         symbol=sym,
         include_sequence=True,
     ) if decision_time is not None else {"zones": {"M15": []}, "sequence": {"available": False, "refs": [], "depth": 0}}
+    wyckoff_read = build_wyckoff_snapshot(
+        nav_frames,
+        decision_time=decision_time,
+        context_state=market_state,
+        authority_tf="D1",
+        layers=("D1", "H4", "H1", "M15"),
+    ) if decision_time is not None else None
     ltf_read = build_daily_motor_snapshot(
         feats,
         decision_time=decision_time,
         context_state=market_state,
         canonical_zones=canonical_feed.get("zones"),
         sequence_snapshot=canonical_feed.get("sequence"),
+        wyckoff_snapshot=wyckoff_read,
     )
     ltf = ltf_read.get("ltf", {})
     ctx = ltf_read.get("context", {})
@@ -257,6 +266,14 @@ def build_symbol_section(sym, feats, last_dates):
         f"fuente=`{ctx.get('source', 'n/a')}`"
     )
     lines.append(f"- **Sesgo diagnóstico legacy:** `{bias}` (fuente {src}) · D1={per_tf['D1']} H4={per_tf['H4']} H1={per_tf['H1']}")
+    wyckoff = ltf_read.get("wyckoff", {})
+    lines.append(
+        f"- **Wyckoff:** fase=`{wyckoff.get('phase', 'UNKNOWN')}` · "
+        f"estado=`{wyckoff.get('phase_state', 'NEUTRAL')}` · "
+        f"authority_tf=`{wyckoff.get('authority_tf', '—')}` · "
+        f"alignment=`{wyckoff.get('ict_alignment', 'UNRESOLVED')}`"
+    )
+    lines.append(f"- Wyckoff conflicto: `{wyckoff.get('conflict', False)}` · `{wyckoff.get('explanation', 'n/a')}`")
     week = current_week_summary(f_m15)
     if week:
         lines.append("### Semana en curso (OHLC del mismo feed MT5)")

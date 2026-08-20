@@ -9,6 +9,11 @@
 **Contratos:** `CONTRATO_MULTI_TF_LAYERS.md`, `CONTRATO_AHF.md`, `CONTRATO_CONTEXT_STATE.md`  
 **Biblioteca Wyckoff:** `docs/reglas/WYCKOFF_RULEBOOK.md`, `docs/wyckoff/**`
 
+**Estado de implementación:** `WYCKOFF-0 PASS / WYCKOFF-1..2 IN PROGRESS /
+WYCKOFF-3..4 PARTIAL / WYCKOFF-5 PENDING`. La evidencia de inventario está en
+`reports/audits/wyckoff_runtime_inventory_2026-08-20.md`; este estado no es un
+PASS final del motor.
+
 ## 1. Propósito
 
 Definir una única lectura top-down ICT/MTF/LTF en la que Wyckoff sea una capa especializada de interpretación del proceso de mercado.
@@ -345,7 +350,7 @@ para campos históricos.
 | FVG/OB | detectores canónicos / `MarketObject` |
 | Sequence | `engine.sequential_events` |
 | Lineage | `engine.lineage` |
-| Wyckoff phase/events | `engine/Wyckoff/` después del gate de consolidación |
+| Wyckoff phase/events | `engine/Wyckoff/` |
 | Presentación | `daily_motor` / `brief_lunes.py` |
 
 Si el código legacy y el motor canónico producen estados diferentes, el agente debe detener la promoción, registrar el conflicto y resolver la autoridad documental antes de marcar PASS.

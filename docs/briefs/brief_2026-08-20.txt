@@ -1,4 +1,4 @@
-# BRIEF DE LECTURA ICT/WYCKOFF — generado 2026-08-20 12:05 (Ecuador)
+# BRIEF DE LECTURA ICT/WYCKOFF — generado 2026-08-20 13:23 (Ecuador)
 
 > **AVISO:** mapa de contexto, NO señal ejecutable. Motor de señales en construcción (v30).
 > Datos: `data/raw/*.parquet` (corte 2026-08-20, actualizado vía MT5 en vivo). El Context State normativo proviene de `MTFNavigator`; `trend` es diagnóstico legacy.
@@ -14,6 +14,8 @@
 
 - **Context State:** `BULLISH` · location=`PREMIUM` · fuente=`engine.mtf_navigation.MTFNavigator`
 - **Sesgo diagnóstico legacy:** `BULLISH` (fuente D1+H4) · D1=BULLISH H4=BULLISH H1=BEARISH
+- **Wyckoff:** fase=`DISTRIBUTION` · estado=`COUNTERTREND` · authority_tf=`D1` · alignment=`CONFLICT`
+- Wyckoff conflicto: `True` · `Wyckoff opuesto al contexto ICT con evidencia inicial de transición`
 ### Semana en curso (OHLC del mismo feed MT5)
 - Ventana: `2026-08-17T00:00:00+00:00` → `2026-08-20T17:00:00+00:00` · barras M15=`357`
 - Open `1.15619` · High `1.17106` · Low `1.15614` · Close `1.16721`
@@ -49,7 +51,7 @@
 ### Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS)
 - Sesgo alcista pero precio en PREMIUM: NO comprar aquí. Esperar retracción a DISCOUNT antes de buscar long.
 
-*sección generada en 11.7s*
+*sección generada en 9.7s*
 
 ---
-*Generado por scripts/brief_lunes.py en 20.0s. La capa de ejecución (entry/SL/TP) está fuera del alcance de esta lectura; ver docs/tesis/PLAN_LTF_ENTRY_LAYER.md para el límite de responsabilidad.*
+*Generado por scripts/brief_lunes.py en 17.1s. La capa de ejecución (entry/SL/TP) está fuera del alcance de esta lectura; ver docs/tesis/PLAN_LTF_ENTRY_LAYER.md para el límite de responsabilidad.*

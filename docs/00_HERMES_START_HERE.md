@@ -14,14 +14,14 @@ Si recibes la orden **"comienza el plan"**, ejecuta exclusivamente el trabajo de
 Lee y respeta, en este orden:
 
 1. `docs/00_HERMES_START_HERE.md` — punto de entrada operativo.
-2. `docs/CONTRATO_HERMES_FVG_OB.md` — definición contractual de DONE.
+2. `docs/contratos/CONTRATO_HERMES_FVG_OB.md` — definición contractual de DONE.
 3. `docs/PLAN_HERMES_FVG_OB.md` — fases y gates.
 4. `docs/SDD_FVG_OB_ARCHITECTURE_MAP.md` — mapa de arquitectura y archivos afectados.
 5. `docs/SDD_FVG_OB_ENGINE.md` — diseño técnico.
 6. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
 7. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
 8. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
-9. `docs/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
+9. `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
 
 La tesis ICT vigente y sus enmiendas tienen autoridad superior sobre cualquier documento de implementación. **OTE queda fuera del alcance.**
 
@@ -182,7 +182,7 @@ Al recibir **"comienza el plan"**:
 1. leer este documento;
 2. leer contrato, plan y SDD;
 3. comprobar `.hermes-index.md` y último worklog;
-4. leer `docs/AUDITORIA_FASE0_FVG_OB.md` y sus decisiones;
+4. leer `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` y sus decisiones;
 5. comprobar que Fase 0 esté marcada como `COMPLETADA` en el índice;
 6. ejecutar únicamente la siguiente fase autorizada por `.hermes-index.md`;
 7. documentar y cerrar el gate antes de avanzar.

@@ -423,7 +423,7 @@ Su función es comprobar que, antes del backtest, el motor sabe **navegar, esper
 
 ```text
 reports/audits/ahf_temporal_navigation.json
-docs/AUDITORIA_TEMPORAL_AHF_MTF.md
+AUDITORIA_TEMPORAL_AHF_MTF.md
 ```
 
 ## 15. Gate antes de backtest

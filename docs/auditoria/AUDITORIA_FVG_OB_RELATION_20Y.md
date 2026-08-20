@@ -84,7 +84,7 @@ Sí había razón para re-correr: el motor **sí cambió** (nuevo `relate_fvg_ob
 ## 6. Artefactos
 
 ```
-docs/AUDITORIA_FVG_OB_RELATION_20Y.md
+AUDITORIA_FVG_OB_RELATION_20Y.md
 reports/audits/fvg_ob_funnel.json          # sobrescrito con relación 20Y
 data/metadata/EURUSD_20Y.json
 ```

@@ -4,7 +4,7 @@
 **Comando gatillo exacto:** `ejecuta auditoria temporal`
 **Dataset:** EURUSD 20Y de `datasets/eurusd_dukascopy_20y/` (2006–2025), con SHA256/metadata del snapshot versionado.
 **Auditor canónico:** `audits/codigo/ahf_temporal_navigation_audit.py`
-**SDD relacionado:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`, `docs/CONTRATO_AHF.md`, `docs/AUDITORIA_TEMPORAL_AHF_MTF.md`
+**SDD relacionado:** `docs/SDD_CONTEXT_STATE_MTF_NAVIGATION.md`, `docs/contratos/CONTRATO_AHF.md`, `docs/auditoria/AUDITORIA_TEMPORAL_AHF_MTF.md`
 
 ## 1. Regla de ejecución
 

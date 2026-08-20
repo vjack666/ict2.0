@@ -149,7 +149,7 @@ Artefacto: `data/metadata/funnel_audit_H1_H4_D1.json`
 ## 8. Archivos de evidencia
 
 ```
-docs/AUDITORIA_FUNNEL_EURUSD_H1_H4_D1.md          ← este documento
+AUDITORIA_FUNNEL_EURUSD_H1_H4_D1.md          ← este documento
 data/metadata/EURUSD_H1_H4_D1.json                ← integridad OHLC
 data/metadata/funnel_audit_H1_H4_D1.json          ← conteos del funnel
 data/raw/EURUSD/EURUSD_{H1,H4,D1}.parquet         ← data (gitignored)

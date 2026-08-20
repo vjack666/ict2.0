@@ -9,7 +9,7 @@
 
 ## 1. Precisión sobre la evidencia interna (obligatoria)
 
-El experimento multi-factor H1 20Y (**congelado**: `docs/EXP_MULTIFACTOR_H1_20Y.md`) midió:
+El experimento multi-factor H1 20Y (**congelado**: `experimentos/EXP_MULTIFACTOR_H1_20Y.md`) midió:
 
 ```text
 alineación EMA20/50 H4+D1 + FVG → outcome +24 H1  ≈ 50% (a veces peor)

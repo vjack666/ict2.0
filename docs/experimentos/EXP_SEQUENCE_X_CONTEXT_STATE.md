@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-19  
 **Estado:** EJECUTADO (Grok cloud)  
 **Pregunta:** ¿La misma secuencia tiene una distribución de resultados distinta según Context State?  
-**Contrato:** `docs/CONTRATO_CONTEXT_STATE.md`  
+**Contrato:** `../contratos/CONTRATO_CONTEXT_STATE.md`  
 **Driver:** `scripts/exp_sequence_x_context_state.py`  
 **Artefacto:** `reports/audits/exp_sequence_x_context_state_H1_20Y.json`
 

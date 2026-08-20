@@ -108,7 +108,7 @@ Las densidades FVG/OB en 20Y son estables y utilizables como baseline de poblaci
 ## 8. Artefactos
 
 ```
-docs/AUDITORIA_A0_A9_FVG_OB_20Y.md          ← este documento
+AUDITORIA_A0_A9_FVG_OB_20Y.md          ← este documento
 reports/audits/A0_A9_audit_stack.json
 reports/audits/A0_real_20Y.json
 reports/audits/fvg_ob_funnel.json

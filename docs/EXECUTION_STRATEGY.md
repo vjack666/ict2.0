@@ -13,128 +13,110 @@
 | Liviano (A0-A9 audit <1s, smoke tests, lectura de archivos, commits, `git pull/push`, edición de docs/código) | **Local** — PC de Ruben (20 vCPU / 16 GB RAM) | Hermes, autónomamente |
 | Pesado (Funnel 20Y, TNA 20Y, backtest, walk-forward, experimentos pandas/sklearn grandes sobre EURUSD 20Y) | **Grok** — servidores de la nube del Director | Usuario, tras aviso de Hermes |
 
-**La nube manda.** Cuando hay que correr un proceso pesado, Hermes AVISA en el chat;
-el usuario lo lleva al chat de Grok. Nada pesado se corre local ni en AWS.
+**La nube manda.** Cuando hay que correr un proceso pesado, Hermes AVISA en el chat; el usuario lo lleva al chat de Grok. Nada pesado se corre local ni en AWS.
 
 ---
 
 ## 2. Por qué (traza)
 
-- Se evaluó AWS EC2 `t4g.small` (cuenta nueva free-tier post-2025-07-15). Se creó la
-  cuenta y el IAM user `hermes-ict2-0`, pero se **descartó EC2**.
-- Evidencia del benchmark local (`reports/audits/benchmark_spayk.json`, host `spayk`,
-  20 cores / 16.8 GB):
-  - A0-A9 audit: **0.12 s** (liviano, local).
-  - AHF_TEMPORAL (TNA 20Y): **TIMEOUT 1800 s** tanto en 1 como en 20 cores → el cuello
-    es **serial** (`run_timeline` procesa 139k barras H1 una por una), no paralelo.
-    `t4g.small` (2 vCPU/2 GB) no habría acelerado nada.
+- Se evaluó AWS EC2 `t4g.small` y se **descartó EC2**.
+- Evidencia del benchmark local (`reports/audits/benchmark_spayk.json`, host `spayk`, 20 cores / 16.8 GB): A0-A9 audit ~0.12 s; AHF_TEMPORAL serial llegó a timeout de 1800 s antes del parche de navegación.
+- El motor `engine/mtf_navigation.py` recibió posteriormente una optimización O(n) de precompute; la regresión publicada reporta equivalencia bit-exact frente al motor anterior en 600 layer-checks.
 - Grok ya dispone de servidores en la nube → es el canal de procesamiento pesado acordado.
-- Ver `docs/AWS_EXECUTION_HOST.md` (marcado **DESCARTADO**) para la traza completa de la
-  evaluación AWS.
+- Ver `docs/AWS_EXECUTION_HOST.md` (marcado **DESCARTADO**) para la traza completa de la evaluación AWS.
 
 ---
 
 ## 3. Criterio liviano vs pesado (operativo)
 
-- **Liviano:** termina en segundos. A0-A9 (`audits/codigo/bootstrap`), tests unitarios,
-  import smoke, edición/commit de docs y código, `git pull/push`. → **Local**.
-- **Pesado:** procesa el dataset EURUSD 20Y (D1/H4/H1; ~139k barras H1) o corre
-  modelos/backtests/walk-forward. Benchmark midió AHF_TEMPORAL en 1800s sin terminar → pesado.
-  → **Grok**.
+- **Liviano:** termina en segundos. Smoke tests, lectura de archivos, edición/commit de docs y código, `git pull/push`. → **Local**.
+- **Pesado:** procesa el dataset EURUSD 20Y (D1/H4/H1; ~139k barras H1) o corre TNA/backtests/walk-forward/experimentos grandes. → **Grok**.
 
 ---
 
-## 4. PROCEDIMIENTO COMPLETO PARA GROK (copy-paste ready)
+## 4. Procedimiento para Grok
 
-Cuando Hermes avisa "toca correr X pesado", seguí estos pasos:
+### A — Preparar entorno
 
-### Paso A — Preparar el entorno en Grok
-
-Pegá esto en el chat de Grok (contexto inicial, una sola vez por sesión):
-
-```
+```text
 Trabajando en ICT 2.0 (repo github.com/vjack666/ict2.0). Es un motor de trading ICT/SMC
-en Python 3.11+. Necesito correr un proceso pesado sobre EURUSD 20Y. El dataset está en
-data/raw/EURUSD/ como parquet (EURUSD_D1/H4/H1.parquet) o en datasets/eurusd_dukascopy_20y/
-como CSV versionado (SHA256 en SHA256SUMS). Usá pandas 3.x. NO calcules PnL ni emitas
-entradas: estas auditorías miden navegación/estructura, no edge. Devolveme (1) resumen
-en este chat y (2) un informe JSON detallado + métricas para subir a GitHub en
-reports/audits/<nombre>.json.
+Python 3.11+. Necesito correr un proceso pesado sobre EURUSD 20Y. El dataset está en
+data/raw/EURUSD/ o en datasets/eurusd_dukascopy_20y/ como snapshot versionado.
+NO calcules PnL ni emitas entradas salvo que el plan/SDD de la tarea lo autorice
+explícitamente. Devuélveme resumen, JSON detallado y evidencia de commit/dataset.
 ```
 
-### Paso B — Clonar / traer el repo en Grok
+### B — Traer repo
 
-```
+```bash
 git clone https://github.com/vjack666/ict2.0.git
 cd ict2.0
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Paso C — Asegurar el dataset 20Y
+### C — Verificar dataset
 
-- Si Grok no tiene el parquet: descargalo del repo o subí `EURUSD_*.parquet` desde tu PC
-  a la sesión de Grok. El driver `scripts/tna_audit_runner.py` carga `data/raw/EURUSD/*.parquet`.
-- Verificá integridad contra `datasets/eurusd_dukascopy_20y/SHA256SUMS` si usás los CSV.
+Verificar `datasets/eurusd_dukascopy_20y/SHA256SUMS` y `metadata.json` cuando la tarea use el snapshot 20Y. No sustituir silenciosamente el dataset por otro.
 
-### Paso D — Correr el driver pesado
+### D — Drivers canónicos actuales
 
-Para **TNA 20Y** (AHF temporal, 2 gates):
+**Funnel 20Y ya cerrado.** No volver a ejecutarlo salvo que una nueva evidencia o cambio de código lo requiera. La ejecución histórica usó el runner versionado:
 
-```
-. .venv/bin/activate
-python scripts/tna_audit_runner.py
-# Salida: reports/audits/ahf_temporal_navigation_20Y.json + .md
+```bash
+python scripts/grok_run_funnel_20y_full.py
 ```
 
-Para **Funnel 20Y** (FVG/OB + secuencia + MTF, sin PnL):
+Ese runner orquesta FVG/OB + Sequence + MTF dense con `sample_every=100`. El artifact canónico es `reports/audits/mtf_seq_funnel.json` y está protegido por assert CI. `audits/codigo/mtf_seq_funnel.py` contiene funciones canónicas, pero no debe confundirse con el orquestador pesado que produjo el artifact.
 
+**TNA 20Y:** el trace estratificado ya tiene PASS de integridad; el behavioral/full-span sigue pendiente. El driver pesado actual es:
+
+```bash
+python scripts/tna_20y_parallel.py
 ```
-. .venv/bin/activate
-python -m audits.codigo.mtf_seq_funnel
-# Salida: reports/audits/mtf_seq_funnel.json
-```
 
-### Paso E — Grok devuelve
+No interpretar el PASS de trace como edge ni como autorización de backtest.
 
-1. **Resumen en el chat** de Grok (estado de gates, números clave).
-2. **Informe detallado** (`reports/audits/<nombre>.json` + `.md`) → el usuario lo sube a
-   GitHub (`git add reports/audits/... && git commit && git push`) o se lo pasa a Hermes
-   para que lo guarde en la PC.
+**Backtest / walk-forward:** bloqueado hasta cerrar la pila pre-backtest requerida.
 
-### Paso F — Hermes sincroniza a la PC
+### E — Entrega
 
-```
+Toda ejecución pesada debe devolver:
+
+1. resumen de gates;
+2. JSON/Markdown versionado;
+3. commit/dataset/hash usados;
+4. cualquier limitación de cobertura (p. ej. muestra estratificada vs full-span).
+
+### F — Sincronización
+
+```bash
 git pull origin main
 ```
-
-El informe queda en `C:\Users\v_jac\Desktop\ICT SYSTEM\reports\audits\`.
 
 ---
 
 ## 5. Estado de trabajos pesados
 
-| Job | Driver | Estado |
+| Job | Estado | Fuente de verdad |
 | --- | --- | --- |
-| TNA 20Y (AHF temporal, gates TNA-TRACE-INTEGRITY + TNA-BEHAVIORAL) | `scripts/tna_audit_runner.py` | **PENDIENTE GROK** |
-| Funnel 20Y (FVG/OB + secuencia + MTF nav, no PnL) | `audits/codigo/mtf_seq_funnel.py` | PENDIENTE GROK (al tocar) |
-| Backtest / Walk-forward | por definir | **BLOQUEADO** hasta A0-A9 + Funnel + TNA |
+| Funnel 20Y FVG/OB + Sequence + MTF | **CERRADO — PASS + GATE CI** | `reports/audits/mtf_seq_funnel.json` + worklog 2026-08-20 |
+| TNA temporal AHF/MTF — TRACE | **PASS estratificado** | `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` |
+| TNA temporal AHF/MTF — BEHAVIORAL/full-span | **PENDIENTE** | plan TNA + `scripts/tna_20y_parallel.py` |
+| SEQUENCE × CONTEXT STATE | **INSUFFICIENT_N** | `reports/audits/exp_sequence_x_context_state_H1_20Y.json` |
+| Backtest / Walk-forward | **BLOQUEADO** | requiere pila pre-backtest + Funnel + TNA aceptables |
 
 ---
 
 ## 6. Notas de datos y límites
 
-- Dataset 20Y versionado: `datasets/eurusd_dukascopy_20y/` (SHA256 en `SHA256SUMS`,
-  metadata.json: H1 n=124390 velas 2006-2025) y espejado en `data/raw/EURUSD/*.parquet`.
-- El AHF es **single-threaded por barra** (`engine/ahf.py::run_timeline`). Para acelerar
-  en Grok, dividir el 20Y en chunks por hilos y mergear snapshots. No es paralelo hoy.
-- **No backtest ni entry** hasta cerrar A0-A9 + Funnel + TNA (ver `.hermes-index.md`).
-- AWS queda DESCARTADO; `scripts/aws/*` es referencia histórica, no se usa.
+- Dataset 20Y versionado: `datasets/eurusd_dukascopy_20y/` con SHA256/metadata.
+- M5 permanece diferido; no es requisito para cerrar H1/H4/D1 del Funnel.
+- AWS queda DESCARTADO; `scripts/aws/*` es referencia histórica.
+- Los resultados de auditoría son integridad/estructura/navegación salvo que un experimento declare explícitamente otra métrica.
 
 ---
 
 ## 7. Señal para Hermes
 
-Cuando un proceso supere ~60s locales o toque el dataset 20Y completo, Hermes lo marca
-PESADO y avisa: "toca correr X en Grok". El usuario lo dispara allá; Hermes solo
-sincroniza el resultado a la PC.
+Cuando un proceso supere ~60s locales o toque el dataset 20Y completo, Hermes lo marca PESADO y avisa: “toca correr X en Grok”. El usuario lo dispara allá; Hermes sincroniza y audita el resultado.

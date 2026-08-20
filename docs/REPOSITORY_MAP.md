@@ -93,6 +93,75 @@ mover scripts sin actualizar imports, CI y documentación.
 - `graphify-out/` y `graphify-tmp/` son outputs locales ignorados.
 - `.venv/` y `.pytest_cache/` son estado local y no son parte del producto.
 
+## Inventario completo de duplicaciones y compatibilidades
+
+Esta sección forma parte de la lista total del repositorio. Una duplicación no
+se elimina por nombre: primero se determina si representa una API distinta,
+una copia histórica o un output generado.
+
+### Duplicaciones documentales no canónicas
+
+| Elementos | Clasificación | Ruta canónica | Acción actual |
+|---|---|---|---|
+| `docs/CONTRATO_CONTEXT_STATE.md` / `docs/contratos/CONTRATO_CONTEXT_STATE.md` | Copias normativas no idénticas | `docs/contratos/CONTRATO_CONTEXT_STATE.md` | La raíz quedó marcada como compatibilidad |
+| `DATA_INVENTARIO_ACTUALIZADO.md` / `docs/DATA_INVENTARIO.md` | Inventarios de fases distintas | `docs/DATA_INVENTARIO.md` | La raíz quedó marcada como histórico |
+| `docs/briefs/*.md` / `docs/briefs/*.txt` | Mismo brief en dos formatos | `.md` para documentación; `.txt` para consumo plano | Mantener hasta definir consumidor único |
+| Referencias a `CONTRATO_CONTEXT_STATE.md` en scripts y SDDs | Rutas históricas o relativas | `docs/contratos/...` | Las referencias activas ya fueron actualizadas |
+
+### Duplicaciones de código intencionales
+
+| Elementos | Por qué existen | Decisión |
+|---|---|---|
+| `agents/` → `analysis/` | API pública estable y reexportaciones | Mantener y actualizar |
+| `agents/orchestrator.py` → `orchestration/` | Fachada pública del orquestador | Mantener y actualizar |
+| `detectors/` / `engine/detectors/` | DataFrame por vela frente a `MarketObject` causal | Mantener; interfaces diferentes |
+| `engine/market_structure.py` / `engine/bos/structure.py` | Fachada de compatibilidad frente a implementación estructural | Mantener hasta migración completa |
+| `scripts/smoke_*` / tests | Smoke tests operativos frente a tests formales | Mantener; documentar alcance |
+| `docs/wyckoff/compras/**` / `docs/wyckoff/ventas/**` | Mismo nombre para compra y venta, contenido distinto | Mantener separados por dominio |
+
+### Código histórico o pendiente de cuarentena
+
+| Elementos | Motivo | Estado |
+|---|---|---|
+| `engine/ote.py` | OTE fue eliminado de la política vigente | Físicamente presente; requiere cuarentena o eliminación posterior |
+| `detectors/fib.py` | Fibonacci residual | Físicamente presente; requiere auditoría de consumidores |
+| `engine/htf_narrative.py` y `engine/rr_by_setup.py` | Referencias históricas a OTE | Revisar y retirar dependencias |
+| briefs del 15 y 19 de agosto | Generados antes de la eliminación normativa de OTE | Históricos, no autoridad actual |
+| `analysis/wyckoff_agent.py` | Implementación de agente anterior al `engine/Wyckoff/` | Activo como adaptador; migración progresiva |
+
+### Estado local que no pertenece a GitHub
+
+| Ruta | Motivo |
+|---|---|
+| `data/` | Parquet, JSONL y modelos grandes; ignorado por Git |
+| `data/learning/` | Datasets y experimentos locales |
+| `.venv/` | Entorno Python local |
+| `.pytest_cache/` | Cache de tests |
+| `graphify-out/` | Imágenes/HTML generados |
+| `graphify-tmp/` | Temporales de visualización |
+
+### GitHub y ramas
+
+Los workflows fueron ordenados y renombrados con prefijos numéricos. Las ramas
+remotas existentes se conservaron porque pueden contener trabajo no fusionado:
+
+```text
+agent/fase-a-fundaciones
+agent/fase-b-domain
+agent/fase-c-domain
+agent/fase-c-v2
+agent/fase-d-domain
+ci/fvg-ob-funnel-cloud-run
+docs/ltf-autonomous-spec-2026-08-20
+docs/sync-plans-sdd-2026-08-20
+docs/wyckoff-engine-integration-2026-08-20
+main
+```
+
+No se consideran duplicaciones hasta comparar cada rama contra `main` y
+confirmar que no contiene trabajo único. Su eliminación requiere una decisión
+explícita, no limpieza automática.
+
 ## Regla de promoción
 
 ```text

@@ -240,8 +240,12 @@ def _asof_index(df: pd.DataFrame, decision_time: Any) -> int | None:
     """Última barra con time <= decision_time (vela cerrada disponible)."""
     if df.empty:
         return None
-    ts = pd.Timestamp(decision_time)
-    times = pd.to_datetime(df["time"])
+    # El feed local suele traer UTC-naive y MT5 puede entregar timestamps
+    # explícitamente UTC. Comparar ambos sin normalizar rompe el gate PIT.
+    ts = pd.to_datetime(decision_time, utc=True, errors="coerce")
+    times = pd.to_datetime(df["time"], utc=True, errors="coerce")
+    if pd.isna(ts):
+        return None
     # exclusive of future
     mask = times <= ts
     if not mask.any():

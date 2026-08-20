@@ -176,7 +176,7 @@ def _canonical_zone_state(
     decision_time: pd.Timestamp,
 ) -> dict[str, Any]:
     """Consume canonical zones; arbitrary DataFrame flags never promote state."""
-    if not canonical_zones or direction == 0:
+    if not canonical_zones:
         return {"zone_refs": [], "retest_state": "NO_ZONE", "retest_time": None, "lineage_refs": [], "zone_present": False, "retest_observed": False}
 
     raw_objects = canonical_zones.get(exec_tf, ())
@@ -187,7 +187,7 @@ def _canonical_zone_state(
             continue
         if obj.state.value in _TERMINAL_ZONE_STATES or obj.state.value not in _OBSERVABLE_ZONE_STATES:
             continue
-        if obj.direction not in (0, direction):
+        if direction and obj.direction not in (0, direction):
             continue
         tradable = _timestamp(obj.tradable_time or obj.confirmation_time)
         if tradable is None or tradable > decision_time:
@@ -253,6 +253,58 @@ def _navigation_payload(navigation_snapshot: Any, config: DailyMotorConfig) -> d
     }
 
 
+def _context_state_payload(context_state: Any, config: DailyMotorConfig) -> dict[str, Any]:
+    """Normaliza el ``MarketState`` canónico de ``MTFNavigator``.
+
+    El motor diario no interpreta de nuevo las capas: conserva el snapshot
+    completo y extrae únicamente los campos normativos de ``constraints``.
+    Esto permite auditar la fuente, el camino D1→H4→H1→EXEC y el timestamp
+    as-of sin crear otro Context State.
+    """
+    raw = context_state.to_dict() if hasattr(context_state, "to_dict") else context_state
+    if not isinstance(raw, Mapping) or not raw:
+        return {}
+    constraints = raw.get("constraints")
+    if not isinstance(constraints, Mapping):
+        return {}
+    layers = raw.get("layers") if isinstance(raw.get("layers"), Mapping) else {}
+    itf_layer = layers.get(config.itf) if isinstance(layers, Mapping) else None
+    answers = itf_layer.get("answers", {}) if isinstance(itf_layer, Mapping) else {}
+    where = answers.get("WHERE_IN_CONTEXT", {}) if isinstance(answers, Mapping) else {}
+    location = where.get("location") if isinstance(where, Mapping) else where
+    location = str(location or "UNKNOWN").upper()
+    if location == "EQUILIBRIUM":
+        location = "MID"
+    if location not in {"DISCOUNT", "PREMIUM", "MID", "UNKNOWN"}:
+        location = "UNKNOWN"
+    direction = _direction_value(constraints.get("direction_hint"))
+    location_favorable = None
+    if direction and location in {"DISCOUNT", "PREMIUM"}:
+        location_favorable = (direction > 0 and location == "DISCOUNT") or (direction < 0 and location == "PREMIUM")
+    allow_long = constraints.get("allow_long")
+    allow_short = constraints.get("allow_short")
+    return {
+        "state": "CONTEXT_STATE",
+        "source": "engine.mtf_navigation.MTFNavigator",
+        "market_state": raw,
+        "direction_hint": direction,
+        "location": location,
+        "location_favorable": location_favorable,
+        "regime_stack": constraints.get("regime_stack", {}),
+        "constraints": {
+            "allow_long": allow_long,
+            "allow_short": allow_short,
+            "sequence_required": bool(constraints.get("sequence_required", True)),
+            "notes": list(constraints.get("notes", []) or []),
+            "policy": constraints.get("policy", "CONTEXT_ONLY_NOT_ENTRY"),
+        },
+        "location_zones": constraints.get("location_zones", []),
+        "liquidity_targets": constraints.get("liquidity_targets", []),
+        "poi_refs": [],
+        "lineage_refs": [],
+    }
+
+
 def _sequence_payload(sequence_snapshot: Any) -> dict[str, Any]:
     raw = sequence_snapshot.to_dict() if hasattr(sequence_snapshot, "to_dict") else sequence_snapshot
     if isinstance(raw, Mapping):
@@ -274,6 +326,7 @@ def build_daily_motor_snapshot(
     sequence_snapshot: Any = None,
     navigation_snapshot: Any = None,
     context_snapshot: Mapping[str, Any] | None = None,
+    context_state: Any = None,
 ) -> dict[str, Any]:
     """Build a closed-only, canonical daily context + LTF snapshot.
 
@@ -308,22 +361,38 @@ def build_daily_motor_snapshot(
         return _safe_value(empty)
 
     stack = build_context_stack(frames, tt, tfs=config.tfs)
+    authoritative_context = _context_state_payload(context_state, config)
+    supplied_context = authoritative_context or dict(context_snapshot or {})
     fallback_direction = _direction_from_stack(stack, config)
-    supplied_context = dict(context_snapshot or {})
     direction = _direction_value(supplied_context.get("direction_hint", fallback_direction))
-    gate_allowed, gate_reason = (
-        top_down_allows_trade(
-            stack,
-            direction,
-            require_d1=config.require_d1,
-            require_h4=config.require_itf,
-            require_h1=config.require_context,
-            require_pd=config.require_pd,
-            require_ltf=False,
+    if authoritative_context:
+        raw_state = authoritative_context.get("market_state", {})
+        state_status = str(raw_state.get("status", "INCOMPLETE")) if isinstance(raw_state, Mapping) else "INCOMPLETE"
+        allowed = authoritative_context.get("constraints", {})
+        side_allowed = allowed.get("allow_long") if direction > 0 else allowed.get("allow_short") if direction < 0 else False
+        gate_allowed = bool(direction and side_allowed is not False and state_status == "OK")
+        if gate_allowed:
+            gate_reason = "context_state_constraints_allow"
+        elif state_status != "OK":
+            gate_reason = f"context_state_{state_status.lower()}"
+        elif not direction:
+            gate_reason = "context_state_no_direction"
+        else:
+            gate_reason = "context_state_side_blocked"
+    else:
+        gate_allowed, gate_reason = (
+            top_down_allows_trade(
+                stack,
+                direction,
+                require_d1=config.require_d1,
+                require_h4=config.require_itf,
+                require_h1=config.require_context,
+                require_pd=config.require_pd,
+                require_ltf=False,
+            )
+            if direction
+            else (False, "no_htf_direction")
         )
-        if direction
-        else (False, "no_htf_direction")
-    )
 
     navigation = _navigation_payload(navigation_snapshot, config)
     nav_state = str(navigation.get("state") or "")
@@ -424,9 +493,12 @@ def build_daily_motor_snapshot(
             "reason": gate_reason,
             "direction_hint": direction,
             "location": location,
+            "location_favorable": supplied_context.get("location_favorable"),
             "regime_stack": regime_stack,
             "constraints": constraints,
             "poi_refs": poi_refs,
+            "source": supplied_context.get("source", "engine.plan.build_context_stack"),
+            "market_state": supplied_context.get("market_state"),
             "stack": stack,
         },
         "sequence": sequence,

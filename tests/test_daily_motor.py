@@ -7,6 +7,7 @@ import pytest
 
 from engine.daily_motor import DailyMotorConfig, build_daily_motor_snapshot
 from engine.market_object import MarketObject, ObjectState, ObjectType
+from engine.mtf_navigation import MTFNavigator, NavigatorConfig
 
 
 def _frame(tf: str, n: int = 30, *, trend: str = "BULLISH", future: bool = False) -> pd.DataFrame:
@@ -177,3 +178,25 @@ def test_daily_motor_retest_requires_canonical_touch_after_tradable():
     assert result["ltf"]["zone_present"] is True
     assert result["ltf"]["retest_observed"] is False
     assert result["status"] == "WAIT_RETEST"
+
+
+def test_daily_motor_uses_authoritative_context_state_and_keeps_navigation_trace():
+    frames = _frames()
+    decision_time = pd.Timestamp("2020-01-02", tz="UTC")
+    state = MTFNavigator(
+        frames,
+        NavigatorConfig(precompute_sequences=False),
+    ).navigate(decision_time=decision_time, exec_tf="M15")
+
+    result = build_daily_motor_snapshot(
+        frames,
+        decision_time=decision_time,
+        config=DailyMotorConfig(require_pd=False),
+        context_state=state,
+    )
+
+    assert result["context"]["state"] == "CONTEXT_STATE"
+    assert result["context"]["source"] == "engine.mtf_navigation.MTFNavigator"
+    assert result["context"]["market_state"]["policy"] == "CONTEXT_STATE_NOT_ENTRY_SIGNAL"
+    assert result["context"]["market_state"]["path"]["steps"]
+    assert result["entry_authorized"] is False

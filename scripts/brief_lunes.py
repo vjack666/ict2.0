@@ -8,10 +8,9 @@ ESTADO HONESTO (leer antes de usar):
   - El motor diario ahora expone el estado LTF/EXEC y la espera de retest, pero
     sigue siendo `OBSERVE_ONLY_NO_ORDER`; entry, SL y TP están fuera del alcance
     de este motor de lectura.
-  - Sin feed en vivo: usa data/raw/*.parquet (corte al 2026-08-06 aprox). El brief
-    marca la fecha del dato para que veas el desfase.
-  - macro_direction / market_regime / divergence / volume_confirmed NO se producen
-    hoy en el motor; el sesgo HTF se infiere de `trend` D1/H4 (válido como lectura).
+  - Usa data/raw/*.parquet, cuyo origen y timestamp se imprimen en el brief.
+  - El Context State normativo proviene de `engine.mtf_navigation.MTFNavigator`;
+    las columnas `trend` de DataFrame quedan como diagnóstico, no como autoridad.
 
 Uso:
   .venv/Scripts/python.exe scripts/brief_lunes.py [--symbols EURUSD GBPUSD XAUUSD USDJPY]
@@ -154,6 +153,31 @@ def recent_sweep(f, n=30):
     return out or None
 
 
+def current_week_summary(frame):
+    """OHLC de la semana calendario en curso, closed-only hasta el feed."""
+    if frame is None or frame.empty or "time" not in frame.columns:
+        return None
+    times = pd.to_datetime(frame["time"], utc=True, errors="coerce")
+    valid = frame.loc[times.notna()].copy()
+    if valid.empty:
+        return None
+    times = pd.to_datetime(valid["time"], utc=True, errors="coerce")
+    asof = times.max()
+    week_start = asof.normalize() - pd.Timedelta(days=int(asof.weekday()))
+    sub = valid.loc[(times >= week_start) & (times <= asof)]
+    if sub.empty:
+        return None
+    return {
+        "start": week_start.isoformat(),
+        "asof": asof.isoformat(),
+        "bars": int(len(sub)),
+        "open": as_float(sub.iloc[0].get("open")),
+        "high": as_float(sub["high"].max()),
+        "low": as_float(sub["low"].min()),
+        "close": as_float(sub.iloc[-1].get("close")),
+    }
+
+
 def htf_bias(f_d1, f_h4, f_h1):
     d1 = last_val(f_d1, "trend")
     h4 = last_val(f_h4, "trend")
@@ -178,7 +202,7 @@ def build_symbol_section(sym, feats, last_dates):
 
     t0 = time.time()
     price = last_val(f_m15, "close")
-    bias, src, per_tf = htf_bias(f_d1, f_h4, f_h1)
+    bias, src, per_tf = htf_bias(f_d1, f_h4, f_h1)  # diagnóstico legacy, no autoridad
 
     ld = {tf: (str(d)[:16] if d is not None else "—") for tf, d in last_dates.items()}
 
@@ -191,22 +215,68 @@ def build_symbol_section(sym, feats, last_dates):
                          f"(hace ~{dias:.0f} días). El brief es contexto, no espejo del lunes en vivo.")
             lines.append("")
     lines.append(f"- **Precio actual (M15 cierre):** `{price:.5f}`" if ok(price) else "- precio n/a")
-    lines.append(f"- **Sesgo HTF:** `{bias}` (fuente {src}) · D1={per_tf['D1']} H4={per_tf['H4']} H1={per_tf['H1']}")
     lines.append(f"- **Datos hasta:** D1 {ld['D1']} · H4 {ld['H4']} · H1 {ld['H1']} · M15 {ld['M15']}")
     lines.append("")
 
-    # Capa LTF conectada al motor diario: observación closed-only, nunca orden.
+    # Un único Context State closed-only para la cadena D1→H4→H1→M15.
+    # precompute_sequences=False evita que esta lectura cree una segunda
+    # ejecución pesada; Sequence se entrega por su interfaz canónica cuando
+    # el caller disponga de ese snapshot.
     from engine.daily_motor import build_daily_motor_snapshot
+    from engine.ltf_canonical_feed import build_ltf_canonical_feed
+    from engine.mtf_navigation import MTFNavigator, NavigatorConfig
+    decision_time = last_dates.get("M15")
+    nav_frames = {tf: frame for tf, frame in feats.items() if frame is not None}
+    market_state = None
+    if decision_time is not None and nav_frames:
+        market_state = MTFNavigator(
+            nav_frames,
+            NavigatorConfig(precompute_sequences=False, sequence_tf="H1"),
+        ).navigate(decision_time=decision_time, exec_tf="M15")
+    canonical_feed = build_ltf_canonical_feed(
+        feats,
+        decision_time=decision_time,
+        exec_tf="M15",
+        sequence_tf="H1",
+        symbol=sym,
+        include_sequence=True,
+    ) if decision_time is not None else {"zones": {"M15": []}, "sequence": {"available": False, "refs": [], "depth": 0}}
     ltf_read = build_daily_motor_snapshot(
         feats,
-        decision_time=last_dates.get("M15"),
+        decision_time=decision_time,
+        context_state=market_state,
+        canonical_zones=canonical_feed.get("zones"),
+        sequence_snapshot=canonical_feed.get("sequence"),
     )
     ltf = ltf_read.get("ltf", {})
     ctx = ltf_read.get("context", {})
+    direction_label = ltf_read.get("direction_label", "RANGING")
+    context_location = ctx.get("location", "UNKNOWN")
+    lines.append(
+        f"- **Context State:** `{direction_label}` · location=`{context_location}` · "
+        f"fuente=`{ctx.get('source', 'n/a')}`"
+    )
+    lines.append(f"- **Sesgo diagnóstico legacy:** `{bias}` (fuente {src}) · D1={per_tf['D1']} H4={per_tf['H4']} H1={per_tf['H1']}")
+    week = current_week_summary(f_m15)
+    if week:
+        lines.append("### Semana en curso (OHLC del mismo feed MT5)")
+        lines.append(
+            f"- Ventana: `{week['start']}` → `{week['asof']}` · barras M15=`{week['bars']}`"
+        )
+        lines.append(
+            f"- Open `{week['open']:.5f}` · High `{week['high']:.5f}` · "
+            f"Low `{week['low']:.5f}` · Close `{week['close']:.5f}`"
+        )
+        lines.append("- Lectura: rango y posición semanal; no es PnL ni una instrucción de entrada.")
     lines.append("### LTF / exec M15 (motor diario)")
     lines.append(f"- Estado: `{ltf_read.get('status', 'NO_LTF_DATA')}`")
     lines.append(f"- Dirección heredada del contexto: `{ltf_read.get('direction_label', 'RANGING')}`")
     lines.append(f"- Contexto permitido: `{ctx.get('allowed', False)}` · razón: `{ctx.get('reason', 'n/a')}`")
+    lines.append(
+        f"- Sequence canónica: disponible=`{ltf_read.get('sequence', {}).get('available', False)}` · "
+        f"refs=`{len(ltf_read.get('sequence', {}).get('refs', []))}` · "
+        f"depth=`{ltf_read.get('sequence', {}).get('depth', 0)}`"
+    )
     lines.append(
         f"- Estructura a favor: `{ltf.get('structure_confirmed', False)}` · "
         f"zonas canónicas: `{len(ltf.get('zone_refs', []))}` · "
@@ -222,7 +292,7 @@ def build_symbol_section(sym, feats, last_dates):
 
     # Dealing range (H4)
     lines.append("### Zona (dealing range H4)")
-    pdr = last_val(f_h4, "premium_discount_zone")
+    pdr = context_location if context_location in {"DISCOUNT", "PREMIUM", "MID"} else last_val(f_h4, "premium_discount_zone")
     zh = last_val(f_h4, "zone_high"); zl = last_val(f_h4, "zone_low"); zm = last_val(f_h4, "zone_mid")
     lines.append(f"- Zona premium/discount: `{pdr}`")
     if ok(zh) and ok(zl):
@@ -289,14 +359,14 @@ def build_symbol_section(sym, feats, last_dates):
 
     # Setups a BUSCAR (no entrar)
     lines.append("### Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS)")
-    if bias == "BULLISH":
+    if direction_label == "BULLISH":
         if pdr == "DISCOUNT":
             lines.append("- **PO3 a-favor LONG**: precio en DISCOUNT. Buscar en M15: sweep SSL + CHoCH/BOS alcista + retorno a FVG/OB. Invalidación: bajo último swing low / mecha del sweep.")
         elif pdr == "PREMIUM":
             lines.append("- Sesgo alcista pero precio en PREMIUM: NO comprar aquí. Esperar retracción a DISCOUNT antes de buscar long.")
         else:
             lines.append("- Sesgo alcista, precio neutro: vigilar reacción en discount para buscar long.")
-    elif bias == "BEARISH":
+    elif direction_label == "BEARISH":
         if pdr == "PREMIUM":
             lines.append("- **PO3 a-favor SHORT**: precio en PREMIUM. Buscar en M15: sweep BSL + CHoCH/BOS bajista + retorno a FVG/OB. Invalidación: sobre último swing high / mecha del sweep.")
         elif pdr == "DISCOUNT":
@@ -342,7 +412,7 @@ def main():
     header = []
     header.append(f"# BRIEF DE LECTURA ICT/WYCKOFF — generado {GENERATED.astimezone(dt.timezone(dt.timedelta(hours=-5))):%Y-%m-%d %H:%M} (Ecuador)\n")
     header.append("> **AVISO:** mapa de contexto, NO señal ejecutable. Motor de señales en construcción (v30).")
-    header.append(f"> Datos: `data/raw/*.parquet` (corte {cut_str}, actualizado vía MT5 en vivo). El sesgo HTF se infiere de `trend` D1/H4.")
+    header.append(f"> Datos: `data/raw/*.parquet` (corte {cut_str}, actualizado vía MT5 en vivo). El Context State normativo proviene de `MTFNavigator`; `trend` es diagnóstico legacy.")
     header.append("> Regla informativa (libro 18): HTF/ITF aportan sesgo y zona; este brief solo lee mercado y no calcula ejecución.\n")
     header.append(f"**Símbolos:** {', '.join(args.symbols)}\n")
 

@@ -114,14 +114,18 @@ LTF jamás reescribe retrospectivamente HTF/ITF.
 - `engine/plan.py`: snapshots closed-only, bias estructural, dealing range D1/H4, `ltf_structure_at()`, `ltf_confirms()`, `build_context_stack()`.
 - `engine/daily_motor.py`: `DailyMotorConfig` con `profile_id` explícito, snapshot serializable con `asof_times_by_tf`, navegación/contexto/Sequence/lineage y `entry_authorized=False`.
 - `engine/daily_motor.py`: consume `MarketObject` canónicos de FVG/OB como entrada de solo lectura; no promueve flags arbitrarios del DataFrame ni crea detectores/FSM paralelos.
+- `engine/daily_motor.py`: consume `MarketState` autoritativo de `MTFNavigator` mediante `context_state`; conserva capas, restricciones y `path` completos.
+- `engine/ltf_canonical_feed.py`: adaptador read-only que reutiliza detectores FVG/OB, relaciones y `engine.sequential_events` para entregar zonas, touch/retest, refs y profundidad as-of(t). No es un detector ni una FSM nueva.
 - `tests/test_daily_motor.py`: observación, futuro ignorado, contexto incompleto, esquema canónico, retest con touch, determinismo y autoridad LTF.
+- `tests/test_ltf_canonical_feed.py`: prefijo/PIT, detectores canónicos y touch posterior a `tradable_time`.
 - `scripts/brief_lunes.py`: consume el mismo snapshot y diferencia zonas canónicas de marcadores legacy.
 
 ### Parcial / pendiente
 
-- La integración productiva de FVG/OB LTF aún debe conectar los detectores canónicos al caller; el adaptador ya rechaza columnas como fuente de verdad.
-- `retest_observed` debe depender de eventos/estado canónico de touch/mitigation/retest; el adaptador ya exige `MarketObject.first_touch_time` + `touch_count` y orden temporal válido.
-- Sequence debe consumirse sin duplicarla y conservar refs/lineage.
+- El caller productivo ya conecta FVG/OB, relaciones y Sequence canónicos en la lectura M15; falta demostrar el mismo ensamblaje para POI ITF/AHF y el perfil histórico completo.
+- `retest_observed` ya depende de `MarketObject.first_touch_time` + `touch_count` y orden temporal válido; el gate requiere evidencia histórica de esa cadena.
+- Sequence ya se consume sin duplicarla desde `engine.sequential_events`; la cobertura de lineage debe ampliarse a Context State → POI ITF → zona LTF.
+- AHF todavía no se inyecta como `navigation_snapshot` en el brief; el `MarketState` sí está conectado, pero LTF-3 permanece abierto.
 - Debe materializarse un snapshot auditable único `Context State → POI ITF → LTF confirmation → retest`.
 - Falta validación histórica extremo a extremo D1→H4→H1→M15.
 - M5/M1 siguen diferidos.
@@ -322,7 +326,7 @@ Si falta evidencia, el estado es `WAIT_*`/`NO_EVIDENCE`, nunca una promoción si
 
 ### LTF-2 — Integración canónica de zonas y retest
 
-**Estado:** interfaz de consumo iniciada; integración productiva completa pendiente.
+**Estado:** integración productiva inicial ejecutada; gate pendiente.
 
 - Obtener FVG/OB/POI desde objetos/detectores canónicos.
 - Resolver refs y lineage.

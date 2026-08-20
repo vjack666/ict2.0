@@ -11,7 +11,7 @@
 ## Dataset / ventana
 
 | Campo | Valor |
-|-------|--------|
+| ------- | -------- |
 | Símbolo | EURUSD |
 | Fuente | `data/raw/EURUSD` (Dukascopy 20Y) |
 | Ventana H1 | 2017-03-14 → 2017-04-28 (~800 barras) |
@@ -23,7 +23,7 @@
 ## Gates de integridad
 
 | Gate | Resultado |
-|------|-----------|
+| ------ | ----------- |
 | Trace presente | PASS |
 | Historial monótono en barras | **PASS** |
 | Transiciones reconstruibles | **PASS** |
@@ -35,7 +35,7 @@
 ## Navegación
 
 | Métrica | Valor |
-|---------|------:|
+| --------- | ------: |
 | Transiciones únicas | 501 |
 | Invalidaciones | 193 |
 | Switches down / up | 105 / 104 |
@@ -46,7 +46,7 @@
 ### Duración por estado (barras entre transiciones)
 
 | Estado | n | mediana | p95 | max |
-|--------|--:|--------:|----:|----:|
+| -------- | --: | --------: | ----: | ----: |
 | D1_LOCKED | 1 | 0 | 0 | 0 |
 | WAIT_H4 | 105 | 1 | 1 | 1 |
 | H4_LOCKED | 104 | 0 | 0 | 0 |
@@ -68,7 +68,7 @@ Lectura: hay muchas invalidaciones registradas, pero el medidor de “profundida
 ## Magnitud FVG/OB (descriptiva, no TP/SL)
 
 | Grupo | n | size_pips mediana |
-|-------|--:|------------------:|
+| ------- | --: | ------------------: |
 | H1 FVG bearish | 76 | ~3.5 |
 | H1 FVG bullish | 73 | ~3.7 |
 | H1 OB bullish | 5 | ~13.4 |

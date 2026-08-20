@@ -26,7 +26,7 @@ Prioridad: **máxima** (`SDD_CONTEXT_STATE_MTF_NAVIGATION.md` §5).
 ## 2. Diseño
 
 | Elemento | Valor v1 |
-|----------|----------|
+| ---------- | ---------- |
 | Dataset | EURUSD Dukascopy 20Y H1/H4/D1 |
 | Secuencia | `engine/sequential_events.run_sequential` (`structure_mode=canonical_bos`) |
 | Universo | Cadenas con **depth ≥ 4** (llegaron a STRUCTURE) |
@@ -58,9 +58,9 @@ Por bucket (`CTX_ALIGNED`, `CTX_AGAINST`, `CTX_NEUTRAL`, `ALL_DEPTH4`):
 Gate de **interpretación**:
 
 | Condición | Lectura |
-|-----------|---------|
+| ----------- | --------- |
 | n_ALIGNED < 30 o n_AGAINST < 30 | **INSUFICIENTE** — no declarar edge |
-| |end>0_ALIGNED − end>0_AGAINST| estable y n≥30 | Hipótesis **compatible** (no = edge operativo) |
+| | end>0_ALIGNED − end>0_AGAINST | estable y n≥30 | Hipótesis **compatible** (no = edge operativo) |
 | Diferencia ≈ 0 con n decente | Hipótesis **no soportada** en este diseño |
 
 ---
@@ -68,7 +68,7 @@ Gate de **interpretación**:
 ## 4. Relación con evidencias previas
 
 | EXP previo | Relación |
-|------------|----------|
+| ------------ | ---------- |
 | Multi-factor EMA | **No** sustituye este EXP (proxy inválido) |
 | COMPLETE expectancy | n≈5; aquí se usa depth≥4 para potencia |
 | TNA AHF | Valida navegación; este EXP mide **outcome distribution** |
@@ -80,7 +80,7 @@ Gate de **interpretación**:
 **Gate:** `INSUFFICIENT_N`
 
 | Bucket | n | end>0 +6 | +12 | +24 | +48 | mean_end +24 |
-|--------|--:|---------:|----:|----:|----:|-------------:|
+| -------- | --: | ---------: | ----: | ----: | ----: | -------------: |
 | ALL_DEPTH4 | 24 | 50.0 | 37.5 | 45.83 | 41.67 | −0.001195 |
 | CTX_ALIGNED | 5 | 40.0 | 0.0 | 40.0 | 40.0 | −0.001914 |
 | CTX_AGAINST | 11 | 54.55 | 54.55 | 45.45 | 54.55 | −0.001929 |

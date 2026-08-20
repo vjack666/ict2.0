@@ -15,7 +15,9 @@ Vinculación: matriz de trazabilidad en ROADMAP_TESIS_DRIVEN_2026-07-17.md §9
 > implementación diverge de aquí, LA IMPLEMENTACIÓN está mal (R1: SPEC precede código).
 
 ---------------------------------------------------------------------
-0. CÓMO SE LEE ESTE CONTRATO
+
+1. CÓMO SE LEE ESTE CONTRATO
+
 ---------------------------------------------------------------------
 
 Cada componente obligatorio de la tesis tiene su bloque con 8 campos:
@@ -34,7 +36,9 @@ FUNCIONAL. Ninguna DECISIÓN DE INGENIERÍA se disfraza de regla de tesis: donde
 aplica, se marca explícitamente.
 
 ---------------------------------------------------------------------
+
 1. NARRATIVA HTF (sesgo D1/H4/H1)
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §1, libro 08 §0. Clasificación: OBLIGATORIO.
@@ -49,7 +53,9 @@ CASOS LÍMITE: rango (H1 NEUTRAL) → se acepta como contexto, no anula el setup
 AMBIG: umbral de "estructura mayor" es decisión de ingeniería (ventana de swing).
 
 ---------------------------------------------------------------------
-2. DEALING RANGE / PREMIUM-DISCOUNT (EQ 50%)
+
+1. DEALING RANGE / PREMIUM-DISCOUNT (EQ 50%)
+
 ---------------------------------------------------------------------
 
 Referencia: libro 21 (premium/discount). Clasificación: OBLIGATORIO.
@@ -64,7 +70,9 @@ CASOS LÍMITE: rango muy estrecho → EQ poco informativo; degradar a sesgo solo
 AMBIG: definición exacta del rango (día vs Asian vs sesión) es decisión de ing.
 
 ---------------------------------------------------------------------
-3. PD ARRAYS — FVG / OB
+
+1. PD ARRAYS — FVG / OB
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §2/§5b, libro 21. Clasificación: OBLIGATORIO.
@@ -81,7 +89,9 @@ CASOS LÍMITE: FVG muy ancha (gap gigante) → descartar como POI (ruido).
 AMBIG: tamaño mín/máx de FVG en ATR es decisión de ingeniería.
 
 ---------------------------------------------------------------------
-4. PD ARRAYS COMPLETOS — Breaker / Rejection / Mitigation / Propulsion
+
+1. PD ARRAYS COMPLETOS — Breaker / Rejection / Mitigation / Propulsion
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §5b, libro 21 §2 (tiers T1-T3). Clasificación: OBLIGATORIO.
@@ -98,7 +108,9 @@ CASOS LÍMITE: bloque muy lejos del precio → no es POI útil (solo contexto).
 AMBIG: frontera entre "rejection block" y "OB normal" es decisión de ingeniería.
 
 ---------------------------------------------------------------------
-5. STACKING MULTI-TF (jerarquía de tiers)
+
+1. STACKING MULTI-TF (jerarquía de tiers)
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §5b, libro 21 §2. Clasificación: OBLIGATORIO.
@@ -114,7 +126,9 @@ CASOS LÍMITE: sin apilamiento → tier por el tipo base solamente.
 AMBIG: umbral de "mismo nivel" (tolerancia en pips/ATR) es decisión de ing.
 
 ---------------------------------------------------------------------
-6. LIQUIDEZ (Sweep)
+
+1. LIQUIDEZ (Sweep)
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §3, libro 05. Clasificación: OBLIGATORIO.
@@ -129,7 +143,9 @@ CASOS LÍMITE: cierre parcial adentro pero mecha larga → aceptar si cuerpo ade
 AMBIG: ancho de banda de cluster de liquidez es decisión de ingeniería.
 
 ---------------------------------------------------------------------
-7. DISPLACEMENT
+
+1. DISPLACEMENT
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §5b, libro 15. Clasificación: OBLIGATORIO (calibrar en Fase F).
@@ -144,7 +160,9 @@ CASOS LÍMITE: cuerpo 50-70% → displacement débil (bonus, no gate).
 AMBIG: umbral 70% y medida del cuerpo son decisión de ingeniería (calibrar).
 
 ---------------------------------------------------------------------
-8. MARKET STRUCTURE — BOS / CHOCH / MSS
+
+1. MARKET STRUCTURE — BOS / CHOCH / MSS
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §2, libro 02. Clasificación: OBLIGATORIO.
@@ -161,7 +179,9 @@ CASOS LÍMITE: CHOCH sin BOS posterior → solo aviso, no setup.
 AMBIG: confirm_bars (velas de confirmación) es decisión de ing (hoy = 2).
 
 ---------------------------------------------------------------------
-9. 3 CAPAS HTF / ITF / EXEC TF
+
+1. 3 CAPAS HTF / ITF / EXEC TF
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §5, libro 18 §0. Clasificación: OBLIGATORIO.
@@ -176,7 +196,9 @@ CASOS LÍMITE: exec TF no disponible (M1 roto) → degradar a M5, no a H4.
 AMBIG: asignación exacta de TF por setup es decisión de ing (ver §16/§17/§18).
 
 ---------------------------------------------------------------------
-10. EXEC FINO M5 + CONFIRMACIÓN M1
+
+ 1. EXEC FINO M5 + CONFIRMACIÓN M1
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §5, libro 18. Clasificación: OBLIGATORIO.
@@ -191,7 +213,9 @@ CASOS LÍMITE: M1 no disponible → confirmar en M5 (sin M1).
 AMBIG: ventana de confirmación M1 es decisión de ing.
 
 ---------------------------------------------------------------------
-11. ENTRY — RETORNO A LA ZONA
+
+ 1. ENTRY — RETORNO A LA ZONA
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §6, libro 15 §2. Clasificación: OBLIGATORIO.
@@ -206,7 +230,9 @@ CASOS LÍMITE: precio no retorna y sigue → no entry (se pierde el setup, bien)
 AMBIG: "retorno" = touch de la zona; profundidad máxima de retrace es decisión ing.
 
 ---------------------------------------------------------------------
-12. STOP LOSS — ESTRUCTURAL
+
+ 1. STOP LOSS — ESTRUCTURAL
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §7, libros 14/15/17. Clasificación: OBLIGATORIO.
@@ -222,7 +248,9 @@ CASOS LÍMITE: sweep gigante → filtro STRUCT_SL_MAX_ATR (6.0) salta el trade.
 AMBIG: buffer 0.3 ATR y máx 6.0 son decisión de ing (ya calibrados, medidos v29).
 
 ---------------------------------------------------------------------
-13. TAKE PROFIT — LIQUIDEZ CERCANA
+
+ 1. TAKE PROFIT — LIQUIDEZ CERCANA
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §8, libros 15/16/17. Clasificación: OBLIGATORIO.
@@ -237,7 +265,9 @@ CASOS LÍMITE: liquidez cercana muy lejos → el TP no se alcanza; hold_limit fi
 AMBIG: "más cercano" = distancia en precio al entry; umbral de hold es decisión ing.
 
 ---------------------------------------------------------------------
-14. LIQUIDEZ INTERNAL vs EXTERNAL
+
+ 1. LIQUIDEZ INTERNAL vs EXTERNAL
+
 ---------------------------------------------------------------------
 
 Referencia: libro 05/15/16, tesis 20 §3. Clasificación: OBLIGATORIO.
@@ -253,7 +283,9 @@ CASOS LÍMITE: sin external claro → solo internal.
 AMBIG: qué external cuenta (día vs semana) es decisión de ing (contexto HTF).
 
 ---------------------------------------------------------------------
-15. KILLZONE (London / NY AM / NY PM)
+
+ 1. KILLZONE (London / NY AM / NY PM)
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §10, libro 01/18. Clasificación: OBLIGATORIO.
@@ -268,7 +300,9 @@ CASOS LÍMITE: TZ mal configurado → killzone falsa (bug conocido libro 01).
 AMBIG: bordes de ventana (minutos) son decisión de ing.
 
 ---------------------------------------------------------------------
-16. POI ANCLADO A NARRATIVA HTF
+
+ 1. POI ANCLADO A NARRATIVA HTF
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §5b, libro 21. Clasificación: OBLIGATORIO (BONUS, no gate duro).
@@ -287,7 +321,9 @@ AMBIG: CRÍTICA empírica (tests/AUDITORIA_POI_REPORT): POI como filtro DURO des
      tesis validada por evidencia, no ambigüedad.
 
 ---------------------------------------------------------------------
-17. SILVER BULLET (SB)
+
+ 1. SILVER BULLET (SB)
+
 ---------------------------------------------------------------------
 
 Referencia: libro 07, tesis 20 §4. Clasificación: OBLIGATORIO.
@@ -303,7 +339,9 @@ AMBIG: RR SB = 1:2 (libro 07 #5) difiere del 1:3 global → se resuelve como RR 
      SETUP (ver §20). Esto es regla de tesis (libro 07), no ambigüedad.
 
 ---------------------------------------------------------------------
-18. TURTLE SOUP (contratendencia)
+
+ 1. TURTLE SOUP (contratendencia)
+
 ---------------------------------------------------------------------
 
 Referencia: libro 06, tesis 20 §4 (1 de 3 setups del ciclo PO3). Clasificación: OBLIGATORIO.
@@ -319,7 +357,9 @@ AMBIG: operar Turtle Soup solo en RANGO (ICT: vive en rango, no tendencia) es
      recomendación de tesis 20 §9; el régimen filter es decisión de ing.
 
 ---------------------------------------------------------------------
-19. PO3 / AMD (continuación a favor)
+
+ 1. PO3 / AMD (continuación a favor)
+
 ---------------------------------------------------------------------
 
 Referencia: libro 08, tesis 20 §1. Clasificación: OBLIGATORIO (setup base).
@@ -334,7 +374,9 @@ CASOS LÍMITE: solo A+M sin D → trampa hecha, esperar expansión (no entry aú
 AMBIG: "complete" es contrato duro (libro 08); score alto sin complete NO es entry.
 
 ---------------------------------------------------------------------
-20. RR — MÍNIMO POR SETUP
+
+ 1. RR — MÍNIMO POR SETUP
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §9 (1:3, libro 18) / libro 07 #5 (SB 1:2).
@@ -351,7 +393,9 @@ AMBIG: RESUELTA — RR se parametriza POR SETUP (SB usa 1:2, resto 1:3). El valo
      por setup es regla de tesis; el parámetro es decisión de ing (R3: etiquetar).
 
 ---------------------------------------------------------------------
-21. OTE (Optimal Trade Entry, 62-79% retrace)
+
+ 1. OTE (Optimal Trade Entry, 62-79% retrace)
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §6, libro 15. Clasificación: OBLIGATORIO.
@@ -366,7 +410,9 @@ CASOS LÍMITE: retrace no llega a 62% → entry en zona amplia; >79% → fuera d
 AMBIG: medir el retrace desde el swing completo o desde el PD Array es decisión ing.
 
 ---------------------------------------------------------------------
-22. TRADE MANAGEMENT (BE / parciales / re-entry)
+
+ 1. TRADE MANAGEMENT (BE / parciales / re-entry)
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 20 §9, libro 15/17. Clasificación: OBLIGATORIO.
@@ -382,7 +428,9 @@ AMBIG: niveles de BE/parcial son decisión de ing (no especificados por tesis co
      umbral fijo; la tesis exige gestión activa, no el número).
 
 ---------------------------------------------------------------------
-23. SETUPS COMO COMPOSICIÓN (no estrategias distintas)
+
+ 1. SETUPS COMO COMPOSICIÓN (no estrategias distintas)
+
 ---------------------------------------------------------------------
 
 La tesis 20 §4 es explícita: PO3 / Turtle Soup / Silver Bullet son el MISMO ciclo
@@ -397,7 +445,9 @@ Todos comparten: Sweep (§6) → Displacement (§7) → BOS/CHOCH (§8) → POI 
 Entry (§11) → SL (§12) → TP (§13) → RR (§20) → Trade Mgmt (§22).
 
 ---------------------------------------------------------------------
-24. REGLAS DE INVALIDEZ (deuda funcional: noticias)
+
+ 1. REGLAS DE INVALIDEZ (deuda funcional: noticias)
+
 ---------------------------------------------------------------------
 
 Referencia: tesis 21 §5. Clasificación: DEUDA FUNCIONAL (regla real, no implementable hoy).
@@ -412,20 +462,24 @@ CASOS LÍMITE: sin feed de noticias → el hook existe pero no se dispara (docum
 AMBIG: qué cuenta como "alto impacto" es decisión de ing (cuando se conecte feed).
 
 ---------------------------------------------------------------------
-25. AMBIGÜEDADES GLOBALES RESUELTAS (decisión de ingeniería etiquetada R3)
+
+ 1. AMBIGÜEDADES GLOBALES RESUELTAS (decisión de ingeniería etiquetada R3)
+
 ---------------------------------------------------------------------
 
 Estas no son de tesis; se fijan aquí para no reinterpretarlas por fase:
 
-  - RR por setup: SB=1:2 (libro 07 #5), resto=1:3 (tesis 20 §9/libro 18).
-  - confirm_bars BOS/CHOCH = 2 (canónico).
-  - SL buffer = 0.3 ATR; STRUCT_SL_MAX_ATR = 6.0 (ya medido v29).
-  - POI = BONUS quality_score+=20, NO filtro duro (evidencia AUDITORIA_POI_REPORT).
-  - Exec TF default = M15 hoy; M5/M1 pendientes (§10).
-  - displacement cuerpo > 70% (calibrar en Fase F).
+- RR por setup: SB=1:2 (libro 07 #5), resto=1:3 (tesis 20 §9/libro 18).
+- confirm_bars BOS/CHOCH = 2 (canónico).
+- SL buffer = 0.3 ATR; STRUCT_SL_MAX_ATR = 6.0 (ya medido v29).
+- POI = BONUS quality_score+=20, NO filtro duro (evidencia AUDITORIA_POI_REPORT).
+- Exec TF default = M15 hoy; M5/M1 pendientes (§10).
+- displacement cuerpo > 70% (calibrar en Fase F).
 
 ---------------------------------------------------------------------
-26. CONTRATO DE SINCRONÍA (R2)
+
+ 1. CONTRATO DE SINCRONÍA (R2)
+
 ---------------------------------------------------------------------
 
 Toda regla de este SPEC tiene su fila en ROADMAP_TESIS_DRIVEN_2026-07-17.md §9

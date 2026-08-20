@@ -30,21 +30,27 @@ El Funnel Audit debe ser una auditoría determinista, point-in-time y reproducib
 ## Invariantes
 
 ### Causalidad
+
 Ninguna etapa puede leer una barra posterior a su `observation_time`.
 
 ### Prefijo
+
 La ejecución sobre `bars[:t]` y la ejecución sobre el dataset completo deben producir el mismo resultado para eventos cuya observación sea `<= t`.
 
 ### Idempotencia
+
 Ejecutar dos veces el mismo snapshot produce el mismo reporte.
 
 ### Unicidad
+
 No se contabiliza el mismo objeto lógico más de una vez.
 
 ### Lineage
+
 Todo candidato aceptado tiene lineage válido o una razón explícita de por qué no requiere padre.
 
 ### Determinismo
+
 No se permite dependencia de orden de iteración, reloj del sistema, aleatoriedad no sembrada o datos externos no versionados.
 
 ## Razones de rechazo mínimas
@@ -66,6 +72,7 @@ OUTSIDE_AUDIT_WINDOW
 ## Gate
 
 ### PASS
+
 - cero violaciones temporales;
 - cero corrupción crítica;
 - cero duplicados lógicos no explicados;
@@ -74,9 +81,11 @@ OUTSIDE_AUDIT_WINDOW
 - todas las reducciones del funnel explicables.
 
 ### WARN
+
 Sólo para anomalías descriptivas no críticas y siempre con explicación registrada.
 
 ### FAIL
+
 Cualquier fuga futura, duplicación no explicada, lineage inválido, no determinismo o corrupción de datos.
 
 ## Prohibiciones

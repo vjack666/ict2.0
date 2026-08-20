@@ -4,6 +4,7 @@ El esquema de acumulación se explica por las mismas tres leyes que la distribuc
 invertidas. Son el "por qué" detrás de cada evento del libro.
 
 ## 1. Ley de Oferta y Demanda
+
 El precio sube cuando la **demanda > oferta** y baja cuando la **oferta > demanda**.
 Durante la acumulación, la demanda absorbe progresivamente la oferta *aun cuando el precio
 parece estable* (lateral en el fondo). El rango en el suelo es donde smart money absorbe
@@ -14,6 +15,7 @@ la posición corta del público vendedor.
 - Markup: demanda desborda → precio sube.
 
 ## 2. Ley de Causa y Efecto
+
 La **anchura y duración** del rango de acumulación determina la **profundidad del
 markup** posterior. Rango más largo y ancho = subida más profunda ("time = force", Wyckoff).
 
@@ -24,6 +26,7 @@ markup** posterior. Rango más largo y ancho = subida más profunda ("time = for
   corto da un markup corto. Wyckoff: "el tiempo = fuerza".
 
 ## 3. Ley de Esfuerzo vs Resultado
+
 Compara el **volumen** (esfuerzo) con el **rango de precio** (resultado).
 
 - Volumen alto en el fondo + precio que no cae más = **absorción**: mucho esfuerzo de

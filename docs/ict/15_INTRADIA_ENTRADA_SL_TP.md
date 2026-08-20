@@ -1,7 +1,7 @@
 # ICT — Intradía: Entrada, SL y TP en la temporalidad correcta
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `15_INTRADIA_ENTRADA_SL_TP.md` |
 | **Versión** | 1.0 |
 | **Fecha** | 2026-07-13 |
@@ -37,6 +37,7 @@ for i in range(len(ltf_df)):
 El motor decide la entrada en la vela M15 del BOS/CHOCH. ICT dice: la entrada intradía va en el **retorno a la zona** (la vela de displacement deja un FVG/OB; entrás en el retrace a ese nivel). Entrar en el close del BOS = entrar tarde, después del impulso. Eso es el mismo bug de temporalidad que tenían el SL y el TP: el ciclo completo (entry+SL+TP) se resuelve en M15 grueso en vez de en la zona fina.
 
 Evidencia medida (R4 v29, SL estructural ya aplicado):
+
 - EURUSD: 7/11 salidas por `hold_limit` → el TP no se alcanzaba en 16 velas.
 - GBPUSD: 11/13 salidas por `hold_limit`.
 El SL ya no saca por ruido (PF>1), pero el TP lejano + hold corto duerme el trade.
@@ -46,6 +47,7 @@ El SL ya no saca por ruido (PF>1), pero el TP lejano + hold corto duerme el trad
 ## 2. Entrada intradía (el modelo ICT)
 
 Secuencia (fuente: innercircletrader.net Turtle Soup + MSS):
+
 1. HTF H4 confirma sesgo / rango.
 2. M15 barre liquidez (sweep) y falla (cierra adentro del nivel).
 3. M15 rompe estructura (BOS/CHOCH) en dirección opuesta al sweep.
@@ -61,6 +63,7 @@ El motor hoy hace (2)+(3) pero no (4)+(5): entra en el close de (3). Hay que esp
 ## 3. SL intradía (base ya implementada)
 
 `calc_structural_sl` (engine.py, v29):
+
 - SL = `sweep_low` − buffer (long) / `sweep_high` + buffer (short).
 - Fallback a `swing_low`/`swing_high` si no hay sweep.
 - Si no hay nada → None → no opera (no degrada a ATR).
@@ -73,10 +76,12 @@ Esto es correcto para intradía. No tocar.
 ## 4. TP intradía (lo que hay que corregir en v30)
 
 `_tp_liquidity` (engine.py 283-299) hoy:
+
 ```
 bsl = float(row.get("bsl_price"))   # cluster de liquidez del LTF (promedio de swings)
 if pd.notna(bsl) and bsl > close: return bsl
 ```
+
 `bsl_price` viene de `detect_liquidity` (liquidity.py): agrupa swings en banda ATR/4 y asigna el precio PROMEDIO del cluster. Si el rango M15 es amplio, el cluster queda lejos → TP lejano → hold_limit.
 
 Corrección v30: TP = el **swing de liquidez opuesto MÁS CERCANO** al entry (primer BSL/SSL que el precio toca yendo a favor), no el cluster. El repo ya tiene `bsl_price`/`ssl_price` por vela; la lógica debe tomar el nivel cercano, no la zona.

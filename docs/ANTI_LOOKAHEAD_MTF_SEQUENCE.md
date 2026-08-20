@@ -39,7 +39,7 @@ df_TF.iloc[0 : asof_bar + 1]
 Incluye:
 
 | Insumo | Regla anti-lookahead |
-|--------|----------------------|
+| -------- | ---------------------- |
 | Swings estructurales | Pivotes **causales** (`left` barras a cada lado ya cerradas; confirmación en `j+left`) |
 | Dealing range | High/low del lookback terminado en `asof_bar` |
 | EQH/EQL | Solo swings con `bar ≤ asof_bar` |
@@ -110,7 +110,7 @@ Tests unitarios cubren el caso D1 futuro ignorado (`test_asof_ignores_future_htf
 ## 5. Caveats conocidos (no ocultar)
 
 | Componente | Riesgo | Estado |
-|------------|--------|--------|
+| ------------ | -------- | -------- |
 | `detectors.bos.detect_bos` (pivotes) | **RESUELTO 2026-08-19** — `_swing_points` publica el pivote en la barra de confirmación `conf = j + lookback`, usando solo barras ya cerradas. Sin `center=True`. Verificado en `detectors/bos.py:25-46` y tests anti-look-ahead (5/5 PASS). | NO es deuda viva; eliminado de la lista de riesgos tras auditoría de código. |
 | Prefijo BOS en snapshot | Al cortar en `asof_bar`, el centrado cerca del borde es incompleto | Aceptable como conservador; no usa datos `> t` del frame multi-TF |
 | `WAITING_RETEST` | Requiere feed FVG activo | Respuesta `None` hasta cablear zonas FVG al grafo |

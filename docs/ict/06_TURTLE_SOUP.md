@@ -1,7 +1,7 @@
 # ICT — Turtle Soup (reversión contra tendencia)
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `06_TURTLE_SOUP.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -14,7 +14,7 @@
 ## 0. Contrato operativo
 
 | # | Condición | Obligatorio |
-|---|-----------|:-----------:|
+| --- | ----------- | :-----------: |
 | 1 | Sesgo HTF claro (BULLISH o BEARISH) | Sí |
 | 2 | Setup **opuesto** al sesgo (contratrend) | Sí |
 | 3 | Sweep de liquidez del lado “tramposo” (SSL si long de giro, BSL si short) | Sí |
@@ -53,7 +53,7 @@ ready = counter and sweep and (choch_or_bos_flip) and zone and rr_ok
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | Checklist | `ict_backtest/rules.py` `counter_trend=True` | Hoy mezclado en `intradia` |
 | UI | `resumen_widget.py` score Turtle Soup | Etiqueta contratrend |
 | Secuencia | `ict_backtest/sequence.py` | Modo counter_trend + CHOCH antes de BOS |

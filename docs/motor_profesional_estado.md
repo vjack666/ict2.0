@@ -85,6 +85,7 @@ choch_class:
 ## 4. Evidencia (reproducible)
 
 ### 4.1 Generación de dataset (TODA la data)
+
 ```
 scripts/gen_choch_dataset.py  (CHOCH_IA_DISABLE=1 para features estables)
 -> data/learning/choch/full/features.jsonl
@@ -93,11 +94,13 @@ scripts/gen_choch_dataset.py  (CHOCH_IA_DISABLE=1 para features estables)
    D1: 5 CHOCH REAL    | label_ep=1:0
    TOTAL: 2125
 ```
+
 Label `label_ep`: en N velas posteriores (M5=50, H4=20, D1=10) el precio
 cerró >= k*rango_promedio (M5=2.0, H4=1.5, D1=1.0) en la dirección del giro
 Y el CHOCH no fue invalidado.
 
 ### 4.2 Entrenamiento y ROC
+
 ```
 scripts/train_choch_full.py
   label_ep | RF: 0.795 | GBM: 0.798 | LR: 0.742   -> MEJOR GBM 0.798
@@ -105,9 +108,11 @@ scripts/train_choch_full.py
   label_dir  | RF: 0.594 | GBM: 0.570 | LR: 0.556
 MODELO FINAL: GBM label_ep ROC=0.798 -> GUARDADO full/model.joblib
 ```
+
 ROC 0.798 >> 0.55 umbral mínimo útil. **Edge real confirmado.**
 
 ### 4.3 Integración activa (smoke test)
+
 ```
 scripts/smoke_motor_lectura.py
   build_htf_narrative(m15, htf_frames={D1,H4}, use_tools=True)
@@ -162,7 +167,7 @@ Bitácora completa: `.hermes-worklog/2026-08-16_1330_APRENDIZAJE_ICT.md`.
 ### 8.1 CUADRO — Distribución `human_score` (rúbrica teacher)
 
 | Evento | n | premium | useful | noise | mean | Nota |
-|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- |
 | CHOCH | 2.125 | 0 (0.0%) | 417 (19.6%) | 1.707 (80.3%) | 61.7 | rúbrica ICT estricta, discrimina |
 | BOS | 86.870 | 0 (0.0%) | 3.044 (3.5%) | 83.826 (96.5%) | 13.96 | tras Opción B (validador sostenido) |
 | SWING | 614.841 | — | — | — | — | `N/A_PRIMITIVO` (no es setup) |
@@ -173,7 +178,7 @@ BOS contexto: `strict` → 99.1% invalidated; `sustained` (Opción B) →
 ### 8.2 Hallazgo P3 — Naturaleza CHOCH (721 CHOCH M5 2026-08, 50 velas post)
 
 | Desenlace | % |
-|---|---|
+| --- | --- |
 | Reclaim (recupera nivel, falla giro) | **92.8%** |
 | BOS confirm (excursión ≥2 rango) | **7.2%** |
 | Movimiento neto en dir del giro | 45.4% (≈ random) |
@@ -185,7 +190,7 @@ con BOS". El 92.8% reclaim es feature del dominio (no bug). Coherente con el
 ### 8.3 Componentes
 
 | Módulo | Rol | Commit |
-|---|---|---|
+| --- | --- | --- |
 | `tools/block_builder.py` | P1: bloques velas (61×7) por CHOCH | `4dd90aa` |
 | `tools/teacher_rubric.py` | rúbrica ICT (CHOCH + BOS) como código | `4dd90aa` |
 | `scripts/train_block_encoder.py` | P2: encoder CNN-1D (test_mse=0.008 plano) | `4dd90aa` |
@@ -224,14 +229,12 @@ gradual (aún no cableado al motor en vivo).
 - `4dd90aa` — feat(learn): P1–P4 sistema aprendizaje ICT (encoder + rúbrica + probe + labels)
 - `712048b` — feat(learn): Opción B bos_validate (sostenida) + P5 nature head + etiquetas BOS/SWING
 
-
-
 ---
 
 ## 10. Calibración umbrales 2026-08-17 (nota en el cuadro)
 
 | Parámetro | Antes | Ahora | Dónde |
-|-----------|-------|-------|-------|
+| ----------- | ------- | ------- | ------- |
 | `choch_class` premium | score ≥ 85 | **score ≥ 90** | `tools/confirmation_thresholds.py` → `choch_quality` / `teacher_rubric` |
 | `choch_class` useful | 70–84 | **70–89** | idem |
 | Excursión label (K) M5/H4/D1 | 2.0 / 1.5 / 1.0 | **4.5 / 3.0 / 2.0** (modo CONFIRM) | `scripts/gen_choch_dataset.py` |

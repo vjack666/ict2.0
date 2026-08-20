@@ -382,27 +382,35 @@ object_move_windows
 ## 12. Gates propuestos
 
 ### TNA-01 — Integridad del trace
+
 PASS si todos los estados tienen enter/exit coherentes y no existen timestamps imposibles.
 
 ### TNA-02 — PIT
+
 PASS si no existen transiciones, invalidaciones, snapshots u objetos que dependan del futuro.
 
 ### TNA-03 — Rollback determinista
+
 PASS si una invalidación conduce al estado definido por contrato y conserva historial.
 
 ### TNA-04 — Revisitabilidad
+
 PASS si el AHF puede reabrir una capa sin borrar el contexto histórico previo.
 
 ### TNA-05 — Duración observable
+
 PASS si todas las transiciones reportan barras y timestamps comparables.
 
 ### TNA-06 — No-stuck / clasificación
+
 No exige cero estados atascados. Exige que estén identificados y cuantificados.
 
 ### TNA-07 — Magnitud de objetos
+
 PASS si FVG/OB tienen tamaño en pips reproducible y las ventanas posteriores están estrictamente después del `birth_bar`.
 
 ### TNA-08 — Separación de medición y trading
+
 PASS si ninguna métrica de distancia posterior es interpretada por el auditor como TP/SL/entrada.
 
 ## 13. Qué NO mide

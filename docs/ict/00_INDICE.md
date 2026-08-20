@@ -15,7 +15,7 @@ Cada archivo es un “libro”. La app y los agentes deben poder **citar el cont
 ## Libros de setup (ICT)
 
 | ID | Libro | Contrato clave | Estado docs |
-|----|-------|----------------|-------------|
+| ---- | ------- | ---------------- | ------------- |
 | 01 | [Killzones](01_KILLZONES.md) | Ventana horaria unificada | ✅ 2.0 · Needs-code TZ |
 | 02 | [MSS / CHoCH / BOS](02_MSS_CHOCH.md) | Secuencia BOS→CHOCH→BOS | ✅ 2.0 |
 | 03 | [FVG](03_FVG.md) | 3 velas + unfilled | ✅ 2.0 |
@@ -33,7 +33,7 @@ Cada archivo es un “libro”. La app y los agentes deben poder **citar el cont
 ## Libros de integración / validación
 
 | ID | Libro | Notas |
-|----|-------|-------|
+| ---- | ------- | ------- |
 | 09 | [Optimizador bayesiano](09_OPTIMIZADOR_BAYESIANO.md) | **Anexo** de validación, no setup ICT |
 | 10 | [Sweep + OTE filtros](10_SWEEP_OTE_FILTRO.md) | Ítem D; OTE casi no-op |
 | 11 | [Manual vs Auto](11_SWEEP_OTE_MANUAL_VS_AUTO.md) | Política híbrida / automation-ready |
@@ -54,7 +54,7 @@ Cada archivo es un “libro”. La app y los agentes deben poder **citar el cont
 ## Cómo se usa en SMC-SYSTEMS
 
 | Capa | Rol |
-|------|-----|
+| ------ | ----- |
 | `detectors/` | Materializa reglas (BOS, CHOCH, OB, FVG, liquidez, KZ) |
 | `signals/pipeline.py` | Confluencia / filtros |
 | `ict_backtest/` | Misma lógica de checklist que el observador (objetivo) |

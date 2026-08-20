@@ -4,7 +4,7 @@ Cada evento con su definición y firma de volumen. Orden típico:
 PSY → BC → AR → ST → (Phase B: upthrusts) → UT/UTAD → SOW → LPSY → Markdown.
 
 | Evento | Nombre | Qué es | Volumen |
-|--------|--------|-------|---------|
+| -------- | -------- | ------- | --------- |
 | **PSY** | Preliminary Supply | Primera venta importante; velas amplias que frenan el up-momentum. Oferta asoma. | Alto, creciente |
 | **BC** | Buying Climax | Pico del rango. Surtido alcista extremo; smart money descarga al público. | **Máximo del chart** |
 | **AR** | Automatic Reaction | Caída tras BC; define el piso del rango de distribución. | Alto (venta) |
@@ -15,6 +15,7 @@ PSY → BC → AR → ST → (Phase B: upthrusts) → UT/UTAD → SOW → LPSY �
 | **LPSY** | Last Point of Supply | Último rally débil; no recupera el rango. Última entrada short barata. | **Bajo** (sin demanda) |
 
 ## Notas de lectura
+
 - **BC y UTAD son los techos de volumen** — ahí smart money entrega. Si ves volumen extremo
   en un pico y el precio no sigue, es absorción (Ley 3).
 - **ST y LPSY son de volumen decreciente** — cada rebote tiene menos gas. Esa "shrinking

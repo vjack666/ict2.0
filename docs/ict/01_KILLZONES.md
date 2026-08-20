@@ -1,7 +1,7 @@
 # ICT — Killzones (sesiones de actividad institucional)
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `01_KILLZONES.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -17,7 +17,7 @@
 ## 0. Contrato operativo (sí / no)
 
 | # | Condición medible | Obligatorio |
-|---|-------------------|:-----------:|
+| --- | ------------------- | :-----------: |
 | 1 | Existe una **ventana horaria** de alta liquidez definida (London Open y/o NY AM/PM) | Sí |
 | 2 | El timestamp de la vela (o reloj vivo) cae **dentro** de esa ventana en la zona acordada | Sí (para Silver Bullet / score KZ) |
 | 3 | La zona horaria del cálculo está **documentada** (broker / UTC / ET) y es la misma en UI y backtest | Sí |
@@ -47,7 +47,7 @@ El rango de la sesión **Asian** no es “la killzone de entrada”: define **li
 ### Horarios de referencia (ET — mentorship / literatura)
 
 | Killzone | Horario ET (invierno) | Rol |
-|----------|----------------------|-----|
+| ---------- | ---------------------- | ----- |
 | Asian | 20:00–23:00 | Rango / liquidez |
 | London Open | 02:00–05:00 | Primera ventana fuerte |
 | New York AM | 08:30–11:00 | Máxima liquidez |
@@ -68,7 +68,7 @@ kz = etiqueta si h ∈ [ini, fin) de alguna banda
 **Riesgos**
 
 | Riesgo | Mitigación |
-|--------|------------|
+| -------- | ------------ |
 | TZ broker ≠ ET | Un solo helper de conversión; documentar default |
 | Backtest con reloj PC | Usar **solo** `ts` de vela |
 | Chart Shift | No afecta cálculo; solo lectura visual en MT5 |
@@ -79,13 +79,14 @@ kz = etiqueta si h ∈ [ini, fin) de alguna banda
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | Detector | `detectors/killzones.py` | Columna `kz` / bandas para mapa |
 | Backtest | `ict_backtest/rules.py` → `killzone_en(ts)`, `KILLZONES_UTC` | KZ histórica |
 | UI | `resumen_widget.py` → `killzone_activa_ahora()` | KZ reloj vivo |
 | Mapa | `scripts/mapa_precio.py` | Pintar bandas |
 
 **Estado actual (hueco TZ):**  
+
 - Mentorship: horas **ET**.  
 - `killzones.py`: horas **locales del chart/broker**.  
 - `rules.py`: bandas **UTC** aproximadas.  
@@ -98,7 +99,7 @@ Tres relojes → riesgo de desalineación UI ↔ backtest.
 ## 5. Auditoría y huecos
 
 | ID | Hallazgo | Estado |
-|----|----------|--------|
+| ---- | ---------- | -------- |
 | KZ-1 | Triple definición de zona (ET / broker / UTC) | ✅ R2 (UTC canónico + display operador vía `app_observador/core/timezone.py`, env SMC_TZ) |
 | #1 Look-ahead | No aplica a KZ puras | ✅ N/A |
 | Silver Bullet | Depende de KZ correcta | ⚠️ Acoplado a KZ-1 |

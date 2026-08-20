@@ -10,7 +10,7 @@
 ## Comparación embudo: lite vs canónico
 
 | Métrica | BOS-lite | **BOS canónico** |
-|---------|---------:|-----------------:|
+| --------- | ---------: | -----------------: |
 | Cadenas totales | 1.460 | 1.460 |
 | Depth 1 (POOL) | 767 | 767 |
 | Depth 2 (+SWEEP) | 575 | 575 |
@@ -25,7 +25,7 @@ El BOS canónico **endurece** el paso STRUCTURE (60 → 21). Más displacement l
 ## Expectancy (end>0 / mean move) +24 H1
 
 | Bucket | mode | n | end>0 +24 | mean end +24 |
-|--------|------|--:|----------:|-------------:|
+| -------- | ------ | --: | ----------: | -------------: |
 | COMPLETE @ RETEST | canonical | 3 | 66.7 % | +0.0060 |
 | COMPLETE @ RETEST | lite | 5 | 80.0 % | +0.0043 |
 | DEPTH≥4 @ BOS | canonical | 24 | 54.2 % | −0.0002 |

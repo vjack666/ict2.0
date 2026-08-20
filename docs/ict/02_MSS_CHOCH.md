@@ -1,7 +1,7 @@
 # ICT — MSS, CHoCH y BOS (estructura de mercado)
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `02_MSS_CHOCH.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -17,7 +17,7 @@
 ## 0. Contrato operativo
 
 | # | Condición | Obligatorio |
-|---|-----------|:-----------:|
+| --- | ----------- | :-----------: |
 | 1 | **BOS** = ruptura de swing **a favor** de la tendencia vigente, preferible por **cierre de cuerpo** | Sí (continuación) |
 | 2 | **CHoCH** = primera ruptura del swing **contrario**, idealmente del nivel del **último BOS** | Sí (aviso de giro) |
 | 3 | **MSS** = CHoCH + desplazamiento + (ideal) BOS de confirmación en la nueva dirección | Sí (reversión aceptada) |
@@ -32,7 +32,7 @@
 ## 1. Teoría — jerarquía
 
 | Patrón | Señal | Implicación |
-|--------|-------|-------------|
+| -------- | ------- | ------------- |
 | **BOS** | Continuación | La tendencia sigue viva |
 | **CHoCH** | Aviso temprano | Posible giro — **no** confirmación sola |
 | **MSS / MSB** | Reversión fuerte | Nueva tendencia formándose |
@@ -41,15 +41,18 @@ Nomenclatura: ICT usa MSS; SMC genérico MSB.
 En SMC-SYSTEMS: **MSS ≈ BOS tras CHoCH con desplazamiento**.
 
 ### BOS
+
 - Rompe swing en dirección de la tendencia.  
 - Regla dura (MQL5): validar por **close**, no solo mecha.
 
 ### CHoCH
+
 - En uptrend: rompe el HL del último BOS → LL.  
 - En downtrend: rompe el LH del último BOS → HH.  
 - Fake-out: mecha, vela chica, noticias → tratar con cautela.
 
 ### Secuencia BOS → CHOCH → BOS
+
 1. BOS mantiene marea.  
 2. CHOCH avisa giro rompiendo el swing del **último BOS**.  
 3. BOS nuevo confirma el giro. Sin paso 3, operar CHOCH solo es agresivo.
@@ -75,7 +78,7 @@ uptrend:  BOS↑  BOS↑  …
 ## 3. Algoritmo y riesgos
 
 | Riesgo | Detalle | Mitigación en repo |
-|--------|---------|-------------------|
+| -------- | --------- | ------------------- |
 | Look-ahead en swings | Ventana centrada expone pivote antes de tiempo | #1: ventana NO centrada + `shift(lookback)` |
 | CHOCH = BOS | Copia literal | #2: rompe nivel del último BOS opuesto |
 | Chart Shift | Solo visual MT5 | Backtest en datos crudos |
@@ -89,7 +92,7 @@ Apps de referencia: Market Structure Sentinel (MQL5 22249), EA BOS (15017, bug f
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | Estructura backtest | `ict_backtest/market_structure.py` | BOS/CHOCH real |
 | Detectores | `detectors/bos.py`, `choch.py` | Pipeline / mapa |
 | Confluencia | `signals/pipeline.py` | Pesos BOS 1.0, CHOCH 3.0; `filter_choch_bos_confirm` opcional |
@@ -103,7 +106,7 @@ Verificado: `up_choch = (close > last_bos_level) & (last_bos_dir == -1)` (patró
 ## 5. Auditoría (cierre de tesis)
 
 | Hallazgo | Antes | Después | Impacto |
-|----------|-------|---------|---------|
+| ---------- | ------- | --------- | --------- |
 | #1 Look-ahead | Swing en fila del pico | Desde confirmación | PF cadena 2.003→**1.548** |
 | #2 CHOCH=BOS | 0 filas distintas | CHOCH real | Giro genuino |
 | Gate CHOCH+BOS | — | Cableado, default OFF | METRICS §5: no ayuda EURUSD naive |

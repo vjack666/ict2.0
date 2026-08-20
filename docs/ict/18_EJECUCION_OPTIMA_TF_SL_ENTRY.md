@@ -1,7 +1,7 @@
 # ICT — Ejecución Óptima: jerarquía 3 capas y SL/Entry por temporalidad
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `18_EJECUCION_OPTIMA_TF_SL_ENTRY.md` |
 | **Versión** | 1.0 |
 | **Fecha** | 2026-07-14 |
@@ -17,7 +17,7 @@
 ## 0. Contrato operativo (CITABLE — regla dura de ejecución)
 
 | # | Condición medible | Obligatorio |
-|---|-------------------|:-----------:|
+| --- | ------------------- | :-----------: |
 | 1 | La lectura es **top-down, siempre**: Bias (HTF) → Zona (ITF) → Disparo (LTF exec). Nunca de abajo hacia arriba. | Sí |
 | 2 | **El HTF manda sobre el LTF.** El sesgo se escribe en el HTF antes de ejecutar en el LTF. El LTF debe coincidir con el HTF, no al revés. | Sí |
 | 3 | **SL y entry se calculan SIEMPRE en el exec TF (LTF).** Nunca en un TF mayor (HTF/ITF). | Sí |
@@ -39,7 +39,7 @@
 ICT no usa "HTF → exec" de 2 niveles: usa **3 capas funcionales**, cada una con un TF distinto:
 
 | Capa | Rol | Day trading | Scalping | Swing |
-|------|-----|-------------|----------|-------|
+| ------ | ----- | ------------- | ---------- | ------- |
 | **HTF (Bias)** | Dirección macro, narrativa, liquidez mayor | H1 (o H4) | M15 / H1 | D1 |
 | **ITF (Zona)** | Dónde reacciona el precio: POIs, BOS, FVG, OB, Breaker | M15 | M5 | H4 |
 | **LTF / exec (Entry+SL)** | Disparo fino, SL, TP | M15 | M1 / M3 / M5 | H1 |
@@ -53,6 +53,7 @@ El error que quiebra cuentas retail (tradingstrategyguides, Day 10): *"la mayor�
 ## 2. Práctica del trader — ejecución óptima (modelo 2022 + Silver Bullet)
 
 ### Intradía (HTF H1/H4 → ITF M15 → exec M15)
+
 1. **Bias (HTF):** definir dirección del día (PDH/PDL, apertura semanal, BOS diario).
 2. **Zona (ITF M15):** marcar BSL/SSL y PD Arrays (FVG/OB/Breaker) en M15.
 3. **Disparo (exec M15):** dentro de killzone London/NY, esperar sweep + BOS/CHOCH + retorno a la zona.
@@ -61,6 +62,7 @@ El error que quiebra cuentas retail (tradingstrategyguides, Day 10): *"la mayor�
 6. **TP:** liquidez opuesta M15 MÁS CERCANA. RR ≥ 1:3.
 
 ### Scalping — Silver Bullet (HTF M15/H1 → ITF M5 → exec M1/M3/M5)
+
 1. **Bias (HTF):** sesgo del día filtra dirección (solo setups a favor).
 2. **Zona (ITF M5):** marcar BSL/SSL en M15 (padre) y estructura en M5.
 3. **Disparo (exec M1/M3/M5):** en killzone (London 03–04, NY AM 10–11, NY PM 02–03 ET), tras sweep esperar MSS y FVG en el exec TF.
@@ -69,6 +71,7 @@ El error que quiebra cuentas retail (tradingstrategyguides, Day 10): *"la mayor�
 6. **TP:** liquidez opuesta INMEDIATA del exec TF. RR 1:3 rápido, salida en minutos.
 
 **M5 vs M1 (cuándo usar cada uno):**
+
 - **M5 = exec TF estándar.** Lectura padre + ejecución legible, menos ruido. ICT: *"no recomiendo el 1m hasta haber logueado al menos 100 setups en 5m"*.
 - **M1 (o M3) = exec TF fino para veteranos.** Entrada quirúrgica en el "tap" del FVG, SL más corto = mejor R, pero magnífica el ruido (te sacan por el spike de 1 vela).
 - Regla: arrancar en M5; migrar a M1/M3 solo con experiencia. El SL SIEMPRE en la vela del FVG del exec TF elegido.
@@ -101,7 +104,7 @@ El error que quiebra cuentas retail (tradingstrategyguides, Day 10): *"la mayor�
 ## 4. Código SMC-SYSTEMS (dónde vive y qué falta)
 
 | Pieza | Ruta | Rol hoy | Gap |
-|-------|------|---------|-----|
+| ------- | ------ | --------- | ----- |
 | Motor de señales | `ict_backtest/engine.py` `build_signals_from_frames` | Itera `ltf` y saca SL de ese row. Hoy `exec_tf == ltf` (no hay exec_tf separado). | 🔴 falta parámetro `exec_tf` explícito |
 | SL estructural | `ict_backtest/engine.py` `calc_structural_sl` (línea 316) | Lee `sweep_low/high` del row pasado. Si el row es del ltf, el SL sale del ltf. | 🔴 debe recibir el row del EXEC_TF |
 | Jerarquía de TF | `ict_backtest/engine.py` `TF_FREQ` (línea 250) | Soporta M1/M3? NO — solo M1/M5/M15/H1/H4/D1. Falta M3. | 🔴 agregar M3 |

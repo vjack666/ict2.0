@@ -73,6 +73,7 @@ Cada objeto debe conservar como mínimo: id, dirección, TF, timestamps de creac
 Implementar o corregir FVG y OB usando únicamente información disponible al momento de confirmación.
 
 Separar:
+
 - candidate_time;
 - confirmation_time;
 - tradable_time.

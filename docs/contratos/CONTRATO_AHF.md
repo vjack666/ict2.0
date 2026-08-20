@@ -28,7 +28,7 @@ Estados de terminal / espera también incluyen el estado actual de retroceso (`W
 ## 3. Eventos de transición (hacia adelante)
 
 | Evento | Desde | Hacia | Condición mínima (v1) |
-|--------|-------|-------|------------------------|
+| -------- | ------- | ------- | ------------------------ |
 | `D1_PASS` | WAIT_D1 | D1_LOCKED | Snapshot D1: estructura conocida **o** pool de liquidez |
 | *(auto)* | D1_LOCKED | WAIT_H4 | Inmediato al lock |
 | `H4_PASS` | WAIT_H4 | H4_LOCKED | Snapshot H4 disponible as-of t |
@@ -42,7 +42,7 @@ Estados de terminal / espera también incluyen el estado actual de retroceso (`W
 ## 4. Invalidación (retroceso)
 
 | Evento | Efecto |
-|--------|--------|
+| -------- | -------- |
 | `H1_INVALIDATED` | → WAIT_H1 (desde WAIT_LTF / SETUP_READY) |
 | `H4_INVALIDATED` | → WAIT_H4 |
 | `D1_INVALIDATED` | → WAIT_D1 |

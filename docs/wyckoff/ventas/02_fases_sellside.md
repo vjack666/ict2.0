@@ -5,7 +5,9 @@ que el patrón avanza. Saber qué mirar en cada etapa separa la entrada temprana
 el quiebre.
 
 ## Phase A — Fin de la tendencia alcista
+
 La tendencia agota vapor. Cuatro eventos marcan la transición al rango de distribución:
+
 - **PSY** (Preliminary Supply): primera ola de venta significativa, velas amplias en
   volumen alto que frenan el momentum. La oferta aparece arriba.
 - **BC** (Buying Climax): el pico. Surtido alcista de volumen extremo que atrae la última
@@ -16,13 +18,16 @@ La tendencia agota vapor. Cuatro eventos marcan la transición al rango de distr
   menor → confirma el sobreabastecimiento en la cima.
 
 ## Phase B — Consolidación (el rango)
+
 La fase más larga y la que más engaña. El precio oscila dentro del rango (BC alto ↔ AR bajo)
 mientras el Composite Operator sigue distribuyendo. **Upthrusts** (saltos) por encima del
 máximo del rango en volumen decreciente son comunes: atrapan compradores de breakout y dan
 a las instituciones oferta fresca para vender. **No persigas esos movimientos.**
 
 ## Phase C — La última trampa
+
 Contiene el evento más peligroso de todo el esquema:
+
 - **UTAD** (Upthrust After Distribution): quiebre abrupto por encima del máximo del rango
   que *parece* un breakout confirmado. El volumen puede subir al inicio pero no se sostiene.
   Es un shakeout deliberado: los cazadores de breakout compran agresivamente, dándole al
@@ -33,7 +38,9 @@ Contiene el evento más peligroso de todo el esquema:
 > bajo volumen del alto BC que revierte. No esperes el esquema perfecto.
 
 ## Phase D — Confirmación de debilidad
+
 La oferta ya manda. Dos eventos lo confirman:
+
 - **SOW** (Sign of Weakness): bajada amplia en volumen alto que rompe el soporte AR. El
   agotamiento de la demanda ya no es ambiguo.
 - **LPSY** (Last Point of Supply): el rally débil de baja volumen tras el SOW. El precio no
@@ -41,6 +48,7 @@ La oferta ya manda. Dos eventos lo confirman:
   short de bajo riesgo** antes de que el markdown acelere.
 
 ## Phase E — Markdown
+
 El precio sale del rango de distribución y no mira atrás. El markdown es una caída tendencial
 sostenida cuya profundidad es típicamente proporcional al tiempo en el rango (Ley de
 Causa y Efecto). Quien leyó la distribución temprano está posicionado; el resto persigue la salida.
@@ -50,7 +58,7 @@ Causa y Efecto). Quien leyó la distribución temprano está posicionado; el res
 ## En SMC-SYSTEMS (código)
 
 | Fase | Señal en sistema | ICT equivalente |
-|------|------------------|-----------------|
+| ------ | ------------------ | ----------------- |
 | A–B | Sesgo bajista / rango HTF | PO3 A (causa) |
 | C UTAD | Exhaustion sobrecompra + sweep BSL | PO3 M |
 | D SOW/LPSY | BOS bajista + OB | PO3 D / short |

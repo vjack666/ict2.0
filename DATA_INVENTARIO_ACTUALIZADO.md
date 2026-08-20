@@ -11,7 +11,7 @@ La implementación continuará con los datos EURUSD disponibles en H1, H4 y D1. 
 ## Datos disponibles
 
 | TF | Estado | Fuente | Rango observado | Uso |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | D1 | DISPONIBLE | ejtraderLabs/historical-data | 2012-12-04 → 2022-03-04 | contexto macro, estructura, OB/FVG HTF |
 | H4 | DISPONIBLE | ejtraderLabs/historical-data | 2012-11-26 20:00 → 2022-03-04 20:00 | estructura HTF, FVG/OB |
 | H1 | DISPONIBLE | ejtraderLabs/historical-data | 2012-11-16 00:00 → 2022-03-04 23:00 | desarrollo principal de FVG/OB |

@@ -17,7 +17,7 @@ Ejecutar la pila pre-backtest A0→A9 y el funnel real de detectores FVG/OB sobr
 ## 2. Data
 
 | TF | Barras (limpias) | Rango | Años | Bad OHLC eliminados |
-|----|----------------:|-------|-----:|--------------------:|
+| ---- | ----------------: | ------- | -----: | --------------------: |
 | H1 | 124.377 | 2006-01-01 21:00 → 2025-12-31 21:00 | 20.0 | 13 |
 | H4 | 32.133 | 2006-01-01 20:00 → 2025-12-31 20:00 | 20.0 | 4 |
 | D1 | 6.258 | 2006-01-01 → 2025-12-31 | 20.0 | 0 |
@@ -34,7 +34,7 @@ Ejecutar la pila pre-backtest A0→A9 y el funnel real de detectores FVG/OB sobr
 ## 3. Stack A0 → A9 (contratos + smoke + gobernanza)
 
 | Gate | Resultado |
-|------|-----------|
+| ------ | ----------- |
 | A0 Data Integrity | PASS |
 | A1 Schema | PASS |
 | A2 Point-in-Time | PASS |
@@ -58,7 +58,7 @@ Artefacto: `reports/audits/A0_A9_audit_stack.json`
 ## 4. Funnel FVG / OB (detectores canónicos, 20Y)
 
 | TF | Barras | FVG | bull / bear | OB | bull / bear | FVG/bar | OB/bar |
-|----|-------:|----:|------------:|---:|------------:|--------:|-------:|
+| ---- | -------: | ----: | ------------: | ---: | ------------: | --------: | -------: |
 | H1 | 124.377 | 22.478 | 11.253 / 11.225 | 2.799 | 1.346 / 1.453 | 18.1 % | 2.25 % |
 | H4 | 32.133 | 6.497 | 3.218 / 3.279 | 862 | 436 / 426 | 20.2 % | 2.68 % |
 | D1 | 6.258 | 1.543 | 757 / 786 | 214 | 85 / 129 | 24.7 % | 3.42 % |
@@ -83,7 +83,7 @@ Artefacto: `reports/audits/A0_A9_audit_stack.json`
 ## 6. Comparación breve 10Y (ejtrader) vs 20Y (Dukascopy)
 
 | Aspecto | 10Y (2012–2022) | 20Y (2006–2025) |
-|---------|-----------------|-----------------|
+| --------- | ----------------- | ----------------- |
 | Fuente | ejtraderLabs CSV | Dukascopy bid |
 | H1 barras | ~57.6k | ~124.4k |
 | Funnel FVG/OB | no medido en aquella corrida CHOCH | medido aquí |
@@ -96,7 +96,7 @@ Las densidades FVG/OB en 20Y son estables y utilizables como baseline de poblaci
 ## 7. Recomendaciones
 
 | ID | Acción | Prioridad |
-|----|--------|-----------|
+| ---- | -------- | ----------- |
 | R1 | Formalizar regla de confluencia FVG↔OB y re-medir funnel | ALTA |
 | R2 | Publicar evidencia en CI (`AUDIT-CI-01`, `AUDIT-FUNNEL-01`) | ALTA |
 | R3 | No re-correr funnel idéntico sin cambio de motor | — |
@@ -121,7 +121,7 @@ data/raw/EURUSD/EURUSD_{H1,H4,D1}.parquet   (gitignored)
 ## 9. Gate de esta auditoría
 
 | Criterio | Resultado |
-|----------|-----------|
+| ---------- | ----------- |
 | Data 20Y íntegra | PASS |
 | A0–A9 contractual | PASS |
 | Funnel FVG/OB ejecutable 20Y | PASS |

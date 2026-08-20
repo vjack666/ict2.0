@@ -248,21 +248,27 @@ Cualquier violación debe producir fallo de test y bloquear el Gate.
 ## 8. Plan y gates vigentes
 
 ### Fase 0 — Auditoría
+
 `PASS`
 
 ### Fase A — Fundaciones
+
 `PASS` — CI reproducible e importabilidad del motor.
 
 ### Fase B — Contratos de dominio FVG/OB
+
 `PASS` — 13 tests.
 
 ### Fase C — Detección
+
 `PASS` — 20 tests; FVG + OB canónicos y anti-look-ahead por prefijo.
 
 ### Fase D — Relación causal / lineage
+
 `PASS` — 27 tests; `CausalLink`, orden temporal, resolución de padres y duplicados.
 
 ### Fase E — Ejecución
+
 `READY`.
 
 Alcance previsto:
@@ -272,18 +278,21 @@ Alcance previsto:
 sin mirar datos futuros y sin convertir la aparición del objeto en entrada automática.
 
 ### Fase F — Aprendizaje / ablación
+
 `PENDING`.
 
 ### Fase G — OOS / robustez
+
 `PENDING`.
 
 ### Fase H — Cierre
+
 `PENDING`.
 
 ## 9. Archivo por archivo — estado real
 
 | Archivo | Estado | Próposito |
-|---|---|---|
+| --- | --- | --- |
 | `engine/market_object.py` | IMPLEMENTADO | contrato de objetos y lifecycle |
 | `engine/detectors/fvg.py` | IMPLEMENTADO | FVG canónico causal |
 | `engine/detectors/ob.py` | IMPLEMENTADO | OB canónico con follow-through cerrado |

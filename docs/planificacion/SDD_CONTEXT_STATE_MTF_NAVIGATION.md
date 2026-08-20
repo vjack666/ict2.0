@@ -22,7 +22,7 @@ alineación EMA20/50 H4+D1 + FVG → outcome +24 H1  ≈ 50% (a veces peor)
 ### Lo que **no** demuestra
 
 | Afirmación incorrecta | Por qué es incorrecta |
-|-----------------------|------------------------|
+| ----------------------- | ------------------------ |
 | “HTF no tiene edge” | Solo se probó un proxy pobre |
 | “ICT HTF no sirve” | No se midió structure/POI/dealing range/liquidity HTF |
 | “Multi-TF está falsado” | Se falsó co-ocurrencia de flags + EMA, no navegación jerárquica |
@@ -230,9 +230,9 @@ H1  → H4_INVALIDATED → WAIT_H4
 H4  → D1_INVALIDATED → WAIT_D1
 ```
 
-5. El retroceso debe quedar registrado como evento de transición; no se permite “borrar” el contexto previo para maquillar la trayectoria.
-6. `Context State`, `constraints` y `navigation state` **no son entradas**. La entrada sólo puede existir después de que E/F definan un trigger y una regla de ejecución explícitos.
-7. El AHF debe conservar `state`, `active_tf`, `confirmed_context`, `transition_event`, `transition_time`, `parent_state` e `invalidation_reason` para auditoría.
+1. El retroceso debe quedar registrado como evento de transición; no se permite “borrar” el contexto previo para maquillar la trayectoria.
+2. `Context State`, `constraints` y `navigation state` **no son entradas**. La entrada sólo puede existir después de que E/F definan un trigger y una regla de ejecución explícitos.
+3. El AHF debe conservar `state`, `active_tf`, `confirmed_context`, `transition_event`, `transition_time`, `parent_state` e `invalidation_reason` para auditoría.
 
 Ejemplo conceptual:
 
@@ -271,7 +271,7 @@ Hasta que exista contrato ejecutable de capas `htf / itf / exec_tf` separados (d
 ## 5. Matriz de hipótesis a medir (orden de investigación)
 
 | Tipo de edge | Pregunta operativa | Prioridad |
-|--------------|-------------------|-----------|
+| -------------- | ------------------- | ----------- |
 | Location | ¿Setups dentro de POI HTF tienen mejor distribución (R/MAE/path)? | Alta |
 | Selection | ¿El filtro HTF reduce malas sin destruir buenas (n y calidad)? | Alta |
 | Regime | ¿El outcome del mismo setup cambia por estado HTF? | Alta |
@@ -288,7 +288,7 @@ Hasta que exista contrato ejecutable de capas `htf / itf / exec_tf` separados (d
 ## 6. Qué queda prohibido / bloqueado
 
 | Acción | Estado |
-|--------|--------|
+| -------- | -------- |
 | Usar EMA20/50 como definición normativa de HTF bias | **Prohibido** como conclusión de tesis; solo ablación histórica |
 | Declarar edge HTF por el EXP multi-factor | **Prohibido** |
 | Entrenar IA a “pasearse” multi-TF sin este SDD + contrato de capas + PIT | **Bloqueado** |
@@ -300,7 +300,7 @@ Hasta que exista contrato ejecutable de capas `htf / itf / exec_tf` separados (d
 ## 7. Relación con el plan Hermes
 
 | Fase plan | Cómo encaja este SDD |
-|-----------|----------------------|
+| ----------- | ---------------------- |
 | D (relación causal) | Secuencia + lineage LTF |
 | D-extension / sequential engine | Objeto de timing |
 | **Este SDD** | Capa de **contexto** antes de E (ejecución) |

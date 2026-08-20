@@ -22,7 +22,7 @@ Context State  ≠  EMA20/50 bias
 Es la respuesta auditable a:
 
 | Pregunta | Capa |
-|----------|------|
+| ---------- | ------ |
 | ¿Hay contexto relevante? | D1 (HTF) |
 | ¿Dónde estoy dentro del contexto? | H4 (ITF) |
 | ¿Qué régimen / bias estructural rige? | D1 → H4 |
@@ -36,7 +36,7 @@ Emitidos por `ContextConstraints` / snapshots de capa, todos **as-of(\(t\))**
 (solo velas cerradas `time ≤ t`):
 
 | Campo | Tipo | Semántica |
-|-------|------|-----------|
+| ------- | ------ | ----------- |
 | `decision_time` | timestamp | \(t\) de evaluación en exec_tf |
 | `exec_tf` | str | TF de timing (p. ej. H1) |
 | `direction_hint` | `BULLISH \| BEARISH \| MIXED \| UNKNOWN` | Bias estructural (D1 preferido; H4 si D1 unknown). **Fuente:** BOS/estructura, **no** EMA |
@@ -66,7 +66,7 @@ etiquetar bandas 0.62–0.79; **OTE como tesis de entrada sigue PROHIBIDO**
 Para estratificar **la misma secuencia** bajo distinto contexto:
 
 | Bucket | Regla v1 |
-|--------|----------|
+| -------- | ---------- |
 | `CTX_ALIGNED` | `direction_hint` alineado con dirección de la secuencia **y** location no adversa (favorable o MID/UNKNOWN) |
 | `CTX_AGAINST` | `direction_hint` opuesto a la dirección de la secuencia |
 | `CTX_NEUTRAL` | `direction_hint` ∈ {UNKNOWN, MIXED} |

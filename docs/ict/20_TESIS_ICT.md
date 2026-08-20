@@ -1,7 +1,7 @@
 # TESIS ICT COMPLETA — Smart Money Concepts aplicados a SMC-SYSTEMS
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `20_TESIS_ICT.md` |
 | **Versión** | 1.0 |
 | **Fecha** | 2026-07-13 |
@@ -25,7 +25,7 @@ El error que mató la rentabilidad en R4 v28 fue resolver el ciclo completo (ent
 Todo setup ICT es una instancia del Power of Three (`08_POWER_OF_THREE.md`):
 
 | Fase | Nombre | Qué hace el precio | En el código |
-|------|--------|--------------------|--------------|
+| ------ | -------- | -------------------- | -------------- |
 | **A** — Pasado | Accumulation | Marca sesgo HTF (D1/H4) y rangos (PDH/PDL/Asian) | `htf_trend` en `build_signals_from_frames` (engine.py 85) |
 | **M** — Presente | Manipulation | Sweep de liquidez **en contra** del sesgo (caza stops) | `detect_liquidity` + `canonical_sweep` (liquidity_context.py) |
 | **D** — Futuro | Distribution | CHoCH/BOS **a favor** + zona FVG/OB para entrar | `detectors/bos.py`, `detectors/fvg.py` |
@@ -46,7 +46,7 @@ En Turtle Soup (contratendencia, libro 06), el BOS va **contra** la marea del HT
 
 ## 3. Liquidez: el motor de todo (libro 05)
 
-El precio existe para buscar **liquidez** (stops agrupados): BSL sobre highs, SSL bajo lows (`05_LIQUIDEZ.md`). 
+El precio existe para buscar **liquidez** (stops agrupados): BSL sobre highs, SSL bajo lows (`05_LIQUIDEZ.md`).
 
 - **Sweep válido** = rompe el nivel y **cierra de vuelta adentro** en la misma vela (`05` línea 20). `canonical_sweep` ya lo implementa.
 - Las zonas BSL/SSL son **clusters** de swings en banda `atr/margin` (`detectors/liquidity.py`). Aquí vive el bug del TP (ver §7).
@@ -57,7 +57,7 @@ El precio existe para buscar **liquidez** (stops agrupados): BSL sobre highs, SS
 ## 4. Los dos setups del ciclo (libros 06, 07, 08)
 
 | Setup | Fase usada | Dirección vs HTF | Temporalidad | Killzone |
-|-------|-----------|------------------|--------------|-----------|
+| ------- | ----------- | ------------------ | -------------- | ----------- |
 | **Turtle Soup** (06) | M + giro | Contratendencia | H4→M15 | London/NY |
 | **PO3 / AMD** (08) | A+M+D completo | A favor del sesgo | D1→H4→M15 | London/NY |
 | **Silver Bullet** (07) | M + FVG en ventana | A favor del sesgo intra | M15→M5/M1 | NY AM 10–11 ET |
@@ -114,6 +114,7 @@ El motor hoy hace (2)+(3) pero entra en `row["close"]` de (3) (engine.py 107). E
 ## 7. Stop Loss: estructural, nunca ATR (libros 14, 15, 17)
 
 `calc_structural_sl` (engine.py, v29) ancla el SL a la **mecha del sweep** ± buffer (0.3 ATR):
+
 - SL = `sweep_low` − buffer (long) / `sweep_high` + buffer (short).
 - Fallback a `swing_low`/`swing_high` si no hay sweep.
 - Si no hay nada → None → no opera (NO degrada a ATR).
@@ -155,7 +156,7 @@ El libro 06 viejo decía "TP liquidez opuesta HTF" — eso es justo lo que fall�
 ## 11. Mapa código ↔ tesis
 
 | Tesis | Código real | Estado |
-|-------|-------------|--------|
+| ------- | ------------- | -------- |
 | Sweep manipulación | `canonical_sweep` (liquidity_context.py) | ✅ |
 | Estructura (BOS/CHOCH) | `detectors/bos.py`, `detectors/choch.py` | ✅ |
 | SL estructural | `calc_structural_sl` (engine.py, v29) | ✅ medido |

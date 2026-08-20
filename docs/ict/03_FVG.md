@@ -1,7 +1,7 @@
 # ICT — Fair Value Gaps (FVG)
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `03_FVG.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -14,7 +14,7 @@
 ## 0. Contrato operativo
 
 | # | Condición | Obligatorio |
-|---|-----------|:-----------:|
+| --- | ----------- | :-----------: |
 | 1 | Hueco de 3 velas: bullish `low[i] > high[i-2]` o bearish `high[i] < low[i-2]` | Sí |
 | 2 | Velas **cerradas** (sin usar i+1 futuro para crear el FVG) | Sí |
 | 3 | Estado de fill: unfilled / mitigated trackeable | Sí (calidad) |
@@ -61,7 +61,7 @@ fvg_bear = high[i] < low[i-2]
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | Detector | `detectors/fvg.py` | `shift(2)`, mid, fill status |
 | Pipeline | `signals/pipeline.py` | Proximidad OB+FVG (ATR) |
 | Backtest | `ict_backtest/data_feed.py`, `sequence.py`, `rules.py` | `fvg_state`, zona LTF |
@@ -73,7 +73,7 @@ fvg_bear = high[i] < low[i-2]
 ## 5. Auditoría y huecos
 
 | ID | Estado |
-|----|--------|
+| ---- | -------- |
 | #1 no aplica a FVG puro | ✅ |
 | Aislar contribución FVG al PF | 🔴 R4 |
 | Costos en corridas | ⚠️ METRICS |

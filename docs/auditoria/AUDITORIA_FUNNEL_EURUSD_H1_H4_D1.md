@@ -23,7 +23,7 @@ Y auditar la integridad de la capa de datos antes de cualquier afirmación de ed
 ## 2. Capa DATA — Integridad
 
 | TF | Filas | Nulls | Duplicados | Bad OHLC | Orden temporal | Gaps grandes* | Parquet |
-|----|------:|------:|-----------:|---------:|:--------------:|--------------:|--------:|
+| ---- | ------: | ------: | -----------: | ---------: | :--------------: | --------------: | --------: |
 | H1 | 57.600 | 0 | 0 | 0 | ✓ | ~495 (fines de semana) | 1.6 MB |
 | H4 | 14.400 | 0 | 0 | 0 | ✓ | ~493 | 573 KB |
 | D1 | 2.400 | 0 | 0 | 0 | ✓ | 0 | 110 KB |
@@ -35,6 +35,7 @@ Y auditar la integridad de la capa de datos antes de cualquier afirmación de ed
 **Veredicto DATA:** **PASS**
 
 Archivos:
+
 ```
 data/raw/EURUSD/EURUSD_H1.parquet
 data/raw/EURUSD/EURUSD_H4.parquet
@@ -47,7 +48,7 @@ data/metadata/EURUSD_H1_H4_D1.json
 ## 3. Funnel de detección — Resultados
 
 | TF | Bars | Swing | BOS unique | CHOCH unique | CHOCH real | premium | noise | score medio |
-|----|-----:|------:|-----------:|-------------:|-----------:|--------:|------:|------------:|
+| ---- | -----: | ------: | -----------: | -------------: | -----------: | --------: | ------: | ------------: |
 | **H1** | 57.600 | 7.088 | 382 | 562 | **10** | 10 | 552 | 35.1 |
 | **H4** | 14.400 | 1.771 | 100 | 139 | **2** | 2 | 137 | 33.7 |
 | **D1** | 2.400 | 285 | 15 | 24 | **0** | 0 | 24 | 25.8 |
@@ -55,7 +56,7 @@ data/metadata/EURUSD_H1_H4_D1.json
 ### Tasas de conversión (H1)
 
 | Etapa | Tasa | Lectura |
-|-------|------|---------|
+| ------- | ------ | --------- |
 | bars → swing | 12.3 % | ~1 de cada 8 barras es pivote |
 | swing → BOS unique | 5.4 % | pocos swings generan BOS de tesis |
 | BOS unique → CHOCH unique | ~147 % | un BOS puede alimentar varios CHOCH candidatos |
@@ -97,7 +98,7 @@ Artefacto: `data/metadata/funnel_audit_H1_H4_D1.json`
 ## 5. Limitaciones de esta auditoría
 
 | Limitación | Impacto |
-|------------|---------|
+| ------------ | --------- |
 | Sin HTF bias inyectado | Scores más bajos de lo posible en prod |
 | Sin modelo IA | El 15 % de IA no se midió aquí |
 | Data hasta 2022-03 | No cubre 2023–2026 |
@@ -112,7 +113,7 @@ Artefacto: `data/metadata/funnel_audit_H1_H4_D1.json`
 ### Prioridad ALTA (hacer ya)
 
 | # | Recomendación | Por qué | Cómo |
-|---|---------------|---------|------|
+| --- | --------------- | --------- | ------ |
 | R1 | **Inyectar HTF bias y re-medir funnel** | Sin D1/H4 el score geométrico subestima premium | Correr de nuevo `mark_choch_quality` con `htf_frames` desde `detect_trend` H4/D1 |
 | R2 | **No usar CHOCH real como señal de alta frecuencia** | 1–2 % de conversión; ~1 premium/año en H1 | Tratar CHOCH real/premium como **filtro de contexto**, no como trigger |
 | R3 | **Mantener M5 DEFERRED** | Esta data no es M5; afirmar edge M5 sería falso | Seguir `DATA_INVENTARIO_ACTUALIZADO.md` |
@@ -121,7 +122,7 @@ Artefacto: `data/metadata/funnel_audit_H1_H4_D1.json`
 ### Prioridad MEDIA
 
 | # | Recomendación | Por qué |
-|---|---------------|---------|
+| --- | --------------- | --------- |
 | R5 | Generar dataset CHOCH H1/H4 con esta data y correr walk-forward estricto | Cierra el círculo evidencia OOS en TF disponibles |
 | R6 | Ablation de `score_n` en el modelo | Medir cuánto del ROC in-sample dependía de la feature más correlacionada |
 | R7 | Usar lookback adaptativo por TF (`TF_LOOKBACK`) en D1 | lookback=5 en D1 es microestructura; puede explicar 0 CHOCH real |
@@ -130,7 +131,7 @@ Artefacto: `data/metadata/funnel_audit_H1_H4_D1.json`
 ### Prioridad BAJA / posterior
 
 | # | Recomendación |
-|---|---------------|
+| --- | --------------- |
 | R9 | Incorporar multi-par (GBPUSD, USDJPY, XAUUSD) cuando haya fuente estable |
 | R10 | Cuando haya M5 estable (MT5 local o Dukascopy), repetir funnel completo y comparar tasas vs H1 |
 | R11 | Shadow-mode del nature head (B4) antes de cablear al bias del motor |
@@ -161,7 +162,7 @@ data/raw/EURUSD/EURUSD_{H1,H4,D1}.parquet         ← data (gitignored)
 ## 9. Gate de esta auditoría
 
 | Criterio | Resultado |
-|----------|-----------|
+| ---------- | ----------- |
 | Data íntegra y ordenada | **PASS** |
 | Funnel ejecutable sin crash | **PASS** |
 | Conteos reproducibles | **PASS** |

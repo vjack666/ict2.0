@@ -16,7 +16,7 @@ el motor y va a dar lectura actual".
 **VERIFICACIÓN CONTRA CÓDIGO/GIT (REGLA DE ORO):**
 
 | Fuente | Dice |
-|---|---|
+| --- | --- |
 | `.hermes.md` §20–22 | FASE 0 (estructura inicial), FASE 1 (smoke test), **FASE 2 (motor) EN CURSO**. Cierre de FASE 2 = motor produzca DataFrame real que alimente `AgentOrchestrator` sin `ImportError`. |
 | `git log --oneline` | Últimos: `9a639fe` (docs), `712048b` (P1–P5 aprendizaje), `4dd90aa` (P1–P4). NO hay commit de "fase 7" ni hito "plan 7 fases cerrado". |
 | `docs/motor_profesional_estado.md` §6 | Puntos abiertos explícitos: solo EURUSD, sin walk-forward, motor viejo sigue como fallback. |
@@ -46,6 +46,7 @@ print(h['d1'], h['h4'], h['h1'], h['direction'], h['aligned'])
 ```
 
 Salida real:
+
 ```
 D1      : RANGING
 H4      : RANGING
@@ -71,7 +72,7 @@ HTF-only es la de `build_daily_bias` arriba (NEUTRAL). Se descarta BULLISH.
 ### 2.1 Componentes medidos (reales, por TF, ventana 800 velas)
 
 | TF | n_CHOCH | CHOCH_real | CHOCH score medio | CHOCH score máx | n_BOS | BOS_real | BOS real-rate | CHOCH class |
-|---|---|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | D1 | 107 | 0 | 26.0 | 45.3 | 229 | 183 | 79.9% | 107 noise |
 | H4 | 125 | 50 | 56.9 | 100.0 | 162 | 121 | 74.7% | 75 noise / 50 premium |
 | H1 | 113 | 7 | 30.4 | 95.9 | 155 | 112 | 72.3% | 106 noise / 7 premium |
@@ -100,6 +101,7 @@ donde:
 > **HTF_QUALITY% HOY = 40.2 / 100 — CALIDAD BAJA/MEDIA-BAJA.**
 
 Desglose del porqué:
+
 - **Compromiso direccional = 20/100 (muy bajo):** solo H1 no es RANGING; D1 y H4
   están RANGING. El sesgo compuesto es NEUTRAL y NO alineado. No hay convicción
   HTF de dirección hoy.

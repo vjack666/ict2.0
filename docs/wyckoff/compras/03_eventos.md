@@ -4,7 +4,7 @@ Cada evento con su definición y firma de volumen. Orden típico:
 PS → SC → AR → ST → (Phase B: tests) → Spring/Test → SOS → LPS → Markup.
 
 | Evento | Nombre | Qué es | Volumen |
-|--------|--------|-------|---------|
+| -------- | -------- | ------- | --------- |
 | **PS** | Preliminary Support | Primera demanda tras caída vertical; velas amplias. El suelo empieza. | Alto, creciente |
 | **SC** | Selling Climax | Pánico de retail + compra institucional. Mínimo del rango. | **Máximo de miedo** |
 | **AR** | Automatic Rally | Rebote tras SC; define el techo del rango. | Alto (compra) |
@@ -15,6 +15,7 @@ PS → SC → AR → ST → (Phase B: tests) → Spring/Test → SOS → LPS →
 | **LPS** | Last Point of Support | Último pullback poco profundo; compradores defienden. Mejor entrada long. | **Bajo** (sin oferta) |
 
 ## Notas de lectura
+
 - **SC y Spring son los suelos de volumen** — ahí smart money absorbe. El Spring es la
   sacudida; el Test post-Spring (volumen muy bajo) es la confirmación de que la oferta murió.
 - **ST y LPS son de volumen decreciente** — cada rebote tiene menos gas vendedor. Esa

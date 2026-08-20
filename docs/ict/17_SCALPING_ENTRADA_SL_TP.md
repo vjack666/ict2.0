@@ -1,7 +1,7 @@
 # ICT — Scalping (Silver Bullet): Entrada, SL y TP en M1/M5
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `17_SCALPING_ENTRADA_SL_TP.md` |
 | **Versión** | 1.0 |
 | **Fecha** | 2026-07-13 |
@@ -36,6 +36,7 @@ El fix no es nuevo código de detección: es **correr el motor con `ltf=M5` (o M
 ## 2. Entrada scalping (Silver Bullet, fuente ICT)
 
 Secuencia (innercircletrader.net Silver Bullet, las 3 ventanas):
+
 1. Killzone (London 03:00–04:00, NY AM 10:00–11:00 o NY PM 02:00–03:00 ET).
 2. Sesgo del día filtra dirección (solo setups a favor del sesgo).
 3. Sweep de SSL/BSL en el exec TF (M1/M3/M5).
@@ -51,6 +52,7 @@ Secuencia (innercircletrader.net Silver Bullet, las 3 ventanas):
 ## 3. SL scalping
 
 Reusa `calc_structural_sl` (v29) pero con el exec TF = M5/M1:
+
 - SL = mecha del sweep M5 ± buffer (0.2–0.3 ATR de M5).
 - El buffer es MÁS chico que en intradía porque el exec TF es fino y el ruido también.
 - `STRUCT_SL_MAX_ATR` (6.0) sigue como filtro: si el sweep en M5 fue gigante, salta.
@@ -62,6 +64,7 @@ No necesita nuevo código: `calc_structural_sl` lee `sweep_low`/`sweep_high` del
 ## 4. TP scalping
 
 `_tp_liquidity` con exec TF = M5/M1:
+
 - TP = primer BSL/SSL opuesto en M5/M1 más cercano al entry.
 - En scalping el TP es CORTO por diseño (liquidez inmediata, no la del HTF).
 - RR 1:2 rápido (checklist_scalping ítem 7).
@@ -73,7 +76,7 @@ Esto mata el hold_limit: el TP está a pocas velas M5 del entry.
 ## 5. Diferencia clave intradía vs scalping (tabla)
 
 | Dimensión | Intradía (libro 15) | Scalping (este libro) |
-|-----------|---------------------|------------------------|
+| ----------- | --------------------- | ------------------------ |
 | HTF sesgo | H1 / H4 | M15 / H1 |
 | ITF zona | M15 | M5 |
 | Exec TF | M15 | M1 / M3 / M5 |

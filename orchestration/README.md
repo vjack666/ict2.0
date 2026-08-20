@@ -8,6 +8,7 @@ monolithic script, the validation flow is expressed as a **directed graph**
 where each node is an independent, testable unit.
 
 Key benefits for F7:
+
 - **Modularity** — each validation step is its own node.
 - **Observability** — state is explicit; easy to inspect, debug, resume.
 - **Testability** — nodes can be tested in isolation via the harness.
@@ -15,7 +16,7 @@ Key benefits for F7:
 
 ## Graph Structure
 
-```
+```text
 load_data ──→ generate_signals ──→ simulate_bridge ──→ simulate_ea
   │                 │                    │                  │
   ├─(error)         ├─(error)            ├─(error)          ├─(error)
@@ -36,7 +37,7 @@ simulate_ea ──→ compare_results ──→ generate_report ──→ END
 ### Nodes
 
 | Node | Description | Logic |
-|------|-------------|-------|
+| ------ | ------------- | ------- |
 | `load_data` | Load OHLC data via `_data_legacy.load_frame()` | Reads parquet, keeps last 5000 bars |
 | `generate_signals` | Generate trading signals from price data | EMA20/50 crossover + ATR-based SL/TP |
 | `simulate_bridge` | Simulate Bridge Module via real file I/O | Uses `SignalExporter` + `MT5Receiver` (tempdir) |
@@ -96,6 +97,7 @@ python -m harness --scenarios harness/scenarios --adapters langgraph_validation
 ## Signal Generation
 
 Signals are generated using EMA20/50 crossover logic:
+
 - BUY when EMA20 crosses **above** EMA50
 - SELL when EMA20 crosses **below** EMA50
 - SL/TP set at 2× ATR / 3× ATR respectively

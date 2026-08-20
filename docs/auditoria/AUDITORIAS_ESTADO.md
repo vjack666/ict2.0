@@ -11,7 +11,7 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 ## 1. YA CORRIDAS Y VERSIONADAS (no repetir)
 
 | Auditoría | Archivo local | Estado | Dónde corrió |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | A0 Data Integrity (stack) | `reports/audits/A0_A9_audit_stack.json` | PASS | repo (CI/local) |
 | A0 real 20Y | `reports/audits/A0_real_20Y.json` | PASS | repo |
 | A0–A9 stack completo | `reports/audits/A0_A9_audit_stack.json` + `.hermes/audit_state.json` | PASS score 1.0 | repo |
@@ -32,7 +32,7 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 ## 2. PENDIENTES — LOCAL (Hermes, liviano)
 
 | Ítem | Bloqueador | Acción |
-|---|---|---|
+| --- | --- | --- |
 | **A0-07** Ruta raw vs loader | OPEN | Edición de código, liviano |
 | **A0-08** OTE residual | OPEN | grep + parche, liviano (OTE prohibido) |
 | **AUDIT-CI-01** Evidencia CI stack A0-A9 | OPEN | Correr workflow y corregir hasta PASS |
@@ -42,7 +42,7 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 ## 3. PENDIENTES — GROK (nube, pesado)
 
 | Auditoría | Driver | Por qué Grok |
-|---|---|---|
+| --- | --- | --- |
 | **TNA-BEHAVIORAL** (gate separado de integridad) | `scripts/tna_audit_runner.py` | AHF serial, no termina local (timeout 1800s); 139k barras H1 |
 | **Backtest / Walk-forward (EXP-004b)** | por definir | Bloqueado hasta A0-A9 + Funnel + TNA |
 | Experimentos pandas/sklearn grandes | por definir | Carga pesada |

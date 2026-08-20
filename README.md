@@ -22,7 +22,7 @@ ordenada y autónoma**, siguiendo el ciclo de migración controlada
 
 ## Estructura
 
-```
+```text
 ICT SYSTEM/
 ├── agents/          # SHIMs de compatibilidad (2 líneas) → reexportan de analysis/ y orchestration/
 │   ├── base.py
@@ -82,7 +82,7 @@ ICT SYSTEM/
 ## Mapa de imports (contratos de los subagentes)
 
 | Módulo en `agents/` (SHIM) | Reexporta desde | Símbolos públicos |
-|---|---|---|
+| --- | --- | --- |
 | `agents/base.py` | `analysis.base` | `AnalysisResult`, `AgentProtocol` |
 | `agents/ict_agent.py` | `analysis.ict_agent` | `ICTAgent`, `CANONICAL_ENGINE` |
 | `agents/decision_agent.py` | `analysis.decision_agent` | `DecisionAgent`, `DecisionConfig`, `DecisionRecord` |

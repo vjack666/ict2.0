@@ -1,7 +1,7 @@
 # ICT — Stop Loss Estructural (anclar el SL a la estructura, no al ATR)
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `14_STOP_LOSS_ESTRUCTURAL.md` |
 | **Versión** | 1.0 |
 | **Fecha** | 2026-07-13 |
@@ -16,7 +16,7 @@
 ## 0. Contrato operativo (el SL NUNCA es ATR)
 
 | # | Condición medible | Obligatorio |
-|---|-------------------|:-----------:|
+| --- | ------------------- | :-----------: |
 | 1 | El SL se ubica en el nivel donde la **tesis del trade queda invalidada** (no a X ATR del entry) | Sí |
 | 2 | En contratendencia (Turtle Soup): SL **más allá del sweep** (por detrás de la mecha que barrió la liquidez) | Sí |
 | 3 | En a-favor: SL bajo el swing roto / borde del OB o FVG que define la estructura | Sí |
@@ -42,6 +42,7 @@ En ambos casos el SL está **atado a un evento de estructura concreto**, no a la
 ### Por qué el ATR como SL es un antipatrón en ICT
 
 El ATR mide ruido reciente. Anclar el stop a él:
+
 1. Lo deja **flotando** entre el entry y la estructura → el ruido inmediato lo saca antes de que la tesis madure.
 2. En contratendencia (Turtle Soup) el movimiento ya ocurrió (entrás tras el BOS de giro); el ATR está **atrás** del nivel que define la reversión, así que te sacan en el "spring" / segundo toque típico del fallo del sweep.
 3. Ignora dónde está la liquidez tomada, el swing roto y el OB/FVG — precisamente los niveles que el mercado respeta.
@@ -107,7 +108,7 @@ def calc_structural_sl(row, direction, ctx):
 ## 4. Código SMC-SYSTEMS (dónde vive y qué falta)
 
 | Pieza | Ruta | Rol hoy | Gap |
-|-------|------|---------|-----|
+| ------- | ------ | --------- | ----- |
 | Detector de liquidez | `detectors/liquidity_context.py` | Expone `bsl_price`/`ssl_price` + `canonical_sweep` | ✅ listo para usar |
 | Swings | `detectors/bos.py` `_swing_points` | `swing_high`/`swing_low` sin look-ahead | ✅ listo |
 | BOS nivel | `detectors/bos.py` | `bos_level` | ✅ listo |
@@ -132,6 +133,7 @@ def calc_structural_sl(row, direction, ctx):
 ## 6. Resultados
 
 Backtest actual (R4 v28, Turtle Soup CT fixed2r) con SL por ATR:
+
 - EURUSD: PF 0.771, WR 29%, 521 trades, 363 SL / 137 TP → 70% SL.
 - GBPUSD: PF 0.993, WR 34%, 667 trades, 437 SL / 215 TP → 65% SL.
 Hipótesis a validar tras el parche: anclar el SL a la mecha del sweep debe reducir las salidas por ruido y mejorar WR/PF (la cifra la dará el re-run, no se afirma aquí).

@@ -4,6 +4,7 @@ Todo el esquema de distribución se explica por tres leyes. Son el "por qué" de
 cada evento del libro.
 
 ## 1. Ley de Oferta y Demanda
+
 El precio sube cuando la **demanda > oferta** y baja cuando la **oferta > demanda**.
 Durante la distribución, la oferta vence progresivamente a la demanda *aun cuando el
 precio parece estable* (lateral). El rango en la cima es donde smart money entrega
@@ -14,6 +15,7 @@ su posición larga al público comprador.
 - Markdown: oferta desborda → precio cae.
 
 ## 2. Ley de Causa y Efecto
+
 La **anchura y duración** del rango de distribución determina la **profundidad del
 markdown** posterior. Rango más largo y ancho = caída más profunda ("time = force",
 Wyckoff).
@@ -25,6 +27,7 @@ Wyckoff).
   da el objetivo mínimo/máximo. Un rango corto da un markdown corto.
 
 ## 3. Ley de Esfuerzo vs Resultado
+
 Compara el **volumen** (esfuerzo) con el **rango de precio** (resultado).
 
 - Volumen alto + poco avance de precio = **absorción**: mucho esfuerzo, nulo resultado.

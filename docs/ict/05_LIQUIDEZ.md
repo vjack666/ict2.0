@@ -1,7 +1,7 @@
 # ICT — Liquidez (BSL / SSL) y Liquidity Sweeps
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `05_LIQUIDEZ.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -14,7 +14,7 @@
 ## 0. Contrato operativo
 
 | # | Condición | Obligatorio |
-|---|-----------|:-----------:|
+| --- | ----------- | :-----------: |
 | 1 | Nivel BSL = liquidez sobre máximos (stops de cortos) | Sí (mapa) |
 | 2 | Nivel SSL = liquidez bajo mínimos (stops de largos) | Sí (mapa) |
 | 3 | **Sweep:** rompe el nivel y **cierra de vuelta** adentro en la misma vela | Sí (filtro) |
@@ -61,7 +61,7 @@ Zonas BSL/SSL: cluster de swings en margen `atr/margin`.
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | Zonas | `detectors/liquidity.py` | **Pinta** BSL/SSL (docstring: no rutea trade) |
 | Sweep señal | `detectors/bos.py` + `signals/pipeline.py` | **Filtra** entradas |
 | Checklist | `ict_backtest/rules.py` | Exige sweep en intradía |
@@ -81,7 +81,7 @@ La señal **sí** usa sweep; la “fuente de liquidez” visual **no** es la mis
 ## 5. Auditoría
 
 | ID | Estado |
-|----|--------|
+| ---- | -------- |
 | Hueco pinta≠filtra | ✅ R3 (`detectors/liquidity_context.py`: `canonical_sweep` única fuente; `detect_bos` y `signals/pipeline.py` delegan) |
 | #1 pivots | ✅ sin fuga en diseño actual |
 | Prevalencia sweep ~66% M15 | ver METRICS §6 |
@@ -95,6 +95,7 @@ La señal **sí** usa sweep; la “fuente de liquidez” visual **no** es la mis
 ---
 
 ## 7. Checklist de aplicación
+
 - [x] Unificar o envolver liquidez+sweep en un contexto  (R3: `detectors/liquidity_context.py`)
 - [x] UI/backtest/pipeline usan la misma `canonical_sweep`  (`detect_bos` y `signals/pipeline.py` delegan)
 - [x] Tests de definición única de sweep  (`tests/test_liquidity_context.py`)

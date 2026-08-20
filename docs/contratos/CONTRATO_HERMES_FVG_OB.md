@@ -14,6 +14,7 @@ Hermes tiene autorización para iterar de forma autónoma hasta cumplir los gate
 ## 2. Definición de éxito
 
 ### Gate obligatorio 1 — Corrección funcional
+
 - FVG bullish/bearish correcto según el contrato vigente.
 - OB bullish/bearish correcto según el contrato vigente.
 - Breaker correctamente relacionado con su OB padre.

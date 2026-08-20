@@ -1,7 +1,7 @@
 # 06 — Cruce distribución Wyckoff ↔ ICT/SMC (v2)
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **Versión** | 2.0 |
 | **Fecha** | 2026-07-12 |
 | **Métricas** | [METRICS_CANON](../../METRICS_CANON.md) |
@@ -11,7 +11,7 @@
 ## 0. Contrato operativo
 
 | # | Condición | Obligatorio |
-|---|-----------|:-----------:|
+| --- | ----------- | :-----------: |
 | 1 | Wyckoff HTF sugiere **distribución / markdown** (sesgo ventas) | Sí (contexto) |
 | 2 | ICT LTF da **entrada short** de precisión | Sí |
 | 3 | Conflicto ICT alcista + Wyckoff bajista → no forzar | Sí |
@@ -22,7 +22,7 @@
 ## 1. Mapeo distribución → ICT
 
 | Wyckoff | Equivalente ICT / SMC |
-|---------|----------------------|
+| --------- | ---------------------- |
 | BC / UTAD | Sweep **BSL** + rechazo |
 | UT/UTAD fallido | CHoCH/MSS **bajista** |
 | SOW | **BOS** bajista |
@@ -48,7 +48,7 @@
 ## 3. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | Agente | `agents/wyckoff_agent.py` | Sobrecompra / UTAD vía stochastic exhaustion |
 | ICT | `agents/ict_agent.py` | Short setups |
 | Decisión | orchestrator / Decision | conflict_penalty |

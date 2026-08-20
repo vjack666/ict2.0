@@ -1,7 +1,7 @@
 # ICT — Order Blocks y Breaker Blocks
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `04_ORDER_BLOCKS.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -14,7 +14,7 @@
 ## 0. Contrato operativo
 
 | # | Condición | Obligatorio |
-|---|-----------|:-----------:|
+| --- | ----------- | :-----------: |
 | 1 | Última vela contraria al impulso con cuerpo grande (huella) | Sí |
 | 2 | Followthrough: vela siguiente confirma desplazamiento | Sí |
 | 3 | Entrada **después** de que el followthrough esté cerrado (no en la vela de huella sola) | Sí |
@@ -62,7 +62,7 @@ ob_bear = bullish_candle & large_body & close[i+1] < low[i]
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | Detector | `detectors/ob.py` | OB + `_track_ob_validity` |
 | Pipeline | `signals/pipeline.py` | `filter_ob_fvg`, invalidación Item E |
 | Backtest | `ict_backtest/*` | `ob_direction`, zona LTF |
@@ -72,7 +72,7 @@ ob_bear = bullish_candle & large_body & close[i+1] < low[i]
 ## 5. Auditoría y huecos
 
 | ID | Estado |
-|----|--------|
+| ---- | -------- |
 | #1 swings | ✅ afecta cadena, no OB puro |
 | `shift(-1)` followthrough | ⚠️ vigilar en cualquier nuevo filtro de entrada |
 | Aislar OB en métricas | 🔴 R4 |

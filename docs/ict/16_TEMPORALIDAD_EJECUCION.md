@@ -1,7 +1,7 @@
 # ICT — Temporalidad de ejecución: jerarquía HTF → LTF → exec
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `16_TEMPORALIDAD_EJECUCION.md` |
 | **Versión** | 1.0 |
 | **Fecha** | 2026-07-13 |
@@ -47,7 +47,7 @@ El presente de Ruben era CIERTO: el H4 infla el sesgo, y resolver todo en M15 (g
 O sea: la infra base existe, pero el motor aún no resuelve las 3 capas de forma independiente. El backtest v29 solo corrió H4→M15 (sin ITF explícito).
 
 | Capa | Day trading | Scalping | Swing | En el código |
-|------|-------------|----------|-------|-------------|
+| ------ | ------------- | ---------- | ------- | ------------- |
 | HTF (Bias) | H1 / H4 | M15 / H1 | D1 | `bias_by_tf` / `htf` |
 | ITF (Zona) | M15 | M5 | H4 | hoy = `ltf` |
 | exec TF (Entry+SL) | M15 | M1/M3/M5 | H1 | hoy = `ltf` (no separado) |
@@ -57,7 +57,7 @@ O sea: la infra base existe, pero el motor aún no resuelve las 3 capas de forma
 ## 3. Mapeo ICT (fuente: innercircletrader.net + tradingfinder top-down)
 
 | Modelo | HTF (Bias) | ITF (Zona) | exec TF (Disparo) | Killzone |
-|--------|-------------|-------------|-------------------|-----------|
+| -------- | ------------- | ------------- | ------------------- | ----------- |
 | Intradía (Turtle Soup) | H1 / H4 | M15 | M15 | London / NY |
 | Scalping (Silver Bullet) | M15 / H1 | M5 | M1 / M3 / M5 | London 03–04, NY AM 10–11, NY PM 02–03 ET |
 | PO3 | D1 | H4 | H4 / M15 | London / NY |
@@ -70,6 +70,7 @@ El humano ICT marca en M15 (parent chart) y ejecuta en M5/M1. El robot v29 marca
 ## 4. Cómo el motor debe usar las 3 capas
 
 `build_signals_from_frames` debe:
+
 1. Leer `trend` del HTF para sesgo (ya lo hace, línea 85).
 2. Detectar sweep/BOS/CHOCH/FVG en el LTF (ya lo hace vía `detect_market_structure` + `build_features`).
 3. **Entry**: retorno a la zona del LTF (FVG/OB) — no close del BOS.

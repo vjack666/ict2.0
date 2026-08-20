@@ -47,8 +47,9 @@ Pueden aparecer en distintas situaciones (motor, backtest, lab, arquitectura).
 ```
 
 ### Pisos del edificio (fases de madurez de una idea)
+
 | Piso | Fase | Qué pasa ahí |
-|------|------|--------------|
+| ------ | ------ | -------------- |
 | 0 | Idea | Nace la pregunta |
 | 1 | Hipótesis formalizada | La investiga el Investigador |
 | 2 | Experimento | Corre en lab/backtest (libre de fallar) |
@@ -65,7 +66,7 @@ Investigador "encontré una posible nueva habitación"; Ingeniero "la construyo"
 ## ROLES PERMANENTES (institucionales)
 
 | Rol | Reporta a | Responsabilidad (función) | Veto | Archivo |
-|-----|-----------|---------------------------|------|---------|
+| ----- | ----------- | --------------------------- | ------ | --------- |
 | Director de Investigación (Ruben) | — | Aprobar, declarar edge, decidir roles | Veto último | (humano) |
 | Hermes (Orquestador) | Director | Descubrir contexto, enrutar, no decidir solo | — | `ORQUESTADOR.md` |
 | Investigador / Analista | Director | Explorar → hipótesis comprobable | — | `investigador.md` |
@@ -78,12 +79,15 @@ Investigador "encontré una posible nueva habitación"; Ingeniero "la construyo"
 | Backtest Canónico (consumidor) | Director | Reloj vela-a-vela, consume `engine/` | Sin veto | `ict_backtest/` |
 
 ## Principio rey
+>
 > **Quien propone ≠ quien construye ≠ quien audita ≠ quien archiva ≠ quien aprueba.**
 
 ## Nota de adaptabilidad
+
 Cada rol es polivalente: cubre motor + backtest + lab EXP-NNN + arquitectura, no una tarea
 puntual. Se instancia según la necesidad (ver `ORQUESTADOR.md` → matriz de enrutamiento).
 
 ## Nota de unicidad
+
 Los roles viven en `agents/governance/` con responsabilidad única. `auditor_independiente`
 es canónico; `fiscal_falsacion` es su alias. Ante duplicación, manda este índice.

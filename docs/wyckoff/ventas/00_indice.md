@@ -5,7 +5,7 @@
 Tras tendencia alcista extendida, el rango de distribución es la *causa* del markdown.
 
 | Libro | Contenido | Estado |
-|-------|-----------|--------|
+| ------- | ----------- | -------- |
 | [01_leyes](01_leyes.md) | 3 leyes en distribución | ✅ |
 | [02_fases_sellside](02_fases_sellside.md) | Fases A–E | ✅ + § código |
 | [03_eventos](03_eventos.md) | PSY, BC, AR, ST, UTAD… | ✅ |

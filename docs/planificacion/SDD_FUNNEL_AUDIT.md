@@ -88,21 +88,27 @@ No se usan PnL, win rate ni Sharpe como métricas del Funnel.
 ## 5. Reglas de calidad
 
 ### 5.1 Reproducibilidad
+
 Mismo dataset + mismo commit + misma configuración → mismo reporte.
 
 ### 5.2 Truncation invariance
+
 Para cualquier prefijo hasta `t`, ningún evento confirmado antes de `t` puede cambiar por añadir barras posteriores.
 
 ### 5.3 Temporalidad
+
 `candidate <= confirmation <= tradable <= observation`.
 
 ### 5.4 Unicidad
+
 Un mismo evento lógico no puede contarse varias veces por diferencias de representación.
 
 ### 5.5 Lineage
+
 Un candidato debe poder rastrearse hasta sus padres sin ciclos ni enlaces futuros.
 
 ### 5.6 Explicabilidad de pérdidas
+
 Toda reducción de población debe poder atribuirse a una regla explícita.
 
 ## 6. Arranque Hermes

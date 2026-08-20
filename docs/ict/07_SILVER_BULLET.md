@@ -1,7 +1,7 @@
 # ICT — Silver Bullet (intradía / scalping)
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `07_SILVER_BULLET.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -14,7 +14,7 @@
 ## 0. Contrato operativo
 
 | # | Condición | Obligatorio |
-|---|-----------|:-----------:|
+| --- | ----------- | :-----------: |
 | 1 | Dentro de killzone (London Open / NY AM/PM) según helper unificado | Sí |
 | 2 | Sweep de liquidez en LTF (típicamente M15) | Sí |
 | 3 | FVG posterior al sweep (desplazamiento) | Sí |
@@ -52,7 +52,7 @@ ready = in_killzone(ts) and sweep and fvg_after_sweep and aligned_bias and rr_ok
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol |
-|-------|------|-----|
+| ------- | ------ | ----- |
 | KZ | `detectors/killzones.py`, `rules.killzone_en` | Ventana (TZ a unificar) |
 | FVG / sweep | `fvg.py`, pipeline/bos | Trigger |
 | Sesgo | `rutina_eurusd.py`, motor observador | Filtro lado |

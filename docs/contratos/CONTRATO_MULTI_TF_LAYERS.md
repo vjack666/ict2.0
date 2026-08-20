@@ -9,7 +9,7 @@
 ## 1. Capas
 
 | Rol | Nombre canónico | TF típicos | Decide |
-|-----|-----------------|------------|--------|
+| ----- | ----------------- | ------------ | -------- |
 | **HTF** | `htf` | D1 (o H4 si no hay D1) | Contexto, location, regime, liquidity targets |
 | **ITF** | `itf` | H4 (o H1 si exec es LTF) | Estructura intermedia, posición en dealing range HTF |
 | **EXEC** | `exec_tf` | H1 / M15 / M5 | Timing, secuencia, retest/trigger |
@@ -36,7 +36,7 @@ as_of(tf, t) = última barra de tf con time ≤ t
 ## 3. Qué puede / no puede cada capa
 
 | Capa | Puede | No puede |
-|------|-------|----------|
+| ------ | ------- | ---------- |
 | HTF | LOCK de contexto, constraints, invalidar hacia abajo | Emitir entry |
 | ITF | LOCK de estructura relativa al HTF | Invalidar HTF sin evidencia HTF |
 | EXEC | Avanzar a SETUP_READY solo con HTF+ITF locked (salvo modo degradado documentado) | Usar HTF futuro |

@@ -3,6 +3,7 @@
 Colección del **Método Wyckoff** (Richard D. Wyckoff) para SMC-SYSTEMS.
 
 Wyckoff describe cómo el *Composite Operator* acumula y distribuye. Es **complementario a ICT**:  
+
 - **Wyckoff** → contexto HTF (¿compran o venden?).  
 - **ICT** → entrada LTF (¿dónde y cuándo?).  
 

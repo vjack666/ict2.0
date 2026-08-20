@@ -18,7 +18,7 @@ se queda el archivo de MÁS filas entre las fuentes.
 ## Símbolos y TFs disponibles (raw)
 
 | Símbolo | TFs |
-|---|---|
+| --- | --- |
 | EURUSD | D1, H1, H4, M1, M3, M5, M15 |
 | AUDUSD | D1, H1, H4, M5, M15 |
 | GBPUSD | D1, H1, H4, M5, M15 |

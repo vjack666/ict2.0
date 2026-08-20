@@ -16,7 +16,7 @@
 ## Diseño (proxies — no módulos finales del motor)
 
 | Factor | Proxy usado | Limitación |
-|--------|-------------|------------|
+| -------- | ------------- | ------------ |
 | Displacement | `tools.detect_displacement` en 3 velas del FVG | OK geométrico |
 | Estructura | Swings causales HH/HL vs LH/LL (lb=5) | No BOS/CHOCH canónico |
 | HTF | EMA20/50 H4+D1, `merge_asof` backward | **No es bias ICT** |
@@ -30,7 +30,7 @@ Universo: todos los FVG H1 detectables · n≈22.468 · horizonte +24 · EURUSD 
 ## Tabla de métricas (congelada)
 
 | Bucket | n | end>0 | MFE>MAE | med_end |
-|--------|--:|------:|--------:|--------:|
+| -------- | --: | ------: | --------: | --------: |
 | ALL_FVG | 22.468 | 50.0 % | 50.6 % | ~0 |
 | CAUSAL_ONLY | 677 | 50.5 % | 51.4 % | ~0 |
 | DISPLACEMENT_IN_WINDOW | 5.768 | 50.7 % | 52.4 % | ~0 |
@@ -75,7 +75,7 @@ FVG
 ## Cadena de falsaciones / neutralidades (contexto)
 
 | Experimento | Resultado aproximado |
-|-------------|----------------------|
+| ------------- | ---------------------- |
 | FVG solo | ~50 % |
 | OB→FVG causal | ~50 % |
 | FVG + displacement | ~50 % |
@@ -127,7 +127,7 @@ Ese es el experimento que puede enseñar algo nuevo; este EXP queda **congelado*
 ## Gate de este documento
 
 | Criterio | Resultado |
-|----------|-----------|
+| ---------- | ----------- |
 | Evidencia numérica versionada | Sí (JSON) |
 | Hipótesis “flags co-ocurrentes ⇒ edge” | **No soportada** |
 | Proxies finales del motor | No — intencionalmente exploratorios |

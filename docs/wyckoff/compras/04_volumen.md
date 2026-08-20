@@ -4,6 +4,7 @@ El volumen es la columna vertebral del análisis Wyckoff. En acumulación, la le
 volumen confirma la estructura **antes** del quiebre al alza.
 
 ## Dónde aparece el volumen
+
 - **SC y Spring**: volumen alto → smart money absorbiendo el pánico del público.
 - **Dentro del rango (Phase B)**: volumen a menudo **declina** → la oferta se seca.
 - **En el soporte**: volumen alto = el mercado defiende los mínimos (absorción).
@@ -11,12 +12,14 @@ volumen confirma la estructura **antes** del quiebre al alza.
   resistencia → markup confirmado.
 
 ## La ley Esfuerzo vs Resultado en acción
+
 - Volumen alto en el suelo + precio que NO cae = **absorción** (demanda come la oferta).
   Es la firma más clara de acumulación activa: el público vende en pánico, smart money compra.
 - Volumen alto + vela que apenas se mueve (lateral) = la oferta se está agotando.
 - Divergencia esfuerzo/resultado en el suelo = advertencia temprana de fin de la bajada.
 
 ## Tres señales tempranas de acumulación (las más fiables)
+
 1. **Decaimiento de volumen en el rango:** cada test del soporte SC tiene menos volumen que
    el SC original. Los vendedores se agotan. Es la señal más temprana.
 2. **Fallos de quiebre a la baja (Springs):** intentos de romper el soporte que revierten
@@ -26,6 +29,7 @@ volumen confirma la estructura **antes** del quiebre al alza.
    Composite Operator absorbiendo en cada pánico.
 
 ## Pistas de price action (complementarias)
+
 - Menos mechas inferiores (la demanda defiende los mínimos).
 - Soportes locales planos o crecientes (higher lows).
 - Intentos fallidos de quebrar a la baja.

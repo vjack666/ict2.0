@@ -5,7 +5,7 @@
 Tras tendencia bajista extendida, el rango de acumulación es la *causa* del markup.
 
 | Libro | Contenido | Estado |
-|-------|-----------|--------|
+| ------- | ----------- | -------- |
 | [01_leyes](01_leyes.md) | 3 leyes en acumulación | ✅ |
 | [02_fases_buyside](02_fases_buyside.md) | Fases A–E | ✅ + § código |
 | [03_eventos](03_eventos.md) | PS, SC, AR, ST, Spring… | ✅ |

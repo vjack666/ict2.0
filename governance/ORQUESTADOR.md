@@ -82,6 +82,7 @@ Antes de enrutar a Ingeniero (implementar), el orquestador debe:
 Hermes no avanza una tarea de un agente en `BLOCKED`/`WAITING` sin resolver la causa.
 
 ## Reglas de enrutamiento
+
 1. Enrutar por INTENCIÓN real. Si ambiguo, Hermes pregunta UNA cosa concreta.
 2. Un dueño claro por tarea. Si requiere varios, Hermes define el orden.
 3. No pisar roles: Investigador no implementa; Ingeniero no audita; Auditor no propone;
@@ -93,6 +94,6 @@ Hermes no avanza una tarea de un agente en `BLOCKED`/`WAITING` sin resolver la c
 7. Transparencia: toda entrega indica qué agente(s) y qué supuso.
 8. Adaptabilidad: cada rol es polivalente (motor/backtest/lab/arquitectura), se instancia
    por tarea, no se recrea por experimento (`ROLES_GOBERNANZA.md` → ROL ≠ AGENTE).
-9. **Integración con Gate:** El orquestador consulta `gate/orchestrator_enforcer` antes 
+9. **Integración con Gate:** El orquestador consulta `gate/orchestrator_enforcer` antes
    de autorizar transiciones críticas (READY → IMPLEMENTING, AUDITED → ACCEPTED). Ver
    `gate/orchestrator_enforcer.py` para la lógica de enforcement.

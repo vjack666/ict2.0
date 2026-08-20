@@ -1,7 +1,7 @@
 # ICT — Point of Interest (POI): definición, jerarquía y multi-temporalidad
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `21_POI.md` |
 | **Versión** | 1.0 |
 | **Fecha** | 2026-07-15 |
@@ -42,7 +42,7 @@ Un POI válido exige las TRES condiciones simultáneas:
 No todos los POIs son iguales. Cuando varios PD Arrays caen en la zona correcta, se rankean por calidad:
 
 | Tier | Nombre | Estructura | Tamaño sugerido |
-|------|--------|-----------|-----------------|
+| ------ | -------- | ----------- | ----------------- |
 | **T1 (A)** | **BPR** | OB + FVG superpuestos al mismo nivel (Balanced Price Range) | estándar / elevado |
 | **T2 (B)** | OB solo con desplazamiento de calidad | última vela opuesta antes de move grande, cuerpo fuerte | estándar |
 | **T2 (B)** | FVG solo con desplazamiento fuerte | cuerpo > ~75% del rango, mayor a velas vecinas | estándar |
@@ -69,6 +69,7 @@ El POI se marca y vive en el **ITF**, pero gana autoridad cuando **apila (stacki
 4. **Tres TF apilados:** OB de M5 dentro de FVG de M15 dentro de OB de H1. Densidad institucional máxima en esa zona. Raros (1–2 por semana) pero reacción más limpia y SL más ajustado.
 
 **Flujo de preparación (Sunday prep, estilo ICT real):**
+
 1. Sesgo y draw on liquidity semanal (BSL/SSL).
 2. Dealing range diario: swing high/low, calcular EQ (50%). ¿Precio en premium, discount o EQ?
 3. Escanear **diario y H4** buscando PD Arrays en la zona correcta (OB/FVG/BPR por debajo del EQ si bullish).
@@ -88,6 +89,7 @@ Un POI suelto (cualquier FVG/OB en ventana) NO es un POI ICT real. El POI real e
 - La auditoría empírica del proyecto (`tests/AUDITORIA_POI_REPORT.md`, 10.669 zonas medidas) demostró que el sistema actual marca "POI" = cualquier FVG/OB en ventana de 20 velas H4, y que el **100%** de esos POI aceptados carecía de un BOS/desplazamiento HTF que los respaldara. Eso es "todo FVG/OB = POI", no un POI de narrativa.
 
 **Contrato de código (cierra ontología → biblioteca → código):**
+
 - Un POI solo cuenta si está anclado a un desplazamiento estructural en su dirección en el TF padre (BOS/CHOCH de HTF en las últimas N velas).
 - El POI es un **BONUS de calidad** (`quality_score += 20` según `MARKET_OBJECT_MODEL.md`), NO un filtro duro que anule la señal. La auditoría demostró que usar POI HTF como filtro duro destruye el edge (A'' PF 0.900 vs A' PF 1.511).
 - Stacking multi-TF eleva el tier: un OB de M15 dentro de un FVG de H1 es POI T1 apilado, no dos POIs distintos.
@@ -108,7 +110,7 @@ Saber cuándo eliminar un POI es tan importante como marcarlo:
 ## 6. POI en el motor SMC-SYSTEMS (mapeo a código)
 
 | Concepto ICT (este doc) | Estado en el repo | Acción |
-|--------------------------|-------------------|--------|
+| -------------------------- | ------------------- | -------- |
 | POI = PD Array en zona correcta + sesgo + respaldo | `ict_backtest/market_object.py` tiene `role=POI` pero NO filtra zona/sesgo/respaldo | Implementar los 3 filtros en `build_objects` |
 | Dealing range / premium-discount (50% EQ) | No existe en el código | Nuevo: calcular EQ del dealing range por TF |
 | Tier hierarchy (BPR > OB/FVG > bloques) | No existe | `quality_score` por tier (BPR +bonus) |

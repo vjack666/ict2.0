@@ -173,7 +173,7 @@ El código externo no puede traer OTE, Fibonacci, indicadores o dependencias inn
 ## 7. Mapa de rescate provisional
 
 | Fuente | Candidato | Acción | Motivo |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | SMC-SYSTEMS | `detectors/fvg.py` | COMPARAR / RESCATAR SELECTIVAMENTE | FVG + fill/mid metadata |
 | SMC-SYSTEMS | `detectors/ob.py` | COMPARAR / RESCATAR SELECTIVAMENTE | OB + clasificación parcial |
 | SMC-SYSTEMS | `detectors/displacement.py` | COMPARAR / POSIBLE RESCATE | matemática explícita |

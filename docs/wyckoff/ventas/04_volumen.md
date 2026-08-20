@@ -4,16 +4,19 @@ El volumen es la columna vertebral del análisis Wyckoff. En distribución, la l
 volumen confirma la estructura **antes** del quiebre.
 
 ## Dónde aparece el volumen
+
 - **BC y UTAD**: volumen cima → smart money descargando al público entusiasta.
 - **Rallies en Phase B y D**: volumen a menudo **declina** → la demanda se debilita.
 - **Breakdown (SOW / markdown)**: volumen **sube** → momentum bajista confirmado.
 
 ## La ley Esfuerzo vs Resultado en acción
+
 - Volumen alto + vela amplia que avanza = resultado acorde (markup sano).
 - Volumen alto + vela que apenas se mueve = **absorción** (oferta come la demanda).
   Es la firma más clara de distribución activa: el público compra, smart money entrega.
 
 ## Tres señales tempranas de distribución (las más fiables)
+
 1. **Divergencia de volumen en el techo:** cada vez que el precio testea el alto BC, el
    volumen es progresivamente menor que el BC original. Los compradores se agotan. Es la
    señal más temprana que vas a obtener.
@@ -25,6 +28,7 @@ volumen confirma la estructura **antes** del quiebre.
    Composite Operator vende en cada pop.
 
 ## Pistas de price action (complementarias)
+
 - Fallos de breakout frecuentes.
 - Mechas crecientes en los máximos (rechazos arriba).
 - Rebotes de baja calidad / lower highs dentro del rango.

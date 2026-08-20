@@ -21,7 +21,7 @@ De las 5, **2 comparten el mismo `retest_bar`** (24743) → no son independiente
 ## Tabla (end>0 tras RETEST)
 
 | Bucket | n | +6 | +12 | +24 | +48 | +96 |
-|--------|--:|----:|----:|----:|----:|----:|
+| -------- | --: | ----: | ----: | ----: | ----: | ----: |
 | COMPLETE_ALL | 5 | 20 % | 0 % | 80 % | 80 % | 80 % |
 | COMPLETE_BULL | 2 | 0 % | 0 % | 50 % | 50 % | 50 % |
 | COMPLETE_BEAR | 3 | 33 % | 0 % | 100 % | 100 % | 100 % |
@@ -62,7 +62,7 @@ Siguiente trabajo útil:
 ## Gate
 
 | Criterio | Resultado |
-|----------|-----------|
+| ---------- | ----------- |
 | Medición ejecutada | Sí |
 | n suficiente para edge | **No** |
 | Hipótesis “COMPLETE ⇒ edge” | **No contrastable aún** |

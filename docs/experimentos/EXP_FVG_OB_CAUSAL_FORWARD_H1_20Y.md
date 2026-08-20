@@ -18,7 +18,7 @@
 ## Diseño
 
 | Grupo | n (FVG únicos) | Definición |
-|-------|---------------:|------------|
+| ------- | ---------------: | ------------ |
 | STRICT_CAUSAL | 678 | `relate_fvg_ob(..., causal_mode="strict")` |
 | SYMMETRIC_ONLY | 1.501 | Solape geométrico sin orden OB→FVG |
 | NO_RELATION | 20.296 | Sin pareja OB |
@@ -33,7 +33,7 @@ Métricas post-confirmación: `end>0`, `MFE>MAE`, mitigación del gap, continuac
 A +24 barras H1 (representativo):
 
 | Grupo | end>0 | MFE>MAE |
-|-------|------:|--------:|
+| ------- | ------: | --------: |
 | STRICT_CAUSAL | **50.4 %** | 51.3 % |
 | NO_RELATION | 49.6 % | 50.4 % |
 | ALL_FVG | 50.0 % | 50.6 % |
@@ -58,7 +58,7 @@ OB → FVG
 ```
 
 | Afirmación | Estado |
-|------------|--------|
+| ------------ | -------- |
 | `FVG_OB_CAUSAL` = contexto / lineage | **VIGENTE** |
 | `FVG_OB_CAUSAL` = señal de entrada | **RECHAZADA** |
 | Trabajo de relación “falló” | **No** — la auditoría cumplió su función |
@@ -86,7 +86,7 @@ La relación OB→FVG **sola no alcanza** para expectancy.
 ## Gate de este experimento
 
 | Criterio | Resultado |
-|----------|-----------|
+| ---------- | ----------- |
 | Medición OOS histórica 20Y | Hecha |
 | Control vs NO_RELATION / ALL | Hecha |
 | Hipótesis predictiva aislada | **FALSADA** |

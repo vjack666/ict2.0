@@ -1,7 +1,7 @@
 # ICT — Power of Three (PO3 / AMD) — pasado · presente · futuro
 
 | Campo | Valor |
-|-------|-------|
+| ------- | ------- |
 | **ID** | `08_POWER_OF_THREE.md` |
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
@@ -18,7 +18,7 @@
 ## 0. Contrato operativo — fases A / M / D
 
 | Tiempo del gráfico | Fase | Condición medible | Obligatorio |
-|--------------------|------|-------------------|:-----------:|
+| -------------------- | ------ | ------------------- | :-----------: |
 | **Pasado** | **A — Accumulation** | Sesgo HTF (D1 o H4) ∈ {BULLISH, BEARISH} **o** rango explícito con high/low de sesión/Asian marcados | Sí |
 | **Presente** | **M — Manipulation** | Sweep de liquidez **en contra** del sesgo (caza de stops) con ruptura + cierre de vuelta (regla sweep de `05`) | Sí |
 | **Futuro** | **D — Distribution / expansión** | CHoCH o BOS **a favor** del sesgo **después** del sweep + zona de entrada FVG u OB en LTF | Sí |
@@ -34,7 +34,7 @@ po3.incomplete_reason = lista de fases faltantes
 ```
 
 | Estado | Significado en UI |
-|--------|-------------------|
+| -------- | ------------------- |
 | `complete=True` | **PO3 listo** — ciclo cerrado; candidato a entrada |
 | Solo A | Contexto listo; esperar manipulación |
 | A+M sin D | Trampa hecha; esperar expansión / CHoCH |
@@ -56,7 +56,7 @@ El **Power of Three (PO3)** / modelo **AMD** describe por qué el precio suele:
 Es la “réplica” del ciclo en el gráfico:
 
 | Fase | Lectura humana |
-|------|----------------|
+| ------ | ---------------- |
 | A | “¿Dónde se construyó el interés?” (pasado) |
 | M | “¿Dónde cazaron stops ahora?” (presente) |
 | D | “¿Hacia dónde se expande el movimiento?” (futuro del trade) |
@@ -92,7 +92,7 @@ complete = A and M and D and aligned
 **Riesgos**
 
 | Riesgo | Mitigación |
-|--------|------------|
+| -------- | ------------ |
 | Marcar D antes de confirmar swing | Solo velas cerradas; fix #1 |
 | CHOCH = copia de BOS | Fix #2 — CHOCH real |
 | Mezclar con contratrend | Flag `aligned` obligatorio |
@@ -103,7 +103,7 @@ complete = A and M and D and aligned
 ## 4. Código SMC-SYSTEMS
 
 | Pieza | Ruta | Rol hoy |
-|-------|------|---------|
+| ------- | ------ | --------- |
 | Sesgo / trend | motor observador, `trend_context` | Fase A parcial |
 | Sweep | `bos.py` + `pipeline.py` / flags estructura | Fase M |
 | CHoCH/BOS | `choch.py`, `bos.py` | Fase D parcial |
@@ -120,7 +120,7 @@ complete = A and M and D and aligned
 ## 5. Auditoría y huecos
 
 | ID | Tema | Estado |
-|----|------|--------|
+| ---- | ------ | -------- |
 | #1 | Look-ahead en swings afectaba “D” | ✅ Fix |
 | #2 | CHOCH real necesario para D genuino | ✅ Fix |
 | #5 | WF pasado→futuro | ✅ Fix dirección |
@@ -140,6 +140,7 @@ Tras R4, añadir § “PO3 only” en METRICS_CANON.
 ---
 
 ## 7. Checklist de aplicación al sistema
+
 - [x] Implementar `po3_state` (A/M/D/complete/direction) — `signals/po3.py`
 - [x] `evaluate(model="po3")` separado de Turtle Soup — `ict_backtest/rules.py`
 - [x] UI: "PO3 listo" vs "falta M/D" — `app_observador/ui/resumen_widget.py`

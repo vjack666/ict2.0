@@ -40,7 +40,11 @@ W_POST_DEFAULT = 30     # velas despues (para label de naturaleza / auto-sup)
 
 
 def _normalize(df: pd.DataFrame) -> pd.DataFrame:
-    """Devuelve DataFrame normalizado con columnas NORM_FEATS (sin look-ahead)."""
+    """Devuelve DataFrame normalizado con columnas NORM_FEATS (sin look-ahead).
+
+    OPCION A perf (2026-08-20): vectorizado con numpy (sin pandas .rolling),
+    evita el cuello de botella sobre 334k velas M5.
+    """
     close = df["close"].to_numpy(dtype=float)
     high = df["high"].to_numpy(dtype=float)
     low = df["low"].to_numpy(dtype=float)
@@ -50,29 +54,37 @@ def _normalize(df: pd.DataFrame) -> pd.DataFrame:
 
     mid = (high + low) / 2.0
     mid = np.where(mid == 0, close, mid)
-    # log-return de close (estable, sin nivel)
     logret = np.zeros_like(close)
     logret[1:] = np.diff(np.log(close + 1e-12))
-    # cuerpo y mechas relativas al mid
     body = (close - open_) / mid
     wick_up = (high - np.maximum(close, open_)) / mid
     wick_dn = (np.minimum(close, open_) - low) / mid
     rng = (high - low) / mid
-    # volumen y spread relativos a media movil (estabiliza escala)
-    vol_ma = pd.Series(vol).rolling(60, min_periods=1).mean().to_numpy()
+    # volumen y spread relativos a media movil (ventana 60, numpy stride-view)
+    vol_ma = _rolling_mean(vol, 60)
     vol_rel = np.where(vol_ma > 0, vol / vol_ma, 0.0)
-    spread_ma = pd.Series(spread).rolling(60, min_periods=1).mean().to_numpy()
+    spread_ma = _rolling_mean(spread, 60)
     spread_rel = np.where(np.isfinite(spread_ma) & (spread_ma > 0), spread / spread_ma, 0.0)
 
     out = pd.DataFrame({
-        "logret": logret,
-        "body": body,
-        "wick_up": wick_up,
-        "wick_dn": wick_dn,
-        "range": rng,
-        "vol": vol_rel,
-        "spread": spread_rel,
+        "logret": logret, "body": body, "wick_up": wick_up, "wick_dn": wick_dn,
+        "range": rng, "vol": vol_rel, "spread": spread_rel,
     }, index=df.index)
+    return out
+
+
+def _rolling_mean(a: np.ndarray, w: int) -> np.ndarray:
+    """Media movil vectorizada O(n) via cumsum (evita pandas y loops)."""
+    a = np.nan_to_num(a, nan=0.0)
+    n = len(a)
+    if n == 0:
+        return a
+    cum = np.zeros(n + 1, dtype=float)
+    np.cumsum(a, out=cum[1:])
+    out = np.empty(n, dtype=float)
+    for i in range(n):
+        s = max(0, i - w + 1)
+        out[i] = (cum[i + 1] - cum[s]) / (i - s + 1)
     return out
 
 
@@ -133,16 +145,23 @@ def build_tf_blocks(
     d = d.assign(time=pd.to_datetime(d["time"])).reset_index(drop=True)
     n = len(d)
     blocks: list[dict] = []
-    # indice por break_bar
-    ev_by_bar = {e.get("break_bar") or e.get("bar_index"): e for e in events if (e.get("break_bar") or e.get("bar_index")) is not None}
+    # indice por break_bar (global)
+    ev_by_bar = {e.get("break_bar") or e.get("bar_index"): e for e in events
+                 if (e.get("break_bar") or e.get("bar_index")) is not None}
+    # OPCION A perf (2026-08-20): indexar eventos por chunk UNA vez, no loop global
+    # por cada chunk. Evita O(eventos x chunks) -> O(eventos + chunks).
+    from collections import defaultdict
+    ev_by_chunk: dict[int, list] = defaultdict(list)
+    for gb, e in ev_by_bar.items():
+        ev_by_chunk[gb // chunk].append((gb, e))
     start = 0
     while start < n:
         end = min(start + chunk, n)
         seg = d.iloc[max(0, start - overlap): end].reset_index(drop=True)
         g0 = max(0, start - overlap)
-        # eventos cuyo break_bar global cae en [g0, end)
+        cid = start // chunk
         seg_events = []
-        for gb, e in ev_by_bar.items():
+        for gb, e in ev_by_chunk.get(cid, []):
             if g0 <= gb < end:
                 ec = dict(e)
                 ec["break_bar"] = gb - g0   # indice local

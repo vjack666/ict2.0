@@ -46,7 +46,7 @@ jobs:
           set -euxo pipefail
           python -m audits.codigo.fvg_ob_funnel | tee funnel.log
 
-      - name: Validate report
+      - name: Validate fvg_ob_funnel report
         shell: bash
         run: |
           set -euxo pipefail
@@ -64,6 +64,30 @@ jobs:
           print('FVG_OB_FUNNEL_REPORT: PASS')
           PY
 
+      - name: Validate mtf_seq_funnel report
+        shell: bash
+        run: |
+          set -euxo pipefail
+          test -s reports/audits/mtf_seq_funnel.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('reports/audits/mtf_seq_funnel.json').read_text())
+          assert data.get('status') == 'COMPLETE', data.get('status')
+          assert set(data['fvg_ob']) >= {'H1', 'H4', 'D1'}, set(data['fvg_ob'])
+          for tf in ('H1', 'H4', 'D1'):
+              item = data['fvg_ob'][tf]
+              assert item['audit_status'] == 'GateStatus.PASS', (tf, item['audit_status'])
+              assert item['causal_links'] == item['relation_count'], (tf, item.get('causal_links'), item.get('relation_count'))
+              assert item['relation_count'] >= 0
+          assert data['sequence']['H1']['audit_status'] == 'PASS', data['sequence']['H1'].get('audit_status')
+          mtf = data['mtf_navigation']
+          assert mtf['audit_status'] == 'PASS', mtf.get('audit_status')
+          assert mtf['n_samples'] > 1000, mtf.get('n_samples')
+          assert mtf['ok_rate'] >= 1.0, mtf.get('ok_rate')
+          print('MTF_SEQ_FUNNEL_REPORT: PASS')
+          PY
+
       - name: Upload Funnel artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,4 +95,5 @@ jobs:
           name: fvg-ob-funnel-${{ github.sha }}
           path: |
             reports/audits/fvg_ob_funnel.json
+            reports/audits/mtf_seq_funnel.json
             funnel.log

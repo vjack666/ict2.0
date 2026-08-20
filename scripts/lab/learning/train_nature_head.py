@@ -140,7 +140,11 @@ def main():
                          "n": n, "rate_confirm": float(y.mean()),
                          "note": "encoder P2 plano; input = bloque normalizado flatten"}},
                OUT)
+    # Persistir X,y + split para eval instantaneo (evita rebuild de build_tf_blocks)
+    np.savez("data/learning/encoder/nature_head_data.npz",
+             X=X, y=y, idx=idx, n_tr=n_tr)
     print(f"NATURE HEAD GUARDADO: {OUT}")
+    print(f"DATOS GUARDADOS: data/learning/encoder/nature_head_data.npz")
     print("Siguiente: usar P(bos_confirm) para modular el bias del motor.")
 
 

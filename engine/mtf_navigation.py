@@ -23,6 +23,7 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 import pandas as pd
+import bisect
 
 from detectors.bos import BosConfig, detect_bos
 from tools.displacement import DisplacementConfig, detect_displacement
@@ -392,11 +393,84 @@ class MTFNavigator:
         self._seq_depth_by_bar: dict[int, int] = {}
         self._seq_complete_by_bar: dict[int, int] = {}
         self._seq_chains: list[Any] = []
+        self._pre: dict[str, dict[str, Any]] = {}
         if self.config.precompute_sequences and run_sequential is not None:
             self._build_sequence_index()
+        # Precompute por capa (swings/BOS/displacement/dealing) UNA vez -> navigate O(1)
+        self._precompute_layers()
 
     def available_layers(self) -> list[str]:
         return sorted(self._frames.keys())
+
+    def _precompute_layers(self) -> None:
+        """Precompute swings/BOS/displacement/dealing por capa UNA vez (O(n) por capa).
+
+        Los detectores (detect_bos, detect_displacement) son causales (shift/rolling/
+        ffill sobre prefix), por lo que el array por barra ya contiene la dirección
+        calculada usando solo datos <= j. Lookup en navigate es O(1)/O(log n).
+        """
+        for k, df in self._frames.items():
+            if df.empty:
+                self._pre[k] = {}
+                continue
+            high = df["high"].to_numpy(float)
+            low = df["low"].to_numpy(float)
+            close = df["close"].to_numpy(float)
+            n = len(df)
+            sh, sl = _causal_swings(high, low, self.config.swing_left)
+            # barras de swings para bisect
+            sh_b = [b for b, _ in sh]
+            sl_b = [b for b, _ in sl]
+            # BOS causal por barra (detect_bos ya es vectorizado causal)
+            bos_dir = np.zeros(n, dtype="int64")
+            last_bos_dir = np.zeros(n, dtype="int64")
+            last_bos_bar = np.zeros(n, dtype="int64")
+            try:
+                bos = detect_bos(df, BosConfig(swing_lookback=self.config.bos_lookback))
+                d = bos["bos_direction"].to_numpy().astype("int64")
+                bos_dir[: len(d)] = d[:n]
+                # prefijo: ultimo !=0 hasta cada barra
+                for j in range(n):
+                    if bos_dir[j] != 0:
+                        last_bos_dir[j] = bos_dir[j]
+                        last_bos_bar[j] = j
+                    elif j > 0:
+                        last_bos_dir[j] = last_bos_dir[j - 1]
+                        last_bos_bar[j] = last_bos_bar[j - 1]
+            except Exception:
+                pass
+            # displacement reciente por barra (rolling lookback)
+            disp_recent = np.zeros(n, dtype=bool)
+            try:
+                ddf = detect_displacement(df, DisplacementConfig())
+                db = ddf["displacement_bullish"].to_numpy().astype(bool)
+                dbr = ddf["displacement_bearish"].to_numpy().astype(bool)
+                lb = self.config.displacement_lookback
+                for j in range(n):
+                    a = max(0, j - lb + 1)
+                    if db[a : j + 1].any() or dbr[a : j + 1].any():
+                        disp_recent[j] = True
+            except Exception:
+                pass
+            # dealing range rolling
+            lb = self.config.dealing_lookback
+            dh = pd.Series(high).rolling(lb, min_periods=1).max().to_numpy()
+            dl = pd.Series(low).rolling(lb, min_periods=1).min().to_numpy()
+            self._pre[k] = {
+                "high": high,
+                "low": low,
+                "close": close,
+                "sh": sh,
+                "sl": sl,
+                "sh_b": sh_b,
+                "sl_b": sl_b,
+                "last_bos_dir": last_bos_dir,
+                "last_bos_bar": last_bos_bar,
+                "disp_recent": disp_recent,
+                "dh": dh,
+                "dl": dl,
+                "n": n,
+            }
 
     def _snapshot(self, layer: TimeframeLayer, decision_time: Any) -> LayerSnapshot | None:
         df = self._frames.get(layer.value)
@@ -405,50 +479,33 @@ class MTFNavigator:
         i = _asof_index(df, decision_time)
         if i is None:
             return None
-
-        high = df["high"].to_numpy(float)
-        low = df["low"].to_numpy(float)
-        close = df["close"].to_numpy(float)
-        sh, sl = _causal_swings(high, low, self.config.swing_left)
-        bias = _structure_bias_from_swings(sh, sl, i)
-        rh, rl = _dealing_range(high, low, i, self.config.dealing_lookback)
+        pre = self._pre.get(layer.value, {})
+        if not pre:
+            return None
+        high = pre["high"]
+        low = pre["low"]
+        close = pre["close"]
+        sh_b = pre["sh_b"]
+        sl_b = pre["sl_b"]
+        # swings <= i (bisect O(log n))
+        si = bisect.bisect_right(sh_b, i)
+        sj = bisect.bisect_right(sl_b, i)
+        sh_u = pre["sh"][:si]
+        sl_u = pre["sl"][:sj]
+        bias = _structure_bias_from_swings(sh_u, sl_u, i)
+        rh = float(pre["dh"][i])
+        rl = float(pre["dl"][i])
         regime = _regime_from_structure(bias, rh, rl, float(close[i]))
 
         zones: list[Zone] = []
-        zones.extend(_eq_pools(sh, high, low, i, is_high=True))
-        zones.extend(_eq_pools(sl, high, low, i, is_high=False))
-        # dealing range as zone
+        # eq zones: igual que motor original (swings filtrados <= i, O(swings^2) trivial)
+        zones.extend(_eq_pools(sh_u, high, low, i, is_high=True))
+        zones.extend(_eq_pools(sl_u, high, low, i, is_high=False))
         zones.append(Zone(low=rl, high=rh, kind="DEALING", bar_index=i, detail="dealing_range"))
 
-        # BOS last (canonical detector on prefix — note: internal center swings caveat)
-        last_bos_dir = None
-        last_bos_bar = None
-        try:
-            prefix = df.iloc[: i + 1].copy()
-            bos = detect_bos(prefix, BosConfig(swing_lookback=self.config.bos_lookback))
-            dirs = bos["bos_direction"].to_numpy()
-            for b in range(len(dirs) - 1, -1, -1):
-                if int(dirs[b]) != 0:
-                    last_bos_dir = int(dirs[b])
-                    last_bos_bar = b
-                    break
-        except Exception as exc:  # noqa: BLE001
-            notes_bos = [f"bos_skip:{exc}"]
-        else:
-            notes_bos = []
-
-        disp_recent = False
-        try:
-            prefix = df.iloc[: i + 1].copy()
-            ddf = detect_displacement(prefix, DisplacementConfig())
-            lb = self.config.displacement_lookback
-            a = max(0, i - lb + 1)
-            disp_recent = bool(
-                ddf["displacement_bullish"].iloc[a : i + 1].any()
-                or ddf["displacement_bearish"].iloc[a : i + 1].any()
-            )
-        except Exception:
-            pass
+        last_bos_dir = int(pre["last_bos_dir"][i]) if pre["last_bos_dir"][i] != 0 else None
+        last_bos_bar = int(pre["last_bos_bar"][i]) if pre["last_bos_dir"][i] != 0 else None
+        disp_recent = bool(pre["disp_recent"][i])
 
         snap = LayerSnapshot(
             layer=layer,
@@ -463,7 +520,7 @@ class MTFNavigator:
             displacement_recent=disp_recent,
             range_high=rh,
             range_low=rl,
-            notes=notes_bos,
+            notes=[],
         )
         return snap
 

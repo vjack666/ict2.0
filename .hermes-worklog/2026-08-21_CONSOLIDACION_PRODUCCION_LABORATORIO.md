@@ -16,6 +16,10 @@ experimental actual sin modificar ni promocionar el motor activo.
 - Se creó el reconciliador `scripts/lab/experiments/reconcile_current_experiments.py`.
 - Se generaron `reports/audits/experiments/current_batch/EXP_MASTER_RECONCILIATION.json` y `.md` desde
   artefactos presentes en disco.
+- Se añadió la bitácora detallada del lote A+C en
+  `.hermes-worklog/2026-08-21_1946_EXP_PYRAMID_LOTE_AC_RESULTADOS.md`.
+- Se persistió `docs/experimentos/EXP_B_DESIGN.md` como reconstrucción explícita
+  post hoc; B sigue sin ejecutarse y no se considera preregistro original.
 
 ## Organización de auditorías — cierre de la misión
 

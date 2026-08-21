@@ -1,0 +1,111 @@
+name: Hermes Scientific Gates
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+
+jobs:
+  scientific-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run G0 bounded PIT gate
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python scripts/audit/sequence_pit_integrity_gate.py \
+            --sample-count 40 --max-checkpoint 5000 \
+            --json reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_BOUNDED.json \
+            --md reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_BOUNDED.md
+
+      - name: Run G0 full-span sparse PIT gate
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python scripts/audit/sequence_pit_integrity_gate.py \
+            --sample-count 4 \
+            --json reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_FULL_SPARSE.json \
+            --md reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_FULL_SPARSE.md
+
+      - name: Run D2 temporal replication
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python scripts/lab/experiments/exp_d2_runner.py | tee d2.log
+
+      - name: Run B preflight and reconcile
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python scripts/lab/experiments/exp_b_runner.py | tee b-preflight.log
+          python scripts/lab/experiments/reconcile_current_experiments.py | tee reconciliation.log
+
+      - name: Validate scientific gate outputs
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          for p in (
+              Path('reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_BOUNDED.json'),
+              Path('reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_FULL_SPARSE.json'),
+          ):
+              data = json.loads(p.read_text())
+              assert data['status'] == 'PASS', (p, data['status'])
+              assert data['coverage']['violations'] == 0, p
+              assert data['code']['worktree_clean_before_run'] is True, p
+          d2 = json.loads(Path('reports/audits/experiments/current_batch/EXP_D2_audit.json').read_text())
+          assert d2['verdict'] in {'PASS', 'FAIL', 'BLOCKED'}
+          recon = json.loads(Path('reports/audits/experiments/current_batch/EXP_MASTER_RECONCILIATION.json').read_text())
+          assert recon['summary']['observed'] == 15
+          assert recon['promotion']['status'] == 'BLOCKED'
+          print('SCIENTIFIC_GATES: PASS; promotion remains BLOCKED by policy')
+          PY
+
+      - name: Upload scientific evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hermes-scientific-gates-${{ github.sha }}
+          path: |
+            reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_BOUNDED.json
+            reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_BOUNDED.md
+            reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_FULL_SPARSE.json
+            reports/audits/pit/CI_SEQUENCE_PIT_INTEGRITY_FULL_SPARSE.md
+            reports/audits/experiments/current_batch/EXP_D2_audit.json
+            reports/audits/experiments/current_batch/EXP_D2_raw.json
+            reports/audits/experiments/current_batch/EXP_B*_audit.json
+            reports/audits/experiments/current_batch/EXP_B*_raw.json
+            reports/audits/experiments/current_batch/EXP_B_PREFLIGHT.*
+            reports/audits/experiments/current_batch/EXP_MASTER_RECONCILIATION.*
+            d2.log
+            b-preflight.log
+            reconciliation.log

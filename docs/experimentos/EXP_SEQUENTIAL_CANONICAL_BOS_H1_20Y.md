@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-18  
 **Motor:** `engine/sequential_events.py` · `structure_mode=canonical_bos`  
 **BOS:** `detectors.bos.detect_bos` (cruce único de nivel, anti-flood)  
-**Artefacto:** `reports/audits/sequential_canonical_bos_H1_20Y.json`
+**Artefacto:** `reports/audits/experiments/sequential/sequential_canonical_bos_H1_20Y.json`
 
 ---
 

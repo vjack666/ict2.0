@@ -11,7 +11,7 @@
 
 **Estado de implementación:** `WYCKOFF-0 PASS / WYCKOFF-1..2 IN PROGRESS /
 WYCKOFF-3..4 PARTIAL / WYCKOFF-5 PENDING`. La evidencia de inventario está en
-`reports/audits/wyckoff_runtime_inventory_2026-08-20.md`; este estado no es un
+`reports/audits/runtime/wyckoff_runtime_inventory_2026-08-20.md`; este estado no es un
 PASS final del motor.
 
 ## 1. Propósito

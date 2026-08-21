@@ -1,0 +1,398 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A5",
+  "component_isolated": "Componente PROFUNDIDAD: depth>=3 vs >=4 vs >=5 (H1, mismo protocolo, defensa pareja)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-21T16:16:10.038049+00:00",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": null
+  },
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "depth_list": [
+      3,
+      4,
+      5
+    ],
+    "sl_rule": "min(sweep_wick,broken_swing)-buffer",
+    "tp_rule": "measured_projection (fallback sancionado)",
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "pairing_seed": 4242,
+    "paired_sweep_defense": true
+  },
+  "depths": {
+    "3": {
+      "depth_min": 3,
+      "treatment": {
+        "n_trades": 400,
+        "n_closed": 390,
+        "n_open": 3,
+        "n_invalid": 7,
+        "wins": 157,
+        "losses": 233,
+        "win_rate": 0.4026,
+        "win_rate_wilson95": [
+          0.3551,
+          0.452
+        ],
+        "mean_r": -0.0055,
+        "median_r": -1.0,
+        "std_r": 1.5126,
+        "min_r": -1.0,
+        "max_r": 14.8333,
+        "expectancy": -0.0055,
+        "profit_factor": 0.9908,
+        "drawdown": 25.4648,
+        "bootstrap": {
+          "n_closed": 390,
+          "mean_r_ci": [
+            -0.1463575162510644,
+            0.15079416604863996
+          ],
+          "win_rate_ci": [
+            0.35384615384615387,
+            0.45384615384615384
+          ],
+          "n_resamples": 2000,
+          "seed": 42,
+          "n_clusters": 390
+        }
+      },
+      "baseline": {
+        "n_trades": 400,
+        "n_closed": 387,
+        "n_open": 4,
+        "n_invalid": 9,
+        "wins": 209,
+        "losses": 178,
+        "win_rate": 0.5401,
+        "win_rate_wilson95": [
+          0.4902,
+          0.5891
+        ],
+        "mean_r": 0.1918,
+        "median_r": 0.36,
+        "std_r": 3.09,
+        "min_r": -1.0,
+        "max_r": 57.3636,
+        "expectancy": 0.1918,
+        "profit_factor": 1.4171,
+        "drawdown": 16.3753,
+        "bootstrap": {
+          "n_closed": 387,
+          "mean_r_ci": [
+            -0.02887059940717687,
+            0.53351173571568
+          ],
+          "win_rate_ci": [
+            0.4909560723514212,
+            0.5891472868217055
+          ],
+          "n_resamples": 2000,
+          "seed": 42,
+          "n_clusters": 387
+        }
+      },
+      "delta_win_rate": -0.1375,
+      "delta_mean_r": -0.1973,
+      "motor_summary": {
+        "n_chains": 3478,
+        "by_depth": {
+          "1": 1312,
+          "2": 1697,
+          "3": 213,
+          "4": 229,
+          "5": 3,
+          "6": 2,
+          "7": 22
+        },
+        "by_status": {
+          "EXPIRED": 3456,
+          "COMPLETE": 22
+        },
+        "complete_bull": 9,
+        "complete_bear": 13,
+        "stage_order": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "OB",
+          "FVG",
+          "RETEST"
+        ]
+      },
+      "chains_depth_ge": {
+        "depth_min": 3,
+        "n": 469,
+        "by_status": {
+          "EXPIRED": 447,
+          "COMPLETE": 22
+        }
+      },
+      "n_treatment": 400,
+      "n_baseline": 400,
+      "paired": true,
+      "n_paired_offsets": {
+        "1": 199,
+        "-1": 201
+      }
+    },
+    "4": {
+      "depth_min": 4,
+      "treatment": {
+        "n_trades": 215,
+        "n_closed": 211,
+        "n_open": 4,
+        "n_invalid": 0,
+        "wins": 116,
+        "losses": 95,
+        "win_rate": 0.5498,
+        "win_rate_wilson95": [
+          0.4823,
+          0.6154
+        ],
+        "mean_r": 0.2499,
+        "median_r": 1.0,
+        "std_r": 1.1627,
+        "min_r": -1.0,
+        "max_r": 3.1608,
+        "expectancy": 0.2499,
+        "profit_factor": 1.555,
+        "drawdown": 6.233,
+        "bootstrap": {
+          "n_closed": 211,
+          "mean_r_ci": [
+            0.09397479969551131,
+            0.4078114120711996
+          ],
+          "win_rate_ci": [
+            0.4834123222748815,
+            0.6161137440758294
+          ],
+          "n_resamples": 2000,
+          "seed": 42,
+          "n_clusters": 211
+        }
+      },
+      "baseline": {
+        "n_trades": 215,
+        "n_closed": 205,
+        "n_open": 3,
+        "n_invalid": 7,
+        "wins": 91,
+        "losses": 114,
+        "win_rate": 0.4439,
+        "win_rate_wilson95": [
+          0.3775,
+          0.5123
+        ],
+        "mean_r": 0.2336,
+        "median_r": -1.0,
+        "std_r": 4.1688,
+        "min_r": -1.0,
+        "max_r": 57.3636,
+        "expectancy": 0.2336,
+        "profit_factor": 1.42,
+        "drawdown": 15.4789,
+        "bootstrap": {
+          "n_closed": 205,
+          "mean_r_ci": [
+            -0.16485403403841842,
+            0.8672308236709824
+          ],
+          "win_rate_ci": [
+            0.375609756097561,
+            0.512317073170731
+          ],
+          "n_resamples": 2000,
+          "seed": 42,
+          "n_clusters": 205
+        }
+      },
+      "delta_win_rate": 0.1059,
+      "delta_mean_r": 0.0163,
+      "motor_summary": {
+        "n_chains": 3478,
+        "by_depth": {
+          "1": 1312,
+          "2": 1697,
+          "3": 213,
+          "4": 229,
+          "5": 3,
+          "6": 2,
+          "7": 22
+        },
+        "by_status": {
+          "EXPIRED": 3456,
+          "COMPLETE": 22
+        },
+        "complete_bull": 9,
+        "complete_bear": 13,
+        "stage_order": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "OB",
+          "FVG",
+          "RETEST"
+        ]
+      },
+      "chains_depth_ge": {
+        "depth_min": 4,
+        "n": 256,
+        "by_status": {
+          "EXPIRED": 234,
+          "COMPLETE": 22
+        }
+      },
+      "n_treatment": 215,
+      "n_baseline": 215,
+      "paired": true,
+      "n_paired_offsets": {
+        "1": 109,
+        "-1": 106
+      }
+    },
+    "5": {
+      "depth_min": 5,
+      "treatment": {
+        "n_trades": 24,
+        "n_closed": 23,
+        "n_open": 1,
+        "n_invalid": 0,
+        "wins": 9,
+        "losses": 14,
+        "win_rate": 0.3913,
+        "win_rate_wilson95": [
+          0.2216,
+          0.5921
+        ],
+        "mean_r": -0.1457,
+        "median_r": -1.0,
+        "std_r": 1.1055,
+        "min_r": -1.0,
+        "max_r": 1.9221,
+        "expectancy": -0.1457,
+        "profit_factor": 0.7606,
+        "drawdown": 9.0451,
+        "bootstrap": {
+          "n_closed": 23,
+          "mean_r_ci": [
+            -0.5587589329026972,
+            0.3031966322540613
+          ],
+          "win_rate_ci": [
+            0.21739130434782608,
+            0.6086956521739131
+          ],
+          "n_resamples": 2000,
+          "seed": 42,
+          "n_clusters": 23
+        }
+      },
+      "baseline": {
+        "n_trades": 24,
+        "n_closed": 23,
+        "n_open": 1,
+        "n_invalid": 0,
+        "wins": 10,
+        "losses": 13,
+        "win_rate": 0.4348,
+        "win_rate_wilson95": [
+          0.2563,
+          0.6319
+        ],
+        "mean_r": -0.056,
+        "median_r": -1.0,
+        "std_r": 1.1915,
+        "min_r": -1.0,
+        "max_r": 2.7716,
+        "expectancy": -0.056,
+        "profit_factor": 0.901,
+        "drawdown": 4.0885,
+        "bootstrap": {
+          "n_closed": 23,
+          "mean_r_ci": [
+            -0.5231783039267311,
+            0.42631054949560504
+          ],
+          "win_rate_ci": [
+            0.21739130434782608,
+            0.6521739130434783
+          ],
+          "n_resamples": 2000,
+          "seed": 42,
+          "n_clusters": 23
+        }
+      },
+      "delta_win_rate": -0.0435,
+      "delta_mean_r": -0.0897,
+      "motor_summary": {
+        "n_chains": 3478,
+        "by_depth": {
+          "1": 1312,
+          "2": 1697,
+          "3": 213,
+          "4": 229,
+          "5": 3,
+          "6": 2,
+          "7": 22
+        },
+        "by_status": {
+          "EXPIRED": 3456,
+          "COMPLETE": 22
+        },
+        "complete_bull": 9,
+        "complete_bear": 13,
+        "stage_order": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "OB",
+          "FVG",
+          "RETEST"
+        ]
+      },
+      "chains_depth_ge": {
+        "depth_min": 5,
+        "n": 27,
+        "by_status": {
+          "COMPLETE": 22,
+          "EXPIRED": 5
+        }
+      },
+      "n_treatment": 24,
+      "n_baseline": 24,
+      "paired": true,
+      "n_paired_offsets": {
+        "1": 9,
+        "-1": 15
+      }
+    }
+  },
+  "overall_verdict": "PASS",
+  "elapsed_s": 8.08
+}

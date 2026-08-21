@@ -60,7 +60,7 @@ Este worklog no declara la integración PASS; documenta únicamente el diseño y
 
 ### Inventario y decisión
 
-- Inventario registrado en `reports/audits/wyckoff_runtime_inventory_2026-08-20.md`.
+- Inventario registrado en `reports/audits/runtime/wyckoff_runtime_inventory_2026-08-20.md`.
 - `analysis/wyckoff_agent.py` queda clasificado como `ANALYSIS_ONLY`/
   `LEGACY_COMPAT`; no se copió a runtime.
 - `agents/wyckoff_agent.py` queda como compatibilidad porque todavía existen

@@ -10,5 +10,5 @@ Ventana H1 2017-03-14→2017-04-28, 750 steps, 501 transitions, 193 invalidation
 Objects FVG/OB magnitude n=162 (descriptivo)
 
 ## Artefactos
-reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json
+reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json
 docs/AUDITORIA_TEMPORAL_AHF_RESULT_2026-08-19.md

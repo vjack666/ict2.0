@@ -24,11 +24,12 @@ import os
 import sys
 import time
 import datetime as dt
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = str(Path(__file__).resolve().parents[2])  # scripts/daily -> raíz del repositorio
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
@@ -413,6 +414,11 @@ def main():
     ap.add_argument("--symbols", nargs="*", default=SYMS_DEFAULT)
     args = ap.parse_args()
 
+    # Fail closed if the production/laboratory boundary is invalid. The daily
+    # brief must never silently consume a research candidate.
+    from runtime.engine_registry import assert_daily_engine_safe
+    active_engine = assert_daily_engine_safe()
+
     _TFS = ["D1", "H4", "H1", "M15"]
     # corte dinamico: ultima fecha real entre todos los simbolos/TFs
     cut_dates = []
@@ -428,6 +434,7 @@ def main():
 
     header = []
     header.append(f"# BRIEF DE LECTURA ICT/WYCKOFF — generado {GENERATED.astimezone(dt.timezone(dt.timedelta(hours=-5))):%Y-%m-%d %H:%M} (Ecuador)\n")
+    header.append(f"> **Motor activo:** `{active_engine['id']}` · perfil `{active_engine['profile_id']}` · estado `{active_engine['deployment_state']}`")
     header.append("> **AVISO:** mapa de contexto, NO señal ejecutable. Motor de señales en construcción (v30).")
     header.append(f"> Datos: `data/raw/*.parquet` (corte {cut_str}, actualizado vía MT5 en vivo). El Context State normativo proviene de `MTFNavigator`; `trend` es diagnóstico legacy.")
     header.append("> Regla informativa (libro 18): HTF/ITF aportan sesgo y zona; este brief solo lee mercado y no calcula ejecución.\n")

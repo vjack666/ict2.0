@@ -25,7 +25,7 @@
 
 ## [FASE 1] — VERIFICACIÓN DE RESULTADOS (no re-ejecutado)
 
-El reporte `reports/audits/sequential_expectancy_depth4_lite_H1.json`
+El reporte `reports/audits/experiments/sequential/sequential_expectancy_depth4_lite_H1.json`
 (generated_at 2026-08-21T03:54:01Z, seeds deterministas) ya existía. Se leyó
 para extraer el veredicto real. No se re-corrió (determinista; el lab lo generó).
 
@@ -93,7 +93,7 @@ ya commiteada en `15b4e6f`):
 git add scripts/lab/experiments/exp_sequential_expectancy_depth4_lite.py \
         engine/sequential_outcome.py \
         tests/test_sequential_outcome.py \
-        reports/audits/sequential_expectancy_depth4_lite_H1.json \
+        reports/audits/experiments/sequential/sequential_expectancy_depth4_lite_H1.json \
         docs/experimentos/EXP_SEQUENTIAL_EXPECTANCY_DEPTH4_LITE_H1.md \
         .hermes-worklog/2026-08-21_1012_EXP_SEQ_EXPECTANCY_DEPTH4_LITE.md \
         .hermes-index.md
@@ -103,7 +103,7 @@ Commit: **feat(exp): EXP sequential expectancy depth>=4 BOS-lite H1 — GATE PAS
 (+11pp WR vs FVG random)**.
 
 Excluidos del stage (no son del experimento): `NUL`, `.atl/*`, worklogs ajenos,
-`reports/audits/exp_seq_x_context_state.md` (de otro experimento), charts de la
+`reports/audits/experiments/current_batch/exp_seq_x_context_state.md` (de otro experimento), charts de la
 rutina matutina (ya en `15b4e6f`/sin cambio relevante).
 
 ---

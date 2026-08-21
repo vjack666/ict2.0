@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-18  
 **Estado:** **HIPÓTESIS FALSADA**  
 **TF / data:** EURUSD H1 · Dukascopy 2006–2025 (20Y)  
-**Artefacto numérico:** `reports/audits/fvg_ob_forward_strict_vs_rest_H1.json`
+**Artefacto numérico:** `reports/audits/experiments/fvg_ob/fvg_ob_forward_strict_vs_rest_H1.json`
 
 ---
 

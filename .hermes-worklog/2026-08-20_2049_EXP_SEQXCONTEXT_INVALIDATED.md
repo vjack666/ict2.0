@@ -56,7 +56,7 @@ Script: scripts/diag_causal_violation.py (corriendo proc_14c17ef755cb, 60 barras
 
 ## [ARTEFACTO INVALIDADO]
 
-reports/audits/exp_seq_x_context_state.json marcado:
+reports/audits/experiments/current_batch/exp_seq_x_context_state.json marcado:
   status: INVALIDATED
   reason: CAUSALITY_CHECK_FAIL
   usable_for_inference: false

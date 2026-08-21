@@ -4,7 +4,7 @@ Corre run_sequential (fix PIT) sobre H1 20Y y reporta la distribucion:
 chains, unique_setups (colapsado por dir+stages+nivel), COMPLETE, depth, status.
 Compara contra v1 baseline (1460 chains, 3 COMPLETE) para ver el impacto de PIT.
 
-Escribe reports/audits/funnel_v2_seq_20Y.json (NO toca reportes v1 de Grok).
+Escribe reports/audits/experiments/fvg_ob/funnel_v2_seq_20Y.json (NO toca reportes v1 de Grok).
 """
 from __future__ import annotations
 import time, json
@@ -15,7 +15,7 @@ import numpy as np
 import engine.sequential_events as SE
 from audits.codigo.mtf_seq_funnel import _load_tf
 
-OUT = Path("reports/audits/funnel_v2_seq_20Y.json")
+OUT = Path("reports/audits/experiments/fvg_ob/funnel_v2_seq_20Y.json")
 t0 = time.time()
 print("loading H1...", flush=True)
 h1 = _load_tf("H1")

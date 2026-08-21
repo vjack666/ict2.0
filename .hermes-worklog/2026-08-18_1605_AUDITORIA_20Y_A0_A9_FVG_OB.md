@@ -14,9 +14,9 @@
 
 ## Artefactos
 - docs/AUDITORIA_A0_A9_FVG_OB_20Y.md
-- reports/audits/A0_A9_audit_stack.json
-- reports/audits/A0_real_20Y.json
-- reports/audits/fvg_ob_funnel.json
+- reports/audits/data/A0_A9_audit_stack.json
+- reports/audits/data/A0_real_20Y.json
+- reports/audits/experiments/fvg_ob/fvg_ob_funnel.json
 
 ## Veredicto
 PASS CON RESTRICCIONES. Evidencia local 20Y sólida. CI del Director sigue pendiente.

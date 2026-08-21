@@ -96,9 +96,9 @@ Invalidaciones pueden devolver a una capa superior. El contexto confirmado perma
 
 ## 5. Evidencia ya obtenida
 
-1. **Muestra 2017 (Hermes 1762746):** `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` — `PASS_TRACE_INTEGRITY`, 750 steps, 501 transiciones, 193 invalidaciones. Estratificada; `rollback_depth` estaba roto (siempre 0).
+1. **Muestra 2017 (Hermes 1762746):** `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json` — `PASS_TRACE_INTEGRITY`, 750 steps, 501 transiciones, 193 invalidaciones. Estratificada; `rollback_depth` estaba roto (siempre 0).
 
-2. **Sandbox multi-ventana (Grok 2026-08-20):** `reports/audits/ahf_temporal_navigation_SANDBOX.json` — 3 ventanas (2017/2020/2024), 170 steps, 51 invalidaciones, **rollback_depth max = 2.0**. Overall sandbox **PASS**. Valida el fix de instrumentación (`state_to_tf`). Runner: `scripts/tna_sandbox_runner.py`.
+2. **Sandbox multi-ventana (Grok 2026-08-20):** `reports/audits/temporal/ahf_temporal_navigation_SANDBOX.json` — 3 ventanas (2017/2020/2024), 170 steps, 51 invalidaciones, **rollback_depth max = 2.0**. Overall sandbox **PASS**. Valida el fix de instrumentación (`state_to_tf`). Runner: `scripts/tna_sandbox_runner.py`.
 
 3. **Full-ish STRATIFIED_WIDE (script listo; corrida completa pendiente en local):** `scripts/tna_fullish_runner.py`. En sandbox solo chunks parciales (jobs largos cortados): p.ej. inv=136/rb_max=2.0, inv=119/rb_max=2.0 en tramos multi-año. Bitácora: `.hermes-worklog/2026-08-20_TNA_FULLISH_PARCIAL_Y_CHECKLIST.md`.
 

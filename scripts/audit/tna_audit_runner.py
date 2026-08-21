@@ -13,7 +13,7 @@ Driver dedicado que:
 
 NO es backtest. NO declara PASS por trace válido. NO usa PnL.
 
-Salida: reports/audits/ahf_temporal_navigation_20Y.json + .md
+Salida: reports/audits/temporal/ahf_temporal_navigation_20Y.json + .md
 """
 
 from __future__ import annotations

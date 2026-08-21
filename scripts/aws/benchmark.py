@@ -10,7 +10,7 @@ Registra: tiempo, CPU logica, RAM total, procesos usados (1, luego todos los cor
 
 Uso:
   ict2.0> .venv/Scripts/python.exe scripts/aws/benchmark.py
-Salida: reports/audits/benchmark_<host>.json
+Salida: reports/audits/infrastructure/benchmark_<host>.json
 """
 from __future__ import annotations
 import datetime as _dt

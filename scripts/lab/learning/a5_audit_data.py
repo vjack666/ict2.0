@@ -2,7 +2,7 @@
 
 Inspecciona data/raw: rango, n barras, gaps, duplicados, OHLC sanity, tick_volume,
 consistencia multi-TF, y determina que dataset usa cada experimento B0-B5.
-NO modifica nada. Produce reports/audits/A5_AUDITORIA_DATOS.md con evidencia real.
+NO modifica nada. Produce reports/audits/data/A5_AUDITORIA_DATOS.md con evidencia real.
 """
 from __future__ import annotations
 import sys, os, json, hashlib, datetime
@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 RAW = os.path.join(REPO, "data/raw")
-OUT_MD = os.path.join(REPO, "reports/audits/A5_AUDITORIA_DATOS.md")
+OUT_MD = os.path.join(REPO, "reports/audits/data/A5_AUDITORIA_DATOS.md")
 
 
 def sha256(path):

@@ -22,7 +22,7 @@ import engine.mtf_navigation as M
 from audits.codigo.mtf_seq_funnel import _load_tf
 
 N_CORES = 20
-OUT = Path("reports/audits/tna_20y.json")
+OUT = Path("reports/audits/temporal/tna_20y.json")
 
 _frames = None
 

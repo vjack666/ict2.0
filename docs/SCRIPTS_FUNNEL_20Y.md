@@ -7,8 +7,8 @@
 
 Salidas:
 
-- `reports/audits/mtf_seq_funnel.json`
-- `reports/audits/mtf_seq_funnel_20Y.md`
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json`
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel_20Y.md`
 - `engine/dealing_range.py` (EQ50 only)
 
 ---
@@ -421,7 +421,7 @@ Funciones clave:
 | `funnel_fvg_ob(df, tf)` | detect_fvg + detect_order_blocks + relate_fvg_ob STRICT |
 | `funnel_sequence(df, tf)` | `run_sequential` canonical_bos + FunnelAudit |
 | `funnel_mtf_navigation(frames, sample_every)` | MTFNavigator.navigate en rejilla temporal |
-| `main()` | orquesta las 3 etapas y escribe `reports/audits/mtf_seq_funnel.json` |
+| `main()` | orquesta las 3 etapas y escribe `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json` |
 
 Para densificar MTF en el módulo del repo (si se quiere persistir el cambio):
 

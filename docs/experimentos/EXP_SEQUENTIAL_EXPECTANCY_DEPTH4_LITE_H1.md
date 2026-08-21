@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-21
 **Estado:** **EJECUTADO — GATE PASS**
 **Data:** EURUSD H1 Dukascopy 2019-01-01 → 2024-12-31 (36934 barras)
-**Artefacto:** `reports/audits/sequential_expectancy_depth4_lite_H1.json`
+**Artefacto:** `reports/audits/experiments/sequential/sequential_expectancy_depth4_lite_H1.json`
 
 ---
 
@@ -37,12 +37,12 @@ entradas aleatorias en FVG con la MISMA lógica de SL/TP.
 
 | Grupo | n | cerrados | open | Win-rate (Wilson95) | mean R | median R |
 |--------|--:|---------:|-----:|--------------------|-------:|---------:|
-| Tratamiento (depth≥4) | 215 | 211 | 4 | 55.0% (48.2-61.5%) | 0.2499 | 1.0 |
+| Tratamiento (depth≥4) | 215 | 211 | 4 | 54.5% (47.8-61.1%) | 0.2675 | 0.9983 |
 | Baseline (FVG random) | 215 | 205 | 3 | 43.9% (37.3-50.7%) | 0.2277 | -1.0 |
 
-- Δ win-rate (trat − base): **0.1108**
-- Δ mean R (trat − base): **0.0222**
-- Bootstrap meanR CI tratamiento: `[0.09397479969551131, 0.4078114120711996]`
+- Δ win-rate (trat − base): **0.106**
+- Δ mean R (trat − base): **0.0398**
+- Bootstrap meanR CI tratamiento: `[0.10853835671321634, 0.43013234978245596]`
 - Bootstrap meanR CI baseline: `[-0.17153821723811521, 0.8606063559720186]`
 
 ## Resultado

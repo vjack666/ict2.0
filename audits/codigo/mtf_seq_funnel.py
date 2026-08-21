@@ -3,7 +3,7 @@
 Extiende el funnel FVG/OB con etapas de profundidad secuencial y del grafo
 multi-TF. No calcula PnL ni emite entradas.
 
-Salida: reports/audits/mtf_seq_funnel.json
+Salida: reports/audits/experiments/fvg_ob/mtf_seq_funnel.json
 """
 from __future__ import annotations
 
@@ -51,7 +51,7 @@ def _run_funnel(audit_id: str, records: list[dict]) -> dict:
     }
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "reports" / "audits" / "mtf_seq_funnel.json"
+OUT = ROOT / "reports" / "audits" / "experiments" / "fvg_ob" / "mtf_seq_funnel.json"
 DATA = ROOT / "data" / "raw" / "EURUSD"
 # fallback datasets path
 DATA_ALT = ROOT / "datasets" / "eurusd_dukascopy_20y"
@@ -238,6 +238,7 @@ def main() -> dict:
     report["sequence"]["H1"] = funnel_sequence(frames["H1"], "H1")
     report["mtf_navigation"] = funnel_mtf_navigation(frames, sample_every=2500)
 
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2, default=str))
     print(json.dumps({

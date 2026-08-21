@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C2",
+  "role": "AGENTE_C_FALSACION",
+  "hypothesis": "H_C: el edge de expectancy positiva depth>=4 es ROBUSTO fuera de muestra EURUSD 2019-2024",
+  "generated_at": "2026-08-21T16:11:45.938157+00:00",
+  "elapsed_s": 2.94,
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "min_depth": 4,
+    "horizon_bars": 200,
+    "sl_buffer": 0.0001,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "min_n_gate": 30,
+    "costs": false
+  },
+  "metrics_treatment": {
+    "n_trades": 149,
+    "n_closed": 142,
+    "n_open": 7,
+    "n_invalid_levels": 0,
+    "wins": 68,
+    "losses": 74,
+    "win_rate": 0.4789,
+    "win_rate_wilson95": [
+      0.3984,
+      0.5605
+    ],
+    "mean_r": 0.1365,
+    "median_r": -1.0,
+    "std_r": 1.2231,
+    "min_r": -1.0,
+    "max_r": 2.8966,
+    "bootstrap_clustered": {
+      "n_closed": 142,
+      "mean_r_ci": [
+        -0.06188225754569033,
+        0.3401381091952801
+      ],
+      "win_rate_ci": [
+        0.4014084507042254,
+        0.5633802816901409
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 142
+    }
+  },
+  "metrics_baseline": {
+    "n_trades": 149,
+    "n_closed": 145,
+    "n_open": 1,
+    "n_invalid_levels": 3,
+    "wins": 76,
+    "losses": 69,
+    "win_rate": 0.5241,
+    "win_rate_wilson95": [
+      0.4433,
+      0.6037
+    ],
+    "mean_r": 0.1651,
+    "median_r": 0.4495,
+    "std_r": 1.1979,
+    "min_r": -1.0,
+    "max_r": 3.6356,
+    "bootstrap_clustered": {
+      "n_closed": 145,
+      "mean_r_ci": [
+        -0.03436326021275296,
+        0.36366002920181195
+      ],
+      "win_rate_ci": [
+        0.4413793103448276,
+        0.6068965517241379
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 145
+    }
+  },
+  "gross_reference": null,
+  "delta_win_rate_vs_random": -0.0452,
+  "delta_mean_r_vs_random": -0.0286,
+  "delta_mean_r_gross_vs_net": null,
+  "cost_model": null,
+  "walk_forward": null,
+  "motor_summary": {
+    "n_chains": 3339,
+    "by_depth": {
+      "1": 1275,
+      "2": 1727,
+      "3": 161,
+      "4": 159,
+      "5": 2,
+      "6": 1,
+      "7": 14
+    },
+    "by_status": {
+      "EXPIRED": 3325,
+      "COMPLETE": 14
+    },
+    "complete_bull": 12,
+    "complete_bear": 2,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "n": 176,
+    "by_status": {
+      "EXPIRED": 162,
+      "COMPLETE": 14
+    },
+    "dedup_or_warmup_skipped": 27
+  },
+  "gate": "FAIL",
+  "verdict": "EDGE ROTO OOS: mean_R=0.1365 (CI95 [-0.06188225754569033, 0.3401381091952801]), n_closed=142. Expectancy NO positiva fuera de muestra (falsacion exitosa)."
+}

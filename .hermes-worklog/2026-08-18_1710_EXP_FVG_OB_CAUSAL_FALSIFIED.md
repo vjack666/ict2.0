@@ -7,7 +7,7 @@
 OB→FVG causal identifica FVG con mejor comportamiento futuro.
 
 ## Evidencia
-`reports/audits/fvg_ob_forward_strict_vs_rest_H1.json`  
+`reports/audits/experiments/fvg_ob/fvg_ob_forward_strict_vs_rest_H1.json`
 `docs/EXP_FVG_OB_CAUSAL_FORWARD_H1_20Y.md`
 
 STRICT n≈678 vs NO_RELATION n≈20k vs ALL ≈22k en H1 20Y.  

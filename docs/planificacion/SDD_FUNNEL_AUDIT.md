@@ -126,7 +126,7 @@ Sequence H1: **1460 cadenas, 3 COMPLETE**. La población COMPLETE sigue siendo i
 
 MTF dense: **1239 samples, `sample_every=100`, `ok_rate=1.0`**, interpretado como integridad de navegación, no win rate.
 
-Artifact: `reports/audits/mtf_seq_funnel.json`.
+Artifact: `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json`.
 
 Gate CI: `.github/workflows/30-hermes-fvg-ob-funnel.yml` valida `status=COMPLETE`, PASS por TF, `causal_links == relation_count`, Sequence PASS y cobertura MTF mínima.
 

@@ -12,20 +12,20 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 
 | Auditoría | Archivo local | Estado | Dónde corrió |
 | --- | --- | --- | --- |
-| A0 Data Integrity (stack) | `reports/audits/A0_A9_audit_stack.json` | PASS | repo (CI/local) |
-| A0 real 20Y | `reports/audits/A0_real_20Y.json` | PASS | repo |
-| A0–A9 stack completo | `reports/audits/A0_A9_audit_stack.json` + `.hermes/audit_state.json` | PASS score 1.0 | repo |
-| A7 Funnel FVG/OB | `reports/audits/fvg_ob_funnel.json`, `fvg_ob_funnel_20y_relation.json`, `fvg_ob_funnel_20y_strict.json` | PASS | repo |
-| Funnel FVG/OB 20Y (seq+MTF) | `reports/audits/mtf_seq_funnel.json` | PASS | repo |
-| TNA integridad (trace) | `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` | PASS_TRACE_INTEGRITY | repo |
-| AHF smoke H1 | `reports/audits/ahf_smoke_H1.json` | OK | repo |
-| MTF nav smoke H1 | `reports/audits/mtf_navigation_smoke_H1.json` | OK | repo |
-| Sequential canonical BOS H1 20Y | `reports/audits/sequential_canonical_bos_H1_20Y.json` | OK | repo |
-| Sequential events H1 20Y | `reports/audits/sequential_events_H1_20Y.json` | OK | repo |
-| Sequential expectancy COMPLETE H1 20Y | `reports/audits/sequential_expectancy_COMPLETE_H1_20Y.json` | OK | repo |
-| FVG/OB forward strict vs rest H1 | `reports/audits/fvg_ob_forward_strict_vs_rest_H1.json` | OK | repo |
-| Multifactor structure/disp/liq HTF H1 | `reports/audits/multifactor_structure_disp_liq_htf_H1.json` | OK | repo |
-| Benchmark PC (spayk 20c/16GB) | `reports/audits/benchmark_spayk.json` | evidencia | local (hoy) |
+| A0 Data Integrity (stack) | `reports/audits/data/A0_A9_audit_stack.json` | PASS | repo (CI/local) |
+| A0 real 20Y | `reports/audits/data/A0_real_20Y.json` | PASS | repo |
+| A0–A9 stack completo | `reports/audits/data/A0_A9_audit_stack.json` + `.hermes/audit_state.json` | PASS score 1.0 | repo |
+| A7 Funnel FVG/OB | `reports/audits/experiments/fvg_ob/fvg_ob_funnel.json`, `fvg_ob_funnel_20y_relation.json`, `fvg_ob_funnel_20y_strict.json` | PASS | repo |
+| Funnel FVG/OB 20Y (seq+MTF) | `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json` | PASS | repo |
+| TNA integridad (trace) | `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json` | PASS_TRACE_INTEGRITY | repo |
+| AHF smoke H1 | `reports/audits/runtime/ahf_smoke_H1.json` | OK | repo |
+| MTF nav smoke H1 | `reports/audits/runtime/mtf_navigation_smoke_H1.json` | OK | repo |
+| Sequential canonical BOS H1 20Y | `reports/audits/experiments/sequential/sequential_canonical_bos_H1_20Y.json` | OK | repo |
+| Sequential events H1 20Y | `reports/audits/experiments/sequential/sequential_events_H1_20Y.json` | OK | repo |
+| Sequential expectancy COMPLETE H1 20Y | `reports/audits/experiments/sequential/sequential_expectancy_COMPLETE_H1_20Y.json` | OK | repo |
+| FVG/OB forward strict vs rest H1 | `reports/audits/experiments/fvg_ob/fvg_ob_forward_strict_vs_rest_H1.json` | OK | repo |
+| Multifactor structure/disp/liq HTF H1 | `reports/audits/experiments/sequential/multifactor_structure_disp_liq_htf_H1.json` | OK | repo |
+| Benchmark PC (spayk 20c/16GB) | `reports/audits/infrastructure/benchmark_spayk.json` | evidencia | local (hoy) |
 
 ---
 

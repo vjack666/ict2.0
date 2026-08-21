@@ -391,7 +391,7 @@ def _write_md(report: dict) -> None:
         f"**Estado:** **EJECUTADO — GATE {report['gate']}**",
         "**Data:** EURUSD H1 Dukascopy 2019-01-01 → 2024-12-31 "
         f"({report['dataset']['bars']} barras)",
-        "**Artefacto:** `reports/audits/sequential_expectancy_depth4_lite_H1.json`",
+        "**Artefacto:** `reports/audits/experiments/sequential/sequential_expectancy_depth4_lite_H1.json`",
         "",
         "---",
         "",

@@ -53,7 +53,7 @@ semanal + diaria, sin ejecución financiera.
 
 ## Evidencia
 
-- `reports/audits/ltf_mt5_weekly_daily_2026-08-20.md`
+- `reports/audits/ltf/ltf_mt5_weekly_daily_2026-08-20.md`
 - `docs/briefs/brief_2026-08-20.md`
 - suite: `64 passed, 1 warning`
 

@@ -250,6 +250,18 @@ Conclucion (b): distribucion sana; funnel absorbe 8x pools. Procede FASE 2 compl
 FASE 2 completa (a): funnel 20Y full en background (20 cores, ~5h). Gates internos del
 funnel + comparacion chains/unique_setups/COMPLETE/depth vs v1 (1460/3 COMPLETE). En curso.
 
+## [FASE 2 — RESULTADO]
+
+funnel_v2_seq_check.py sobre H1 20Y (rama engine-seq-v2-causal):
+- chains=12100 (v1=1460, ratio 8.29x).
+- unique_setups=10823 (colapso por nivel apenas reduce: cada pool nivel levemente distinto).
+- COMPLETE=28 (v1=3, ~9x; proporcion similar 0.23% vs 0.2%).
+- depth 1..7 distribuido.
+- GATE: PASS (chains>0, has_complete, not_explosive<50k).
+Conclucion FASE 2: motor v2 PIT es FUNCIONAL y COHERENTE. 8x mas setups pero misma
+proporcion de COMPLETE, distribucion sana. El costo de PIT (12100 vs 1460) es aceptable
+para el funnel. FASE 3 procede.
+
 RAIZ CONFIRMADA Y CORREGIDA. Siguiente: FASE 2 revalidar funnel 20Y en v2 (esperado
 cambio de distribucion de chains/COMPLETE/depth por la semantica PIT).
 

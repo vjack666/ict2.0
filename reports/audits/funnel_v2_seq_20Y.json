@@ -1,0 +1,216 @@
+{
+  "engine": "engine-seq-v2-causal (PIT fix in _build_eq_pools)",
+  "symbol": "EURUSD",
+  "tf": "H1",
+  "span": "20Y dukascopy",
+  "n_bars": 124377,
+  "chains": 12100,
+  "unique_setups": 9190,
+  "complete": 28,
+  "status": {
+    "EXPIRED": 12072,
+    "COMPLETE": 28
+  },
+  "depth_dist": {
+    "1": 4579,
+    "2": 6056,
+    "3": 931,
+    "4": 498,
+    "5": 7,
+    "6": 1,
+    "7": 28
+  },
+  "complete_stage_signatures": [
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ],
+    [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  ],
+  "baseline_v1": {
+    "chains": 1460,
+    "complete": 3
+  },
+  "ratio_vs_v1": 8.29,
+  "elapsed_s": 15.5,
+  "gate": {
+    "chains_positive": true,
+    "has_complete": true,
+    "not_explosive": true
+  }
+}

@@ -65,6 +65,8 @@ jobs:
         run: |
           set -euxo pipefail
           python scripts/lab/experiments/exp_b_runner.py | tee b-preflight.log
+          python scripts/lab/experiments/exp_b_runner.py \
+            --execute-diagnostic --allow-current-engine | tee b-diagnostic.log
           python scripts/lab/experiments/reconcile_current_experiments.py | tee reconciliation.log
 
       - name: Validate scientific gate outputs
@@ -88,6 +90,9 @@ jobs:
           recon = json.loads(Path('reports/audits/experiments/current_batch/EXP_MASTER_RECONCILIATION.json').read_text())
           assert recon['summary']['observed'] == 15
           assert recon['promotion']['status'] == 'BLOCKED'
+          bdiag = json.loads(Path('reports/audits/experiments/current_batch/EXP_B_DIAGNOSTIC_audit.json').read_text())
+          assert bdiag['verdict'] == 'BLOCKED'
+          assert bdiag['promotion'] == 'BLOCKED'
           print('SCIENTIFIC_GATES: PASS; promotion remains BLOCKED by policy')
           PY
 
@@ -105,8 +110,11 @@ jobs:
             reports/audits/experiments/current_batch/EXP_D2_raw.json
             reports/audits/experiments/current_batch/EXP_B*_audit.json
             reports/audits/experiments/current_batch/EXP_B*_raw.json
+            reports/audits/experiments/current_batch/EXP_B*_diagnostic.json
+            reports/audits/experiments/current_batch/EXP_B_DIAGNOSTIC_*
             reports/audits/experiments/current_batch/EXP_B_PREFLIGHT.*
             reports/audits/experiments/current_batch/EXP_MASTER_RECONCILIATION.*
             d2.log
             b-preflight.log
+            b-diagnostic.log
             reconciliation.log

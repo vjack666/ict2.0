@@ -1,0 +1,342 @@
+{
+  "schema_version": "1.0",
+  "suite": "EXP_B_DIAGNOSTIC",
+  "status": "EXECUTED_DIAGNOSTIC",
+  "verdict": "BLOCKED",
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
+  "code_commit": "29662f02d1fdbff0ecc42811537bb212631e3db7",
+  "branch": "g0-pit-evidence",
+  "generated_at": "2026-08-21T21:42:56.713885+00:00",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "is_canonical": true
+  },
+  "protocol": {
+    "source_runner": "scripts/lab/experiments/exp_agentA_runner.py",
+    "depth_min": 4,
+    "structure_mode": "lite",
+    "outcome": "real R via sequential_outcome",
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42
+    },
+    "navigator_pit_status": "DIAGNOSTIC_ONLY; current branch G0 proves sequence scope, not navigator FULL-vs-PREFIX"
+  },
+  "counts": {
+    "treatment_records": 215,
+    "context_groups": {
+      "HTF_AGAINST|LTF_AGAINST|LOC_FAVORABLE": 25,
+      "HTF_AGAINST|LTF_AGAINST|LOC_OTHER": 20,
+      "HTF_AGAINST|LTF_ALIGNED|LOC_FAVORABLE": 4,
+      "HTF_AGAINST|LTF_ALIGNED|LOC_OTHER": 3,
+      "HTF_AGAINST|LTF_NEUTRAL|LOC_FAVORABLE": 23,
+      "HTF_AGAINST|LTF_NEUTRAL|LOC_OTHER": 21,
+      "HTF_ALIGNED|LTF_AGAINST|LOC_FAVORABLE": 9,
+      "HTF_ALIGNED|LTF_AGAINST|LOC_OTHER": 28,
+      "HTF_ALIGNED|LTF_ALIGNED|LOC_FAVORABLE": 1,
+      "HTF_ALIGNED|LTF_ALIGNED|LOC_OTHER": 6,
+      "HTF_ALIGNED|LTF_NEUTRAL|LOC_FAVORABLE": 6,
+      "HTF_ALIGNED|LTF_NEUTRAL|LOC_OTHER": 39,
+      "HTF_NEUTRAL|LTF_AGAINST|LOC_FAVORABLE": 4,
+      "HTF_NEUTRAL|LTF_AGAINST|LOC_OTHER": 12,
+      "HTF_NEUTRAL|LTF_ALIGNED|LOC_FAVORABLE": 1,
+      "HTF_NEUTRAL|LTF_ALIGNED|LOC_OTHER": 2,
+      "HTF_NEUTRAL|LTF_NEUTRAL|LOC_FAVORABLE": 2,
+      "HTF_NEUTRAL|LTF_NEUTRAL|LOC_OTHER": 9
+    }
+  },
+  "aggregate_metrics": {
+    "ALL": {
+      "n_trades": 215,
+      "n_closed": 211,
+      "n_open": 4,
+      "n_invalid": 0,
+      "wins": 116,
+      "losses": 95,
+      "win_rate": 0.5498,
+      "win_rate_wilson95": [
+        0.4823,
+        0.6154
+      ],
+      "mean_r": 0.2499,
+      "median_r": 1.0,
+      "std_r": 1.1627,
+      "min_r": -1.0,
+      "max_r": 3.1608,
+      "expectancy": 0.2499,
+      "profit_factor": 1.555,
+      "drawdown": 6.233,
+      "bootstrap": {
+        "n_closed": 211,
+        "mean_r_ci": [
+          0.09397479969551131,
+          0.4078114120711996
+        ],
+        "win_rate_ci": [
+          0.4834123222748815,
+          0.6161137440758294
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 211
+      }
+    },
+    "HTF_ALIGNED": {
+      "n_trades": 89,
+      "n_closed": 86,
+      "n_open": 3,
+      "n_invalid": 0,
+      "wins": 51,
+      "losses": 35,
+      "win_rate": 0.593,
+      "win_rate_wilson95": [
+        0.4874,
+        0.6907
+      ],
+      "mean_r": 0.3529,
+      "median_r": 1.0303,
+      "std_r": 1.1522,
+      "min_r": -1.0,
+      "max_r": 2.3728,
+      "expectancy": 0.3529,
+      "profit_factor": 1.8672,
+      "drawdown": 4.0,
+      "bootstrap": {
+        "n_closed": 86,
+        "mean_r_ci": [
+          0.1070834240148831,
+          0.5948113775191939
+        ],
+        "win_rate_ci": [
+          0.4883720930232558,
+          0.6976744186046512
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 86
+      }
+    },
+    "HTF_AGAINST": {
+      "n_trades": 96,
+      "n_closed": 95,
+      "n_open": 1,
+      "n_invalid": 0,
+      "wins": 49,
+      "losses": 46,
+      "win_rate": 0.5158,
+      "win_rate_wilson95": [
+        0.4167,
+        0.6137
+      ],
+      "mean_r": 0.1797,
+      "median_r": 0.9227,
+      "std_r": 1.1853,
+      "min_r": -1.0,
+      "max_r": 3.1608,
+      "expectancy": 0.1797,
+      "profit_factor": 1.3711,
+      "drawdown": 6.3019,
+      "bootstrap": {
+        "n_closed": 95,
+        "mean_r_ci": [
+          -0.05884265556690202,
+          0.4103239783425448
+        ],
+        "win_rate_ci": [
+          0.4105263157894737,
+          0.6105263157894737
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 95
+      }
+    },
+    "LOCATION_FAVORABLE": {
+      "n_trades": 75,
+      "n_closed": 75,
+      "n_open": 0,
+      "n_invalid": 0,
+      "wins": 42,
+      "losses": 33,
+      "win_rate": 0.56,
+      "win_rate_wilson95": [
+        0.4475,
+        0.6667
+      ],
+      "mean_r": 0.3201,
+      "median_r": 1.034,
+      "std_r": 1.2292,
+      "min_r": -1.0,
+      "max_r": 3.1608,
+      "expectancy": 0.3201,
+      "profit_factor": 1.7275,
+      "drawdown": 4.0025,
+      "bootstrap": {
+        "n_closed": 75,
+        "mean_r_ci": [
+          0.048050925617433946,
+          0.5966129953379181
+        ],
+        "win_rate_ci": [
+          0.44,
+          0.6666666666666666
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 75
+      }
+    },
+    "LOCATION_OTHER": {
+      "n_trades": 140,
+      "n_closed": 136,
+      "n_open": 4,
+      "n_invalid": 0,
+      "wins": 74,
+      "losses": 62,
+      "win_rate": 0.5441,
+      "win_rate_wilson95": [
+        0.4603,
+        0.6255
+      ],
+      "mean_r": 0.2111,
+      "median_r": 0.9961,
+      "std_r": 1.1271,
+      "min_r": -1.0,
+      "max_r": 1.8894,
+      "expectancy": 0.2111,
+      "profit_factor": 1.4632,
+      "drawdown": 6.92,
+      "bootstrap": {
+        "n_closed": 136,
+        "mean_r_ci": [
+          0.034663434558396315,
+          0.4003520384044973
+        ],
+        "win_rate_ci": [
+          0.4632352941176471,
+          0.625
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 136
+      }
+    },
+    "LTF_ALIGNED": {
+      "n_trades": 17,
+      "n_closed": 17,
+      "n_open": 0,
+      "n_invalid": 0,
+      "wins": 8,
+      "losses": 9,
+      "win_rate": 0.4706,
+      "win_rate_wilson95": [
+        0.2617,
+        0.6904
+      ],
+      "mean_r": 0.0494,
+      "median_r": -1.0,
+      "std_r": 1.1523,
+      "min_r": -1.0,
+      "max_r": 1.5508,
+      "expectancy": 0.0494,
+      "profit_factor": 1.0933,
+      "drawdown": 4.647,
+      "bootstrap": {
+        "n_closed": 17,
+        "mean_r_ci": [
+          -0.4822178275762501,
+          0.5728849624286944
+        ],
+        "win_rate_ci": [
+          0.23529411764705882,
+          0.7058823529411765
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 17
+      }
+    }
+  },
+  "comparisons": {
+    "B1_HTF_ALIGNED_MINUS_AGAINST": {
+      "delta_wr": 0.0772,
+      "ci95": [
+        -0.068449,
+        0.222889
+      ],
+      "n_left": 86,
+      "n_right": 95,
+      "bootstrap_resamples": 2000,
+      "bootstrap_seed": 424242
+    },
+    "B2_HTF_ALIGNED_MINUS_ALL": {
+      "delta_wr": 0.0433,
+      "ci95": [
+        -0.080348,
+        0.163021
+      ],
+      "n_left": 86,
+      "n_right": 211,
+      "bootstrap_resamples": 2000,
+      "bootstrap_seed": 424243
+    },
+    "B4_LOCATION_FAVORABLE_MINUS_OTHER": {
+      "delta_wr": 0.0159,
+      "ci95": [
+        -0.121569,
+        0.157463
+      ],
+      "n_left": 75,
+      "n_right": 136,
+      "bootstrap_resamples": 2000,
+      "bootstrap_seed": 424244
+    },
+    "B5_HTF_ALIGNED_MINUS_LTF_ALIGNED": {
+      "delta_wr": 0.1224,
+      "ci95": [
+        -0.136132,
+        0.369357
+      ],
+      "n_left": 86,
+      "n_right": 17,
+      "bootstrap_resamples": 2000,
+      "bootstrap_seed": 424245
+    }
+  },
+  "gates": {
+    "B1_HTF_ALIGNED_MINUS_AGAINST": {
+      "n_ge_30_both": true,
+      "ci_lower_gt_0": false,
+      "pass": false
+    },
+    "B2_HTF_ALIGNED_MINUS_ALL": {
+      "n_ge_30_both": true,
+      "ci_lower_gt_0": false,
+      "pass": false
+    },
+    "B4_LOCATION_FAVORABLE_MINUS_OTHER": {
+      "n_ge_30_both": true,
+      "ci_lower_gt_0": false,
+      "pass": false
+    },
+    "B5_HTF_ALIGNED_MINUS_LTF_ALIGNED": {
+      "n_ge_30_both": false,
+      "ci_lower_gt_0": false,
+      "pass": false
+    }
+  },
+  "promotion": "BLOCKED",
+  "limitations": [
+    "Current branch is not engine-seq-v2-causal; this run is diagnostic only.",
+    "B2 compares a subset with the unconditional cohort; it is not a causal intervention.",
+    "B5 compares selected cohorts, not counterfactual outcomes.",
+    "No B result authorizes a signal or replaces GEN-000."
+  ],
+  "elapsed_s": 19.99,
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

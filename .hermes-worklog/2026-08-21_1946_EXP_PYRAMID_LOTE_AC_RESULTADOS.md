@@ -141,3 +141,46 @@ Cierre parcial del lote con A+C (10/15). B queda NO-EJECUTADO con causa raíz
 documentada (diseño original no persistido, no fallo de hipótesis). Próximo paso
 obligatorio: revisar y congelar formalmente `docs/experimentos/EXP_B_DESIGN.md`,
 manteniendo su caveat post hoc, antes de ejecutar B.
+
+---
+
+## [ACTUALIZACIÓN] — RESULTADOS POSTERIORES VERIFICADOS EN HISTORIAL
+
+**Fecha de corte:** 2026-08-21 21:42 UTC
+**Fuente:** commits `7befab4`, `30120b2` y `793d8ad` sobre la rama `g0-pit-evidence`
+**Alcance:** esta actualización documenta evidencia posterior visible en el repositorio; no implica que esos artefactos estén integrados en `feature/a5-audit-datos`.
+
+### D2 — Réplica OOS completa
+
+- **Estado:** `PASS` mecánico.
+- **Pregunta:** ¿el resultado de A1 se replica en una era temporal no usada?
+- **Dataset:** EURUSD H1 Dukascopy canónico, 2006-01-01 → 2018-12-31, 81.217 barras; hash igual al snapshot A1.
+- **Resultado:** 385 operaciones cerradas, WR 50,65%, mean R +0,1306, IC95 bootstrap [+0,0222; +0,2436]; `leakage_check=OK`, sin cambio de parámetros.
+- **Lectura:** evidencia directa de replicación temporal positiva bajo el protocolo congelado; sigue siendo objeto de estudio y no autoriza promoción.
+- **Artefacto:** `reports/audits/experiments/current_batch/EXP_D2_audit.json` en `7befab4`.
+
+### B — Diagnósticos de incrementalidad HTF
+
+Los diagnósticos fueron ejecutados sobre EURUSD H1 Dukascopy canónico 2019–2024 (36.934 barras), con 2.000 remuestreos. Todos quedaron explícitamente como `promotion=BLOCKED`; la rama `g0-pit-evidence` no prueba aún el navigator FULL-vs-PREFIX completo.
+
+| Experimento | Comparación | n | Delta WR | IC95 | Veredicto |
+|---|---|---:|---:|---|---|
+| B1 | HTF ALIGNED − HTF AGAINST | 86 / 95 | +7,72 pp | [−6,845; +22,289] pp | **FAIL**: IC cruza 0 |
+| B2 | HTF ALIGNED − ALL | 86 / 211 | +4,33 pp | [−8,035; +16,302] pp | **FAIL**: IC cruza 0 |
+| B4 | LOCATION FAVORABLE − OTHER | 75 / 136 | +1,59 pp | [−12,157; +15,746] pp | **FAIL**: IC cruza 0 |
+| B5 | HTF ALIGNED − LTF ALIGNED | 86 / 17 | +12,24 pp | [−13,613; +36,936] pp | **BLOCKED**: LTF n<30 |
+
+**Lectura:** hay puntos estimados favorables a HTF en B1/B2/B5, pero no hay evidencia confirmatoria con los gates definidos. B5 está además subpotenciado. Los artefactos son diagnósticos no promocionables, no sustituyen una corrida válida en `engine-seq-v2-causal`.
+
+### Preflight y estado de integración
+
+- El preflight de `7befab4` dejó B1/B2/B4/B5 bloqueados por requerir `engine-seq-v2-causal` y B3 bloqueado por ausencia del snapshot EURUSD M15 Dukascopy canónico.
+- El commit posterior `793d8ad` publicó diagnósticos B no promocionables en `g0-pit-evidence`; no cambia el estado de producción ni reemplaza GEN-000.
+- La rama actual de esta bitácora continúa siendo `feature/a5-audit-datos`; su reconciliación local permanece en 10/15 artefactos observados, promoción `BLOCKED`.
+
+### Decisión actualizada
+
+1. Conservar D2 como evidencia OOS PASS reproducible.
+2. No declarar incrementalidad HTF: B1/B2/B4 fallan sus intervalos y B5 está bloqueado por muestra.
+3. Mantener el gate PIT FULL-vs-PREFIX como prerrequisito antes de promover o interpretar B operativamente.
+4. Resolver primero la integración/validación en `engine-seq-v2-causal` y la disponibilidad de M15 canónico antes de cerrar B3.

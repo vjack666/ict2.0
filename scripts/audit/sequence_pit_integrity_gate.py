@@ -1,0 +1,210 @@
+"""Reproducible SEQUENCE_PIT_INTEGRITY gate.
+
+Compares the causal chain prefixes visible at deterministic event-created
+checkpoints in a FULL run against PREFIX runs.  A chain is represented only
+by nodes whose bar is <= the checkpoint; final status and future nodes are
+excluded because they are not point-in-time observations.
+
+The gate writes a machine-readable JSON report and a short Markdown summary.
+It never changes experiment parameters or promotes a trading signal.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import subprocess
+import time
+from pathlib import Path
+from typing import Any
+
+import pandas as pd
+
+import engine.sequential_events as SE
+from audits.codigo.mtf_seq_funnel import _load_tf
+
+
+ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_JSON = ROOT / "reports" / "audits" / "pit" / "SEQUENCE_PIT_INTEGRITY.json"
+DEFAULT_MD = ROOT / "reports" / "audits" / "pit" / "SEQUENCE_PIT_INTEGRITY.md"
+DATASET = ROOT / "datasets" / "eurusd_dukascopy_20y" / "EURUSD_H1.csv"
+
+
+def sha256_file(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def git_value(*args: str) -> str | None:
+    try:
+        return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+
+def node_signature(chain: SE.SequentialChain, checkpoint: int) -> tuple[Any, ...] | None:
+    if int(chain.created_bar) > checkpoint:
+        return None
+    nodes = tuple(
+        (int(node.bar), node.stage.value, int(node.direction))
+        for node in chain.nodes
+        if int(node.bar) <= checkpoint
+    )
+    if not nodes:
+        return None
+    return int(chain.created_bar), int(chain.direction), nodes
+
+
+def pit_signatures(chains: list[SE.SequentialChain], checkpoint: int) -> set[tuple[Any, ...]]:
+    return {
+        signature
+        for chain in chains
+        if (signature := node_signature(chain, checkpoint)) is not None
+    }
+
+
+def evenly_spaced(values: list[int], count: int) -> list[int]:
+    if not values:
+        return []
+    if count <= 0:
+        raise ValueError("sample_count must be positive")
+    if count >= len(values):
+        return values
+    positions = {round(i * (len(values) - 1) / (count - 1)) for i in range(count)}
+    return [values[position] for position in sorted(positions)]
+
+
+def run_gate(sample_count: int, prefix_margin: int, max_checkpoint: int | None) -> dict[str, Any]:
+    started = time.time()
+    clean_before_run = not bool(git_value("status", "--porcelain"))
+    dataset_hash = sha256_file(DATASET)
+    frame = _load_tf("H1").reset_index(drop=True)
+    cfg = SE.SeqConfig(structure_mode="canonical_bos", max_active_chains=128)
+
+    full = SE.run_sequential(frame, cfg, symbol="EURUSD", timeframe="H1")
+    candidates = sorted(
+        int(chain.created_bar)
+        for chain in full
+        if max_checkpoint is None or int(chain.created_bar) <= max_checkpoint
+    )
+    checkpoints = evenly_spaced(candidates, sample_count)
+
+    comparisons: list[dict[str, Any]] = []
+    violations: list[dict[str, Any]] = []
+    for checkpoint in checkpoints:
+        prefix_end = min(checkpoint + prefix_margin, len(frame) - 1)
+        prefix = frame.iloc[: prefix_end + 1].copy().reset_index(drop=True)
+        prefix_chains = SE.run_sequential(prefix, cfg, symbol="EURUSD", timeframe="H1")
+        full_set = pit_signatures(full, checkpoint)
+        prefix_set = pit_signatures(prefix_chains, checkpoint)
+        only_full = full_set - prefix_set
+        only_prefix = prefix_set - full_set
+        row = {
+            "checkpoint": checkpoint,
+            "prefix_end": prefix_end,
+            "full_signature_count": len(full_set),
+            "prefix_signature_count": len(prefix_set),
+            "only_full_count": len(only_full),
+            "only_prefix_count": len(only_prefix),
+            "pass": not only_full and not only_prefix,
+        }
+        comparisons.append(row)
+        if not row["pass"]:
+            violations.append(
+                {
+                    **row,
+                    "only_full_sample": [list(item) for item in sorted(only_full, key=repr)[:3]],
+                    "only_prefix_sample": [list(item) for item in sorted(only_prefix, key=repr)[:3]],
+                }
+            )
+
+    elapsed = round(time.time() - started, 3)
+    return {
+        "schema_version": "1.0",
+        "gate": "SEQUENCE_PIT_INTEGRITY",
+        "status": "PASS" if not violations else "FAIL",
+        "scope": (
+            "EURUSD H1 full-span; deterministic event-created checkpoints"
+            if max_checkpoint is None
+            else f"EURUSD H1 checkpoints through bar {max_checkpoint}; full run used as reference"
+        ),
+        "coverage": {
+            "dataset_rows": len(frame),
+            "full_chain_count": len(full),
+            "candidate_checkpoint_count": len(candidates),
+            "checked_checkpoint_count": len(checkpoints),
+            "checkpoint_range_end": max_checkpoint,
+            "prefix_margin_bars": prefix_margin,
+            "violations": len(violations),
+        },
+        "code": {
+            "git_head": git_value("rev-parse", "HEAD"),
+            "worktree_clean_before_run": clean_before_run,
+            "runner": "scripts/audit/sequence_pit_integrity_gate.py",
+        },
+        "dataset": {
+            "path": str(DATASET.relative_to(ROOT)).replace("\\", "/"),
+            "sha256": dataset_hash,
+            "canonical": True,
+        },
+        "config": {
+            "structure_mode": cfg.structure_mode,
+            "max_active_chains": cfg.max_active_chains,
+            "comparison": "created_bar + direction + nodes(bar, stage, direction) <= checkpoint",
+            "final_status_excluded": True,
+        },
+        "comparisons": comparisons,
+        "violations_detail": violations,
+        "elapsed_seconds": elapsed,
+        "generated_at_utc": pd.Timestamp.now(tz="UTC").isoformat(),
+    }
+
+
+def render_markdown(report: dict[str, Any]) -> str:
+    coverage = report["coverage"]
+    dataset = report["dataset"]
+    code = report["code"]
+    return "\n".join(
+        [
+            "# SEQUENCE_PIT_INTEGRITY",
+            "",
+            f"- Estado: **{report['status']}**",
+            f"- Alcance: {report['scope']}",
+            f"- Checkpoints revisados: `{coverage['checked_checkpoint_count']}` / `{coverage['candidate_checkpoint_count']}`",
+            f"- Violaciones: `{coverage['violations']}`",
+            f"- Cadenas FULL: `{coverage['full_chain_count']}`",
+            f"- Dataset: `{dataset['path']}`",
+            f"- Dataset SHA256: `{dataset['sha256']}`",
+            f"- Git HEAD: `{code['git_head']}`",
+            f"- Worktree limpio antes de ejecutar: `{code['worktree_clean_before_run']}`",
+            "",
+            "La comparación excluye el estado final y los nodos posteriores al checkpoint; solo compara la trayectoria observable hasta cada barra.",
+            "",
+        ]
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sample-count", type=int, default=40)
+    parser.add_argument("--prefix-margin", type=int, default=300)
+    parser.add_argument("--max-checkpoint", type=int, default=None)
+    parser.add_argument("--json", type=Path, default=DEFAULT_JSON)
+    parser.add_argument("--md", type=Path, default=DEFAULT_MD)
+    args = parser.parse_args()
+
+    report = run_gate(args.sample_count, args.prefix_margin, args.max_checkpoint)
+    args.json.parent.mkdir(parents=True, exist_ok=True)
+    args.json.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    args.md.write_text(render_markdown(report), encoding="utf-8")
+    print(json.dumps({"status": report["status"], "coverage": report["coverage"], "json": str(args.json), "md": str(args.md)}))
+    return 0 if report["status"] == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

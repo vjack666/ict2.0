@@ -51,9 +51,9 @@ El backtest mide comportamiento de una especificación de ejecución. Si la pobl
 
 ## Artefactos canónicos actuales
 
-- Funnel: `reports/audits/mtf_seq_funnel.json`.
-- TNA trace estratificado: `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json`.
-- Sequence × Context State: `reports/audits/exp_sequence_x_context_state_H1_20Y.json`.
+- Funnel: `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json`.
+- TNA trace estratificado: `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json`.
+- Sequence × Context State: `reports/audits/experiments/sequential/exp_sequence_x_context_state_H1_20Y.json`.
 
 ## Runners
 

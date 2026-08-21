@@ -5,7 +5,7 @@
 **Pregunta:** ¿La misma secuencia tiene una distribución de resultados distinta según Context State?  
 **Contrato:** `../contratos/CONTRATO_CONTEXT_STATE.md`  
 **Driver:** `scripts/lab/experiments/exp_sequence_x_context_state.py`
-**Artefacto:** `reports/audits/exp_sequence_x_context_state_H1_20Y.json`
+**Artefacto:** `reports/audits/experiments/sequential/exp_sequence_x_context_state_H1_20Y.json`
 
 ---
 

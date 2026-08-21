@@ -13,8 +13,6 @@ TrendLabel = Literal["BULLISH", "BEARISH", "RANGING"]
 class TrendConfig:
     swing_lookback: int = 5
     atr_period: int = 14
-    ema_fast: int = 20
-    ema_slow: int = 50
     min_slope_atr: float = 0.01
 
 
@@ -87,10 +85,8 @@ def detect_trend(
     data["swing_high_slope"] = _slope_of_last_two(raw_sh, bar_index)
     data["swing_low_slope"] = _slope_of_last_two(raw_sl, bar_index)
 
-    data["ema_fast"] = data["close"].ewm(span=config.ema_fast, adjust=False).mean()
-    data["ema_slow"] = data["close"].ewm(span=config.ema_slow, adjust=False).mean()
-    data["ema_spread"] = (data["ema_fast"] - data["ema_slow"]) / data["atr"].replace(0.0, np.nan)
-
+    # Anti-indicadores: trend label es puramente geometrico (pendiente de
+    # swings normalizada por ATR como unidad de escala). Sin EMA/RSI.
     data["trend"] = _classify_trend(
         data["swing_high_slope"],
         data["swing_low_slope"],

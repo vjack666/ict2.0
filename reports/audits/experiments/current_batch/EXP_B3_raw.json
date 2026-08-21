@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B3",
+  "component_isolated": "M15 replication with canonical Dukascopy data",
+  "status": "BLOCKED",
+  "executed": false,
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
+  "code_commit": "7befab4419e00a420f14f6c7caabb376a5eb40a2",
+  "branch": "g0-pit-evidence",
+  "generated_at": "2026-08-21T21:32:10.701570+00:00",
+  "reasons": [
+    "canonical EURUSD M15 Dukascopy snapshot is absent; parquet substitution is prohibited"
+  ],
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

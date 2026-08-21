@@ -22,8 +22,13 @@ de implementación.
    - corregir la decisión.
 6. Solo escalar al usuario cuando exista una decisión que cambie el objetivo,
    autoridad, presupuesto o alcance.
-7. Una misión NO termina por encontrar un problema: termina cuando el objetivo
-   queda VERIFICADO.
+8. Una mision no termina por encontrar un problema: termina cuando el objetivo queda verificado.
+
+9. ROOT CAUSE CONFIRMED exige evidencia reproducible: la diferencia debe demostrarse
+   DIRECTAMENTE en el productor señalado (diff FULL vs PREFIX en ese objeto), NO por
+   deduccion por descarte ("X es igual, luego la raiz no es X"). Un falso descarte
+   (test ciego al objeto real) es error de metodo. Si el test no cubre el productor,
+   no se declara "refutado" nada.
 
 ## Aplicación en el caso SEQUENCE × CONTEXT STATE (2026-08-20)
 

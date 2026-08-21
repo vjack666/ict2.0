@@ -70,7 +70,7 @@
   - `docs/CONTRATO_CONTEXT_STATE.md` (normativo, **sin EMA** — cumple índice Hermes).
   - `docs/EXP_SEQUENCE_X_CONTEXT_STATE.md` (diseño + buckets ALIGNED/AGAINST/NEUTRAL).
   - `scripts/exp_sequence_x_context_state.py` (driver).
-  - `reports/audits/exp_sequence_x_context_state_H1_20Y.{json,md}`.
+  - `reports/audits/experiments/sequential/exp_sequence_x_context_state_H1_20Y.{json,md}`.
 - **Resultado honesto:** gate **INSUFFICIENT_N**.
   - ALL_DEPTH4 n=24; CTX_ALIGNED n=5; CTX_AGAINST n=11; CTX_NEUTRAL n=8.
   - Δ ALIGNED−AGAINST @+24 = −5.45 pp (ruido, n bajo).

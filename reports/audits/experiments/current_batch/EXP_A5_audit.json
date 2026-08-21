@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A5",
+  "component_isolated": "Componente PROFUNDIDAD: depth>=3 vs >=4 vs >=5 (H1, mismo protocolo, defensa pareja)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-21T16:16:10.038146+00:00",
+  "depth_cases": {
+    "3": {
+      "depth_min": 3,
+      "gate": {
+        "n_ge_30": true,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false
+      },
+      "protocol": {
+        "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado; PIT-estable DENTRO del rango (deuda FULL-vs-PREFIX documentada afecta al indice HTF del navigator, NO a este diseno mono-TF de una pasada).",
+        "parameter_change": false,
+        "data_integrity": {
+          "symbol": "EURUSD",
+          "exec_tf": "H1",
+          "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+          "range_start": "2019-01-01",
+          "range_end": "2024-12-31",
+          "bars": 36934,
+          "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+          "is_canonical": true,
+          "origin": "csv",
+          "note": null
+        }
+      },
+      "verdict": "FAIL",
+      "rationale": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0."
+    },
+    "4": {
+      "depth_min": 4,
+      "gate": {
+        "n_ge_30": true,
+        "expectancy_gt_0": true,
+        "ci_lower_gt_0": true
+      },
+      "protocol": {
+        "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado; PIT-estable DENTRO del rango (deuda FULL-vs-PREFIX documentada afecta al indice HTF del navigator, NO a este diseno mono-TF de una pasada).",
+        "parameter_change": false,
+        "data_integrity": {
+          "symbol": "EURUSD",
+          "exec_tf": "H1",
+          "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+          "range_start": "2019-01-01",
+          "range_end": "2024-12-31",
+          "bars": 36934,
+          "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+          "is_canonical": true,
+          "origin": "csv",
+          "note": null
+        }
+      },
+      "verdict": "PASS",
+      "rationale": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0."
+    },
+    "5": {
+      "depth_min": 5,
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false
+      },
+      "protocol": {
+        "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado; PIT-estable DENTRO del rango (deuda FULL-vs-PREFIX documentada afecta al indice HTF del navigator, NO a este diseno mono-TF de una pasada).",
+        "parameter_change": false,
+        "data_integrity": {
+          "symbol": "EURUSD",
+          "exec_tf": "H1",
+          "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+          "range_start": "2019-01-01",
+          "range_end": "2024-12-31",
+          "bars": 36934,
+          "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+          "is_canonical": true,
+          "origin": "csv",
+          "note": null
+        }
+      },
+      "verdict": "BLOCKED",
+      "rationale": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0."
+    }
+  },
+  "overall_verdict": "PASS",
+  "verdict": "PASS",
+  "rationale": "mecanico por depth: depth>=5 con n_closed<30 => BLOCKED (sub-caso)."
+}

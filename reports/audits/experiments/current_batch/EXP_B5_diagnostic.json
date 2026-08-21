@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B5_DIAGNOSTIC",
+  "status": "EXECUTED_DIAGNOSTIC",
+  "verdict": "BLOCKED",
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
+  "code_commit": "29662f02d1fdbff0ecc42811537bb212631e3db7",
+  "branch": "g0-pit-evidence",
+  "generated_at": "2026-08-21T21:42:56.713885+00:00",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "is_canonical": true
+  },
+  "comparison": {
+    "key": "B5_HTF_ALIGNED_MINUS_LTF_ALIGNED",
+    "left": "HTF_ALIGNED",
+    "right": "LTF_ALIGNED",
+    "delta_wr": 0.1224,
+    "ci95": [
+      -0.136132,
+      0.369357
+    ],
+    "n_left": 86,
+    "n_right": 17,
+    "bootstrap_resamples": 2000,
+    "bootstrap_seed": 424245
+  },
+  "left_metrics": {
+    "n_trades": 89,
+    "n_closed": 86,
+    "n_open": 3,
+    "n_invalid": 0,
+    "wins": 51,
+    "losses": 35,
+    "win_rate": 0.593,
+    "win_rate_wilson95": [
+      0.4874,
+      0.6907
+    ],
+    "mean_r": 0.3529,
+    "median_r": 1.0303,
+    "std_r": 1.1522,
+    "min_r": -1.0,
+    "max_r": 2.3728,
+    "expectancy": 0.3529,
+    "profit_factor": 1.8672,
+    "drawdown": 4.0,
+    "bootstrap": {
+      "n_closed": 86,
+      "mean_r_ci": [
+        0.1070834240148831,
+        0.5948113775191939
+      ],
+      "win_rate_ci": [
+        0.4883720930232558,
+        0.6976744186046512
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 86
+    }
+  },
+  "right_metrics": {
+    "n_trades": 17,
+    "n_closed": 17,
+    "n_open": 0,
+    "n_invalid": 0,
+    "wins": 8,
+    "losses": 9,
+    "win_rate": 0.4706,
+    "win_rate_wilson95": [
+      0.2617,
+      0.6904
+    ],
+    "mean_r": 0.0494,
+    "median_r": -1.0,
+    "std_r": 1.1523,
+    "min_r": -1.0,
+    "max_r": 1.5508,
+    "expectancy": 0.0494,
+    "profit_factor": 1.0933,
+    "drawdown": 4.647,
+    "bootstrap": {
+      "n_closed": 17,
+      "mean_r_ci": [
+        -0.4822178275762501,
+        0.5728849624286944
+      ],
+      "win_rate_ci": [
+        0.23529411764705882,
+        0.7058823529411765
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 17
+    }
+  },
+  "gate": {
+    "n_ge_30_both": false,
+    "ci_lower_gt_0": false,
+    "pass": false
+  },
+  "promotion": "BLOCKED",
+  "rationale": "Diagnostic only; navigator FULL-vs-PREFIX debt remains open and no result may replace GEN-000.",
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

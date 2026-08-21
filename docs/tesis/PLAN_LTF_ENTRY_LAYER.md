@@ -11,7 +11,7 @@
 
 | Fase | Estado | Evidencia |
 |---|---|---|
-| WYCKOFF-0 Inventario | `PASS` | `reports/audits/wyckoff_runtime_inventory_2026-08-20.md` |
+| WYCKOFF-0 Inventario | `PASS` | `reports/audits/runtime/wyckoff_runtime_inventory_2026-08-20.md` |
 | WYCKOFF-1 Runtime | `IN PROGRESS` | `engine/Wyckoff/` creado; wrappers legacy aún tienen consumidores |
 | WYCKOFF-2 LTF/MTF | `IN PROGRESS` | `daily_motor` y `brief_lunes.py` consumen `WyckoffSnapshot` |
 | WYCKOFF-3 Clasificación ICT | `IN PROGRESS` | PRO_TREND/COUNTERTREND y conflicto probados; transición/neutral requieren cobertura ampliada |

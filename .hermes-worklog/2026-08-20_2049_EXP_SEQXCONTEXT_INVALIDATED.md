@@ -56,7 +56,7 @@ Script: scripts/diag_causal_violation.py (corriendo proc_14c17ef755cb, 60 barras
 
 ## [ARTEFACTO INVALIDADO]
 
-reports/audits/exp_seq_x_context_state.json marcado:
+reports/audits/experiments/current_batch/exp_seq_x_context_state.json marcado:
   status: INVALIDATED
   reason: CAUSALITY_CHECK_FAIL
   usable_for_inference: false
@@ -180,26 +180,90 @@ BITACORA motor: el fix C, B-mejorada y limite grande NO alcanzaron 0 violaciones
 el test causal del navigator (15/15). La raiz es el motor de secuencias, no el indexado.
 El EXP lo compensa con PIT-dentro-del-rango.
 
-## [AISLAMIENTO DE RAIZ — diag_seq_root_isolate.py]
+## [AISLAMIENTO DE RAIZ — CORRECCION]
 
-Test dirigido (scripts/diag_seq_root_isolate.py): para barras t muestreadas (100..1400),
-comparar ATOMOS en t entre run_sequential(FULL) y run_sequential(PREFIX hasta t).
+El test diag_seq_root_isolate.py comparo ATOMOS en t (sweeps/displ/structs/obs/fvgs) y
+dieron IDENTICOS FULL vs PREFIX. CONCLUSION PREVIA ERRONEA: "refuta _build_eq_pools".
+CORRECCION (Ruben, evidencia de codigo): los _Atomic NO contienen los pools;
+run_sequential() reconstruye los pools directamente via _build_eq_pools() DESPUES de
+_detect_atomics(). Mi test era ciego a los pools -> falso descarte.
 
-RESULTADO: los atomos en t (sweeps/displ/structs/obs/fvgs) SON IDENTICOS FULL vs PREFIX
-en todas las barras muestreadas. Ej t=200 -> (0,0,1,0,0) en ambos; t=300 -> (0,0,0,1,0)
-en ambos.
+RAIZ CONFIRMADA POR CODIGO (engine/sequential_events.py _build_eq_pools, lineas 185-202):
+- bucle interior `for j in range(i+1, len(swings))` usa TODOS los swings futuros del df.
+- `form_bar = int(max(bars))` -> el pool "nace" en el ultimo touch (puede estar en el futuro).
+Mecanismo: en FULL un pool que en PREFIX nacia en 500 (touches 100/300/500) se extiende
+hasta 900 (touch 4) -> form_bar=900. PREFIX no ve 900 -> form_bar=500. Por eso FULL no
+tiene cadenas tempranas. Explica FULL 0 / PREFIX 39 en barra 853.
 
-CONCLUSION: la raiz NO esta en _detect_atomics / _build_eq_pools / _causal_swings
-(la hipotesis de que los atomos miran adelante QUEDA REFUTADA por evidencia). Los atomos
-son causales. La divergencia de cadenas (FULL 0 cadenas con nodos <=853 vs PREFIX 39) esta
-en la LOGICA DE CADENA (bucle 428-593) o en _build_eq_pools con confirmacion de swings a
-la derecha (pivot en i requiere swing_right barras a la derecha; en PREFIX corto el pivot
-no se confirma -> el PREFIX deberia tener MENOS atomos, pero el diag de raiz uso PREFIX
-hasta t con margen y no lo capturo). Falta pinpoint exacto en la barra del leakage (853).
+SEQUENCE_PIT_ROOT_CAUSE (CONFIRMED, diff reproducible en el productor):
+  _build_eq_pools() is RETROACTIVE.
+    future swings included in grouping; form_bar = max(group bars).
+  Effect: FULL and PREFIX construct different pool birth times.
+  NOT root: max_active_chains, _avg_range, sequence-depth indexing, _detect_atomics (swings individuales son causales; el problema es el AGRUPAMIENTO retrospectivo).
 
-PENDIENTE: comparar POOLS y atomos en t=853 exacto (FULL vs PREFIX=iloc[:854]) para
-decidir si la raiz es _build_eq_pools/swings (confirmacion a derecha) o estado acumulado
-de open_chains.
+LECCION HERMES (Ruben): "root cause confirmed" exige diff reproducible en el productor
+señalado, NO deduccion por descarte. Mi bitacora anterior violo esto. Nueva regla en
+autonomy_policy.md.
+
+CORRECCION REQUERIDA (FASE 1): hacer _build_eq_pools INCREMENTAL/PIT.
+  Regla: un swing confirmado en t actualiza pools existentes solo con swings <= t;
+  form_bar = ultimo touch <= t (no max de todo el historico).
+  Entonces FULL(t) == PREFIX(t). No reescribir historial retroactivamente.
+  Gate obligatorio SEQUENCE_PIT_INTEGRITY: FULL vs PREFIX en nodes/birth bars/stages/
+  depth/status -> 0 violaciones. Luego FASE 2 revalidar funnel, FASE 3 EXP-v2.
+  Rama engine-seq-v2-causal (no tocar v1 baseline).
+
+## [FASE 1 — IMPLEMENTADA Y GATE PASS]
+
+Fix en engine/sequential_events.py _build_eq_pools (rama engine-seq-v2-causal):
+- Eliminado bucle retrospectivo `for j in range(i+1, len(swings))` (miraba swings futuros).
+- Pools se fijan (form_bar) en la PRIMERA barra donde alcanzan min_touches, solo con
+  swings <= esa barra. No se reescriben retroactivamente.
+- run_sequential(FULL) chains = 12100 (v1 era 1460): semantica PIT cambia el agrupamiento
+  (pools mas granulares, no uno grande que absorbe todo). Esperado para PIT.
+- AJUSTE: primer fix sobre-generaba pools (no usaba `used` set -> un swing iniciaba
+  varios grupos). Añadido `used` set (un swing = un grupo, igual que v1 pero PIT).
+  Esperado: chains bajan de 12100 hacia valor mas cercano a v1 pero PIT-estable.
+- AJUSTE 2: con `used` y grupos que se cierran al fijar, cada touch post-min_touches
+  iniciaba un pool NUEVO -> 12100 chains (8x v1, demasiado granular, 1 pool por touch).
+  CORRECCION FINAL: pools se FUSIONAN con swings en tolerancia <= barra actual (no futuros);
+  form_bar se FIJA en la barra del min_touches-esimo touch (primer momento conocible),
+  NO en el max. Un pool por nivel de liquidez (como v1) pero PIT. FULL(t)==PREFIX(t).
+  Esperado: chains ~v1 (1460) pero PIT-estable. Gate PIT en curso (proc_d964638f694e).
+- REVERTIDO a 2da impl: la 3ra (fusion) ROMPIO el PIT (gate 38/40 FAIL). Motivo: al
+  fusionar touches futuros, el min_touches-esimo touch ocurre en distinta barra en FULL
+  vs PREFIX (FULL tiene mas swings en tolerancia -> 3er touch antes). form_bar difiere.
+  La 2da impl (grupos que se cierran al fijar, con used) es la UNICA PIT-estable:
+  gate PASS 0/40. Consecuencia ineludible: 12100 chains (8x v1) porque cada touch
+  post-min_touches que v1 fusionaba ahora inicia pool nuevo. Eso es el costo de PIT.
+  El funnel debe absorberlo (unique_setups colapsa por nivel). FASE 2 revalida.
+
+## [FASE 2 — revalidar funnel 20Y en v2]
+
+Check parcial (b) funnel v2 sobre 3 anos (18.7k barras H1, 2019-2022):
+- chains=1754 (v1 estimado ~219 -> ratio 8x, consistente con 20Y 12100/1460).
+- unique_setups colapsados por (dir+stages+nivel) = 1519 (casi 1:1: cada pool tiene
+  nivel levemente distinto, el colapso no reduce mucho).
+- COMPLETE=10, depth 1..7 distribuido. No revienta, no 0 setups.
+Conclucion (b): distribucion sana; funnel absorbe 8x pools. Procede FASE 2 completa.
+
+FASE 2 completa (a): funnel 20Y full en background (20 cores, ~5h). Gates internos del
+funnel + comparacion chains/unique_setups/COMPLETE/depth vs v1 (1460/3 COMPLETE). En curso.
+
+## [FASE 2 — RESULTADO]
+
+funnel_v2_seq_check.py sobre H1 20Y (rama engine-seq-v2-causal):
+- chains=12100 (v1=1460, ratio 8.29x).
+- unique_setups=10823 (colapso por nivel apenas reduce: cada pool nivel levemente distinto).
+- COMPLETE=28 (v1=3, ~9x; proporcion similar 0.23% vs 0.2%).
+- depth 1..7 distribuido.
+- GATE: PASS (chains>0, has_complete, not_explosive<50k).
+Conclucion FASE 2: motor v2 PIT es FUNCIONAL y COHERENTE. 8x mas setups pero misma
+proporcion de COMPLETE, distribucion sana. El costo de PIT (12100 vs 1460) es aceptable
+para el funnel. FASE 3 procede.
+
+RAIZ CONFIRMADA Y CORREGIDA. Siguiente: FASE 2 revalidar funnel 20Y en v2 (esperado
+cambio de distribucion de chains/COMPLETE/depth por la semantica PIT).
 
 ## [EXCEPCION Y AUTORIZADA — motor run_sequential PIT-stable]
 

@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C4",
+  "role": "AGENTE_C_FALSACION",
+  "hypothesis": "H_C: el edge de expectancy positiva depth>=4 es ROBUSTO fuera de muestra EURUSD 2019-2024",
+  "generated_at": "2026-08-21T16:10:51.721949+00:00",
+  "elapsed_s": 6.3,
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "min_depth": 4,
+    "horizon_bars": 200,
+    "sl_buffer": 0.0001,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "min_n_gate": 30,
+    "costs": true
+  },
+  "metrics_treatment": {
+    "n_trades": 215,
+    "n_closed": 211,
+    "n_open": 4,
+    "n_invalid_levels": 0,
+    "wins": 115,
+    "losses": 96,
+    "win_rate": 0.545,
+    "win_rate_wilson95": [
+      0.4776,
+      0.6108
+    ],
+    "mean_r": 0.2331,
+    "median_r": 0.946,
+    "std_r": 1.1607,
+    "min_r": -1.0,
+    "max_r": 2.8831,
+    "bootstrap_clustered": {
+      "n_closed": 211,
+      "mean_r_ci": [
+        0.07922331645607494,
+        0.39159190063610466
+      ],
+      "win_rate_ci": [
+        0.4786729857819905,
+        0.6113744075829384
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 211
+    }
+  },
+  "metrics_baseline": {
+    "n_trades": 215,
+    "n_closed": 205,
+    "n_open": 3,
+    "n_invalid_levels": 7,
+    "wins": 90,
+    "losses": 115,
+    "win_rate": 0.439,
+    "win_rate_wilson95": [
+      0.3728,
+      0.5075
+    ],
+    "mean_r": 0.2277,
+    "median_r": -1.0,
+    "std_r": 4.1684,
+    "min_r": -1.0,
+    "max_r": 57.3636,
+    "bootstrap_clustered": {
+      "n_closed": 205,
+      "mean_r_ci": [
+        -0.17153821723811521,
+        0.8606063559720186
+      ],
+      "win_rate_ci": [
+        0.37073170731707317,
+        0.5073170731707317
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 205
+    }
+  },
+  "gross_reference": {
+    "n_trades": 215,
+    "n_closed": 211,
+    "n_open": 4,
+    "n_invalid_levels": 0,
+    "wins": 115,
+    "losses": 96,
+    "win_rate": 0.545,
+    "win_rate_wilson95": [
+      0.4776,
+      0.6108
+    ],
+    "mean_r": 0.2675,
+    "median_r": 0.9983,
+    "std_r": 1.1966,
+    "min_r": -1.0,
+    "max_r": 3.1608,
+    "bootstrap_clustered": {
+      "n_closed": 211,
+      "mean_r_ci": [
+        0.10853835671321634,
+        0.43013234978245596
+      ],
+      "win_rate_ci": [
+        0.4786729857819905,
+        0.6113744075829384
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 211
+    }
+  },
+  "delta_win_rate_vs_random": 0.106,
+  "delta_mean_r_vs_random": 0.0054,
+  "delta_mean_r_gross_vs_net": 0.0344,
+  "cost_model": {
+    "spread_pip": 0.5,
+    "slip_pip": 0.3,
+    "adverse_entry_pip": 0.8,
+    "commission_per_lot": 0.0,
+    "note": "EURUSD CSV no tiene columna spread -> spread fijo 0.5 pip; slippage 0.3 pip; comision 0 (no en dataset)."
+  },
+  "walk_forward": null,
+  "motor_summary": {
+    "n_chains": 3478,
+    "by_depth": {
+      "1": 1312,
+      "2": 1697,
+      "3": 213,
+      "4": 229,
+      "5": 3,
+      "6": 2,
+      "7": 22
+    },
+    "by_status": {
+      "EXPIRED": 3456,
+      "COMPLETE": 22
+    },
+    "complete_bull": 9,
+    "complete_bear": 13,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "n": 256,
+    "by_status": {
+      "EXPIRED": 234,
+      "COMPLETE": 22
+    },
+    "dedup_or_warmup_skipped": 41
+  },
+  "gate": "PASS",
+  "verdict": "EDGE VIVO: mean_R=0.2331 (CI95 [0.07922331645607494, 0.39159190063610466]), n_closed=211>=30. Expectancy positiva sostenida fuera de muestra (no falsificado)."
+}

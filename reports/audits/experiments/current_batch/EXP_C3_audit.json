@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C3",
+  "role": "AGENTE_C_FALSACION",
+  "hypothesis_under_test": "H_C (robustez OOS del edge depth>=4)",
+  "gate_mechanical_logic": "n_closed<30 -> BLOCKED; mean_r>0 y CI95_low>0 -> PASS (edge robusto OOS); sino -> FAIL (edge roto OOS, falsacion exitosa).",
+  "gate": "BLOCKED",
+  "verdict": "BLOCKED: n_closed=24 < 30. Muestra insuficiente para gate mecanico; no se puede concluir robustez OOS.",
+  "protocol": {
+    "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+    "engine": "run_sequential(structure_mode='lite', max_active_chains=4096, swing_left=3)",
+    "invariants_held": true,
+    "no_param_change_post_hoc": true,
+    "config": {
+      "min_depth": 4,
+      "horizon_bars": 200,
+      "sl_buffer": 0.0001,
+      "tie_policy": "pessimistic",
+      "warmup_bars": 20,
+      "bootstrap_resamples": 2000,
+      "bootstrap_seed": 42,
+      "baseline_seed": 42,
+      "min_n_gate": 30,
+      "costs_applied": false
+    },
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "source": "datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+      "source_kind": "csv",
+      "data_origin": "Dukascopy 20Y CSV",
+      "declared_hash": "2dbb5757",
+      "actual_file_sha256": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "range": [
+        "2025-01-01",
+        "2025-12-31"
+      ],
+      "bars": 6226,
+      "cross_origin_caveat": false,
+      "canonical_dataset_note": "Dataset canonico EURUSD Dukascopy 20Y CSV (SHA256 prefijo 2dbb5757)."
+    },
+    "date": "2026-08-21T16:11:59.205902+00:00"
+  },
+  "metrics": {
+    "treatment": {
+      "n_trades": 26,
+      "n_closed": 24,
+      "n_open": 2,
+      "n_invalid_levels": 0,
+      "wins": 11,
+      "losses": 13,
+      "win_rate": 0.4583,
+      "win_rate_wilson95": [
+        0.2789,
+        0.6493
+      ],
+      "mean_r": 0.1175,
+      "median_r": -1.0,
+      "std_r": 1.3083,
+      "min_r": -1.0,
+      "max_r": 2.8172,
+      "bootstrap_clustered": {
+        "n_closed": 24,
+        "mean_r_ci": [
+          -0.36945505036611903,
+          0.6662078683098371
+        ],
+        "win_rate_ci": [
+          0.25,
+          0.6666666666666666
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 24
+      }
+    },
+    "baseline": {
+      "n_trades": 26,
+      "n_closed": 26,
+      "n_open": 0,
+      "n_invalid_levels": 0,
+      "wins": 12,
+      "losses": 14,
+      "win_rate": 0.4615,
+      "win_rate_wilson95": [
+        0.2876,
+        0.6454
+      ],
+      "mean_r": 0.1497,
+      "median_r": -1.0,
+      "std_r": 1.4009,
+      "min_r": -1.0,
+      "max_r": 4.0,
+      "bootstrap_clustered": {
+        "n_closed": 26,
+        "mean_r_ci": [
+          -0.3653153191365155,
+          0.7567385325583661
+        ],
+        "win_rate_ci": [
+          0.2692307692307692,
+          0.6538461538461539
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 26
+      }
+    },
+    "gross_reference": null,
+    "delta_mean_r_gross_vs_net": null,
+    "walk_forward": null
+  },
+  "result_raw_file": "reports\\audits\\EXP_C3_raw.json"
+}

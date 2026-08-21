@@ -20,7 +20,7 @@
 ## 2. Por qué (traza)
 
 - Se evaluó AWS EC2 `t4g.small` y se **descartó EC2**.
-- Evidencia del benchmark local (`reports/audits/benchmark_spayk.json`, host `spayk`, 20 cores / 16.8 GB): A0-A9 audit ~0.12 s; AHF_TEMPORAL serial llegó a timeout de 1800 s antes del parche de navegación.
+- Evidencia del benchmark local (`reports/audits/infrastructure/benchmark_spayk.json`, host `spayk`, 20 cores / 16.8 GB): A0-A9 audit ~0.12 s; AHF_TEMPORAL serial llegó a timeout de 1800 s antes del parche de navegación.
 - El motor `engine/mtf_navigation.py` recibió posteriormente una optimización O(n) de precompute; la regresión publicada reporta equivalencia bit-exact frente al motor anterior en 600 layer-checks.
 - Grok ya dispone de servidores en la nube → es el canal de procesamiento pesado acordado.
 - Ver `docs/AWS_EXECUTION_HOST.md` (marcado **DESCARTADO**) para la traza completa de la evaluación AWS.
@@ -67,7 +67,7 @@ Verificar `datasets/eurusd_dukascopy_20y/SHA256SUMS` y `metadata.json` cuando la
 python scripts/grok_run_funnel_20y_full.py
 ```
 
-Ese runner orquesta FVG/OB + Sequence + MTF dense con `sample_every=100`. El artifact canónico es `reports/audits/mtf_seq_funnel.json` y está protegido por assert CI. `audits/codigo/mtf_seq_funnel.py` contiene funciones canónicas, pero no debe confundirse con el orquestador pesado que produjo el artifact.
+Ese runner orquesta FVG/OB + Sequence + MTF dense con `sample_every=100`. El artifact canónico es `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json` y está protegido por assert CI. `audits/codigo/mtf_seq_funnel.py` contiene funciones canónicas, pero no debe confundirse con el orquestador pesado que produjo el artifact.
 
 **TNA 20Y:** el trace estratificado ya tiene PASS de integridad; el behavioral/full-span sigue pendiente. El driver pesado actual es:
 
@@ -100,10 +100,10 @@ git pull origin main
 
 | Job | Estado | Fuente de verdad |
 | --- | --- | --- |
-| Funnel 20Y FVG/OB + Sequence + MTF | **CERRADO — PASS + GATE CI** | `reports/audits/mtf_seq_funnel.json` + worklog 2026-08-20 |
-| TNA temporal AHF/MTF — TRACE | **PASS estratificado** | `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` |
+| Funnel 20Y FVG/OB + Sequence + MTF | **CERRADO — PASS + GATE CI** | `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json` + worklog 2026-08-20 |
+| TNA temporal AHF/MTF — TRACE | **PASS estratificado** | `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json` |
 | TNA temporal AHF/MTF — BEHAVIORAL/full-span | **PENDIENTE** | plan TNA + `scripts/tna_20y_parallel.py` |
-| SEQUENCE × CONTEXT STATE | **INSUFFICIENT_N** | `reports/audits/exp_sequence_x_context_state_H1_20Y.json` |
+| SEQUENCE × CONTEXT STATE | **INSUFFICIENT_N** | `reports/audits/experiments/sequential/exp_sequence_x_context_state_H1_20Y.json` |
 | Backtest / Walk-forward | **BLOQUEADO** | requiere pila pre-backtest + Funnel + TNA aceptables |
 
 ---

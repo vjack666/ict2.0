@@ -50,11 +50,11 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          test -s reports/audits/fvg_ob_funnel.json
+          test -s reports/audits/experiments/fvg_ob/fvg_ob_funnel.json
           python - <<'PY'
           import json
           from pathlib import Path
-          p = Path('reports/audits/fvg_ob_funnel.json')
+          p = Path('reports/audits/experiments/fvg_ob/fvg_ob_funnel.json')
           data = json.loads(p.read_text())
           assert set(data['timeframes']) == {'H1','H4','D1'}
           for tf, item in data['timeframes'].items():
@@ -68,11 +68,11 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          test -s reports/audits/mtf_seq_funnel.json
+          test -s reports/audits/experiments/fvg_ob/mtf_seq_funnel.json
           python - <<'PY'
           import json
           from pathlib import Path
-          data = json.loads(Path('reports/audits/mtf_seq_funnel.json').read_text())
+          data = json.loads(Path('reports/audits/experiments/fvg_ob/mtf_seq_funnel.json').read_text())
           assert data.get('status') == 'COMPLETE', data.get('status')
           assert set(data['fvg_ob']) >= {'H1', 'H4', 'D1'}, set(data['fvg_ob'])
           for tf in ('H1', 'H4', 'D1'):
@@ -94,6 +94,6 @@ jobs:
         with:
           name: fvg-ob-funnel-${{ github.sha }}
           path: |
-            reports/audits/fvg_ob_funnel.json
-            reports/audits/mtf_seq_funnel.json
+            reports/audits/experiments/fvg_ob/fvg_ob_funnel.json
+            reports/audits/experiments/fvg_ob/mtf_seq_funnel.json
             funnel.log

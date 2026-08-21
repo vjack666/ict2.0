@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B_SUITE",
+  "component_isolated": "HTF/context incremental diagnostic B1/B2/B4/B5",
+  "code_commit": "29662f02d1fdbff0ecc42811537bb212631e3db7",
+  "branch": "g0-pit-evidence",
+  "generated_at": "2026-08-21T21:42:56.713885+00:00",
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
+  "gate": {
+    "B1_HTF_ALIGNED_MINUS_AGAINST": {
+      "n_ge_30_both": true,
+      "ci_lower_gt_0": false,
+      "pass": false
+    },
+    "B2_HTF_ALIGNED_MINUS_ALL": {
+      "n_ge_30_both": true,
+      "ci_lower_gt_0": false,
+      "pass": false
+    },
+    "B4_LOCATION_FAVORABLE_MINUS_OTHER": {
+      "n_ge_30_both": true,
+      "ci_lower_gt_0": false,
+      "pass": false
+    },
+    "B5_HTF_ALIGNED_MINUS_LTF_ALIGNED": {
+      "n_ge_30_both": false,
+      "ci_lower_gt_0": false,
+      "pass": false
+    }
+  },
+  "verdict": "BLOCKED",
+  "protocol": {
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "is_canonical": true
+    },
+    "parameter_change": false,
+    "leakage_check": "DIAGNOSTIC_ONLY; navigator PIT debt remains open"
+  },
+  "rationale": "Resultados de diagnóstico; promoción bloqueada hasta ejecutar en worktree PIT-stable y revisar comparaciones.",
+  "promotion": "BLOCKED",
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

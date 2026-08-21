@@ -56,7 +56,7 @@ jobs:
         with:
           name: hermes-a0-a9-and-fvg-ob-funnel-evidence
           path: |
-            reports/audits/A0_A9_audit_stack.json
-            reports/audits/fvg_ob_funnel.json
+            reports/audits/data/A0_A9_audit_stack.json
+            reports/audits/experiments/fvg_ob/fvg_ob_funnel.json
             audit-stack.log
             fvg-ob-funnel.log

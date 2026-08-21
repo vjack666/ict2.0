@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B2",
+  "component_isolated": "HTF ALIGNED-only vs unconditional treatment",
+  "status": "BLOCKED",
+  "executed": false,
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
+  "code_commit": "7befab4419e00a420f14f6c7caabb376a5eb40a2",
+  "branch": "g0-pit-evidence",
+  "generated_at": "2026-08-21T21:32:10.701570+00:00",
+  "reasons": [
+    "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'"
+  ],
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

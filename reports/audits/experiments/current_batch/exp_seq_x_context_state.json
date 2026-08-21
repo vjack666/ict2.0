@@ -1,7 +1,7 @@
 {
   "experiment": "EXP_SEQUENCE_x_CONTEXT_STATE",
   "design": "event-anchored sequence x point-in-time context (PIT-POR-PREFIX)",
-  "generated_at": "2026-08-20T23:05:16.975821+00:00",
+  "generated_at": "2026-08-20T23:26:16.969711+00:00",
   "policy": "AUDIT_ONLY",
   "horizon_h1": 20,
   "range": "2019-2024 H1",
@@ -67,17 +67,17 @@
     }
   },
   "signature_context_tests": {
-    "1|LIQUIDITY_POOL->SWEEP": {
-      "chi2": 0.75,
-      "p": 0.6867,
-      "cramers_v": 0.062,
-      "n_contexts": 2
-    },
     "1|LIQUIDITY_POOL": {
       "chi2": 6.1,
       "p": 0.1921,
       "cramers_v": 0.09,
       "n_contexts": 3
+    },
+    "1|LIQUIDITY_POOL->SWEEP": {
+      "chi2": 0.75,
+      "p": 0.6867,
+      "cramers_v": 0.062,
+      "n_contexts": 2
     },
     "-1|LIQUIDITY_POOL": {
       "chi2": 2.42,

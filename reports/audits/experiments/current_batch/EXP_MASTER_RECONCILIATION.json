@@ -1,0 +1,415 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-21T21:32:11.453457+00:00",
+  "source_of_truth": "audit JSON files present on disk",
+  "promotion": {
+    "status": "BLOCKED",
+    "reason": "Current batch is diagnostic only; B1-B5 have explicit BLOCKED preflight decisions, A2 is blocked, D2 is a replication only, and no candidate may replace GEN-000.",
+    "canonical_a_complete": false
+  },
+  "summary": {
+    "expected": 15,
+    "observed": 15,
+    "by_status": {
+      "PASS": 5,
+      "BLOCKED": 7,
+      "FAIL": 3
+    },
+    "missing_groups": []
+  },
+  "propositions": {
+    "P1_baseline_edge": "CONDITIONAL_PASS",
+    "P2_htf_incremental_value": "BLOCKED",
+    "P3_oos_robustness": "INCOMPLETE",
+    "P4_m15_m5_live_scope": "NOT_TESTED"
+  },
+  "experiments": [
+    {
+      "experiment": "EXP_A1",
+      "status": "PASS",
+      "raw_verdict": "PASS",
+      "gate": {
+        "n_ge_30": true,
+        "expectancy_gt_0": true,
+        "ci_lower_gt_0": true
+      },
+      "reason": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0.",
+      "data": {
+        "symbol": "EURUSD",
+        "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+        "is_canonical": true,
+        "cross_origin_caveat": false,
+        "range": [
+          "2019-01-01",
+          "2024-12-31"
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_A1_audit.json",
+        "reports/audits/experiments/current_batch/EXP_A1_raw.json"
+      ],
+      "group": "A"
+    },
+    {
+      "experiment": "EXP_A2",
+      "status": "BLOCKED",
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "no ejecutado"
+      },
+      "reason": "mecanico: experimento no puede ejecutarse EXACTAMENTE (componente TP HTF real ausente / no limpio); se declara BLOCKED, no se inventa el TP.",
+      "data": {
+        "symbol": "EURUSD",
+        "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+        "is_canonical": true,
+        "cross_origin_caveat": false,
+        "range": [
+          "2019-01-01",
+          "2024-12-31"
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_A2_audit.json",
+        "reports/audits/experiments/current_batch/EXP_A2_raw.json"
+      ],
+      "group": "A"
+    },
+    {
+      "experiment": "EXP_A3",
+      "status": "FAIL",
+      "raw_verdict": "FAIL",
+      "gate": {
+        "n_ge_30": true,
+        "expectancy_gt_0": true,
+        "ci_lower_gt_0": false
+      },
+      "reason": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0.",
+      "data": {
+        "symbol": "EURUSD",
+        "source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+        "is_canonical": true,
+        "cross_origin_caveat": false,
+        "range": [
+          "2019-01-01",
+          "2024-12-31"
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_A3_audit.json",
+        "reports/audits/experiments/current_batch/EXP_A3_raw.json"
+      ],
+      "group": "A"
+    },
+    {
+      "experiment": "EXP_A4",
+      "status": "PASS",
+      "raw_verdict": "PASS",
+      "gate": {
+        "n_ge_30": true,
+        "expectancy_gt_0": true,
+        "ci_lower_gt_0": true
+      },
+      "reason": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0.",
+      "data": {
+        "symbol": "EURUSD",
+        "source": "data/raw/EURUSD/EURUSD_M15.parquet",
+        "is_canonical": false,
+        "cross_origin_caveat": true,
+        "range": [
+          "2019-01-01",
+          "2024-12-31"
+        ]
+      },
+      "provisional": true,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_A4_audit.json",
+        "reports/audits/experiments/current_batch/EXP_A4_raw.json"
+      ],
+      "group": "A"
+    },
+    {
+      "experiment": "EXP_A5",
+      "status": "PASS",
+      "raw_verdict": "PASS",
+      "gate": null,
+      "reason": "mecanico por depth: depth>=5 con n_closed<30 => BLOCKED (sub-caso).",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_A5_audit.json",
+        "reports/audits/experiments/current_batch/EXP_A5_raw.json"
+      ],
+      "group": "A"
+    },
+    {
+      "experiment": "EXP_B1",
+      "status": "BLOCKED",
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B1_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B1_raw.json"
+      ],
+      "group": "B"
+    },
+    {
+      "experiment": "EXP_B2",
+      "status": "BLOCKED",
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B2_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B2_raw.json"
+      ],
+      "group": "B"
+    },
+    {
+      "experiment": "EXP_B3",
+      "status": "BLOCKED",
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "canonical EURUSD M15 Dukascopy snapshot is absent; parquet substitution is prohibited",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B3_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B3_raw.json"
+      ],
+      "group": "B"
+    },
+    {
+      "experiment": "EXP_B4",
+      "status": "BLOCKED",
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B4_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B4_raw.json"
+      ],
+      "group": "B"
+    },
+    {
+      "experiment": "EXP_B5",
+      "status": "BLOCKED",
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B5_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B5_raw.json"
+      ],
+      "group": "B"
+    },
+    {
+      "experiment": "EXP_C1",
+      "status": "PASS",
+      "raw_verdict": "EDGE VIVO: mean_R=0.2584 (CI95 [0.09385122200287868, 0.42852965432533546]), n_closed=196>=30. Expectancy positiva sostenida fuera de muestra (no falsificado).",
+      "gate": "PASS",
+      "reason": "EDGE VIVO: mean_R=0.2584 (CI95 [0.09385122200287868, 0.42852965432533546]), n_closed=196>=30. Expectancy positiva sostenida fuera de muestra (no falsificado).",
+      "data": {
+        "symbol": "GBPUSD",
+        "source": "data\\raw\\GBPUSD\\GBPUSD_H1.parquet",
+        "is_canonical": null,
+        "cross_origin_caveat": true,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": true,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_C1_audit.json",
+        "reports/audits/experiments/current_batch/EXP_C1_raw.json"
+      ],
+      "group": "C"
+    },
+    {
+      "experiment": "EXP_C2",
+      "status": "FAIL",
+      "raw_verdict": "EDGE ROTO OOS: mean_R=0.1365 (CI95 [-0.06188225754569033, 0.3401381091952801]), n_closed=142. Expectancy NO positiva fuera de muestra (falsacion exitosa).",
+      "gate": "FAIL",
+      "reason": "EDGE ROTO OOS: mean_R=0.1365 (CI95 [-0.06188225754569033, 0.3401381091952801]), n_closed=142. Expectancy NO positiva fuera de muestra (falsacion exitosa).",
+      "data": {
+        "symbol": "XAUUSD",
+        "source": "data\\raw\\XAUUSD\\XAUUSD_H1.parquet",
+        "is_canonical": null,
+        "cross_origin_caveat": true,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": true,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_C2_audit.json",
+        "reports/audits/experiments/current_batch/EXP_C2_raw.json"
+      ],
+      "group": "C"
+    },
+    {
+      "experiment": "EXP_C3",
+      "status": "BLOCKED",
+      "raw_verdict": "BLOCKED: n_closed=24 < 30. Muestra insuficiente para gate mecanico; no se puede concluir robustez OOS.",
+      "gate": "BLOCKED",
+      "reason": "BLOCKED: n_closed=24 < 30. Muestra insuficiente para gate mecanico; no se puede concluir robustez OOS.",
+      "data": {
+        "symbol": "EURUSD",
+        "source": "datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_C3_audit.json",
+        "reports/audits/experiments/current_batch/EXP_C3_raw.json"
+      ],
+      "group": "C"
+    },
+    {
+      "experiment": "EXP_C4",
+      "status": "PASS",
+      "raw_verdict": "EDGE VIVO: mean_R=0.2331 (CI95 [0.07922331645607494, 0.39159190063610466]), n_closed=211>=30. Expectancy positiva sostenida fuera de muestra (no falsificado).",
+      "gate": "PASS",
+      "reason": "EDGE VIVO: mean_R=0.2331 (CI95 [0.07922331645607494, 0.39159190063610466]), n_closed=211>=30. Expectancy positiva sostenida fuera de muestra (no falsificado).",
+      "data": {
+        "symbol": "EURUSD",
+        "source": "datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_C4_audit.json",
+        "reports/audits/experiments/current_batch/EXP_C4_raw.json"
+      ],
+      "group": "C"
+    },
+    {
+      "experiment": "EXP_C5",
+      "status": "FAIL",
+      "raw_verdict": "Walk-forward: 2/4 ventanas con edge positivo. Pendiente de tiempo slope=0.12752. INESTABILIDAD TEMPORAL: alguna ventana cae (edge roto OOS).",
+      "gate": "FAIL",
+      "reason": "Walk-forward: 2/4 ventanas con edge positivo. Pendiente de tiempo slope=0.12752. INESTABILIDAD TEMPORAL: alguna ventana cae (edge roto OOS).",
+      "data": {
+        "symbol": "EURUSD",
+        "source": "datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_C5_audit.json",
+        "reports/audits/experiments/current_batch/EXP_C5_raw.json"
+      ],
+      "group": "C"
+    }
+  ]
+}

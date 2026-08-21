@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-19  
 **Plan:** `audits/PLAN_AUDITORIA_TEMPORAL_AHF.md`  
 **Motor de métricas:** `audits/codigo/ahf_temporal_navigation_audit.py`  
-**Artefacto JSON:** `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json`  
+**Artefacto JSON:** `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json`
 **Policy:** `TEMPORAL_AUDIT_NOT_PNL` / `AHF_STATE_NOT_ENTRY`
 
 ---

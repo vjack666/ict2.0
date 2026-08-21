@@ -1,0 +1,397 @@
+{
+  "schema_version": "1.0",
+  "gate": "SEQUENCE_PIT_INTEGRITY",
+  "status": "PASS",
+  "scope": "EURUSD H1 checkpoints through bar 5000; full run used as reference",
+  "coverage": {
+    "dataset_rows": 124377,
+    "full_chain_count": 12100,
+    "candidate_checkpoint_count": 450,
+    "checked_checkpoint_count": 40,
+    "checkpoint_range_end": 5000,
+    "prefix_margin_bars": 300,
+    "violations": 0
+  },
+  "code": {
+    "git_head": "4804ec5540618aae12eb7a0253cbefca2b829922",
+    "worktree_clean_before_run": true,
+    "generated_output_path_excluded": "reports/audits/pit",
+    "runner": "scripts/audit/sequence_pit_integrity_gate.py"
+  },
+  "dataset": {
+    "path": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "sha256": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "canonical": true
+  },
+  "config": {
+    "structure_mode": "canonical_bos",
+    "max_active_chains": 128,
+    "comparison": "created_bar + direction + nodes(bar, stage, direction) <= checkpoint",
+    "final_status_excluded": true
+  },
+  "comparisons": [
+    {
+      "checkpoint": 5,
+      "prefix_end": 305,
+      "full_signature_count": 1,
+      "prefix_signature_count": 1,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 180,
+      "prefix_end": 480,
+      "full_signature_count": 13,
+      "prefix_signature_count": 13,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 299,
+      "prefix_end": 599,
+      "full_signature_count": 24,
+      "prefix_signature_count": 24,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 496,
+      "prefix_end": 796,
+      "full_signature_count": 36,
+      "prefix_signature_count": 36,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 571,
+      "prefix_end": 871,
+      "full_signature_count": 47,
+      "prefix_signature_count": 47,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 748,
+      "prefix_end": 1048,
+      "full_signature_count": 59,
+      "prefix_signature_count": 59,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 894,
+      "prefix_end": 1194,
+      "full_signature_count": 70,
+      "prefix_signature_count": 70,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1055,
+      "prefix_end": 1355,
+      "full_signature_count": 82,
+      "prefix_signature_count": 82,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1168,
+      "prefix_end": 1468,
+      "full_signature_count": 93,
+      "prefix_signature_count": 93,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1330,
+      "prefix_end": 1630,
+      "full_signature_count": 105,
+      "prefix_signature_count": 105,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1437,
+      "prefix_end": 1737,
+      "full_signature_count": 116,
+      "prefix_signature_count": 116,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1601,
+      "prefix_end": 1901,
+      "full_signature_count": 128,
+      "prefix_signature_count": 128,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1672,
+      "prefix_end": 1972,
+      "full_signature_count": 139,
+      "prefix_signature_count": 139,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1778,
+      "prefix_end": 2078,
+      "full_signature_count": 151,
+      "prefix_signature_count": 151,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 1922,
+      "prefix_end": 2222,
+      "full_signature_count": 162,
+      "prefix_signature_count": 162,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 2098,
+      "prefix_end": 2398,
+      "full_signature_count": 174,
+      "prefix_signature_count": 174,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 2304,
+      "prefix_end": 2604,
+      "full_signature_count": 185,
+      "prefix_signature_count": 185,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 2464,
+      "prefix_end": 2764,
+      "full_signature_count": 197,
+      "prefix_signature_count": 197,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 2599,
+      "prefix_end": 2899,
+      "full_signature_count": 208,
+      "prefix_signature_count": 208,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 2737,
+      "prefix_end": 3037,
+      "full_signature_count": 220,
+      "prefix_signature_count": 220,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 2849,
+      "prefix_end": 3149,
+      "full_signature_count": 231,
+      "prefix_signature_count": 231,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3019,
+      "prefix_end": 3319,
+      "full_signature_count": 243,
+      "prefix_signature_count": 243,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3121,
+      "prefix_end": 3421,
+      "full_signature_count": 254,
+      "prefix_signature_count": 254,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3232,
+      "prefix_end": 3532,
+      "full_signature_count": 266,
+      "prefix_signature_count": 266,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3330,
+      "prefix_end": 3630,
+      "full_signature_count": 277,
+      "prefix_signature_count": 277,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3450,
+      "prefix_end": 3750,
+      "full_signature_count": 289,
+      "prefix_signature_count": 289,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3553,
+      "prefix_end": 3853,
+      "full_signature_count": 300,
+      "prefix_signature_count": 300,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3672,
+      "prefix_end": 3972,
+      "full_signature_count": 312,
+      "prefix_signature_count": 312,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3792,
+      "prefix_end": 4092,
+      "full_signature_count": 323,
+      "prefix_signature_count": 323,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 3865,
+      "prefix_end": 4165,
+      "full_signature_count": 335,
+      "prefix_signature_count": 335,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4010,
+      "prefix_end": 4310,
+      "full_signature_count": 346,
+      "prefix_signature_count": 346,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4123,
+      "prefix_end": 4423,
+      "full_signature_count": 358,
+      "prefix_signature_count": 358,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4196,
+      "prefix_end": 4496,
+      "full_signature_count": 369,
+      "prefix_signature_count": 369,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4355,
+      "prefix_end": 4655,
+      "full_signature_count": 382,
+      "prefix_signature_count": 382,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4440,
+      "prefix_end": 4740,
+      "full_signature_count": 392,
+      "prefix_signature_count": 392,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4578,
+      "prefix_end": 4878,
+      "full_signature_count": 404,
+      "prefix_signature_count": 404,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4668,
+      "prefix_end": 4968,
+      "full_signature_count": 415,
+      "prefix_signature_count": 415,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4772,
+      "prefix_end": 5072,
+      "full_signature_count": 427,
+      "prefix_signature_count": 427,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4865,
+      "prefix_end": 5165,
+      "full_signature_count": 438,
+      "prefix_signature_count": 438,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 4995,
+      "prefix_end": 5295,
+      "full_signature_count": 450,
+      "prefix_signature_count": 450,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    }
+  ],
+  "violations_detail": [],
+  "elapsed_seconds": 45.114,
+  "generated_at_utc": "2026-08-21T21:19:40.506251+00:00"
+}

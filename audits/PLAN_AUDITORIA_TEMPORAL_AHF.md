@@ -1,6 +1,6 @@
 # PLAN — Auditoría Temporal AHF/MTF
 
-**Estado:** NORMATIVO — estratificada PASS + sandbox PASS (rollback OK) + full-ish script listo; full-span 20Y pendiente en máquina adecuada
+**Estado:** NORMATIVO — TRACE + BEHAVIORAL PASS full-span; sandbox PASS (rollback OK); sin edge ni PnL
 **Comando gatillo exacto:** `ejecuta auditoria temporal`
 **Dataset:** EURUSD 20Y de `datasets/eurusd_dukascopy_20y/` (2006–2025), con SHA256/metadata del snapshot versionado.
 **Auditor canónico:** `audits/codigo/ahf_temporal_navigation_audit.py`
@@ -96,13 +96,15 @@ Invalidaciones pueden devolver a una capa superior. El contexto confirmado perma
 
 ## 5. Evidencia ya obtenida
 
-1. **Muestra 2017 (Hermes 1762746):** `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` — `PASS_TRACE_INTEGRITY`, 750 steps, 501 transiciones, 193 invalidaciones. Estratificada; `rollback_depth` estaba roto (siempre 0).
+1. **Muestra 2017 (Hermes 1762746):** `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json` — `PASS_TRACE_INTEGRITY`, 750 steps, 501 transiciones, 193 invalidaciones. Estratificada; `rollback_depth` estaba roto (siempre 0).
 
-2. **Sandbox multi-ventana (Grok 2026-08-20):** `reports/audits/ahf_temporal_navigation_SANDBOX.json` — 3 ventanas (2017/2020/2024), 170 steps, 51 invalidaciones, **rollback_depth max = 2.0**. Overall sandbox **PASS**. Valida el fix de instrumentación (`state_to_tf`). Runner: `scripts/tna_sandbox_runner.py`.
+2. **Sandbox multi-ventana (Grok 2026-08-20):** `reports/audits/temporal/ahf_temporal_navigation_SANDBOX.json` — 3 ventanas (2017/2020/2024), 170 steps, 51 invalidaciones, **rollback_depth max = 2.0**. Overall sandbox **PASS**. Valida el fix de instrumentación (`state_to_tf`). Runner: `scripts/tna_sandbox_runner.py`.
 
 3. **Full-ish STRATIFIED_WIDE (script listo; corrida completa pendiente en local):** `scripts/tna_fullish_runner.py`. En sandbox solo chunks parciales (jobs largos cortados): p.ej. inv=136/rb_max=2.0, inv=119/rb_max=2.0 en tramos multi-año. Bitácora: `.hermes-worklog/2026-08-20_TNA_FULLISH_PARCIAL_Y_CHECKLIST.md`.
 
-Ninguna de estas evidencias declara cobertura full-span de 20 años. La corrida definitiva sigue siendo `scripts/tna_audit_runner.py` sobre las 124k barras H1.
+4. **Full-span TNA 20Y:** `reports/audits/temporal/tna_20y.json` — 124.377 barras, `TNA_TRACE_INTEGRITY=PASS`, `TNA_BEHAVIORAL=PASS`, `asof_violations=0`, todos los estados `OK`. Este artefacto es un gate de integridad y comportamiento de navegación; no es un backtest ni evidencia de edge.
+
+La evidencia histórica estratificada no debe confundirse con la corrida full-span ya versionada. La corrida definitiva de este plan está representada por `reports/audits/temporal/tna_20y.json` sobre las 124.377 barras H1.
 
 ## 6. Criterios de PASS full-span
 
@@ -126,8 +128,9 @@ Convención actual del repositorio:
 
 ```text
 reports/audits/
-  AUDITORIA_TEMPORAL_AHF_RESULT.json
-  mtf_seq_funnel.json
+  temporal/tna_20y.json
+  temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json
+  experiments/fvg_ob/mtf_seq_funnel.json
 ```
 
 Si se genera una nueva corrida full-span, crear un nombre/versionado nuevo o un artifact claramente asociado al commit; no sobrescribir silenciosamente evidencia histórica.

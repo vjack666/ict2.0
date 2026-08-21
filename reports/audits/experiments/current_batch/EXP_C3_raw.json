@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C3",
+  "role": "AGENTE_C_FALSACION",
+  "hypothesis": "H_C: el edge de expectancy positiva depth>=4 es ROBUSTO fuera de muestra EURUSD 2019-2024",
+  "generated_at": "2026-08-21T16:11:59.195834+00:00",
+  "elapsed_s": 0.59,
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "min_depth": 4,
+    "horizon_bars": 200,
+    "sl_buffer": 0.0001,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "min_n_gate": 30,
+    "costs": false
+  },
+  "metrics_treatment": {
+    "n_trades": 26,
+    "n_closed": 24,
+    "n_open": 2,
+    "n_invalid_levels": 0,
+    "wins": 11,
+    "losses": 13,
+    "win_rate": 0.4583,
+    "win_rate_wilson95": [
+      0.2789,
+      0.6493
+    ],
+    "mean_r": 0.1175,
+    "median_r": -1.0,
+    "std_r": 1.3083,
+    "min_r": -1.0,
+    "max_r": 2.8172,
+    "bootstrap_clustered": {
+      "n_closed": 24,
+      "mean_r_ci": [
+        -0.36945505036611903,
+        0.6662078683098371
+      ],
+      "win_rate_ci": [
+        0.25,
+        0.6666666666666666
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 24
+    }
+  },
+  "metrics_baseline": {
+    "n_trades": 26,
+    "n_closed": 26,
+    "n_open": 0,
+    "n_invalid_levels": 0,
+    "wins": 12,
+    "losses": 14,
+    "win_rate": 0.4615,
+    "win_rate_wilson95": [
+      0.2876,
+      0.6454
+    ],
+    "mean_r": 0.1497,
+    "median_r": -1.0,
+    "std_r": 1.4009,
+    "min_r": -1.0,
+    "max_r": 4.0,
+    "bootstrap_clustered": {
+      "n_closed": 26,
+      "mean_r_ci": [
+        -0.3653153191365155,
+        0.7567385325583661
+      ],
+      "win_rate_ci": [
+        0.2692307692307692,
+        0.6538461538461539
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 26
+    }
+  },
+  "gross_reference": null,
+  "delta_win_rate_vs_random": -0.0032,
+  "delta_mean_r_vs_random": -0.0322,
+  "delta_mean_r_gross_vs_net": null,
+  "cost_model": null,
+  "walk_forward": null,
+  "motor_summary": {
+    "n_chains": 515,
+    "by_depth": {
+      "1": 203,
+      "2": 255,
+      "3": 27,
+      "4": 28,
+      "7": 2
+    },
+    "by_status": {
+      "EXPIRED": 513,
+      "COMPLETE": 2
+    },
+    "complete_bull": 2,
+    "complete_bear": 0,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "n": 30,
+    "by_status": {
+      "EXPIRED": 28,
+      "COMPLETE": 2
+    },
+    "dedup_or_warmup_skipped": 4
+  },
+  "gate": "BLOCKED",
+  "verdict": "BLOCKED: n_closed=24 < 30. Muestra insuficiente para gate mecanico; no se puede concluir robustez OOS."
+}

@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "gate": "SEQUENCE_PIT_INTEGRITY",
+  "status": "PASS",
+  "scope": "EURUSD H1 full-span; deterministic event-created checkpoints",
+  "coverage": {
+    "dataset_rows": 124377,
+    "full_chain_count": 12100,
+    "candidate_checkpoint_count": 12100,
+    "checked_checkpoint_count": 4,
+    "checkpoint_range_end": null,
+    "prefix_margin_bars": 300,
+    "violations": 0
+  },
+  "code": {
+    "git_head": "4804ec5540618aae12eb7a0253cbefca2b829922",
+    "worktree_clean_before_run": true,
+    "generated_output_path_excluded": "reports/audits/pit",
+    "runner": "scripts/audit/sequence_pit_integrity_gate.py"
+  },
+  "dataset": {
+    "path": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "sha256": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "canonical": true
+  },
+  "config": {
+    "structure_mode": "canonical_bos",
+    "max_active_chains": 128,
+    "comparison": "created_bar + direction + nodes(bar, stage, direction) <= checkpoint",
+    "final_status_excluded": true
+  },
+  "comparisons": [
+    {
+      "checkpoint": 5,
+      "prefix_end": 305,
+      "full_signature_count": 1,
+      "prefix_signature_count": 1,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 41993,
+      "prefix_end": 42293,
+      "full_signature_count": 4034,
+      "prefix_signature_count": 4034,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 83632,
+      "prefix_end": 83932,
+      "full_signature_count": 8067,
+      "prefix_signature_count": 8067,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    },
+    {
+      "checkpoint": 124370,
+      "prefix_end": 124376,
+      "full_signature_count": 12100,
+      "prefix_signature_count": 12100,
+      "only_full_count": 0,
+      "only_prefix_count": 0,
+      "pass": true
+    }
+  ],
+  "violations_detail": [],
+  "elapsed_seconds": 114.778,
+  "generated_at_utc": "2026-08-21T21:21:45.021348+00:00"
+}

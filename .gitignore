@@ -30,6 +30,8 @@ Thumbs.db
 
 # Data (archivos grandes no necesarios en repo)
 data/
+!reports/audits/data/
+!reports/audits/data/**
 !scripts/data/
 !scripts/data/*.py
 scripts/audit/_diag_choch_filter.py
@@ -50,6 +52,9 @@ htmlcov/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Local Engram databases and derived indexes
+.engram/
 
 # Specific images/docs not needed
 docs/lectura_HTF_EURUSD.png

@@ -153,7 +153,8 @@ def compute_metrics(trades, cluster_key):
     return out
 
 
-def run_depth_experiment(slice_df, depth_min, paired=True, tf_label="H1"):
+def run_depth_experiment(slice_df, depth_min, paired=True, tf_label="H1", context_bucket_fn=None,
+                         include_records=False):
     """Run treatment (depth>=depth_min) vs paired FVG-random baseline."""
     cfg_seq = SeqConfig(structure_mode="lite", max_active_chains=4096, swing_left=SWING_LEFT)
     cfg_out = OutcomeConfig(horizon_bars=HORIZON_BARS, sl_buffer=SL_BUFFER, tie_policy="pessimistic")
@@ -219,7 +220,7 @@ def run_depth_experiment(slice_df, depth_min, paired=True, tf_label="H1"):
                 off = float(sw_hi) - bs
                 if np.isfinite(off):
                     treat_offsets[-1].append(off)
-        treatment.append({
+        treatment_row = {
             "group": "treatment", "chain_id": ch.chain_id,
             "direction": int(ch.direction), "structure_bar": bar_i,
             "sweep_bar": sweep_bar, "time": times[bar_i], "status": ch.status,
@@ -230,7 +231,10 @@ def run_depth_experiment(slice_df, depth_min, paired=True, tf_label="H1"):
             "sweep_wick_high": None if sw_hi is None else round(float(sw_hi), 6),
             "range_low": round(r_lo, 6), "range_high": round(r_hi, 6),
             **res,
-        })
+        }
+        if context_bucket_fn is not None:
+            treatment_row["context_bucket"] = context_bucket_fn(bar_i, int(ch.direction))
+        treatment.append(treatment_row)
 
     # ---- Baseline: FVG-random, misma logica SL/TP; DEFENSA PAREJA ----
     records = slice_df[["open", "high", "low", "close"]].copy()
@@ -294,7 +298,7 @@ def run_depth_experiment(slice_df, depth_min, paired=True, tf_label="H1"):
                 if m_treat.get("win_rate") is not None and m_base.get("win_rate") is not None else None)
     delta_mean_r = (round(m_treat["mean_r"] - m_base["mean_r"], 4)
                     if m_treat.get("mean_r") is not None and m_base.get("mean_r") is not None else None)
-    return {
+    result = {
         "motor_summary": summary,
         "chains_depth_ge": {"depth_min": depth_min, "n": len(candidates), "by_status": by_status},
         "treatment": m_treat, "baseline": m_base,
@@ -302,6 +306,10 @@ def run_depth_experiment(slice_df, depth_min, paired=True, tf_label="H1"):
         "n_treatment": len(treatment), "n_baseline": len(baseline),
         "paired": paired, "n_paired_offsets": {str(k): len(v) for k, v in treat_offsets.items()},
     }
+    if include_records:
+        result["treatment_records"] = treatment
+        result["baseline_records"] = baseline
+    return result
 
 
 def write_outputs(exp_id, component, raw_obj, audit_obj):

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B1",
+  "component_isolated": "Context State ALIGNED / AGAINST / NEUTRAL",
+  "status": "BLOCKED",
+  "executed": false,
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
+  "code_commit": "096f30af351a0a487a6728218b1a1190ba46d0ba",
+  "branch": "g0-pit-evidence",
+  "generated_at": "2026-08-21T21:31:03.144548+00:00",
+  "reasons": [
+    "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'"
+  ],
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

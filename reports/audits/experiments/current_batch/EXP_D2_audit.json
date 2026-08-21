@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_D2",
+  "component_isolated": "Temporal OOS replication of EXP_A1",
+  "code_commit": "096f30af351a0a487a6728218b1a1190ba46d0ba",
+  "generated_at": "2026-08-21T21:29:03.361488+00:00",
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md#d2",
+  "gate": {
+    "n_ge_30": true,
+    "expectancy_gt_0": true,
+    "ci_lower_gt_0": true
+  },
+  "protocol": {
+    "leakage_check": "OK: era 2006-2018 is disjoint from A1 2019-2024; single-pass range execution",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2006-01-01",
+      "range_end": "2018-12-31",
+      "bars": 81217,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true
+    }
+  },
+  "verdict": "PASS",
+  "rationale": "mec\u00e1nico: PASS iff n_closed>=30 AND mean_r>0 AND bootstrap CI95 lower>0.",
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

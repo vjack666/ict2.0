@@ -99,7 +99,7 @@ def build_reconciliation() -> dict[str, Any]:
         "source_of_truth": "audit JSON files present on disk",
         "promotion": {
             "status": "BLOCKED",
-            "reason": "Current batch is diagnostic only; B is missing, A2 is blocked, and no candidate may replace GEN-000.",
+            "reason": "Current batch is diagnostic only; B1-B5 have explicit BLOCKED preflight decisions, A2 is blocked, D2 is a replication only, and no candidate may replace GEN-000.",
             "canonical_a_complete": canonical_promotable,
         },
         "summary": {

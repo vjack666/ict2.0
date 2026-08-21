@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "suite": "EXP_B_PREFLIGHT",
+  "generated_at": "2026-08-21T21:31:03.144548+00:00",
+  "code_commit": "096f30af351a0a487a6728218b1a1190ba46d0ba",
+  "branch": "g0-pit-evidence",
+  "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
+  "results": [
+    {
+      "experiment": "EXP_B1",
+      "verdict": "BLOCKED",
+      "reasons": [
+        "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'"
+      ]
+    },
+    {
+      "experiment": "EXP_B2",
+      "verdict": "BLOCKED",
+      "reasons": [
+        "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'"
+      ]
+    },
+    {
+      "experiment": "EXP_B3",
+      "verdict": "BLOCKED",
+      "reasons": [
+        "canonical EURUSD M15 Dukascopy snapshot is absent; parquet substitution is prohibited"
+      ]
+    },
+    {
+      "experiment": "EXP_B4",
+      "verdict": "BLOCKED",
+      "reasons": [
+        "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'"
+      ]
+    },
+    {
+      "experiment": "EXP_B5",
+      "verdict": "BLOCKED",
+      "reasons": [
+        "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'"
+      ]
+    }
+  ],
+  "promotion": "BLOCKED",
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL"
+}

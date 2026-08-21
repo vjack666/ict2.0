@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-08-21T19:41:15.126758+00:00",
+  "generated_at": "2026-08-21T21:31:04.022146+00:00",
   "source_of_truth": "audit JSON files present on disk",
   "promotion": {
     "status": "BLOCKED",
@@ -9,15 +9,13 @@
   },
   "summary": {
     "expected": 15,
-    "observed": 10,
+    "observed": 15,
     "by_status": {
       "PASS": 5,
       "BLOCKED": 7,
       "FAIL": 3
     },
-    "missing_groups": [
-      "B"
-    ]
+    "missing_groups": []
   },
   "propositions": {
     "P1_baseline_edge": "CONDITIONAL_PASS",
@@ -161,36 +159,141 @@
     {
       "experiment": "EXP_B1",
       "status": "BLOCKED",
-      "reason": "No audit JSON present on disk",
-      "evidence": [],
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B1_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B1_raw.json"
+      ],
       "group": "B"
     },
     {
       "experiment": "EXP_B2",
       "status": "BLOCKED",
-      "reason": "No audit JSON present on disk",
-      "evidence": [],
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B2_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B2_raw.json"
+      ],
       "group": "B"
     },
     {
       "experiment": "EXP_B3",
       "status": "BLOCKED",
-      "reason": "No audit JSON present on disk",
-      "evidence": [],
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "canonical EURUSD M15 Dukascopy snapshot is absent; parquet substitution is prohibited",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B3_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B3_raw.json"
+      ],
       "group": "B"
     },
     {
       "experiment": "EXP_B4",
       "status": "BLOCKED",
-      "reason": "No audit JSON present on disk",
-      "evidence": [],
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B4_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B4_raw.json"
+      ],
       "group": "B"
     },
     {
       "experiment": "EXP_B5",
       "status": "BLOCKED",
-      "reason": "No audit JSON present on disk",
-      "evidence": [],
+      "raw_verdict": "BLOCKED",
+      "gate": {
+        "n_ge_30": false,
+        "expectancy_gt_0": false,
+        "ci_lower_gt_0": false,
+        "note": "not executed"
+      },
+      "reason": "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'",
+      "data": {
+        "symbol": null,
+        "source": null,
+        "is_canonical": null,
+        "cross_origin_caveat": false,
+        "range": [
+          null,
+          null
+        ]
+      },
+      "provisional": false,
+      "evidence": [
+        "reports/audits/experiments/current_batch/EXP_B5_audit.json",
+        "reports/audits/experiments/current_batch/EXP_B5_raw.json"
+      ],
       "group": "B"
     },
     {

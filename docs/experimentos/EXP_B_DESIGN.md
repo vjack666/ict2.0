@@ -4,6 +4,12 @@
 **Estado:** PRE-REGISTRADO / NO EJECUTADO
 **Autor del registro:** ox-alpha (reconstrucción autorizada por Ruben tras verificar que el diseño original nunca fue persistido a disco)
 
+**Actualización 2026-08-21 21:30 UTC:** `scripts/lab/experiments/exp_b_runner.py` generó
+preflight explícito para B1–B5. Los cinco quedaron `BLOCKED`: B1/B2/B4/B5
+requieren la rama diagnóstica PIT-stable `engine-seq-v2-causal`; B3 además
+requiere un snapshot EURUSD M15 Dukascopy canónico, inexistente en el inventario.
+No se ejecutó ningún resultado B ni se cambió el diseño.
+
 ---
 
 ## ⚠️ Caveat de reconstrucción (declaración de honestidad)

@@ -1,7 +1,7 @@
 # EXP-B preflight
 
 - Branch: `g0-pit-evidence`
-- HEAD: `096f30af351a0a487a6728218b1a1190ba46d0ba`
+- HEAD: `7befab4419e00a420f14f6c7caabb376a5eb40a2`
 - Canonical M15 present: `False`
 
 | Experiment | Status | Reason |

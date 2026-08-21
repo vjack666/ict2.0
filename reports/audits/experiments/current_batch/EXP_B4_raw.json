@@ -5,9 +5,9 @@
   "status": "BLOCKED",
   "executed": false,
   "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
-  "code_commit": "096f30af351a0a487a6728218b1a1190ba46d0ba",
+  "code_commit": "7befab4419e00a420f14f6c7caabb376a5eb40a2",
   "branch": "g0-pit-evidence",
-  "generated_at": "2026-08-21T21:31:03.144548+00:00",
+  "generated_at": "2026-08-21T21:32:10.701570+00:00",
   "reasons": [
     "required diagnostic branch is 'engine-seq-v2-causal'; current branch is 'g0-pit-evidence'"
   ],

@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "suite": "EXP_B_PREFLIGHT",
-  "generated_at": "2026-08-21T21:31:03.144548+00:00",
-  "code_commit": "096f30af351a0a487a6728218b1a1190ba46d0ba",
+  "generated_at": "2026-08-21T21:32:10.701570+00:00",
+  "code_commit": "7befab4419e00a420f14f6c7caabb376a5eb40a2",
   "branch": "g0-pit-evidence",
   "pre_registration": "docs/experimentos/EXP_B_DESIGN.md",
   "results": [

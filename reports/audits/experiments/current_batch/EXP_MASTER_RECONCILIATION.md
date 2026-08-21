@@ -2,10 +2,10 @@
 
 > Fuente de verdad: JSON de auditoría presentes en `reports/audits/experiments/current_batch/`. Los resúmenes de agentes no sustituyen artefactos.
 
-- Generado: `2026-08-21T21:31:04.022146+00:00`
+- Generado: `2026-08-21T21:32:11.453457+00:00`
 - Esperados: `15` · observados: `15`
 - Promoción: **BLOCKED**
-- Motivo: Current batch is diagnostic only; B is missing, A2 is blocked, and no candidate may replace GEN-000.
+- Motivo: Current batch is diagnostic only; B1-B5 have explicit BLOCKED preflight decisions, A2 is blocked, D2 is a replication only, and no candidate may replace GEN-000.
 
 ## Proposiciones
 

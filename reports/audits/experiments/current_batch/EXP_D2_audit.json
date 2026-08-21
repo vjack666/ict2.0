@@ -2,8 +2,8 @@
   "schema_version": "1.0",
   "experiment": "EXP_D2",
   "component_isolated": "Temporal OOS replication of EXP_A1",
-  "code_commit": "096f30af351a0a487a6728218b1a1190ba46d0ba",
-  "generated_at": "2026-08-21T21:29:03.361488+00:00",
+  "code_commit": "7befab4419e00a420f14f6c7caabb376a5eb40a2",
+  "generated_at": "2026-08-21T21:32:09.799813+00:00",
   "pre_registration": "docs/experimentos/EXP_B_DESIGN.md#d2",
   "gate": {
     "n_ge_30": true,

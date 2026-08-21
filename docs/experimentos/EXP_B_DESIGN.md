@@ -5,10 +5,11 @@
 **Autor del registro:** ox-alpha (reconstrucción autorizada por Ruben tras verificar que el diseño original nunca fue persistido a disco)
 
 **Actualización 2026-08-21 21:30 UTC:** `scripts/lab/experiments/exp_b_runner.py` generó
-preflight explícito para B1–B5. Los cinco quedaron `BLOCKED`: B1/B2/B4/B5
+preflight explícito para B1–B5. Los cinco gates quedaron `BLOCKED`: B1/B2/B4/B5
 requieren la rama diagnóstica PIT-stable `engine-seq-v2-causal`; B3 además
 requiere un snapshot EURUSD M15 Dukascopy canónico, inexistente en el inventario.
-No se ejecutó ningún resultado B ni se cambió el diseño.
+Además, el modo diagnóstico explícito produjo `EXP_B_DIAGNOSTIC_*` sobre la
+rama científica: no es ejecución válida para promoción y no cambia el diseño.
 
 ---
 
@@ -28,7 +29,7 @@ B, no antes de conocer A/C.
 - P1 (baseline edge): CONDITIONAL_PASS — EURUSD H1 depth≥4 (A1 PASS), sobrevive
   costes (C4) y GBPUSD (C1 provisional); falla en H4 (A3), XAUUSD (C2) y es
   temporalmente inestable (C5).
-- P2 (HTF incremental value): BLOCKED — B nunca ejecutado.
+- P2 (HTF incremental value): BLOCKED — B válido en worktree PIT-stable nunca ejecutado; existe solo diagnóstico no-promotable.
 - Pregunta central de B: **¿el contexto HTF (Context State vía MTFNavigator)
   aporta información incremental sobre la distribución de outcomes de las
   cadenas secuenciales depth≥4?**

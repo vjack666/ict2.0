@@ -20,6 +20,7 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 | TNA integridad (trace) | `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json` | PASS_TRACE_INTEGRITY estratificado | repo |
 | TNA full-span trace + behavioral | `reports/audits/temporal/tna_20y.json` | PASS — 124.377 barras; sin edge/PnL | repo |
 | Sequence PIT reproducibility G0 | `reports/audits/pit/SEQUENCE_PIT_INTEGRITY_BOUNDED.json` + `...FULL_SPARSE.json` | PASS acotado — 0 violaciones | repo |
+| Scientific Gates CI | `.github/workflows/42-hermes-scientific-gates.yml` | PASS en GitHub PR #7; artifact subido | GitHub Actions |
 | AHF smoke H1 | `reports/audits/runtime/ahf_smoke_H1.json` | OK | repo |
 | MTF nav smoke H1 | `reports/audits/runtime/mtf_navigation_smoke_H1.json` | OK | repo |
 | Sequential canonical BOS H1 20Y | `reports/audits/experiments/sequential/sequential_canonical_bos_H1_20Y.json` | OK | repo |
@@ -37,7 +38,8 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 | --- | --- | --- |
 | **A0-07** Ruta raw vs loader | OPEN | Edición de código, liviano |
 | **A0-08** OTE residual | OPEN | grep + parche, liviano (OTE prohibido) |
-| **AUDIT-CI-01** Evidencia CI stack A0-A9 | OPEN | Correr workflow y corregir hasta PASS |
+| **AUDIT-CI-01** Evidencia CI stack A0-A9 | OPEN | El stack A0-A9 pasa; el job global sigue fallando en funnel por ruta raw ausente |
+| **AUDIT-CI-02** Dependencias/rutas CI heredadas | OPEN | Tests no instalan `numpy`; funnel busca `data/raw/EURUSD/EURUSD_H1.csv` no versionado |
 
 ---
 

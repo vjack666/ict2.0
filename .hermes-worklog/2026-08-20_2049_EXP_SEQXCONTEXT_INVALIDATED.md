@@ -238,8 +238,17 @@ Fix en engine/sequential_events.py _build_eq_pools (rama engine-seq-v2-causal):
   post-min_touches que v1 fusionaba ahora inicia pool nuevo. Eso es el costo de PIT.
   El funnel debe absorberlo (unique_setups colapsa por nivel). FASE 2 revalida.
 
-Gate SEQUENCE_PIT_INTEGRITY (scripts/diag_seq_pit_integrity.py): FULL vs PREFIX con
-margen 300, cadenas con nodos <= M. Resultado: checked=40 violations=0 -> **GATE PASS**.
+## [FASE 2 — revalidar funnel 20Y en v2]
+
+Check parcial (b) funnel v2 sobre 3 anos (18.7k barras H1, 2019-2022):
+- chains=1754 (v1 estimado ~219 -> ratio 8x, consistente con 20Y 12100/1460).
+- unique_setups colapsados por (dir+stages+nivel) = 1519 (casi 1:1: cada pool tiene
+  nivel levemente distinto, el colapso no reduce mucho).
+- COMPLETE=10, depth 1..7 distribuido. No revienta, no 0 setups.
+Conclucion (b): distribucion sana; funnel absorbe 8x pools. Procede FASE 2 completa.
+
+FASE 2 completa (a): funnel 20Y full en background (20 cores, ~5h). Gates internos del
+funnel + comparacion chains/unique_setups/COMPLETE/depth vs v1 (1460/3 COMPLETE). En curso.
 
 RAIZ CONFIRMADA Y CORREGIDA. Siguiente: FASE 2 revalidar funnel 20Y en v2 (esperado
 cambio de distribucion de chains/COMPLETE/depth por la semantica PIT).

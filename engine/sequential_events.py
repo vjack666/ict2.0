@@ -24,6 +24,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from enum import Enum
+from collections import defaultdict
+from math import ceil, floor
 from typing import Any, Iterable, Sequence
 
 import numpy as np
@@ -186,38 +188,39 @@ def _build_eq_pools(
     if len(swings) < min_touches:
         return []
     pools: list[dict[str, Any]] = []
-    used = set()
-    for i, (bi, pi) in enumerate(swings):
-        if i in used:
-            continue
-        tol = _avg_range(high, low, bi) * tol_mult
-        matching = [i]
-        for j in range(i + 1, len(swings)):
-            if j in used:
-                continue
-            bj, pj = swings[j]
-            if abs(pj - pi) <= tol:
-                matching.append(j)
-        if len(matching) >= min_touches:
-            idxs = matching[:min_touches]
-            group = [swings[j] for j in idxs]
-            # Consume all matching touches so this causal pool is not
-            # duplicated later, while keeping its fields frozen at formation.
-            for j in matching:
-                used.add(j)
-            bars = [g[0] for g in group]
-            prices = [g[1] for g in group]
-            pools.append(
-                {
+    bucket_size = 0.001
+    buckets: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    max_tolerance = 0.0
+    for order, (bi, pi) in enumerate(swings):
+        bucket = floor(pi / bucket_size)
+        span = int(ceil(max(max_tolerance, 1e-9) / bucket_size)) + 1
+        candidates = []
+        for key in range(bucket - span, bucket + span + 1):
+            for root in buckets.get(key, []):
+                if abs(pi - root["price"]) <= root["tol"]:
+                    candidates.append(root)
+        if candidates:
+            root = min(candidates, key=lambda item: item["order"])
+            root["matches"].append((bi, pi))
+            if not root["formed"] and len(root["matches"]) >= min_touches:
+                group = root["matches"][:min_touches]
+                bars = [g[0] for g in group]
+                prices = [g[1] for g in group]
+                root["formed"] = True
+                pools.append({
                     "kind": "EQH" if is_high else "EQL",
-                    "direction_target": -1 if is_high else 1,  # sweep EQH → bearish narrative
+                    "direction_target": -1 if is_high else 1,
                     "level": float(np.mean(prices)),
                     "top": float(max(prices)),
                     "bot": float(min(prices)),
-                    "form_bar": int(max(bars)),  # pool known after last touch confirmed
+                    "form_bar": int(max(bars)),
                     "touch_bars": bars,
-                }
-            )
+                })
+            continue
+        tolerance = _avg_range(high, low, bi) * tol_mult
+        root = {"order": order, "price": pi, "tol": tolerance, "matches": [(bi, pi)], "formed": False}
+        buckets[bucket].append(root)
+        max_tolerance = max(max_tolerance, tolerance)
     return pools
 
 

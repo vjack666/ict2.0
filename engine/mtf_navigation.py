@@ -19,6 +19,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from enum import Enum
+from collections import defaultdict
+from math import ceil, floor
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -317,31 +319,37 @@ def _eq_pools(
     if len(seg) < min_touches:
         return []
     zones: list[Zone] = []
-    used: set[int] = set()
-    for i, (bi, pi) in enumerate(seg):
-        if i in used:
-            continue
-        rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
-        tol = max(rng * tol_mult, 1e-9)
-        matching = [i]
-        for j in range(i + 1, len(seg)):
-            if j not in used and abs(seg[j][1] - pi) <= tol:
-                matching.append(j)
-        if len(matching) >= min_touches:
-            idxs = matching[:min_touches]
-            group = [seg[j] for j in idxs]
-            for j in matching:
-                used.add(j)
-            prices = [g[1] for g in group]
-            zones.append(
-                Zone(
+    bucket_size = 0.001
+    buckets: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    max_tolerance = 0.0
+    for order, (bi, pi) in enumerate(seg):
+        bucket = floor(pi / bucket_size)
+        span = int(ceil(max(max_tolerance, 1e-9) / bucket_size)) + 1
+        candidates = []
+        for key in range(bucket - span, bucket + span + 1):
+            for root in buckets.get(key, []):
+                if abs(pi - root["price"]) <= root["tol"]:
+                    candidates.append(root)
+        if candidates:
+            root = min(candidates, key=lambda item: item["order"])
+            root["matches"].append((bi, pi))
+            if not root["formed"] and len(root["matches"]) >= min_touches:
+                group = root["matches"][:min_touches]
+                prices = [g[1] for g in group]
+                root["formed"] = True
+                zones.append(Zone(
                     low=float(min(prices)),
                     high=float(max(prices)),
                     kind="BSL" if is_high else "SSL",
                     bar_index=int(max(g[0] for g in group)),
                     detail="EQH" if is_high else "EQL",
-                )
-            )
+                ))
+            continue
+        rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
+        tolerance = max(rng * tol_mult, 1e-9)
+        root = {"order": order, "price": pi, "tol": tolerance, "matches": [(bi, pi)], "formed": False}
+        buckets[bucket].append(root)
+        max_tolerance = max(max_tolerance, tolerance)
     return zones
 
 
@@ -473,6 +481,15 @@ class MTFNavigator:
             lb = self.config.dealing_lookback
             dh = pd.Series(high).rolling(lb, min_periods=1).max().to_numpy()
             dl = pd.Series(low).rolling(lb, min_periods=1).min().to_numpy()
+            # Equality pools are causal and frozen at their first confirmed
+            # touches. Build their publication events once; rebuilding the
+            # complete pool search inside every snapshot made a full-span
+            # state digest unnecessarily quadratic.
+            zone_events = sorted(
+                _eq_pools(sh, high, low, n - 1, is_high=True)
+                + _eq_pools(sl, high, low, n - 1, is_high=False),
+                key=lambda z: (int(z.bar_index or 0), z.kind, z.detail),
+            )
             self._pre[k] = {
                 "high": high,
                 "low": low,
@@ -486,6 +503,8 @@ class MTFNavigator:
                 "disp_recent": disp_recent,
                 "dh": dh,
                 "dl": dl,
+                "zone_events": zone_events,
+                "zone_bars": [int(z.bar_index or 0) for z in zone_events],
                 "n": n,
             }
 
@@ -515,9 +534,9 @@ class MTFNavigator:
         regime = _regime_from_structure(bias, rh, rl, float(close[i]))
 
         zones: list[Zone] = []
-        # eq zones: igual que motor original (swings filtrados <= i, O(swings^2) trivial)
-        zones.extend(_eq_pools(sh_u, high, low, i, is_high=True))
-        zones.extend(_eq_pools(sl_u, high, low, i, is_high=False))
+        # Frozen causal pool events visible at this point-in-time.
+        zi = bisect.bisect_right(pre["zone_bars"], i)
+        zones.extend(pre["zone_events"][:zi])
         zones.append(Zone(low=rl, high=rh, kind="DEALING", bar_index=i, detail="dealing_range"))
 
         last_bos_dir = int(pre["last_bos_dir"][i]) if pre["last_bos_dir"][i] != 0 else None

@@ -47,3 +47,13 @@ Resolver la metadata/procedencia sin modificar silenciosamente datasets; despué
 - `engine/mtf_navigation.py::_eq_pools` ahora congela los primeros toques confirmados y no permite que un swing futuro reescriba una zona histórica.
 - El probe histórico directo posterior a esta corrección mantuvo **5 checked, 0 violations**.
 - El replay exhaustivo regenerado mantiene `causal_replay=PASS`, con `full_prefix=UNPROVEN` hasta completar la comparación directa.
+
+## Comparador streaming FULL/PREFIX
+
+- `scripts/audit/tna_streaming_prefix_compare.py` procesa cada timeframe una sola vez en el lado PREFIX.
+- Cobertura: **124377/124377** decisiones H1, **0** divergencias de `LayerSnapshot`.
+- Puntos de control exactos de `MarketState.to_dict()`: **7/7** iguales.
+- Reporte: `reports/audits/tna_streaming_prefix_2026-08-22.json`.
+- Resultado: `full_prefix=PASS_BY_LAYER_INDUCTION`; `gate=BLOCKED` únicamente por metadata H1/H4 inconsistente.
+- Verificación exacta adicional: 9/9 secuencias de swings/zonas idénticas y 7/7 `MarketState.to_dict()` iguales en puntos de control.
+- Regresión final: **72 passed**, 1 warning Pandas no relacionado.

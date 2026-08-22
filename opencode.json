@@ -1,0 +1,39 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "context7": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "engram": {
+      "type": "local",
+      "command": [
+        "engram",
+        "mcp",
+        "--tools=agent",
+        "--project",
+        "ict2.0"
+      ],
+      "environment": {
+        "ENGRAM_PROJECT": "ict2.0"
+      },
+      "cwd": "."
+    }
+  },
+  "permission": {
+    "context7_*": "allow",
+    "engram_*": "allow"
+  },
+  "agent": {
+    "architect": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "conductor": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "scout": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "implementer": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "auditor": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "documenter": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "discoverer": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "researcher": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
+    "gentle-orchestrator": { "permission": { "context7_*": "allow", "engram_*": "allow" } }
+  }
+}

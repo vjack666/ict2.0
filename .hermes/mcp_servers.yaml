@@ -1,0 +1,35 @@
+# Shared MCP ecosystem for ICT SYSTEM.
+# Canonical project key: ict2.0 (derived from the Git remote).
+# Secrets are supplied by the process environment; none belong in this file.
+
+version: 1
+project: ict2.0
+
+mcp_servers:
+  context7:
+    enabled: true
+    transport: streamable_http
+    url: https://mcp.context7.com/mcp
+    timeout: 45000
+    headers:
+      # Optional. Set CONTEXT7_API_KEY in the environment for authenticated use.
+      CONTEXT7_API_KEY: ${CONTEXT7_API_KEY}
+
+  engram:
+    enabled: true
+    transport: stdio
+    command: engram
+    args:
+      - mcp
+      - --tools=agent
+      - --project
+      - ict2.0
+    environment:
+      ENGRAM_PROJECT: ict2.0
+    timeout: 120000
+
+policy:
+  context7: documentation_lookup_only
+  engram: shared_project_memory
+  production_engine_mutation: forbidden
+  mission_state_authority: .hermes-state/

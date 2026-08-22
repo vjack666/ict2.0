@@ -1,9 +1,9 @@
 # Plan — Hermes Mission Controller
 
 **Fecha:** 2026-08-20
-**Estado:** AUTORIZADO PARA IMPLEMENTACIÓN POR FASES
+**Estado:** AUTORIZADO PARA IMPLEMENTACIÓN POR FASES; HERMES RESERVADO AL LABORATORIO Y CODEX/EQUIPO RESERVADO A LA INFRAESTRUCTURA IA
 **SDD:** `docs/planificacion/SDD_HERMES_MISSION_CONTROLLER.md`
-**Objetivo:** convertir Hermes en un motor persistente de ejecución autónoma de misiones, usando OpenCode como runtime de agentes/modelos y sin añadir Ollama ni otro proveedor local.
+**Objetivo:** 🎯 construir la infraestructura de IA de ICT 2.0 para aprender qué señales de ICT + Wyckoff aportan valor real, combinarlas, estimar probabilidad/confianza y abstenerse cuando el mercado esté fuera de su dominio conocido. Hermes continúa exclusivamente con el laboratorio y los experimentos; Codex/equipo multiagente construye la infraestructura, consume resultados certificados y no reemplaza GEN-000.
 
 ## Resultado final
 
@@ -30,6 +30,92 @@ AND artifacts_consistent
 6. Engram es memoria; `.hermes-state` es estado operativo.
 7. Cada fase termina con tests, evidencia, worklog e índice sincronizados.
 8. No se declara `COMPLETE` por una respuesta textual de un agente.
+
+## Frontera de trabajo: laboratorio e infraestructura
+
+Este plan conserva las fases de implementación del controlador `MC-0..MC-8` y
+separa dos carriles que no deben duplicarse:
+
+| Carril | Responsable | Puede hacer | No puede hacer |
+|---|---|---|---|
+| Laboratorio y experimentos B0–B8 | Hermes | Ejecutar, observar, certificar y documentar experimentos | Delegar a Codex el mismo experimento o alterar el protocolo certificado |
+| Infraestructura IA | Codex/equipo multiagente | Construir contratos, modelos, checkpoints, fusión, confianza, OOD/drift, shadow y observabilidad | Lanzar runners de Hermes, modificar sus datasets/resultados o declarar evidencia no certificada |
+
+La infraestructura solo consume resultados certificados de Hermes mediante
+artefactos en disco. `FAIL`, `INCONCLUSIVE` y `BLOCKED` se conservan y no se
+convierten en datos de entrenamiento válidos por conveniencia.
+
+### Arquitectura objetivo de la infraestructura
+
+```text
+artefactos certificados de Hermes
+  → contrato de features ICT + Wyckoff
+  → encoders/modelos y checkpoints versionados
+  → score fusion calibrado
+  → probabilidad + confianza + abstención
+  → OOD/drift y dominio conocido
+  → logger de Shadow Mode
+  → futura propuesta advisory para bias_from_tools
+```
+
+Las señales contempladas son Swing, Liquidez, Sweep, BOS/CHOCH, FVG/OB,
+contexto HTF y Wyckoff. Su valor no se asume por estar disponible: la evidencia
+de aporte incremental proviene únicamente de los resultados certificados del
+laboratorio.
+
+### Gates de infraestructura Codex
+
+| Gate | Entrega | Criterio |
+|---|---|---|
+| `INF-0` | Adaptador de resultados certificados | Rechaza artefactos sin manifest, hash, commit o veredicto |
+| `INF-1` | Contrato de features y labels | Esquema versionado, PIT-aware y compatible con los resultados recibidos |
+| `INF-2` | Registro de modelos y checkpoints | Reproducibilidad, lineage, seed y rollback |
+| `INF-3` | Score fusion | Pesos aprendidos solo en TRAIN y evaluación OOS |
+| `INF-4` | Confianza y abstención | Umbrales calibrados; salida `ABSTAIN` fuera de confianza |
+| `INF-5` | OOD y drift | Detecta dominio no conocido y cambios de distribución |
+| `INF-6` | Shadow Mode y observabilidad | `can_trade=false`, logs completos y métricas de latencia/calibración |
+| `INF-7` | Adaptador futuro | Integración reversible y advisory en `bias_from_tools` |
+| `INF-8` | Auditoría final | Tests, artefactos consistentes y aprobación explícita |
+
+### Estado de implementación INF-0/INF-1
+
+`runtime/ai_learning/certified_artifacts.py` implementa el consumidor
+read-only y `runtime/ai_learning/` expone el contrato versionado `1.0`. El
+adaptador acepta únicamente `verdict == PASS`, valida los diez campos del
+handoff y rechaza rutas absolutas, traversal, hashes inválidos y timestamps no
+ISO-8601. La prueba de contrato está en
+`tests/test_ai_learning_certified_manifest.py`.
+
+La auditoría actual de Hermes `EXP_A1_audit.json` se rechaza deliberadamente
+por no incluir todos los campos del handoff (`experiment_id`, `scope`,
+`metrics`, `artifact_paths` y `certifier`, entre otros). No se crean aliases ni
+se modifica el artefacto del laboratorio para hacerlo pasar.
+
+El flujo del carril Codex es:
+
+```text
+leer artefacto certificado → validar contrato → construir/testear infraestructura
+→ registrar checkpoint → revisión independiente → siguiente gate
+```
+
+### Contrato de handoff Hermes → Codex
+
+Un resultado solo puede cruzar la frontera si incluye `experiment_id`,
+`verdict`, `gate`, `dataset_hash`, `code_commit`, `scope` (símbolo/TF/período),
+`metrics`, `artifact_paths`, `produced_at` y `certifier`. Codex debe conservar
+la referencia exacta al artefacto y no reescribir su contenido.
+
+### Reglas de coordinación y documentación
+
+1. Hermes continúa exclusivamente con el laboratorio y sus experimentos.
+2. Codex/equipo no modifica runners, datasets, protocolos ni resultados de
+   Hermes; solo consume artefactos certificados.
+3. Un agente no certifica su propio trabajo.
+4. Cada componente de infraestructura registra commit, configuración,
+   checkpoint, tests y evidencia.
+5. GEN-000 conserva la autoridad hasta completar todos los gates y Shadow Mode.
+6. Cada cambio actualiza el plan, el SDD, el worklog y el cuadro de Hermes;
+   `push` requiere autorización explícita.
 
 ## Fases y gates
 
@@ -156,3 +242,5 @@ necesaria. Ningún agente puede declarar completa la misión.
 | Worklog | `.hermes-worklog/<timestamp>_HERMES_MISSION_<id>.md` |
 | Tests | `tests/` |
 | Reporte de verificación | `reports/` o `.hermes-worklog/` según el gate |
+| Adaptador INF-0/contrato INF-1 | `runtime/ai_learning/certified_artifacts.py` |
+| Tests INF-0/INF-1 | `tests/test_ai_learning_certified_manifest.py` |

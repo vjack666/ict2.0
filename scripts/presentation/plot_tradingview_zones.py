@@ -30,6 +30,9 @@ OUT_ROOT = ROOT / "reports" / "charts"
 TIMEFRAMES = ("D1", "H4", "H1", "M15")
 WINDOWS = {"D1": 120, "H4": 160, "H1": 220, "M15": 260}
 CALC_WINDOWS = {"D1": 500, "H4": 1500, "H1": 5000, "M15": 12000}
+# Reserved right-side label lanes. This is intentionally generous so the last
+# candle is not pressed against the image edge and POI labels remain readable.
+RIGHT_PAD = {"D1": 32, "H4": 40, "H1": 52, "M15": 64}
 
 BG = "#0d1117"
 PANEL = "#161b22"
@@ -92,8 +95,35 @@ def _x_for_time(times: pd.Series, value: object) -> int:
     return int(times.searchsorted(ts, side="left"))
 
 
-def _format_price(value: float) -> str:
-    return f"{value:.5f}"
+def _format_price(value: float, symbol: str) -> str:
+    """Use a readable precision for each instrument on the chart."""
+
+    decimals = {"XAUUSD": 2, "USDJPY": 3}.get(symbol.upper(), 5)
+    return f"{value:.{decimals}f}"
+
+
+def _label_positions(items: list[dict], low: float, high: float) -> dict[int, float]:
+    """Spread right-margin labels vertically so nearby POIs do not overlap."""
+
+    if not items:
+        return {}
+    span = max(high - low, 1e-9)
+    gap = span * 0.042
+    floor = low + gap
+    ceiling = high - gap
+    ordered = sorted(items, key=lambda item: (float(item["desired"]), item["order"]))
+    placed: list[tuple[int, float]] = []
+    for item in ordered:
+        y = min(max(float(item["desired"]), floor), ceiling)
+        if placed:
+            y = max(y, placed[-1][1] + gap)
+        placed.append((item["order"], y))
+
+    # If the upper labels overflow, shift the whole stack back into the plot.
+    overflow = placed[-1][1] - ceiling
+    if overflow > 0:
+        placed = [(order, y - overflow) for order, y in placed]
+    return {order: y for order, y in placed}
 
 
 def _plot(symbol: str, tf: str, out_path: Path) -> dict:
@@ -113,7 +143,7 @@ def _plot(symbol: str, tf: str, out_path: Path) -> dict:
     selected_fvgs = _select_recent(fvgs, times.iloc[0], last_time, range_low, range_high)
     selected_obs = _select_recent(obs, times.iloc[0], last_time, range_low, range_high)
 
-    fig = plt.figure(figsize=(18, 9), facecolor=BG, layout="constrained")
+    fig = plt.figure(figsize=(20, 10), facecolor=BG, layout="constrained")
     grid = fig.add_gridspec(4, 1, height_ratios=[3.8, 0.8, 0.10, 0.10], hspace=0.02)
     ax = fig.add_subplot(grid[0, 0], facecolor=PANEL)
     vol_ax = fig.add_subplot(grid[1, 0], sharex=ax, facecolor=PANEL)
@@ -121,12 +151,15 @@ def _plot(symbol: str, tf: str, out_path: Path) -> dict:
     ax.axhspan(eq, range_high, color=BEAR, alpha=0.035, zorder=0)
     ax.axhspan(range_low, eq, color=BULL, alpha=0.035, zorder=0)
     ax.axhline(eq, color=MUTED, lw=0.8, ls="--", alpha=0.8, zorder=1)
-    ax.text(0.995, 0.965, f"PREMIUM  >  EQ {_format_price(eq)}", transform=ax.transAxes,
-            color=BEAR, ha="right", va="top", fontsize=8, alpha=0.85)
-    ax.text(0.995, 0.035, "DISCOUNT", transform=ax.transAxes,
-            color=BULL, ha="right", va="bottom", fontsize=8, alpha=0.85)
+    # Keep range labels on the left; the right side is reserved for POI labels.
+    ax.text(0.015, 0.965, f"PREMIUM  >  EQ {_format_price(eq, symbol)}", transform=ax.transAxes,
+            color=BEAR, ha="left", va="top", fontsize=8, alpha=0.85)
+    ax.text(0.015, 0.035, "DISCOUNT", transform=ax.transAxes,
+            color=BULL, ha="left", va="bottom", fontsize=8, alpha=0.85)
 
     # Draw zones behind candles; rectangles extend to the current chart edge.
+    label_items = []
+    label_order = 0
     for obj in selected_fvgs:
         x0 = max(0, _x_for_time(times, obj.confirmation_time))
         x1 = len(visible) - 1
@@ -136,8 +169,15 @@ def _plot(symbol: str, tf: str, out_path: Path) -> dict:
                                obj.zone_high - obj.zone_low, facecolor=color,
                                edgecolor=edge, linewidth=0.8, alpha=0.22, zorder=1))
         label = "FVG BULL" if obj.direction > 0 else "FVG BEAR"
-        ax.text(x0 + 1, obj.zone_high, f"{label} {_format_price(obj.zone_low)}–{_format_price(obj.zone_high)}",
-                color=edge, fontsize=7, va="bottom", alpha=0.95, zorder=4)
+        label_items.append({
+            "order": label_order,
+            "desired": (float(obj.zone_low) + float(obj.zone_high)) / 2.0,
+            "x0": x1,
+            "y0": (float(obj.zone_low) + float(obj.zone_high)) / 2.0,
+            "text": f"{label}  {_format_price(obj.zone_low, symbol)}–{_format_price(obj.zone_high, symbol)}",
+            "color": edge,
+        })
+        label_order += 1
 
     for obj in selected_obs:
         x0 = max(0, _x_for_time(times, obj.confirmation_time))
@@ -147,7 +187,15 @@ def _plot(symbol: str, tf: str, out_path: Path) -> dict:
                                obj.zone_high - obj.zone_low, facecolor="none",
                                edgecolor=color, linewidth=1.0, linestyle=":", alpha=0.95, zorder=2))
         label = "OB BULL" if obj.direction > 0 else "OB BEAR"
-        ax.text(x0 + 1, obj.zone_low, label, color=color, fontsize=7, va="top", alpha=0.95, zorder=4)
+        label_items.append({
+            "order": label_order,
+            "desired": (float(obj.zone_low) + float(obj.zone_high)) / 2.0,
+            "x0": x1,
+            "y0": (float(obj.zone_low) + float(obj.zone_high)) / 2.0,
+            "text": f"{label}  {_format_price(obj.zone_low, symbol)}–{_format_price(obj.zone_high, symbol)}",
+            "color": color,
+        })
+        label_order += 1
 
     # Candles and volume.
     width = 0.68
@@ -163,10 +211,35 @@ def _plot(symbol: str, tf: str, out_path: Path) -> dict:
         vol_ax.bar(i, volume, width=width, color=color, alpha=0.45, linewidth=0)
 
     ax.axhline(last_close, color=TEXT, linewidth=0.8, linestyle="--", alpha=0.9, zorder=5)
-    ax.text(len(visible) - 1, last_close, f"  {last_close:.5f}", color=TEXT,
-            fontsize=9, va="center", ha="left", zorder=6)
     ax.set_ylim(range_low - (range_high - range_low) * 0.04, range_high + (range_high - range_low) * 0.04)
-    ax.set_xlim(-2, len(visible) + 2)
+    right_pad = RIGHT_PAD[tf]
+    label_x = len(visible) + 4
+    ax.set_xlim(-2, len(visible) + right_pad)
+
+    # Put all POI labels in the reserved right margin, with a connector back
+    # to the zone. This keeps the current candle and labels visually separate.
+    plot_low, plot_high = ax.get_ylim()
+    positions = _label_positions(label_items, plot_low, plot_high)
+    for item in label_items:
+        label_y = positions[item["order"]]
+        ax.annotate(
+            item["text"],
+            xy=(item["x0"], item["y0"]),
+            xycoords="data",
+            xytext=(label_x, label_y),
+            textcoords="data",
+            color=item["color"],
+            fontsize=7.2,
+            va="center",
+            ha="left",
+            zorder=6,
+            clip_on=False,
+            arrowprops={"arrowstyle": "-", "color": item["color"], "lw": 0.65, "alpha": 0.65},
+            bbox={"boxstyle": "round,pad=0.22", "facecolor": PANEL, "edgecolor": item["color"], "alpha": 0.82, "linewidth": 0.45},
+        )
+
+    # The current price is kept in the header, avoiding another collision in
+    # the label lane beside the last candle.
     ax.set_ylabel("Precio", color=TEXT, fontsize=9)
     vol_ax.set_ylabel("Vol", color=MUTED, fontsize=8)
     vol_ax.set_xlabel("Tiempo UTC", color=TEXT, fontsize=9)
@@ -189,7 +262,7 @@ def _plot(symbol: str, tf: str, out_path: Path) -> dict:
     title = f"{symbol} · {tf} · lectura MT5 · {last_time.strftime('%Y-%m-%d %H:%M UTC')}"
     fig.suptitle(title, color=TEXT, fontsize=14, x=0.08, ha="left", y=0.98)
     ax.set_title(
-        f"Trend motor: {trend}  |  Close: {_format_price(last_close)}  |  EQ visible: {_format_price(eq)}  |  READ ONLY",
+        f"Trend motor: {trend}  |  Close: {_format_price(last_close, symbol)}  |  EQ visible: {_format_price(eq, symbol)}  |  READ ONLY",
         color=MUTED, fontsize=9, loc="left", pad=8,
     )
     fig.text(0.08, 0.015, "FVG rellena · OB contorno punteado · EQ línea discontinua · zonas visuales, no entrada",

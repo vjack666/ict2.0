@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B4",
+  "role": "INCREMENTAL_D1_AND_H4_TOPDOWN_BIAS_FILTER (subconjunto filtrado de B1)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-22T00:13:03.766989+00:00",
+  "gate": {
+    "n_ge_30": true,
+    "expectancy_gt_0": true,
+    "ci_lower_gt_0": true
+  },
+  "incremental_hypothesis": {
+    "description": "HTF aporta si delta expectancy IC95 excluye 0 frente a B1.",
+    "delta_expectancy": 0.1029,
+    "delta_expectancy_ci95": [
+      -0.2042,
+      0.4056
+    ],
+    "htf_contributes": false,
+    "verdict": "FAIL_INCREMENTAL"
+  },
+  "protocol": {
+    "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado 2019-2024 (PIT-estable DENTRO del rango). Los sesgos D1 y H4 se obtienen de build_features(D1)['trend'] y build_features(H4)['trend'], columnas PIT-verificadas (FULL==PREFIX, 0 violaciones): se lee el valor en la ultima vela D1/H4 cerrada <= t del anchor H1. Sin leakage futuro.",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true,
+      "origin": "csv",
+      "htf_d1_source": "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+      "htf_d1_dataset_hash": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+      "htf_h4_source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+      "htf_h4_dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "note": "Dataset canonico H1 verificado por SHA256; mismo motor/commit que B1/B2/B3."
+    }
+  },
+  "verdict": "PASS",
+  "rationale": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_R)>0 AND bootstrap CI95 lower>0; BLOCKED si n_closed<30; FAIL en otro caso. El veredicto incremental ('HTF aporta') es independiente: requiere delta expectancy IC95 excluya 0 frente a B1 (FAIL_INCREMENTAL si no)."
+}

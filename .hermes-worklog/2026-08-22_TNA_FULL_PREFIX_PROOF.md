@@ -41,3 +41,9 @@ Resolver la metadata/procedencia sin modificar silenciosamente datasets; despué
 - `causal_replay=PASS`; la comparación directa continúa en **5/5** puntos y por eso `full_prefix=UNPROVEN`.
 - Artefacto: `reports/audits/tna_full_prefix_exhaustive_2026-08-22.json`.
 - El gate continúa bloqueado por metadata inconsistente y por falta de comparación directa de cada prefijo.
+
+## Corrección MTF adicional
+
+- `engine/mtf_navigation.py::_eq_pools` ahora congela los primeros toques confirmados y no permite que un swing futuro reescriba una zona histórica.
+- El probe histórico directo posterior a esta corrección mantuvo **5 checked, 0 violations**.
+- El replay exhaustivo regenerado mantiene `causal_replay=PASS`, con `full_prefix=UNPROVEN` hasta completar la comparación directa.

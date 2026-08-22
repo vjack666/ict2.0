@@ -306,6 +306,13 @@ def _eq_pools(
     min_touches: int = 2,
     tol_mult: float = 0.25,
 ) -> list[Zone]:
+    """Build EQ pools from the first confirmed touches only.
+
+    A pool becomes visible when its first ``min_touches`` chronological
+    swings are available.  Later swings that match the same level are
+    consumed but do not rewrite the historical pool, which keeps FULL and
+    PREFIX snapshots identical at every decision bar.
+    """
     seg = [(b, p) for b, p in swings if b <= upto]
     if len(seg) < min_touches:
         return []
@@ -316,14 +323,14 @@ def _eq_pools(
             continue
         rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
         tol = max(rng * tol_mult, 1e-9)
-        group = [(bi, pi)]
-        idxs = [i]
+        matching = [i]
         for j in range(i + 1, len(seg)):
-            if abs(seg[j][1] - pi) <= tol:
-                group.append(seg[j])
-                idxs.append(j)
-        if len(group) >= min_touches:
-            for j in idxs:
+            if j not in used and abs(seg[j][1] - pi) <= tol:
+                matching.append(j)
+        if len(matching) >= min_touches:
+            idxs = matching[:min_touches]
+            group = [seg[j] for j in idxs]
+            for j in matching:
                 used.add(j)
             prices = [g[1] for g in group]
             zones.append(

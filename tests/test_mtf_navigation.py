@@ -10,6 +10,7 @@ from engine.mtf_navigation import (
     NavQuestion,
     StructureBias,
     TimeframeLayer,
+    _eq_pools,
 )
 
 
@@ -86,3 +87,12 @@ def test_full_prefix_market_state_is_identical_at_every_decision():
         assert full.navigate(decision_time, exec_tf="H1").to_dict() == pref.navigate(
             decision_time, exec_tf="H1"
         ).to_dict(), f"FULL-vs-PREFIX divergence at H1 bar {i}"
+
+
+def test_eq_pool_is_frozen_at_first_confirmed_touches():
+    high = np.full(40, 1.1)
+    low = np.full(40, 1.0)
+    swings = [(10, 1.1000), (20, 1.1000), (30, 1.1000)]
+    zones = _eq_pools(swings, high, low, 39, is_high=True)
+    assert len(zones) == 1
+    assert zones[0].bar_index == 20

@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A2FIX",
+  "role": "TP_LIQUIDEZ_HTF_REAL (variante de A1/B1: SOLO cambia el TP del tratamiento)",
+  "hypothesis": "H_A2: EURUSD H1 depth>=4, defensa pareja (SL 2 terminos), MISMO protocolo A1/B1 pero el TP del tratamiento usa liquidez HTF real (BSL/SSL H4/D1 via detect_liquidity) en direccion del trade; fallback measured_projection si no hay liquidez en rango. Metrica primaria: expectancy (mean_R). Gate: n_closed>=30. Delta vs A1/B1 (+0.250).",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": "Dataset canonico H1 2019-2024; TP HTF de H4/D1 derivado de CSV canonico."
+  },
+  "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "code_commit_head": "ff6ed31530e646482d6283f1b9499f9010b5d3ba",
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "depth_min": 4,
+    "anchor": "STRUCTURE_bar_close (depth>=4)",
+    "sl_rule": "min(sweep_wick, broken_swing)-buffer (defensa pareja, 2 terminos) [IDENTICO A1/B1]",
+    "tp_rule": "HTF real liquidity BSL/SSL (H4/D1) via detect_liquidity, as-of closed HTF bar; fallback measured_projection si no hay liquidez valida en rango",
+    "htf_tp_field": "bsl_top(long)/ssl_bot(short) = borde exterior de la zona de liquidez",
+    "tp_baseline_rule": "measured_projection (IDENTICO A1/B1)",
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "pairing_seed": 4242,
+    "paired_sweep_defense": true,
+    "htf_context": true,
+    "htf_frames": [
+      "H4",
+      "D1"
+    ]
+  },
+  "fecha": "2026-08-22T00:56:43.058860+00:00",
+  "treatment": {
+    "n_closed": 166,
+    "n_trades": 215,
+    "n_open": 49,
+    "mean_R": -0.3864,
+    "median_R": -1.0,
+    "win_rate": 0.2349,
+    "profit_factor": 0.4949,
+    "expectancy": -0.3864,
+    "drawdown": 63.1474,
+    "wilson_95": [
+      0.1769,
+      0.305
+    ],
+    "bootstrap_ci_95": [
+      -0.5694919880899674,
+      -0.18982988321927705
+    ]
+  },
+  "baseline": {
+    "n_closed": 205,
+    "n_trades": 215,
+    "n_open": 3,
+    "mean_R": 0.2336,
+    "median_R": -1.0,
+    "win_rate": 0.4439,
+    "profit_factor": 1.42,
+    "expectancy": 0.2336,
+    "drawdown": 15.4789,
+    "wilson_95": [
+      0.3775,
+      0.5123
+    ],
+    "bootstrap_ci_95": [
+      -0.16485403403841842,
+      0.8672308236709824
+    ]
+  },
+  "htf_tp_stats": {
+    "tp_source_counts": {
+      "htf_d1": 105,
+      "fallback_measured": 56,
+      "htf_h4": 54
+    },
+    "n_treatment": 215,
+    "n_baseline": 215,
+    "n_paired_offsets": {
+      "1": 109,
+      "-1": 106
+    }
+  },
+  "delta_vs_A1B1": {
+    "reference_expectancy": 0.25,
+    "reference_label": "A1/B1 (EXP_B1 treatment mean_R=0.2499)",
+    "delta_expectancy": -0.6364
+  },
+  "control_reference": {
+    "expectancy_treatment": -0.3864,
+    "expectancy_baseline": 0.2336,
+    "win_rate_treatment": 0.2349,
+    "win_rate_baseline": 0.4439,
+    "delta_expectancy_treatment_minus_baseline": -0.62,
+    "delta_win_rate_treatment_minus_baseline": -0.209
+  },
+  "motor_summary": {
+    "n_chains": 3478,
+    "by_depth": {
+      "1": 1312,
+      "2": 1697,
+      "3": 213,
+      "4": 229,
+      "5": 3,
+      "6": 2,
+      "7": 22
+    },
+    "by_status": {
+      "EXPIRED": 3456,
+      "COMPLETE": 22
+    },
+    "complete_bull": 9,
+    "complete_bear": 13,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "depth_min": 4,
+    "n": 256,
+    "by_status": {
+      "EXPIRED": 234,
+      "COMPLETE": 22
+    }
+  },
+  "elapsed_s": 15.85,
+  "interpretation_caveat": "detect_liquidity (detectors/liquidity.py) agrupa swings en zonas y hace forward-fill de la ULTIMA zona global (visible=2) a todas las barras posteriores; por tanto el BSL/SSL HTF devuelto es, en la practica, un nivel historico ESTATICO (p.ej. D1 bsl_top ~1.10089 para todo 2019-2023), NO liquidez dinamica cerca del precio. El codigo filtra estrictamente v>entry (long) / v<entry (short) y hace fallback a measured_projection cuando el nivel estatico queda del lado equivocado del precio. Consecuencia: en tramos con precio sobre el nivel estatico el long TP cae en fallback; en tramos bajo el nivel, el TP HTF queda ~1000 pips lejos -> baja tasa de acierto y muchos OPEN (49). Esto es propiedad INTRINSECA del detector usado (fiel a 'via detect_liquidity'), no una desviacion de protocolo. Un TP HTF mas cercano al precio requeriria un detector de liquidez por-barra (no ventana global); eso excederia 'via detect_liquidity' y se documentaria como mejora futura."
+}

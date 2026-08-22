@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_P2ALT",
+  "role": "P2_INCREMENTAL \u2014 HTF (H4) como FILTRO DE ESTRUCTURA sobre anchors LTF de B1",
+  "policy": "STUDY_OBJECT_EVIDENCE_NOT_APPROVED_SIGNAL",
+  "hypothesis": "H_P2ALT: filtrar los anchors LTF (H1 depth>=4, STRUCTURE close) exigiendo alineacion con la direccion de la ultima ruptura de estructura H4 (BOS/CHoCH) aporta INFORMACION INCREMENTAL sobre EXP_B1. Metrica primaria: expectancy (mean_R). Criterio de 'HTF aporta': IC95 del delta de expectancy vs B1 excluye 0. SL/TP/horizonte/tie_policy/bootstrap IDENTICOS a B1; SOLO cambia el filtro.",
+  "comparator": {
+    "experiment": "EXP_B1",
+    "artifact": "reports/audits/EXP_B1_raw.json",
+    "stored_expectancy": 0.2499,
+    "stored_n_closed": 211,
+    "reproduction_in_this_run": {
+      "b1_stored": {
+        "n_trades": 215,
+        "n_closed": 211,
+        "mean_R": 0.2499,
+        "win_rate": 0.5498
+      },
+      "b1_recomputed": {
+        "n_trades": 215,
+        "n_closed": 211,
+        "mean_R": 0.2499,
+        "win_rate": 0.5498
+      },
+      "exact_match": true
+    }
+  },
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": "Dataset canonico H1 2019-2024 (exec TF). Contexto HTF = H4 del mismo dataset Dukascopy; D1 NO usado."
+  },
+  "dataset_htf": {
+    "exec_tf_context": "H4",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+    "rows": 32133,
+    "dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+    "median_bar_delta_hours": 4.0,
+    "origin": "csv"
+  },
+  "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+  "dataset_hash_h4": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "depth_min": 4,
+    "anchor": "STRUCTURE_bar_close (depth>=4)",
+    "sl_rule": "min(sweep_wick, broken_swing)-buffer (IDENTICO a B1, nunca ATR)",
+    "tp_rule": "measured_projection (fallback sancionado, IDENTICO a B1)",
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "pairing_seed": 4242,
+    "htf_context": true,
+    "htf_filter": {
+      "name": "HTF_H4_STRUCTURE_BREAK_ALIGNMENT",
+      "rule": "keep anchor iff htf_break_dir(last CLOSED H4 bar at entry) == anchor.direction",
+      "htf_break_dir": "forward-filled direction of the last H4 structural break; choch_signal CHOCH_BULLISH/BEARISH -> +1/-1, else bos_direction BULLISH/BEARISH -> +1/-1; CHoCH precedence on same bar",
+      "source_columns": [
+        "bos_direction",
+        "choch_signal"
+      ],
+      "htf_tf": "H4",
+      "mapping": "PIT: H4 bar labeled T usable iff T+4h <= H1 entry close (t+1h); searchsorted on H4 close-times; weekend gaps only add conservatism",
+      "frozen_before_results": true
+    },
+    "fvg_random_baseline_run": false
+  },
+  "fecha": "2026-08-22T01:36:45.695077+00:00",
+  "treatment": {
+    "n_closed": 116,
+    "n_trades": 119,
+    "n_open": 3,
+    "mean_R": 0.3402,
+    "median_R": 1.036,
+    "win_rate": 0.5948,
+    "profit_factor": 1.8396,
+    "expectancy": 0.3402,
+    "drawdown": 4.9302,
+    "wilson_95": [
+      0.5038,
+      0.6797
+    ],
+    "bootstrap_ci_95": [
+      0.12756856465571828,
+      0.5400033204536264
+    ]
+  },
+  "b1_recomputed_unfiltered": {
+    "n_closed": 211,
+    "n_trades": 215,
+    "n_open": 4,
+    "mean_R": 0.2499,
+    "median_R": 1.0,
+    "win_rate": 0.5498,
+    "profit_factor": 1.555,
+    "expectancy": 0.2499,
+    "drawdown": 6.233,
+    "wilson_95": [
+      0.4823,
+      0.6154
+    ],
+    "bootstrap_ci_95": [
+      0.09397479969551131,
+      0.4078114120711996
+    ]
+  },
+  "delta_vs_B1": {
+    "metric": "expectancy (mean_R)",
+    "p2alt_expectancy": 0.3402,
+    "b1_expectancy_recomputed": 0.2499,
+    "b1_expectancy_stored": 0.2499,
+    "delta_expectancy": 0.0903,
+    "delta_expectancy_vs_stored_B1": 0.0903,
+    "delta_ci_95": [
+      -0.044975,
+      0.240387
+    ],
+    "delta_ci_excludes_zero": false,
+    "htf_aporta": false,
+    "bootstrap": {
+      "delta_ci_95": [
+        -0.044975,
+        0.240387
+      ],
+      "delta_bootstrap_mean": 0.092358,
+      "n_resamples": 2000,
+      "n_valid_resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id",
+      "method": "paired cluster bootstrap over the FULL B1 anchor set; per resample delta = mean_R(HTF-filtered subset) - mean_R(all anchors)",
+      "excludes_zero": false,
+      "delta_point": 0.0903
+    },
+    "delta_win_rate": 0.045
+  },
+  "filter_effect": {
+    "n_anchors_total": 215,
+    "n_anchors_kept": 119,
+    "n_anchors_rejected": 96,
+    "keep_rate": 0.5535,
+    "kept_by_direction": {
+      "long": 56,
+      "short": 63
+    },
+    "rejected_reason_counts": {
+      "htf_dir_opposite": 96,
+      "htf_dir_undefined": 0
+    },
+    "h4_break_dir_bar_counts": {
+      "bull": 16107,
+      "bear": 16017,
+      "none": 9
+    },
+    "htf_mapping_lag_hours": [
+      0.0,
+      723.0
+    ],
+    "unmapped_h1_bars": 0,
+    "htf_staleness": {
+      "definition": "anchor whose mapped H4 context is older than one H4 bar (lag>8h)",
+      "n_anchors_stale": 0,
+      "n_kept_stale": 0,
+      "n_rejected_stale": 0,
+      "max_anchor_lag_hours": 3.0,
+      "median_anchor_lag_hours": 2.0
+    }
+  },
+  "h4_coverage_defect": {
+    "gaps_gt_72h": [
+      {
+        "ends_at": "2023-05-01 00:00:00",
+        "delta_hours": 724.0
+      }
+    ],
+    "impact": "A gap in the H4 series makes the PIT mapping return an OLDER closed H4 bar (STALE context). It can never leak future information; it can only degrade the filter's freshness. Reported, not corrected: correcting it would be a post-result parameter/data change."
+  },
+  "subset_bootstrap_check": {
+    "n_closed": 116,
+    "mean_r_ci": [
+      0.12756856465571828,
+      0.5400033204536264
+    ],
+    "win_rate_ci": [
+      0.5,
+      0.6810344827586207
+    ],
+    "n_resamples": 2000,
+    "seed": 42,
+    "n_clusters": 116
+  },
+  "motor_summary": {
+    "n_chains": 3478,
+    "by_depth": {
+      "1": 1312,
+      "2": 1697,
+      "3": 213,
+      "4": 229,
+      "5": 3,
+      "6": 2,
+      "7": 22
+    },
+    "by_status": {
+      "EXPIRED": 3456,
+      "COMPLETE": 22
+    },
+    "complete_bull": 9,
+    "complete_bear": 13,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "depth_min": 4,
+    "n": 256,
+    "by_status": {
+      "EXPIRED": 234,
+      "COMPLETE": 22
+    }
+  },
+  "pit_probe": {
+    "probe": "P2ALT_H4_PIT_FULL_VS_PREFIX",
+    "h4_rows": 32133,
+    "cuts": [
+      3213,
+      9639,
+      16066,
+      22493,
+      28919
+    ],
+    "per_cut_prefix_wide_violations": [
+      {
+        "cut": 3213,
+        "bos_direction": 0,
+        "choch_signal": 0,
+        "htf_break_dir": 0
+      },
+      {
+        "cut": 9639,
+        "bos_direction": 0,
+        "choch_signal": 0,
+        "htf_break_dir": 0
+      },
+      {
+        "cut": 16066,
+        "bos_direction": 0,
+        "choch_signal": 0,
+        "htf_break_dir": 0
+      },
+      {
+        "cut": 22493,
+        "bos_direction": 0,
+        "choch_signal": 0,
+        "htf_break_dir": 0
+      },
+      {
+        "cut": 28919,
+        "bos_direction": 0,
+        "choch_signal": 0,
+        "htf_break_dir": 0
+      }
+    ],
+    "totals": {
+      "bos_direction": 0,
+      "choch_signal": 0,
+      "htf_break_dir": 0
+    },
+    "n_cuts": 5,
+    "cuts_with_violations": 0,
+    "pit_stable": true,
+    "elapsed_s": 184.67
+  },
+  "losers_removed": false,
+  "parameters_changed_after_seeing_results": false,
+  "elapsed_s": 60.4
+}

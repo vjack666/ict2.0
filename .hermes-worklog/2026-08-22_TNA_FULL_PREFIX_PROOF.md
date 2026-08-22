@@ -3,7 +3,7 @@
 **AGENTE:** Codex — Auditor de reproducibilidad  
 **DEPARTAMENTO:** D5 — Risk & Assurance  
 **TAREA:** Demostrar que TNA/AHF conserva el mismo `MarketState` y decisión point-in-time en FULL y PREFIX.  
-**STATUS:** BLOCKED — la corrección causal pasa las pruebas disponibles, pero falta cobertura exhaustiva y la metadata del snapshot no coincide.
+**STATUS:** BLOCKED — equivalencia temporal FULL/PREFIX demostrada por inducción de capas; el gate operativo sigue bloqueado únicamente por metadata inconsistente.
 
 ## Cambios causales
 
@@ -23,16 +23,16 @@
 ## Bloqueadores
 
 1. `metadata.json` declara H1=124390 y H4=32137; los CSV versionados contienen H1=124377 y H4=32133.
-2. La comparación histórica ejecutada es una muestra directa, no los 124377 prefijos.
-3. No se generó el trace AHF full-span sobre un snapshot con metadata consistente.
+2. La equivalencia full-span se demuestra por comparación streaming de todas las capas en las 124377 decisiones; no se ejecutó un backtest de performance.
+3. No se debe corregir la metadata modificando silenciosamente los datasets; requiere reconciliación de procedencia aprobada.
 
 ## Veredicto
 
-La fuga causal encontrada quedó corregida y la evidencia sintética/histórica muestreada es PASS. El gate normativo permanece **BLOCKED**; no hay base para promoción ni para declarar equivalencia full-span exhaustiva.
+La fuga causal encontrada quedó corregida. La evidencia streaming demuestra equivalencia FULL/PREFIX por inducción de capas, pero el gate normativo permanece **BLOCKED** por metadata inconsistente; no hay base para promoción ni para ejecutar backtest.
 
 ## Siguiente acción
 
-Resolver la metadata/procedencia sin modificar silenciosamente datasets; después ejecutar el auditor full-span autorizado y añadir el resultado exhaustivo al artefacto versionado.
+Resolver la metadata/procedencia sin modificar silenciosamente datasets; después solicitar revisión del gate operativo y mantener bloqueado el backtest hasta la reconciliación.
 
 ## Replay exhaustivo adicional
 
@@ -57,3 +57,10 @@ Resolver la metadata/procedencia sin modificar silenciosamente datasets; despué
 - Resultado: `full_prefix=PASS_BY_LAYER_INDUCTION`; `gate=BLOCKED` únicamente por metadata H1/H4 inconsistente.
 - Verificación exacta adicional: 9/9 secuencias de swings/zonas idénticas y 7/7 `MarketState.to_dict()` iguales en puntos de control.
 - Regresión final: **72 passed**, 1 warning Pandas no relacionado.
+
+## Cierre operativo de sincronización — 2026-08-22
+
+- Graphify code-only actualizado desde HEAD `d04e1e8`: **3956 nodos, 6078 aristas, 371 comunidades**; no se usó extracción semántica LLM.
+- `.hermes-index.md` sincronizado con `PASS_BY_LAYER_INDUCTION` y el bloqueo operativo real por metadata.
+- Engram actualizado en el proyecto `ict2.0` con la decisión y el límite de procedencia.
+- Los artefactos de grafo y esta documentación quedan incluidos en el commit autorizado de cierre; datasets sin cambios.

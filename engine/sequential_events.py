@@ -144,7 +144,12 @@ def _avg_range(high: np.ndarray, low: np.ndarray, i: int, period: int = 14) -> f
 def _causal_swings(
     high: np.ndarray, low: np.ndarray, left: int
 ) -> tuple[list[tuple[int, float]], list[tuple[int, float]]]:
-    """Pivots confirmados solo con velas a la derecha ya cerradas (sin center)."""
+    """Pivots publicados en la barra de confirmación, no en la de formación.
+
+    A pivot at ``j`` is only observable after the right-hand window closes at
+    ``conf = j + left``.  Returning ``conf`` keeps the sequential engine
+    invariant between a full dataset and any prefix ending at ``conf``.
+    """
     n = len(high)
     sh: list[tuple[int, float]] = []
     sl: list[tuple[int, float]] = []
@@ -156,9 +161,9 @@ def _causal_swings(
         w_h = high[j - left : j + left + 1]
         w_l = low[j - left : j + left + 1]
         if high[j] >= w_h.max():
-            sh.append((j, float(high[j])))
+            sh.append((conf, float(high[j])))
         if low[j] <= w_l.min():
-            sl.append((j, float(low[j])))
+            sl.append((conf, float(low[j])))
     return sh, sl
 
 
@@ -171,7 +176,13 @@ def _build_eq_pools(
     tol_mult: float,
     min_touches: int,
 ) -> list[dict[str, Any]]:
-    """Clusters EQH/EQL: ≥ min_touches swings within tolerance."""
+    """Build EQH/EQL pools causally from the first confirmed touches.
+
+    A global look-ahead implementation can let later swings join an earlier
+    group and change its ``form_bar`` or level.  The pool is therefore frozen
+    when the first ``min_touches`` chronological matches are available;
+    later matching touches are consumed but never rewrite that pool.
+    """
     if len(swings) < min_touches:
         return []
     pools: list[dict[str, Any]] = []
@@ -180,15 +191,19 @@ def _build_eq_pools(
         if i in used:
             continue
         tol = _avg_range(high, low, bi) * tol_mult
-        group = [(bi, pi)]
-        idxs = [i]
+        matching = [i]
         for j in range(i + 1, len(swings)):
+            if j in used:
+                continue
             bj, pj = swings[j]
             if abs(pj - pi) <= tol:
-                group.append((bj, pj))
-                idxs.append(j)
-        if len(group) >= min_touches:
-            for j in idxs:
+                matching.append(j)
+        if len(matching) >= min_touches:
+            idxs = matching[:min_touches]
+            group = [swings[j] for j in idxs]
+            # Consume all matching touches so this causal pool is not
+            # duplicated later, while keeping its fields frozen at formation.
+            for j in matching:
                 used.add(j)
             bars = [g[0] for g in group]
             prices = [g[1] for g in group]

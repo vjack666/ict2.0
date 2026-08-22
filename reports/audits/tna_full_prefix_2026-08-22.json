@@ -1,0 +1,47 @@
+{
+  "audit": "TNA_FULL_PREFIX",
+  "generated_at": "2026-08-22T17:12:11-05:00",
+  "code_base_before_changes": "f453bf2a9d35997cec774048a7ead25237399ac9",
+  "coverage": "HISTORICAL_SAMPLE",
+  "dataset": {
+    "path": "datasets/eurusd_dukascopy_20y",
+    "h1_rows": 124377,
+    "h4_rows": 32133,
+    "d1_rows": 6258,
+    "manifest_sha256_matches_git_blobs": true,
+    "working_tree_line_endings": "CRLF via core.autocrlf=true",
+    "metadata_declared_rows": {
+      "H1": 124390,
+      "H4": 32137,
+      "D1": 6258
+    },
+    "metadata_consistent": false
+  },
+  "historical_prefix_probe": {
+    "command": "$env:TNA_PREFIX_SAMPLES='5'; C:\\Python314\\python.exe -m scripts.diag_causal_violation",
+    "decision_indices": [71981, 77791, 85125, 111568, 117488],
+    "decision_times": [
+      "2017-07-06 20:00:00",
+      "2018-06-13 13:00:00",
+      "2019-08-16 17:00:00",
+      "2023-12-08 21:00:00",
+      "2024-11-21 17:00:00"
+    ],
+    "checked": 5,
+    "violations": 0,
+    "result": "PASS_SAMPLE"
+  },
+  "synthetic_regression": {
+    "command": "C:\\Python314\\python.exe -m pytest tests -q",
+    "passed": 70,
+    "failed": 0,
+    "result": "PASS"
+  },
+  "gate": "BLOCKED",
+  "blocking_reasons": [
+    "metadata.json row counts do not match the versioned CSV snapshot",
+    "historical proof is sampled, not an exhaustive comparison of every H1 prefix",
+    "full-span AHF trace artifact has not been generated from a provenance-consistent snapshot"
+  ],
+  "policy": "No promotion, backtest, PnL or dataset modification"
+}

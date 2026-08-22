@@ -103,3 +103,24 @@ def test_no_future_pool_in_past_decision():
     for item in a_done:
         # direction match with some chain that shares first stages
         assert any(item[0] == x[0] for x in b_pref) or len(a_done) == 0
+
+
+def test_sequence_history_is_full_prefix_invariant():
+    import numpy as np
+
+    rng = np.random.default_rng(44)
+    n = 120
+    close = 1.1 + np.cumsum(rng.normal(0, 0.0005, n))
+    high = close + rng.uniform(0.0002, 0.0008, n)
+    low = close - rng.uniform(0.0002, 0.0008, n)
+    open_ = close + rng.normal(0, 0.0001, n)
+    df = pd.DataFrame({"time": range(n), "open": open_, "high": high, "low": low, "close": close})
+    cfg = SeqConfig(max_active_chains=10_000)
+    _, full_depth, full_complete = run_sequential(df, cfg, return_history=True)
+
+    for end in range(40, n + 1, 4):
+        _, prefix_depth, prefix_complete = run_sequential(
+            df.iloc[:end].reset_index(drop=True), cfg, return_history=True
+        )
+        assert np.array_equal(prefix_depth, full_depth[:end])
+        assert np.array_equal(prefix_complete, full_complete[:end])

@@ -6,6 +6,7 @@ import pandas as pd
 
 from engine.mtf_navigation import (
     MTFNavigator,
+    NavigatorConfig,
     NavQuestion,
     StructureBias,
     TimeframeLayer,
@@ -65,3 +66,23 @@ def test_missing_layer_marks_incomplete():
     nav = MTFNavigator({"H1": h1})  # no D1/H4
     state = nav.navigate(decision_time=h1["time"].iloc[-1], exec_tf="H1")
     assert state.status == "INCOMPLETE"
+
+
+def test_full_prefix_market_state_is_identical_at_every_decision():
+    """The complete MarketState must not depend on bars after the decision."""
+    frames = {tf: _ohlc(140, seed=100 + i) for i, tf in enumerate(("D1", "H4", "H1"))}
+    full = MTFNavigator(frames, NavigatorConfig(precompute_sequences=True, sequence_tf="H1"))
+
+    for i in range(30, len(frames["H1"])):
+        decision_time = frames["H1"]["time"].iloc[i]
+        prefix = {
+            tf: df.loc[df["time"] <= decision_time].copy().reset_index(drop=True)
+            for tf, df in frames.items()
+        }
+        pref = MTFNavigator(
+            prefix,
+            NavigatorConfig(precompute_sequences=True, sequence_tf="H1"),
+        )
+        assert full.navigate(decision_time, exec_tf="H1").to_dict() == pref.navigate(
+            decision_time, exec_tf="H1"
+        ).to_dict(), f"FULL-vs-PREFIX divergence at H1 bar {i}"

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import sys
 import time
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -18,7 +19,7 @@ import pandas as pd
 import engine.mtf_navigation as M
 from audits.codigo.mtf_seq_funnel import _load_tf
 
-N_SAMPLES = 15
+N_SAMPLES = int(os.environ.get("TNA_PREFIX_SAMPLES", "15"))
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -42,6 +43,8 @@ def dict_diff(a, b, path=""):
 
 def layer_diff(name, la, lb):
     if la is None or lb is None:
+        if la is None and lb is None:
+            return []
         return [(f"{name}.EXISTS", la is not None, lb is not None)]
     da = la.to_dict()
     db = lb.to_dict()
@@ -68,7 +71,12 @@ def main():
         checked += 1
         t = times.iloc[i]
         st_full = nav_full.navigate(t, exec_tf="H1")
-        trunc = {tf: frames[tf].iloc[: i + 1].copy().reset_index(drop=True) for tf in frames}
+        # A PREFIX is temporal, not the same row number across timeframes.
+        # Each layer must stop at the decision timestamp independently.
+        trunc = {
+            tf: df.loc[df["time"] <= t].copy().reset_index(drop=True)
+            for tf, df in frames.items()
+        }
         nav_pref = M.MTFNavigator(trunc, M.NavigatorConfig(precompute_sequences=True, sequence_tf="H1"))
         st_pref = nav_pref.navigate(t, exec_tf="H1")
 

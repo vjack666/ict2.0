@@ -254,6 +254,12 @@ def _asof_index(df: pd.DataFrame, decision_time: Any) -> int | None:
 
 
 def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[list[tuple[int, float]], list[tuple[int, float]]]:
+    """Return swings at their confirmation bar, never at formation time.
+
+    The pivot at ``j`` needs the right-hand window through ``conf`` to be
+    closed before it is observable.  Publishing it at ``j`` makes a full
+    dataset expose future-confirmed structure to a prefix ending at ``j``.
+    """
     n = len(high)
     sh, sl = [], []
     for conf in range(left * 2, n):
@@ -261,9 +267,9 @@ def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[li
         if j < left:
             continue
         if high[j] >= high[j - left : j + left + 1].max():
-            sh.append((j, float(high[j])))
+            sh.append((conf, float(high[j])))
         if low[j] <= low[j - left : j + left + 1].min():
-            sl.append((j, float(low[j])))
+            sl.append((conf, float(low[j])))
     return sh, sl
 
 

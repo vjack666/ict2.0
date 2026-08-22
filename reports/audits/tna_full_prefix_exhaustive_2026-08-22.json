@@ -1,0 +1,63 @@
+{
+  "audit": "TNA_FULL_PREFIX_EXHAUSTIVE",
+  "generated_at": "2026-08-22T22:19:58.543653+00:00",
+  "coverage": "ALL_H1_DECISIONS_CAUSAL_REPLAY",
+  "dataset": {
+    "path": "datasets\\eurusd_dukascopy_20y",
+    "sha256_manifest_matches_git_blobs": true,
+    "metadata": {
+      "actual_rows": {
+        "D1": 6258,
+        "H4": 32133,
+        "H1": 124377
+      },
+      "declared_rows": {
+        "D1": 6258,
+        "H4": 32137,
+        "H1": 124390
+      },
+      "consistent": false
+    },
+    "git_blob_hashes": {
+      "EURUSD_D1.csv": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+      "EURUSD_H4.csv": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+      "EURUSD_H1.csv": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139"
+    }
+  },
+  "checks": {
+    "swing_publications": {
+      "publication_count": 33198,
+      "failures": [],
+      "failure_count": 0,
+      "pass": true
+    },
+    "sequence_history": {
+      "bars_checked": 124377,
+      "chain_count": 1427,
+      "depth_history_equal_reconstruction": true,
+      "complete_history_equal_reconstruction": true,
+      "pass": true
+    },
+    "decision_cutoffs": {
+      "decisions_checked": 124377,
+      "cutoff_failures": 0,
+      "pass": true
+    }
+  },
+  "direct_prefix": {
+    "checked": 5,
+    "violations": 0,
+    "exhaustive": false,
+    "result": "INCOMPLETE"
+  },
+  "equivalence": {
+    "causal_replay": "PASS",
+    "full_prefix": "UNPROVEN"
+  },
+  "gate": "BLOCKED",
+  "blocking_reasons": [
+    "metadata_inconsistent",
+    "direct_prefix_comparison_not_exhaustive"
+  ],
+  "policy": "No dataset modification, no PnL, no promotion"
+}

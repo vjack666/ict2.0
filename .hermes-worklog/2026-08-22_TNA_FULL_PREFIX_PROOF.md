@@ -33,3 +33,11 @@ La fuga causal encontrada quedó corregida y la evidencia sintética/histórica 
 ## Siguiente acción
 
 Resolver la metadata/procedencia sin modificar silenciosamente datasets; después ejecutar el auditor full-span autorizado y añadir el resultado exhaustivo al artefacto versionado.
+
+## Replay exhaustivo adicional
+
+- `scripts/audit/tna_full_prefix_exhaustive.py` cubrió las **124377** decisiones H1.
+- Validó **33198** publicaciones de swings, **1427** cadenas secuenciales y **0** fallos de cutoff temporal.
+- `causal_replay=PASS`; la comparación directa continúa en **5/5** puntos y por eso `full_prefix=UNPROVEN`.
+- Artefacto: `reports/audits/tna_full_prefix_exhaustive_2026-08-22.json`.
+- El gate continúa bloqueado por metadata inconsistente y por falta de comparación directa de cada prefijo.

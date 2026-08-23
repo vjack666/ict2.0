@@ -4,7 +4,7 @@
 **AGENTE:** Codex / Hermes  
 **DEPARTAMENTO:** D5 CRO/Assurance + D7 Delivery/Interfaces  
 **TAREA:** Cerrar la evidencia A0-A9 full-stack y congelar el contrato de ejecución, manteniendo el backtest sin ejecutar.  
-**STATUS:** PASS local reproducible; confirmación CI pendiente; backtest requiere decisión explícita del cliente.
+**STATUS:** PASS local reproducible + CI confirmado; backtest requiere decisión explícita del cliente.
 
 ## Hechos verificados
 
@@ -16,12 +16,13 @@
 - `C:\Python314\python.exe -m audits.codigo.close_pre_backtest_gates` terminó con `status=PASS` en las cuatro condiciones agregadas.
 - No se ejecutaron experimentos, backtests, PnL, descargas de mercado ni jobs de laboratorio. No se modificaron datasets.
 - El primer CI del cierre (`Hermes A0-A9 Audit Stack #46`) alcanzó el Funnel, pero falló al iniciar el full-stack porque el contrato `requirements.txt` no declaraba `numpy`/`pandas`; la suite CI general tenía la misma causa de entorno. Se añadió esa dependencia mínima antes de repetir CI.
+- La repetición CI del commit `49702fd` pasó en A0-A9, Tests y Funnel; el run final de reconciliación `#48` sobre `27565ae` también pasó en los tres jobs.
 
 ## Inferencias y límites
 
 - El PASS demuestra integridad, causalidad y reproducibilidad del stack; no demuestra edge, win rate ni rentabilidad.
 - El freeze es válido únicamente para `EXECUTION_INTRADAY_M15_V1`: HTF H1/H4, ITF/ejecución M15, UTC y velas cerradas. M5/M1/scalping y un dataset M15 separado requieren nuevo freeze/gate de datos.
-- La evidencia local no se etiqueta como CI hasta confirmar el workflow `.github/workflows/20-hermes-audit-stack.yml` en la rama publicada.
+- La evidencia local quedó confirmada por `.github/workflows/20-hermes-audit-stack.yml` en la rama publicada; el workflow no ejecuta PnL ni órdenes.
 
 ## Evidencia y archivos
 
@@ -45,5 +46,4 @@
 ## Siguiente acción
 
 1. Commit y push de esta evidencia y del workflow actualizado.
-2. Confirmar el run CI A0-A9 en la rama publicada y reconciliar cualquier fallo.
-3. Solo después, solicitar al cliente una decisión explícita sobre un backtest limitado al perfil congelado; no ejecutar automáticamente.
+2. Mantener los gates cerrados y solicitar al cliente una decisión explícita sobre un backtest limitado al perfil congelado; no ejecutar automáticamente.

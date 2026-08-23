@@ -12,6 +12,11 @@ Columns: `time,open,high,low,close`
 
 Source: `npx dukascopy-node -i eurusd -from 2006-01-01 -to 2026-01-01 -t {h1|h4|d1} -f csv`
 
+`metadata.json` uses the clean CSV row count as `n`/`n_clean` and preserves the
+pre-cleaning count as `n_raw`. The A0 cleaning removed only invalid OHLC rows:
+13 H1, 4 H4, and 0 D1. This is a provenance correction; the CSV bytes are
+unchanged.
+
 To restore into runtime path:
 
 ```bash

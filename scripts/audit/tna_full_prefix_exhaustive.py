@@ -50,10 +50,13 @@ def _git_blob_sha(path: Path) -> str:
 def _metadata_check(frames: dict[str, pd.DataFrame]) -> dict[str, Any]:
     metadata = json.loads((DATASET / "metadata.json").read_text())
     actual = {tf: len(df) for tf, df in frames.items()}
-    declared = {tf: int(metadata[tf]["n"]) for tf in frames}
+    declared = {tf: int(metadata[tf]["n_clean"]) for tf in frames}
+    raw = {tf: int(metadata[tf]["n_raw"]) for tf in frames}
     return {
         "actual_rows": actual,
         "declared_rows": declared,
+        "declared_raw_rows": raw,
+        "metadata_count_field": "n_clean",
         "consistent": actual == declared,
     }
 

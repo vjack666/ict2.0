@@ -447,7 +447,8 @@ def main() -> dict[str, Any]:
     frames = {tf: _load_tf(tf) for tf in ("D1", "H4", "H1")}
     metadata = json.loads((ROOT / "datasets" / "eurusd_dukascopy_20y" / "metadata.json").read_text())
     actual_rows = {tf: len(df) for tf, df in frames.items()}
-    declared_rows = {tf: int(metadata[tf]["n"]) for tf in frames}
+    declared_rows = {tf: int(metadata[tf]["n_clean"]) for tf in frames}
+    raw_rows = {tf: int(metadata[tf]["n_raw"]) for tf in frames}
     metadata_consistent = actual_rows == declared_rows
     config = NavigatorConfig(precompute_sequences=True, sequence_tf="H1")
     full = _BatchFingerprintNavigator(frames, config)
@@ -506,6 +507,8 @@ def main() -> dict[str, Any]:
         "provenance": {
             "actual_rows": actual_rows,
             "declared_rows": declared_rows,
+            "declared_raw_rows": raw_rows,
+            "metadata_count_field": "n_clean",
             "metadata_consistent": metadata_consistent,
         },
         "gate": "PASS" if not mismatches and metadata_consistent else "BLOCKED",

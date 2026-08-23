@@ -18,38 +18,38 @@
   "exact_samples": {
     "0": {
       "exact_equal": true,
-      "full_digest": "f5189230047a215097b2fa7d55d5105ee96d745c2ef05ace0f6ec5a8ea54d47f",
-      "prefix_digest": "f5189230047a215097b2fa7d55d5105ee96d745c2ef05ace0f6ec5a8ea54d47f"
+      "full_digest": "23838873695fd9515b561b6483abf9db2912c954eec7c363cd64d6fc841cfedd",
+      "prefix_digest": "23838873695fd9515b561b6483abf9db2912c954eec7c363cd64d6fc841cfedd"
     },
     "71981": {
       "exact_equal": true,
-      "full_digest": "57031532e214ea4631f55d618e3a97807e04529ddc57344597362c5a8487bf24",
-      "prefix_digest": "57031532e214ea4631f55d618e3a97807e04529ddc57344597362c5a8487bf24"
+      "full_digest": "b150edfd1a29b9340011bc0da4f20216ee77e09f2721b4fcd5cbc89fb6fe3a9b",
+      "prefix_digest": "b150edfd1a29b9340011bc0da4f20216ee77e09f2721b4fcd5cbc89fb6fe3a9b"
     },
     "77791": {
       "exact_equal": true,
-      "full_digest": "879d2883da806898554484e1b0123901e9f3063768ea79d7923cfdbf598df9c0",
-      "prefix_digest": "879d2883da806898554484e1b0123901e9f3063768ea79d7923cfdbf598df9c0"
+      "full_digest": "c2b9863c6835c22265ae90ff4b17803eca38e7579bc11ba62921d3653b532a50",
+      "prefix_digest": "c2b9863c6835c22265ae90ff4b17803eca38e7579bc11ba62921d3653b532a50"
     },
     "85125": {
       "exact_equal": true,
-      "full_digest": "11be4daaf4858524e6bee6e0b88347de998373b28f7d5216a03afae15739c4fc",
-      "prefix_digest": "11be4daaf4858524e6bee6e0b88347de998373b28f7d5216a03afae15739c4fc"
+      "full_digest": "ada545098de872a685198db0d3163cbe547953c84e1d438755f8b1b52d5258bc",
+      "prefix_digest": "ada545098de872a685198db0d3163cbe547953c84e1d438755f8b1b52d5258bc"
     },
     "111568": {
       "exact_equal": true,
-      "full_digest": "c0b84ccaa1467ca01f9a92d04af8c592a4de88208784a282506ecd477708fbc8",
-      "prefix_digest": "c0b84ccaa1467ca01f9a92d04af8c592a4de88208784a282506ecd477708fbc8"
+      "full_digest": "0b7e6e57eedec37cd45e05eecd41fcfcb96146604b44400a3fc1e545311c6166",
+      "prefix_digest": "0b7e6e57eedec37cd45e05eecd41fcfcb96146604b44400a3fc1e545311c6166"
     },
     "117488": {
       "exact_equal": true,
-      "full_digest": "db533b841b97cf3747567f1c15af2b2bfbf017c848e71d59a91ac34ff9f2081c",
-      "prefix_digest": "db533b841b97cf3747567f1c15af2b2bfbf017c848e71d59a91ac34ff9f2081c"
+      "full_digest": "0e840819696e23a952020ad2b5b5f8fe9e78937ecc2fa62072d52fc76a1c7430",
+      "prefix_digest": "0e840819696e23a952020ad2b5b5f8fe9e78937ecc2fa62072d52fc76a1c7430"
     },
     "124376": {
       "exact_equal": true,
-      "full_digest": "5a2554db2854e9e903c10f15ee2eedf619b22720dc5a63258bfd33f9bea2231f",
-      "prefix_digest": "5a2554db2854e9e903c10f15ee2eedf619b22720dc5a63258bfd33f9bea2231f"
+      "full_digest": "6fa5eddc41cb7312840d32738cfbcc28ee9102324ccc69d2215a0128afc449a1",
+      "prefix_digest": "6fa5eddc41cb7312840d32738cfbcc28ee9102324ccc69d2215a0128afc449a1"
     }
   },
   "full_prefix": "PASS_BY_LAYER_INDUCTION",
@@ -62,14 +62,18 @@
     },
     "declared_rows": {
       "D1": 6258,
+      "H4": 32133,
+      "H1": 124377
+    },
+    "declared_raw_rows": {
+      "D1": 6258,
       "H4": 32137,
       "H1": 124390
     },
-    "metadata_consistent": false
+    "metadata_count_field": "n_clean",
+    "metadata_consistent": true
   },
-  "gate": "BLOCKED",
-  "blocking_reasons": [
-    "metadata_inconsistent"
-  ],
+  "gate": "PASS",
+  "blocking_reasons": [],
   "note": "Layer snapshots are compared for every decision. Path and constraints are deterministic functions of these snapshots; exact full MarketState equality is checked at control points. Sequence history is sourced from the full causal history index."
 }

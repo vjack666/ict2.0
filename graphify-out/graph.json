@@ -1750,7 +1750,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "detectors_bos",
-      "community": 4,
+      "community": 23,
       "norm_label": "bos.py"
     },
     {
@@ -1770,7 +1770,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "detectors_bos_compute_atr",
-      "community": 4,
+      "community": 23,
       "norm_label": "_compute_atr()"
     },
     {
@@ -1780,7 +1780,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_bos_py_dataframe",
-      "community": 4,
+      "community": 23,
       "norm_label": "dataframe"
     },
     {
@@ -1790,7 +1790,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_bos_py_series",
-      "community": 4,
+      "community": 23,
       "norm_label": "series"
     },
     {
@@ -1800,7 +1800,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "detectors_bos_swing_points",
-      "community": 4,
+      "community": 23,
       "norm_label": "_swing_points()"
     },
     {
@@ -1810,7 +1810,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "detectors_bos_label_swings",
-      "community": 4,
+      "community": 23,
       "norm_label": "_label_swings()"
     },
     {
@@ -1820,7 +1820,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "detectors_bos_detect_bos",
-      "community": 4,
+      "community": 23,
       "norm_label": "detect_bos()"
     },
     {
@@ -1830,7 +1830,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "detectors_bos_rationale_26",
-      "community": 4,
+      "community": 23,
       "norm_label": "causal pivots: a bar j is a swing only once lookback bars to its right have clos"
     },
     {
@@ -1880,7 +1880,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "detectors_displacement_displacementconfig",
-      "community": 23,
+      "community": 4,
       "norm_label": "displacementconfig"
     },
     {
@@ -3510,7 +3510,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "engine_bias_narrative_compose_htf_bias",
-      "community": 83,
+      "community": 37,
       "norm_label": "_compose_htf_bias()"
     },
     {
@@ -3520,7 +3520,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "bias",
-      "community": 83,
+      "community": 37,
       "norm_label": "bias"
     },
     {
@@ -3550,7 +3550,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "engine_bias_narrative_htfbias_direction",
-      "community": 83,
+      "community": 37,
       "norm_label": ".direction()"
     },
     {
@@ -3650,7 +3650,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "engine_bias_narrative_rationale_53",
-      "community": 83,
+      "community": 37,
       "norm_label": "composicion htf con d1/h4 como autoridad estructural.          1) d1 y h4 coin"
     },
     {
@@ -3680,7 +3680,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "engine_bias_narrative_rationale_98",
-      "community": 83,
+      "community": 37,
       "norm_label": "direccion global; neutral si contradiccion o menos de 2 no neutral."
     },
     {
@@ -4260,7 +4260,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative",
-      "community": 18,
+      "community": 83,
       "norm_label": "htf_narrative.py"
     },
     {
@@ -4270,7 +4270,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_resolve_bias",
-      "community": 37,
+      "community": 83,
       "norm_label": "_resolve_bias()"
     },
     {
@@ -4280,7 +4280,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_py_dataframe",
-      "community": 37,
+      "community": 83,
       "norm_label": "dataframe"
     },
     {
@@ -4290,7 +4290,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_last_bos_event",
-      "community": 12,
+      "community": 83,
       "norm_label": "_last_bos_event()"
     },
     {
@@ -4300,7 +4300,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_fmt",
-      "community": 18,
+      "community": 83,
       "norm_label": "_fmt()"
     },
     {
@@ -4310,7 +4310,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_build_summary",
-      "community": 18,
+      "community": 83,
       "norm_label": "_build_summary()"
     },
     {
@@ -4320,7 +4320,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_build_htf_narrative",
-      "community": 18,
+      "community": 83,
       "norm_label": "build_htf_narrative()"
     },
     {
@@ -4330,7 +4330,7 @@
       "source_location": "L257",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_narrative_ready_for_trade",
-      "community": 18,
+      "community": 83,
       "norm_label": "narrative_ready_for_trade()"
     },
     {
@@ -4340,7 +4340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_1",
-      "community": 18,
+      "community": 83,
       "norm_label": "compatibility htf narrative \u2014 non-authoritative reader.  une los pedazos suelt"
     },
     {
@@ -4350,7 +4350,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_44",
-      "community": 37,
+      "community": 83,
       "norm_label": "sesgo htf vigente. si no se pasa uno, se deriva del propio frame.      el fram"
     },
     {
@@ -4360,7 +4360,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_69",
-      "community": 12,
+      "community": 83,
       "norm_label": "ultimo bos del frame: {'index': i, 'direction': bullish|bearish}.      con exp"
     },
     {
@@ -4370,7 +4370,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_90",
-      "community": 18,
+      "community": 83,
       "norm_label": "formato compacto de precio para el resumen."
     },
     {
@@ -4380,7 +4380,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_98",
-      "community": 18,
+      "community": 83,
       "norm_label": "resumen legible en espanol de la idea del dia."
     },
     {
@@ -4390,7 +4390,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_127",
-      "community": 18,
+      "community": 83,
       "norm_label": "mapa ict completo de la vela actual (la idea del dia).      args:         fra"
     },
     {
@@ -4400,7 +4400,7 @@
       "source_location": "L258",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_258",
-      "community": 18,
+      "community": 83,
       "norm_label": "true solo si el htf esta completo: sesgo + zona + poi + objetivo."
     },
     {
@@ -4860,7 +4860,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_dealing_range_eq",
-      "community": 56,
+      "community": 5,
       "norm_label": "dealing_range_eq.py"
     },
     {
@@ -4870,7 +4870,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_eq",
-      "community": 56,
+      "community": 5,
       "norm_label": "_eq()"
     },
     {
@@ -4880,7 +4880,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_classify_zone",
-      "community": 56,
+      "community": 5,
       "norm_label": "classify_zone()"
     },
     {
@@ -4890,7 +4890,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_zone_ok_for_direction",
-      "community": 56,
+      "community": 5,
       "norm_label": "zone_ok_for_direction()"
     },
     {
@@ -4900,7 +4900,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput",
-      "community": 56,
+      "community": 5,
       "norm_label": "dealingrangeinput"
     },
     {
@@ -4910,7 +4910,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_eq",
-      "community": 56,
+      "community": 5,
       "norm_label": ".eq()"
     },
     {
@@ -4920,7 +4920,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_rng",
-      "community": 56,
+      "community": 5,
       "norm_label": ".rng()"
     },
     {
@@ -4930,7 +4930,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_classify",
-      "community": 56,
+      "community": 5,
       "norm_label": ".classify()"
     },
     {
@@ -4940,7 +4940,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_ok_for_direction",
-      "community": 56,
+      "community": 5,
       "norm_label": ".ok_for_direction()"
     },
     {
@@ -4950,7 +4950,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_is_close_to",
-      "community": 56,
+      "community": 5,
       "norm_label": "_is_close_to()"
     },
     {
@@ -4960,7 +4960,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_compute_zone_class",
-      "community": 56,
+      "community": 5,
       "norm_label": "compute_zone_class()"
     },
     {
@@ -4970,7 +4970,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_resolve_swing_from_ms",
-      "community": 56,
+      "community": 5,
       "norm_label": "resolve_swing_from_ms()"
     },
     {
@@ -4980,7 +4980,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_1",
-      "community": 56,
+      "community": 5,
       "norm_label": "ict_backtest/dealing_range.py \u2014 brecha c: dealing range premium/discount (fase 5"
     },
     {
@@ -4990,7 +4990,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_27",
-      "community": 56,
+      "community": 5,
       "norm_label": "clasifica la zona segun el dealing range del swing htf.      usa el midpoint d"
     },
     {
@@ -5000,7 +5000,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_44",
-      "community": 56,
+      "community": 5,
       "norm_label": "si la zona favorece la direccion del setup.      long (1) quiere discount; sho"
     },
     {
@@ -5010,7 +5010,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_97",
-      "community": 56,
+      "community": 5,
       "norm_label": "devuelve la clase del deal range para la senal actual, o ``none``     cuando no"
     },
     {
@@ -5020,7 +5020,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_125",
-      "community": 56,
+      "community": 5,
       "norm_label": "swing htf cerrado antes de ``at_time``.      anti look-ahead: solo velas con `"
     },
     {
@@ -5050,7 +5050,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_fvg",
-      "community": 9,
+      "community": 56,
       "norm_label": "fvg.py"
     },
     {
@@ -5060,7 +5060,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "engine_detectors_fvg_candle",
-      "community": 9,
+      "community": 56,
       "norm_label": "_candle"
     },
     {
@@ -5100,7 +5100,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_fvg_rationale_1",
-      "community": 9,
+      "community": 56,
       "norm_label": "canonical causal ict fair value gap detector."
     },
     {
@@ -5120,7 +5120,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_ob",
-      "community": 9,
+      "community": 56,
       "norm_label": "ob.py"
     },
     {
@@ -5130,7 +5130,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle",
-      "community": 9,
+      "community": 56,
       "norm_label": "_candle"
     },
     {
@@ -5140,7 +5140,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_body_ratio",
-      "community": 9,
+      "community": 56,
       "norm_label": ".body_ratio()"
     },
     {
@@ -5150,7 +5150,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_bullish",
-      "community": 9,
+      "community": 56,
       "norm_label": ".bullish()"
     },
     {
@@ -5160,7 +5160,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_bearish",
-      "community": 9,
+      "community": 56,
       "norm_label": ".bearish()"
     },
     {
@@ -5200,7 +5200,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_ob_rationale_1",
-      "community": 9,
+      "community": 56,
       "norm_label": "canonical ict order block detector."
     },
     {
@@ -5630,7 +5630,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_narrative",
-      "community": 18,
+      "community": 83,
       "norm_label": "htf_narrative.py"
     },
     {
@@ -5640,7 +5640,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_narrative_rationale_1",
-      "community": 18,
+      "community": 83,
       "norm_label": "compatibility wrapper for the former htf narrative module.  the implementation"
     },
     {
@@ -6760,7 +6760,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_market_object",
-      "community": 9,
+      "community": 56,
       "norm_label": "market_object.py"
     },
     {
@@ -6770,7 +6770,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "engine_market_object_objecttype",
-      "community": 9,
+      "community": 56,
       "norm_label": "objecttype"
     },
     {
@@ -6780,7 +6780,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_market_object_py_str",
-      "community": 9,
+      "community": 56,
       "norm_label": "str"
     },
     {
@@ -6790,7 +6790,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_market_object_py_enum",
-      "community": 9,
+      "community": 56,
       "norm_label": "enum"
     },
     {
@@ -6800,7 +6800,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "engine_market_object_role",
-      "community": 9,
+      "community": 56,
       "norm_label": "role"
     },
     {
@@ -6810,7 +6810,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "engine_market_object_objectstate",
-      "community": 9,
+      "community": 56,
       "norm_label": "objectstate"
     },
     {
@@ -6870,7 +6870,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_can_transition_to",
-      "community": 9,
+      "community": 1,
       "norm_label": ".can_transition_to()"
     },
     {
@@ -6880,7 +6880,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_transition_to",
-      "community": 9,
+      "community": 1,
       "norm_label": ".transition_to()"
     },
     {
@@ -6900,7 +6900,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_to_dict",
-      "community": 9,
+      "community": 56,
       "norm_label": ".to_dict()"
     },
     {
@@ -6910,7 +6910,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_from_dict",
-      "community": 9,
+      "community": 56,
       "norm_label": ".from_dict()"
     },
     {
@@ -6920,7 +6920,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_market_object_rationale_1",
-      "community": 9,
+      "community": 56,
       "norm_label": "objeto de mercado ict (fuente canonica del motor).  un marketobject representa"
     },
     {
@@ -7150,7 +7150,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_mtf_navigation",
-      "community": 23,
+      "community": 6,
       "norm_label": "mtf_navigation.py"
     },
     {
@@ -7170,7 +7170,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_mtf_navigation_py_str",
-      "community": 23,
+      "community": 6,
       "norm_label": "str"
     },
     {
@@ -7180,7 +7180,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_mtf_navigation_py_enum",
-      "community": 23,
+      "community": 6,
       "norm_label": "enum"
     },
     {
@@ -7190,7 +7190,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navquestion",
-      "community": 23,
+      "community": 6,
       "norm_label": "navquestion"
     },
     {
@@ -7200,7 +7200,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "engine_mtf_navigation_regimelabel",
-      "community": 23,
+      "community": 6,
       "norm_label": "regimelabel"
     },
     {
@@ -7210,7 +7210,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "engine_mtf_navigation_structurebias",
-      "community": 23,
+      "community": 6,
       "norm_label": "structurebias"
     },
     {
@@ -7360,7 +7360,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "engine_mtf_navigation_ensure_time",
-      "community": 13,
+      "community": 23,
       "norm_label": "_ensure_time()"
     },
     {
@@ -7370,7 +7370,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_mtf_navigation_py_dataframe",
-      "community": 13,
+      "community": 23,
       "norm_label": "dataframe"
     },
     {
@@ -7380,7 +7380,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "engine_mtf_navigation_asof_index",
-      "community": 13,
+      "community": 6,
       "norm_label": "_asof_index()"
     },
     {
@@ -7410,7 +7410,7 @@
       "source_location": "L278",
       "_origin": "ast",
       "id": "engine_mtf_navigation_structure_bias_from_swings",
-      "community": 23,
+      "community": 6,
       "norm_label": "_structure_bias_from_swings()"
     },
     {
@@ -7440,7 +7440,7 @@
       "source_location": "L356",
       "_origin": "ast",
       "id": "engine_mtf_navigation_regime_from_structure",
-      "community": 23,
+      "community": 6,
       "norm_label": "_regime_from_structure()"
     },
     {
@@ -7450,7 +7450,7 @@
       "source_location": "L376",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigatorconfig",
-      "community": 6,
+      "community": 14,
       "norm_label": "navigatorconfig"
     },
     {
@@ -7470,7 +7470,7 @@
       "source_location": "L403",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_init",
-      "community": 13,
+      "community": 23,
       "norm_label": ".__init__()"
     },
     {
@@ -7490,7 +7490,7 @@
       "source_location": "L430",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_precompute_layers",
-      "community": 17,
+      "community": 23,
       "norm_label": "._precompute_layers()"
     },
     {
@@ -7500,7 +7500,7 @@
       "source_location": "L511",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_snapshot",
-      "community": 13,
+      "community": 6,
       "norm_label": "._snapshot()"
     },
     {
@@ -7610,7 +7610,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_1",
-      "community": 23,
+      "community": 6,
       "norm_label": "grafo de navegacion multi-timeframe \u2014 context state (no entry).  implementa la"
     },
     {
@@ -7620,7 +7620,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_65",
-      "community": 23,
+      "community": 6,
       "norm_label": "preguntas que el grafo puede resolver en cada capa."
     },
     {
@@ -7670,7 +7670,7 @@
       "source_location": "L242",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_242",
-      "community": 13,
+      "community": 6,
       "norm_label": "ultima barra con time <= decision_time (vela cerrada disponible)."
     },
     {
@@ -7710,7 +7710,7 @@
       "source_location": "L431",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_431",
-      "community": 17,
+      "community": 23,
       "norm_label": "precompute swings/bos/displacement/dealing por capa una vez (o(n) por capa)."
     },
     {
@@ -9340,7 +9340,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "engine_sequence_sequenceconfig",
-      "community": 9,
+      "community": 56,
       "norm_label": "sequenceconfig"
     },
     {
@@ -9470,7 +9470,7 @@
       "source_location": "L297",
       "_origin": "ast",
       "id": "engine_sequence_candle_objects",
-      "community": 1,
+      "community": 39,
       "norm_label": "_candle_objects()"
     },
     {
@@ -9480,7 +9480,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_sequence_py_dataframe",
-      "community": 1,
+      "community": 39,
       "norm_label": "dataframe"
     },
     {
@@ -9780,7 +9780,7 @@
       "source_location": "L298",
       "_origin": "ast",
       "id": "engine_sequence_rationale_298",
-      "community": 1,
+      "community": 39,
       "norm_label": "envuelve cada vela del ltf en un marketobject(type=candle).      carga en `met"
     },
     {
@@ -10000,7 +10000,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "engine_sequential_events_stage",
-      "community": 23,
+      "community": 4,
       "norm_label": "stage"
     },
     {
@@ -10010,7 +10010,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_sequential_events_py_str",
-      "community": 23,
+      "community": 4,
       "norm_label": "str"
     },
     {
@@ -10070,7 +10070,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "engine_sequential_events_sequentialchain",
-      "community": 23,
+      "community": 4,
       "norm_label": "sequentialchain"
     },
     {
@@ -10080,7 +10080,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "engine_sequential_events_sequentialchain_stages_present",
-      "community": 23,
+      "community": 4,
       "norm_label": ".stages_present()"
     },
     {
@@ -10090,7 +10090,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "engine_sequential_events_sequentialchain_is_complete",
-      "community": 23,
+      "community": 4,
       "norm_label": ".is_complete()"
     },
     {
@@ -10100,7 +10100,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "engine_sequential_events_sequentialchain_stage_bar",
-      "community": 23,
+      "community": 4,
       "norm_label": ".stage_bar()"
     },
     {
@@ -10190,7 +10190,7 @@
       "source_location": "L354",
       "_origin": "ast",
       "id": "engine_sequential_events_next_stage",
-      "community": 23,
+      "community": 4,
       "norm_label": "_next_stage()"
     },
     {
@@ -10250,7 +10250,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "engine_sequential_events_rationale_100",
-      "community": 23,
+      "community": 4,
       "norm_label": "una cadena parcial o completa de eventos ordenados."
     },
     {
@@ -11258,7 +11258,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_audit_diag_nav_baseline",
-      "community": 23,
+      "community": 6,
       "norm_label": "diag_nav_baseline.py"
     },
     {
@@ -11438,7 +11438,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_fvg_ob_objects",
-      "community": 14,
+      "community": 9,
       "norm_label": "_fvg_ob_objects()"
     },
     {
@@ -11448,7 +11448,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_py_any",
-      "community": 14,
+      "community": 9,
       "norm_label": "any"
     },
     {
@@ -11508,7 +11508,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_rationale_73",
-      "community": 14,
+      "community": 9,
       "norm_label": "extrae objetos fvg/ob reales en el esquema que espera audit_object_excursions."
     },
     {
@@ -11615,7 +11615,7 @@
       "label": "_check_swings()",
       "file_type": "code",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L61",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "scripts_audit_tna_full_prefix_exhaustive_check_swings",
       "community": 91,
@@ -11625,7 +11625,7 @@
       "label": "_check_sequence_history()",
       "file_type": "code",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L90",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "scripts_audit_tna_full_prefix_exhaustive_check_sequence_history",
       "community": 91,
@@ -11635,7 +11635,7 @@
       "label": "_check_decision_cutoffs()",
       "file_type": "code",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L110",
+      "source_location": "L113",
       "_origin": "ast",
       "id": "scripts_audit_tna_full_prefix_exhaustive_check_decision_cutoffs",
       "community": 91,
@@ -11645,7 +11645,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L127",
+      "source_location": "L130",
       "_origin": "ast",
       "id": "scripts_audit_tna_full_prefix_exhaustive_main",
       "community": 91,
@@ -11898,7 +11898,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_time_index",
-      "community": 6,
+      "community": 374,
       "norm_label": "_time_index()"
     },
     {
@@ -11908,7 +11908,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_py_dataframe",
-      "community": 6,
+      "community": 374,
       "norm_label": "dataframe"
     },
     {
@@ -11918,7 +11918,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_py_ndarray",
-      "community": 6,
+      "community": 374,
       "norm_label": "ndarray"
     },
     {
@@ -12108,7 +12108,7 @@
       "source_location": "L376",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_batchfingerprintnavigator_init",
-      "community": 6,
+      "community": 374,
       "norm_label": ".__init__()"
     },
     {
@@ -12138,7 +12138,7 @@
       "source_location": "L416",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_streamingfingerprintnavigator_init",
-      "community": 6,
+      "community": 374,
       "norm_label": ".__init__()"
     },
     {
@@ -12498,7 +12498,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes",
-      "community": 0,
+      "community": 237,
       "norm_label": "brief_lunes.py"
     },
     {
@@ -12508,7 +12508,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_ok",
-      "community": 0,
+      "community": 237,
       "norm_label": "ok()"
     },
     {
@@ -12518,7 +12518,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_as_float",
-      "community": 0,
+      "community": 237,
       "norm_label": "as_float()"
     },
     {
@@ -12528,7 +12528,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_load_raw",
-      "community": 0,
+      "community": 237,
       "norm_label": "load_raw()"
     },
     {
@@ -12538,7 +12538,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_compute",
-      "community": 0,
+      "community": 237,
       "norm_label": "compute()"
     },
     {
@@ -12548,7 +12548,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_last_val",
-      "community": 0,
+      "community": 237,
       "norm_label": "last_val()"
     },
     {
@@ -12558,7 +12558,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_active_pd_array",
-      "community": 0,
+      "community": 237,
       "norm_label": "active_pd_array()"
     },
     {
@@ -12568,7 +12568,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_recent_sweep",
-      "community": 0,
+      "community": 237,
       "norm_label": "recent_sweep()"
     },
     {
@@ -12578,7 +12578,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_current_week_summary",
-      "community": 0,
+      "community": 237,
       "norm_label": "current_week_summary()"
     },
     {
@@ -12588,7 +12588,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_htf_bias",
-      "community": 0,
+      "community": 237,
       "norm_label": "htf_bias()"
     },
     {
@@ -12598,7 +12598,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_build_symbol_section",
-      "community": 0,
+      "community": 237,
       "norm_label": "build_symbol_section()"
     },
     {
@@ -12608,7 +12608,7 @@
       "source_location": "L400",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_last_date_of",
-      "community": 0,
+      "community": 237,
       "norm_label": "last_date_of()"
     },
     {
@@ -12618,7 +12618,7 @@
       "source_location": "L411",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_main",
-      "community": 0,
+      "community": 237,
       "norm_label": "main()"
     },
     {
@@ -12628,7 +12628,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_1",
-      "community": 0,
+      "community": 237,
       "norm_label": "brief de lectura ict/wyckoff \u2014 preparado para revisar antes de la sesion ny."
     },
     {
@@ -12638,7 +12638,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_46",
-      "community": 0,
+      "community": 237,
       "norm_label": "true si x es un valor util (no none, no nan)."
     },
     {
@@ -12648,7 +12648,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_51",
-      "community": 0,
+      "community": 237,
       "norm_label": "convierte un valor a float de forma segura, devolviendo none si no aplica."
     },
     {
@@ -12658,7 +12658,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_97",
-      "community": 0,
+      "community": 237,
       "norm_label": "construye features una vez por simbolo para todos los tf necesarios."
     },
     {
@@ -12668,7 +12668,7 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_157",
-      "community": 0,
+      "community": 237,
       "norm_label": "ohlc de la semana calendario en curso, closed-only hasta el feed."
     },
     {
@@ -13178,7 +13178,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state",
-      "community": 8,
+      "community": 371,
       "norm_label": "exp_seq_x_context_state.py"
     },
     {
@@ -13188,7 +13188,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_h1_alignment",
-      "community": 8,
+      "community": 371,
       "norm_label": "h1_alignment()"
     },
     {
@@ -13198,7 +13198,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_context_bucket",
-      "community": 8,
+      "community": 371,
       "norm_label": "context_bucket()"
     },
     {
@@ -13208,7 +13208,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_measure_outcome",
-      "community": 8,
+      "community": 371,
       "norm_label": "measure_outcome()"
     },
     {
@@ -13218,7 +13218,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_py_ndarray",
-      "community": 8,
+      "community": 371,
       "norm_label": "ndarray"
     },
     {
@@ -13228,7 +13228,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_chi2_and_cramers",
-      "community": 8,
+      "community": 371,
       "norm_label": "chi2_and_cramers()"
     },
     {
@@ -13238,7 +13238,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_main",
-      "community": 8,
+      "community": 371,
       "norm_label": "main()"
     },
     {
@@ -13248,7 +13248,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_1",
-      "community": 8,
+      "community": 371,
       "norm_label": "exp sequence x context state \u2014 event-anchored, point-in-time, local.  diseno a"
     },
     {
@@ -13258,7 +13258,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_48",
-      "community": 8,
+      "community": 371,
       "norm_label": "favor/neutral/contra agregado (conservamos las 3 individuales tambien)."
     },
     {
@@ -13268,7 +13268,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_71",
-      "community": 8,
+      "community": 371,
       "norm_label": "c/r/f en horizon barras h1 despues de bar_k. solo futuro (bar_k+1 .. bar_k+horiz"
     },
     {
@@ -13278,7 +13278,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_99",
-      "community": 8,
+      "community": 371,
       "norm_label": "chi2 de una tabla (filas=contextos, cols=[cont,rev,fail]). devuelve (chi2, p, cr"
     },
     {
@@ -13428,7 +13428,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state",
-      "community": 4,
+      "community": 372,
       "norm_label": "exp_sequence_x_context_state.py"
     },
     {
@@ -13438,7 +13438,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_load",
-      "community": 4,
+      "community": 372,
       "norm_label": "_load()"
     },
     {
@@ -13448,7 +13448,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_py_dataframe",
-      "community": 4,
+      "community": 372,
       "norm_label": "dataframe"
     },
     {
@@ -13458,7 +13458,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_bucket",
-      "community": 4,
+      "community": 372,
       "norm_label": "_bucket()"
     },
     {
@@ -13468,7 +13468,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_location_favorable",
-      "community": 4,
+      "community": 372,
       "norm_label": "_location_favorable()"
     },
     {
@@ -13478,7 +13478,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_extract_location",
-      "community": 4,
+      "community": 372,
       "norm_label": "_extract_location()"
     },
     {
@@ -13488,7 +13488,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_py_any",
-      "community": 4,
+      "community": 372,
       "norm_label": "any"
     },
     {
@@ -13498,7 +13498,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_outcomes",
-      "community": 4,
+      "community": 372,
       "norm_label": "_outcomes()"
     },
     {
@@ -13508,7 +13508,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_agg",
-      "community": 4,
+      "community": 372,
       "norm_label": "_agg()"
     },
     {
@@ -13518,7 +13518,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_main",
-      "community": 4,
+      "community": 372,
       "norm_label": "main()"
     },
     {
@@ -13528,7 +13528,7 @@
       "source_location": "L257",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_write_md",
-      "community": 4,
+      "community": 372,
       "norm_label": "_write_md()"
     },
     {
@@ -13888,7 +13888,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head",
-      "community": 34,
+      "community": 105,
       "norm_label": "b4_nature_head.py"
     },
     {
@@ -13898,7 +13898,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_nature_blocks",
-      "community": 34,
+      "community": 105,
       "norm_label": "_nature_blocks()"
     },
     {
@@ -13908,7 +13908,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_naturehead",
-      "community": 34,
+      "community": 105,
       "norm_label": "naturehead"
     },
     {
@@ -13918,7 +13918,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_naturehead_init",
-      "community": 34,
+      "community": 105,
       "norm_label": ".__init__()"
     },
     {
@@ -13928,7 +13928,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_naturehead_forward",
-      "community": 34,
+      "community": 105,
       "norm_label": ".forward()"
     },
     {
@@ -13938,7 +13938,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_folds",
-      "community": 34,
+      "community": 105,
       "norm_label": "_folds()"
     },
     {
@@ -13948,7 +13948,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_pr_auc",
-      "community": 34,
+      "community": 105,
       "norm_label": "_pr_auc()"
     },
     {
@@ -13958,7 +13958,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_main",
-      "community": 34,
+      "community": 105,
       "norm_label": "main()"
     },
     {
@@ -13968,7 +13968,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_rationale_1",
-      "community": 34,
+      "community": 105,
       "norm_label": "b4 \u2014 nature head + baselines (pipeline cientifico, bloque 4).  entrena natural"
     },
     {
@@ -13978,7 +13978,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "scripts_lab_learning_b4_nature_head_rationale_45",
-      "community": 34,
+      "community": 105,
       "norm_label": "re-mide naturaleza p3 y devuelve (x_flat, y, years) por choch real."
     },
     {
@@ -14248,7 +14248,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_learning_probe_choch_nature",
-      "community": 28,
+      "community": 373,
       "norm_label": "probe_choch_nature.py"
     },
     {
@@ -14258,7 +14258,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "scripts_lab_learning_probe_choch_nature_cho_events",
-      "community": 28,
+      "community": 373,
       "norm_label": "_cho_events()"
     },
     {
@@ -14268,7 +14268,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "scripts_lab_learning_probe_choch_nature_main",
-      "community": 28,
+      "community": 373,
       "norm_label": "main()"
     },
     {
@@ -14278,7 +14278,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_learning_probe_choch_nature_rationale_1",
-      "community": 28,
+      "community": 373,
       "norm_label": "p3 \u2014 probe de naturaleza del choch (responde la hipotesis del usuario).  el us"
     },
     {
@@ -14388,7 +14388,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_learning_train_block_encoder",
-      "community": 105,
+      "community": 34,
       "norm_label": "train_block_encoder.py"
     },
     {
@@ -14398,7 +14398,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "scripts_lab_learning_train_block_encoder_collect_blocks",
-      "community": 105,
+      "community": 34,
       "norm_label": "_collect_blocks()"
     },
     {
@@ -14408,7 +14408,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "scripts_lab_learning_train_block_encoder_to_arrays",
-      "community": 105,
+      "community": 34,
       "norm_label": "_to_arrays()"
     },
     {
@@ -14418,7 +14418,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "scripts_lab_learning_train_block_encoder_main",
-      "community": 105,
+      "community": 34,
       "norm_label": "main()"
     },
     {
@@ -14428,7 +14428,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_learning_train_block_encoder_rationale_1",
-      "community": 105,
+      "community": 34,
       "norm_label": "p2 \u2014 entrena el encoder de bloque de velas (el \"ojo\" auto-supervisado).  objet"
     },
     {
@@ -14438,7 +14438,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "scripts_lab_learning_train_block_encoder_rationale_59",
-      "community": 105,
+      "community": 34,
       "norm_label": "recolecta bloques choch de todo el historico m5 usando el pipeline tools/."
     },
     {
@@ -14758,7 +14758,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading",
-      "community": 237,
+      "community": 72,
       "norm_label": "plot_htf_reading.py"
     },
     {
@@ -14768,7 +14768,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_load",
-      "community": 237,
+      "community": 72,
       "norm_label": "load()"
     },
     {
@@ -14778,7 +14778,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_bias_color",
-      "community": 237,
+      "community": 72,
       "norm_label": "bias_color()"
     },
     {
@@ -14788,7 +14788,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_plot_tf",
-      "community": 237,
+      "community": 72,
       "norm_label": "plot_tf()"
     },
     {
@@ -14798,7 +14798,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_main",
-      "community": 237,
+      "community": 72,
       "norm_label": "main()"
     },
     {
@@ -14808,7 +14808,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_rationale_1",
-      "community": 237,
+      "community": 72,
       "norm_label": "grafico de lectura htf (d1/h4/h1) sobre datos reales eurusd.  objetivo: mostra"
     },
     {
@@ -14848,7 +14848,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_zone_objects",
-      "community": 92,
+      "community": 9,
       "norm_label": "_zone_objects()"
     },
     {
@@ -17078,7 +17078,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_bos_validate",
-      "community": 28,
+      "community": 373,
       "norm_label": "bos_validate.py"
     },
     {
@@ -17088,7 +17088,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "tools_bos_validate_validate_bos_status",
-      "community": 28,
+      "community": 373,
       "norm_label": "validate_bos_status()"
     },
     {
@@ -17098,7 +17098,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "tools_bos_validate_py_dataframe",
-      "community": 28,
+      "community": 373,
       "norm_label": "dataframe"
     },
     {
@@ -17108,7 +17108,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "tools_bos_validate_apply_validation",
-      "community": 28,
+      "community": 373,
       "norm_label": "apply_validation()"
     },
     {
@@ -17118,7 +17118,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_bos_validate_rationale_1",
-      "community": 28,
+      "community": 373,
       "norm_label": "validador de bos (copia aislada de engine/invalidation.py + engine/bos/structure"
     },
     {
@@ -17128,7 +17128,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "tools_bos_validate_rationale_34",
-      "community": 28,
+      "community": 373,
       "norm_label": "devuelve 'active' o 'invalidated' para un bos dado.      mode=\"strict\" (criter"
     },
     {
@@ -17138,7 +17138,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "tools_bos_validate_rationale_90",
-      "community": 28,
+      "community": 373,
       "norm_label": "valida una lista de toolevent bos in-place (setea status).      `events` son t"
     },
     {
@@ -17358,7 +17358,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds",
-      "community": 25,
+      "community": 47,
       "norm_label": "confirmation_thresholds.py"
     },
     {
@@ -17368,7 +17368,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_choch_class_from_score",
-      "community": 25,
+      "community": 47,
       "norm_label": "choch_class_from_score()"
     },
     {
@@ -17378,7 +17378,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_excursion_k",
-      "community": 25,
+      "community": 47,
       "norm_label": "excursion_k()"
     },
     {
@@ -17388,7 +17388,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_rationale_1",
-      "community": 25,
+      "community": 47,
       "norm_label": "umbrales de confirmacion calibrados \u2014 single source of truth.  calibracion 202"
     },
     {
@@ -17398,7 +17398,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_rationale_76",
-      "community": 25,
+      "community": 47,
       "norm_label": "clase canonica a partir de score 0-100."
     },
     {
@@ -17408,7 +17408,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_rationale_85",
-      "community": 25,
+      "community": 47,
       "norm_label": "k de excursion por tf y modo (scan|confirm|premium)."
     },
     {
@@ -18162,10 +18162,20 @@
       "norm_label": "bloqueadores activos"
     },
     {
-      "label": "Evidencia reciente (2026-08-20)",
+      "label": "Evidencia TNA full-span (2026-08-22)",
       "file_type": "document",
       "source_file": ".hermes-index.md",
       "source_location": "L110",
+      "_origin": "ast",
+      "id": "hermes_index_evidencia_tna_full_span_2026_08_22",
+      "community": 45,
+      "norm_label": "evidencia tna full-span (2026-08-22)"
+    },
+    {
+      "label": "Evidencia reciente (2026-08-20)",
+      "file_type": "document",
+      "source_file": ".hermes-index.md",
+      "source_location": "L124",
       "_origin": "ast",
       "id": "hermes_index_evidencia_reciente_2026_08_20",
       "community": 45,
@@ -18175,7 +18185,7 @@
       "label": "Regla de oro",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L135",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "hermes_index_regla_de_oro",
       "community": 45,
@@ -23862,14 +23872,14 @@
       "norm_label": "evidencia"
     },
     {
-      "label": "Bloqueadores",
+      "label": "Bloqueadores hist\u00f3ricos \u2014 resueltos",
       "file_type": "document",
       "source_file": ".hermes-worklog/2026-08-22_TNA_FULL_PREFIX_PROOF.md",
       "source_location": "L23",
       "_origin": "ast",
-      "id": "hermes_worklog_2026_08_22_tna_full_prefix_proof_bloqueadores",
+      "id": "hermes_worklog_2026_08_22_tna_full_prefix_proof_bloqueadores_hist\u00f3ricos_resueltos",
       "community": 141,
-      "norm_label": "bloqueadores"
+      "norm_label": "bloqueadores historicos \u2014 resueltos"
     },
     {
       "label": "Veredicto",
@@ -23920,6 +23930,26 @@
       "id": "hermes_worklog_2026_08_22_tna_full_prefix_proof_comparador_streaming_full_prefix",
       "community": 141,
       "norm_label": "comparador streaming full/prefix"
+    },
+    {
+      "label": "Cierre operativo de sincronizaci\u00f3n \u2014 2026-08-22",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_TNA_FULL_PREFIX_PROOF.md",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_tna_full_prefix_proof_cierre_operativo_de_sincronizaci\u00f3n_2026_08_22",
+      "community": 141,
+      "norm_label": "cierre operativo de sincronizacion \u2014 2026-08-22"
+    },
+    {
+      "label": "Recierre TNA tras fe de erratas \u2014 2026-08-22",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_TNA_FULL_PREFIX_PROOF.md",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_tna_full_prefix_proof_recierre_tna_tras_fe_de_erratas_2026_08_22",
+      "community": 141,
+      "norm_label": "recierre tna tras fe de erratas \u2014 2026-08-22"
     },
     {
       "label": "TEMPLATE_YYYY-MM-DD_HHMM_PLAN_NAME.md",
@@ -39080,6 +39110,46 @@
       "id": "orchestration_readme_future_enhancements",
       "community": 81,
       "norm_label": "future enhancements"
+    },
+    {
+      "label": "2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "file_type": "document",
+      "source_file": "reports/audits/2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "reports_audits_2026_08_22_metadata_errata_eurusd",
+      "community": 375,
+      "norm_label": "2026-08-22_metadata_errata_eurusd.md"
+    },
+    {
+      "label": "Fe de erratas \u2014 metadata EURUSD Dukascopy 20Y",
+      "file_type": "document",
+      "source_file": "reports/audits/2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "reports_audits_2026_08_22_metadata_errata_eurusd_fe_de_erratas_metadata_eurusd_dukascopy_20y",
+      "community": 375,
+      "norm_label": "fe de erratas \u2014 metadata eurusd dukascopy 20y"
+    },
+    {
+      "label": "Correcci\u00f3n",
+      "file_type": "document",
+      "source_file": "reports/audits/2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "reports_audits_2026_08_22_metadata_errata_eurusd_correcci\u00f3n",
+      "community": 375,
+      "norm_label": "correccion"
+    },
+    {
+      "label": "Integridad",
+      "file_type": "document",
+      "source_file": "reports/audits/2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "reports_audits_2026_08_22_metadata_errata_eurusd_integridad",
+      "community": 375,
+      "norm_label": "integridad"
     },
     {
       "label": "ahf_temporal_navigation_SANDBOX.md",
@@ -61549,7 +61619,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L466",
+      "source_location": "L467",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "engine_mtf_navigation_timeframelayer",
@@ -63647,7 +63717,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L137",
+      "source_location": "L140",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive",
       "target": "engine_mtf_navigation_navigatorconfig",
@@ -63658,7 +63728,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L141",
+      "source_location": "L144",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "engine_mtf_navigation_navigatorconfig",
@@ -63745,7 +63815,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L452",
+      "source_location": "L453",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "engine_mtf_navigation_navigatorconfig",
@@ -64140,7 +64210,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L137",
+      "source_location": "L140",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive",
       "target": "engine_mtf_navigation_mtfnavigator",
@@ -64151,7 +64221,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L139",
+      "source_location": "L142",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "engine_mtf_navigation_mtfnavigator",
@@ -71648,7 +71718,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L110",
+      "source_location": "L113",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive",
       "target": "scripts_audit_tna_full_prefix_exhaustive_check_decision_cutoffs",
@@ -71658,7 +71728,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L90",
+      "source_location": "L93",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive",
       "target": "scripts_audit_tna_full_prefix_exhaustive_check_sequence_history",
@@ -71668,7 +71738,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L61",
+      "source_location": "L64",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive",
       "target": "scripts_audit_tna_full_prefix_exhaustive_check_swings",
@@ -71698,7 +71768,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L127",
+      "source_location": "L130",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive",
       "target": "scripts_audit_tna_full_prefix_exhaustive_main",
@@ -71750,7 +71820,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L128",
+      "source_location": "L131",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_load_tf",
@@ -71761,7 +71831,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L110",
+      "source_location": "L113",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_check_decision_cutoffs",
       "target": "scripts_audit_tna_full_prefix_exhaustive_py_dataframe",
@@ -71772,7 +71842,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L61",
+      "source_location": "L64",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_check_swings",
       "target": "scripts_audit_tna_full_prefix_exhaustive_py_dataframe",
@@ -71794,7 +71864,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L129",
+      "source_location": "L132",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_manifest",
@@ -71816,7 +71886,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L131",
+      "source_location": "L134",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_git_blob_sha",
@@ -71827,7 +71897,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L135",
+      "source_location": "L138",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_metadata_check",
@@ -71849,7 +71919,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L110",
+      "source_location": "L113",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_check_decision_cutoffs",
       "target": "scripts_audit_tna_full_prefix_exhaustive_py_any",
@@ -71860,7 +71930,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L90",
+      "source_location": "L93",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_check_sequence_history",
       "target": "scripts_audit_tna_full_prefix_exhaustive_py_any",
@@ -71871,7 +71941,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L61",
+      "source_location": "L64",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_check_swings",
       "target": "scripts_audit_tna_full_prefix_exhaustive_py_any",
@@ -71882,7 +71952,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L127",
+      "source_location": "L130",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_py_any",
@@ -71893,7 +71963,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L143",
+      "source_location": "L146",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_check_swings",
@@ -71904,7 +71974,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L144",
+      "source_location": "L147",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_check_sequence_history",
@@ -71915,7 +71985,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_full_prefix_exhaustive.py",
-      "source_location": "L145",
+      "source_location": "L148",
       "weight": 1.0,
       "source": "scripts_audit_tna_full_prefix_exhaustive_main",
       "target": "scripts_audit_tna_full_prefix_exhaustive_check_decision_cutoffs",
@@ -72498,7 +72568,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L456",
+      "source_location": "L457",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_prefix_hash",
@@ -72919,7 +72989,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L469",
+      "source_location": "L470",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_snapshot_payload",
@@ -72974,7 +73044,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L482",
+      "source_location": "L483",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_state_fingerprint",
@@ -73005,7 +73075,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L453",
+      "source_location": "L454",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_batchfingerprintnavigator",
@@ -73049,7 +73119,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L457",
+      "source_location": "L458",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_streamingfingerprintnavigator",
@@ -73122,7 +73192,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L463",
+      "source_location": "L464",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_streamingfingerprintnavigator_advance",
@@ -73144,7 +73214,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L478",
+      "source_location": "L479",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_streamingfingerprintnavigator_navigate",
@@ -73155,7 +73225,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "scripts/audit/tna_streaming_prefix_compare.py",
-      "source_location": "L467",
+      "source_location": "L468",
       "weight": 1.0,
       "source": "scripts_audit_tna_streaming_prefix_compare_main",
       "target": "scripts_audit_tna_streaming_prefix_compare_streamingfingerprintnavigator_snapshot",
@@ -82975,7 +83045,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L110",
+      "source_location": "L124",
       "weight": 1.0,
       "source": "hermes_index_hermes_\u00edndice_maestro_de_trabajo",
       "target": "hermes_index_evidencia_reciente_2026_08_20",
@@ -82985,7 +83055,17 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L135",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "hermes_index_hermes_\u00edndice_maestro_de_trabajo",
+      "target": "hermes_index_evidencia_tna_full_span_2026_08_22",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-index.md",
+      "source_location": "L150",
       "weight": 1.0,
       "source": "hermes_index_hermes_\u00edndice_maestro_de_trabajo",
       "target": "hermes_index_regla_de_oro",
@@ -88068,7 +88148,7 @@
       "source_location": "L23",
       "weight": 1.0,
       "source": "hermes_worklog_2026_08_22_tna_full_prefix_proof_tna_behavioral_full_span_prueba_full_vs_prefix",
-      "target": "hermes_worklog_2026_08_22_tna_full_prefix_proof_bloqueadores",
+      "target": "hermes_worklog_2026_08_22_tna_full_prefix_proof_bloqueadores_hist\u00f3ricos_resueltos",
       "confidence_score": 1.0
     },
     {
@@ -88079,6 +88159,16 @@
       "weight": 1.0,
       "source": "hermes_worklog_2026_08_22_tna_full_prefix_proof_tna_behavioral_full_span_prueba_full_vs_prefix",
       "target": "hermes_worklog_2026_08_22_tna_full_prefix_proof_cambios_causales",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_TNA_FULL_PREFIX_PROOF.md",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_tna_full_prefix_proof_tna_behavioral_full_span_prueba_full_vs_prefix",
+      "target": "hermes_worklog_2026_08_22_tna_full_prefix_proof_cierre_operativo_de_sincronizaci\u00f3n_2026_08_22",
       "confidence_score": 1.0
     },
     {
@@ -88109,6 +88199,16 @@
       "weight": 1.0,
       "source": "hermes_worklog_2026_08_22_tna_full_prefix_proof_tna_behavioral_full_span_prueba_full_vs_prefix",
       "target": "hermes_worklog_2026_08_22_tna_full_prefix_proof_evidencia",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_TNA_FULL_PREFIX_PROOF.md",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_tna_full_prefix_proof_tna_behavioral_full_span_prueba_full_vs_prefix",
+      "target": "hermes_worklog_2026_08_22_tna_full_prefix_proof_recierre_tna_tras_fe_de_erratas_2026_08_22",
       "confidence_score": 1.0
     },
     {
@@ -102434,6 +102534,36 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "reports/audits/2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "reports_audits_2026_08_22_metadata_errata_eurusd",
+      "target": "reports_audits_2026_08_22_metadata_errata_eurusd_fe_de_erratas_metadata_eurusd_dukascopy_20y",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "reports/audits/2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "reports_audits_2026_08_22_metadata_errata_eurusd_fe_de_erratas_metadata_eurusd_dukascopy_20y",
+      "target": "reports_audits_2026_08_22_metadata_errata_eurusd_correcci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "reports/audits/2026-08-22_METADATA_ERRATA_EURUSD.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "reports_audits_2026_08_22_metadata_errata_eurusd_fe_de_erratas_metadata_eurusd_dukascopy_20y",
+      "target": "reports_audits_2026_08_22_metadata_errata_eurusd_integridad",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "reports/audits/ahf_temporal_navigation_SANDBOX.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -102803,5 +102933,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d04e1e8025ced2ab32eb9c29bd5640ac5bc6b3a8"
+  "built_at_commit": "5a39a1f758f57d64e515d004965f99c83b2f9ad5"
 }

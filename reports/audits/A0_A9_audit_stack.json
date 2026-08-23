@@ -2,8 +2,8 @@
   "audit": "A0_A9_FULL_STACK",
   "status": "PASS",
   "scope": "versioned Dukascopy snapshot + versioned real Funnel/TNA evidence; no PnL/no entry",
-  "generated_at": "2026-08-23T00:31:23.064448+00:00",
-  "commit": "93204094666fa2be0e670ecbd3fef75d45926d03",
+  "generated_at": "2026-08-23T00:40:50.702272+00:00",
+  "commit": "49702fde82c137cdf9ea7f5dd056c8164ef8c9b4",
   "dataset": "datasets\\eurusd_dukascopy_20y",
   "csv_hashes": {
     "EURUSD_D1.csv": {
@@ -184,11 +184,11 @@
         "docs\\contratos\\CONTRATO_FUNNEL_AUDIT.md",
         ".hermes-worklog"
       ],
-      "commit": "93204094666fa2be0e670ecbd3fef75d45926d03",
+      "commit": "49702fde82c137cdf9ea7f5dd056c8164ef8c9b4",
       "reports_present": true,
       "policy": "NO_PNL_NO_ENTRY"
     }
   },
-  "fingerprint": "c80d48a1055cab123e62ba09b06f57683ca28ca824814ef0a926c249af63844c",
-  "timestamp": "2026-08-23T00:31:23.114030+00:00"
+  "fingerprint": "8b290a96320617ca57995ee348f37a7184889807dd05c9a19980bf4aca37884d",
+  "timestamp": "2026-08-23T00:40:50.753769+00:00"
 }

@@ -14,7 +14,6 @@
   },
   "findings": [],
   "fingerprint": "ab1bb627d668f52d74f44b6a587c8799394b9c6f8581dc3b439bda21cc5cb538",
-  "timestamp": "2026-08-18T20:58:58.017543+00:00",
-  "scope": "contract-smoke + existing historical Funnel evidence",
-  "historical_funnel_report": "/home/workdir/artifacts/ict_audit_run/docs/AUDITORIA_FUNNEL_EURUSD_H1_H4_D1.md"
+  "scope": "contract-smoke",
+  "timestamp": "2026-08-23T00:30:29.500575+00:00"
 }

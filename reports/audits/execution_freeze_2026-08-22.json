@@ -1,0 +1,53 @@
+{
+  "audit": "EXECUTION_FREEZE",
+  "status": "PASS",
+  "freeze_id": "EXECUTION_INTRADAY_M15_V1",
+  "profile": {
+    "htf": [
+      "H1",
+      "H4"
+    ],
+    "itf": "M15",
+    "exec_tf": "M15",
+    "timestamp_basis": "closed UTC candle; time <= decision_time",
+    "bias": "last closed HTF context must be directionally available",
+    "zone": "canonical FVG/OB on ITF with valid lineage",
+    "retest": "first subsequent closed M15 candle returning to the validated zone",
+    "entry": "last confirmed opposite swing on exec TF; closed-candle close fallback",
+    "sl": "sweep wick on M15 plus/minus 0.3 times the mean closed M15 range",
+    "tp": "deterministic 3R level; expose opposing-liquidity extreme for consumer validation",
+    "rr_min": 3.0,
+    "timezone": "UTC canonical; killzone conversion uses engine.killzone",
+    "max_active_positions": 1,
+    "no_pyramiding": true
+  },
+  "source_hashes_match": true,
+  "contract_valid": true,
+  "closed_candle_invariance": true,
+  "base_result": {
+    "ok": true,
+    "exec_tf": "M15",
+    "entry": 1.119,
+    "sl": 1.094,
+    "tp": 1.194,
+    "tp_ext": 1.122,
+    "rng_exec": 0.006999999999999895,
+    "rr": 3.0,
+    "reason": "fine_exec_structural"
+  },
+  "replay_result": {
+    "ok": true,
+    "exec_tf": "M15",
+    "entry": 1.119,
+    "sl": 1.094,
+    "tp": 1.194,
+    "tp_ext": 1.122,
+    "rng_exec": 0.006999999999999895,
+    "rr": 3.0,
+    "reason": "fine_exec_structural"
+  },
+  "limitations": [
+    "This freeze covers the intraday M15 profile only.",
+    "M5/M1/scalping and a separate M15 execution dataset require a future authorized freeze or data gate."
+  ]
+}

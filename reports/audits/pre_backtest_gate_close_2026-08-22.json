@@ -1,0 +1,23 @@
+{
+  "audit": "PRE_BACKTEST_GATE_CLOSE",
+  "status": "PASS",
+  "generated_at": "2026-08-23T00:25:20.305964+00:00",
+  "conditions": {
+    "A0_A9_FULL_STACK": true,
+    "FUNNEL_20Y": true,
+    "TNA_FULL_PREFIX": true,
+    "EXECUTION_FREEZE": true
+  },
+  "backtest_authorization": "REQUIRES_EXPLICIT_CLIENT_DECISION",
+  "policy": "NO_PNL_NO_ENTRY_NO_AUTOMATIC_PROMOTION",
+  "scope_limitations": [
+    "This freeze covers the intraday M15 profile only.",
+    "M5/M1/scalping and a separate M15 execution dataset require a future authorized freeze or data gate."
+  ],
+  "artifacts": {
+    "A0_A9": "reports/audits/A0_A9_audit_stack.json",
+    "Funnel": "reports/audits/mtf_seq_funnel.json",
+    "TNA": "reports/audits/tna_streaming_prefix_2026-08-22.json",
+    "Execution": "reports/audits/execution_freeze_2026-08-22.json"
+  }
+}

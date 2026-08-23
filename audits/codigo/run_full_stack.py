@@ -1,16 +1,13 @@
-"""CLI reproducible para ejecutar A0-A9 en secuencia y luego A7 Funnel.
-
-El stack ejecuta contratos y smoke tests reproducibles. La evidencia histórica
-real del Funnel EURUSD H1/H4/D1 se referencia por separado; no se inventan
-conteos FVG/OB que no hayan sido extraídos por un pipeline real.
-"""
+"""CLI reproducible para ejecutar evidencia A0-A9 real o contract-smoke."""
 from __future__ import annotations
 
+import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
 
 from .audit_stack import run_stack
+from .full_stack import run_real_stack
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "reports" / "audits"
@@ -46,16 +43,20 @@ def smoke_funnel():
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--scope", choices=("real", "smoke"), default="real")
+    args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    stack = run_stack(smoke_rows(), smoke_events(), smoke_funnel())
+    if args.scope == "real":
+        stack = run_real_stack()
+    else:
+        stack = run_stack(smoke_rows(), smoke_events(), smoke_funnel())
+        stack["scope"] = "contract-smoke"
     stack["timestamp"] = datetime.now(timezone.utc).isoformat()
-    stack["scope"] = "contract-smoke + existing historical Funnel evidence"
-    historical = ROOT / "docs" / "AUDITORIA_FUNNEL_EURUSD_H1_H4_D1.md"
-    stack["historical_funnel_report"] = str(historical) if historical.exists() else None
     path = OUT / "A0_A9_audit_stack.json"
     path.write_text(json.dumps(stack, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(stack, ensure_ascii=False, indent=2))
-    return 0 if stack["status"] in {"PASS", "WARN"} else 1
+    return 0 if stack["status"] == "PASS" else 1
 
 
 if __name__ == "__main__":

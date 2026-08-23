@@ -1,7 +1,7 @@
 # Plan de Auditorías Pre-Backtest — ICT FVG/OB
 
 **Estado:** ACTIVO / EJECUCIÓN OBLIGATORIA ANTES DE BACKTEST
-**Última actualización:** 2026-08-18
+**Última actualización:** 2026-08-22
 **Implementación:** `audits/codigo/`
 
 ## 1. Objetivo
@@ -39,11 +39,13 @@ No se permite saltar un Gate. Un Gate en `FAIL` bloquea el siguiente.
 ## 3. Implementación canónica
 
 - `audits/codigo/audit_stack.py` — A0→A9.
-- `audits/codigo/run_full_stack.py` — CLI reproducible.
+- `audits/codigo/full_stack.py` — evidencia full-stack A0→A9 sobre snapshot canónico.
+- `audits/codigo/run_full_stack.py` — CLI reproducible (`--scope real|smoke`).
 - `audits/codigo/data_integrity.py` — A0.
 - `audits/codigo/temporal.py` — A2.
 - `audits/codigo/funnel.py` — contrato A7.
 - `audits/codigo/fvg_ob_funnel.py` — Funnel real de FVG/OB sobre EURUSD H1/H4/D1 usando los detectores canónicos.
+- `audits/codigo/run_execution_freeze.py` — valida el contrato de ejecución congelado sin PnL ni órdenes.
 
 ## 4. Regla de evidencia
 
@@ -74,8 +76,23 @@ A0-A9 sólo puede declararse `PASS` cuando:
 - A8/A9 no presentan blockers;
 - el reporte y `.hermes-index.md` están sincronizados.
 
-## 7. Backtest
+La ejecución local reproducible del 2026-08-22 cumple estas condiciones:
+`reports/audits/A0_A9_audit_stack.json` (`status=PASS`, A0..A9 PASS, hashes de Git verificados).
+La confirmación del workflow `.github/workflows/20-hermes-audit-stack.yml` queda como control CI pendiente.
 
-`BACKTEST_BLOCKED` hasta cerrar el stack completo.
+## 7. Ejecución congelada
+
+El gate de ejecución se valida por separado con `EXECUTION_INTRADAY_M15_V1`:
+
+```text
+C:\Python314\python.exe -m audits.codigo.run_execution_freeze
+```
+
+El contrato cubre HTF H1/H4, decisión en vela cerrada, entrada/retest M15, SL determinista y TP 3R.
+No cubre M5/M1/scalping, PnL, envío de órdenes ni promoción automática.
+
+## 8. Backtest
+
+Aunque el cierre agregado sea PASS, cualquier backtest necesita decisión explícita del cliente y un runtime/dataset de ejecución que satisfaga su propio gate.
 
 M5 permanece diferido y no puede utilizarse como evidencia hasta disponer de una fuente reproducible.

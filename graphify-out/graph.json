@@ -1164,6 +1164,56 @@
       "norm_label": "carga un fixture minimo para el smoke audit; datasets reales se conectan despues"
     },
     {
+      "label": "close_pre_backtest_gates.py",
+      "file_type": "code",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_close_pre_backtest_gates",
+      "community": 216,
+      "norm_label": "close_pre_backtest_gates.py"
+    },
+    {
+      "label": "_read()",
+      "file_type": "code",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "audits_codigo_close_pre_backtest_gates_read",
+      "community": 216,
+      "norm_label": "_read()"
+    },
+    {
+      "label": "close()",
+      "file_type": "code",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "audits_codigo_close_pre_backtest_gates_close",
+      "community": 216,
+      "norm_label": "close()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "audits_codigo_close_pre_backtest_gates_main",
+      "community": 216,
+      "norm_label": "main()"
+    },
+    {
+      "label": "Close the two remaining pre-backtest gate conditions without running a backtest.",
+      "file_type": "rationale",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_close_pre_backtest_gates_rationale_1",
+      "community": 216,
+      "norm_label": "close the two remaining pre-backtest gate conditions without running a backtest."
+    },
+    {
       "label": "data_integrity.py",
       "file_type": "code",
       "source_file": "audits/codigo/data_integrity.py",
@@ -1202,6 +1252,256 @@
       "id": "audits_codigo_data_integrity_rationale_1",
       "community": 2,
       "norm_label": "auditor determinista de integridad ohlc."
+    },
+    {
+      "label": "execution_freeze.py",
+      "file_type": "code",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze",
+      "community": 63,
+      "norm_label": "execution_freeze.py"
+    },
+    {
+      "label": "_sha256()",
+      "file_type": "code",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze_sha256",
+      "community": 63,
+      "norm_label": "_sha256()"
+    },
+    {
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze_py_path",
+      "community": 63,
+      "norm_label": "path"
+    },
+    {
+      "label": "_synthetic_frames()",
+      "file_type": "code",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze_synthetic_frames",
+      "community": 63,
+      "norm_label": "_synthetic_frames()"
+    },
+    {
+      "label": "DataFrame",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze_py_dataframe",
+      "community": 63,
+      "norm_label": "dataframe"
+    },
+    {
+      "label": "validate()",
+      "file_type": "code",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze_validate",
+      "community": 63,
+      "norm_label": "validate()"
+    },
+    {
+      "label": "Validate the frozen intraday M15 execution contract.  This is a configuration/in",
+      "file_type": "rationale",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze_rationale_1",
+      "community": 63,
+      "norm_label": "validate the frozen intraday m15 execution contract.  this is a configuration/in"
+    },
+    {
+      "label": "full_stack.py",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack",
+      "community": 2,
+      "norm_label": "full_stack.py"
+    },
+    {
+      "label": "_load_frames()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_load_frames",
+      "community": 2,
+      "norm_label": "_load_frames()"
+    },
+    {
+      "label": "DataFrame",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_py_dataframe",
+      "community": 2,
+      "norm_label": "dataframe"
+    },
+    {
+      "label": "_git_blob_sha()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_git_blob_sha",
+      "community": 2,
+      "norm_label": "_git_blob_sha()"
+    },
+    {
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_py_path",
+      "community": 2,
+      "norm_label": "path"
+    },
+    {
+      "label": "_status()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_status",
+      "community": 2,
+      "norm_label": "_status()"
+    },
+    {
+      "label": "_real_a0()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a0",
+      "community": 2,
+      "norm_label": "_real_a0()"
+    },
+    {
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_py_any",
+      "community": 2,
+      "norm_label": "any"
+    },
+    {
+      "label": "_real_a1()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a1",
+      "community": 2,
+      "norm_label": "_real_a1()"
+    },
+    {
+      "label": "_real_a2()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L82",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a2",
+      "community": 2,
+      "norm_label": "_real_a2()"
+    },
+    {
+      "label": "_real_a3()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a3",
+      "community": 2,
+      "norm_label": "_real_a3()"
+    },
+    {
+      "label": "_real_a5()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a5",
+      "community": 2,
+      "norm_label": "_real_a5()"
+    },
+    {
+      "label": "_real_a6()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L128",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a6",
+      "community": 2,
+      "norm_label": "_real_a6()"
+    },
+    {
+      "label": "_real_a7()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L146",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a7",
+      "community": 2,
+      "norm_label": "_real_a7()"
+    },
+    {
+      "label": "_real_a8()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L163",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a8",
+      "community": 2,
+      "norm_label": "_real_a8()"
+    },
+    {
+      "label": "_real_a9()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L182",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_real_a9",
+      "community": 2,
+      "norm_label": "_real_a9()"
+    },
+    {
+      "label": "run_real_stack()",
+      "file_type": "code",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L200",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_run_real_stack",
+      "community": 2,
+      "norm_label": "run_real_stack()"
+    },
+    {
+      "label": "Evidencia reproducible A0-A9 sobre snapshot y artefactos versionados.  No calcul",
+      "file_type": "rationale",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_full_stack_rationale_1",
+      "community": 2,
+      "norm_label": "evidencia reproducible a0-a9 sobre snapshot y artefactos versionados.  no calcul"
     },
     {
       "label": "funnel.py",
@@ -1284,10 +1584,30 @@
       "norm_label": "fvg_ob_funnel.py"
     },
     {
+      "label": "_source_for()",
+      "file_type": "code",
+      "source_file": "audits/codigo/fvg_ob_funnel.py",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "audits_codigo_fvg_ob_funnel_source_for",
+      "community": 9,
+      "norm_label": "_source_for()"
+    },
+    {
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "audits_codigo_fvg_ob_funnel_py_path",
+      "community": 9,
+      "norm_label": "path"
+    },
+    {
       "label": "load_csv()",
       "file_type": "code",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L29",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "audits_codigo_fvg_ob_funnel_load_csv",
       "community": 9,
@@ -1297,7 +1617,7 @@
       "label": "one_tf()",
       "file_type": "code",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L50",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "audits_codigo_fvg_ob_funnel_one_tf",
       "community": 9,
@@ -1307,7 +1627,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L108",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "audits_codigo_fvg_ob_funnel_main",
       "community": 9,
@@ -1564,6 +1884,36 @@
       "norm_label": "sample decision times on h1 and audit navigation path completeness."
     },
     {
+      "label": "run_execution_freeze.py",
+      "file_type": "code",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_run_execution_freeze",
+      "community": 63,
+      "norm_label": "run_execution_freeze.py"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "audits_codigo_run_execution_freeze_main",
+      "community": 63,
+      "norm_label": "main()"
+    },
+    {
+      "label": "CLI for the frozen execution contract gate.",
+      "file_type": "rationale",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "audits_codigo_run_execution_freeze_rationale_1",
+      "community": 63,
+      "norm_label": "cli for the frozen execution contract gate."
+    },
+    {
       "label": "run_full_stack.py",
       "file_type": "code",
       "source_file": "audits/codigo/run_full_stack.py",
@@ -1577,7 +1927,7 @@
       "label": "smoke_rows()",
       "file_type": "code",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L19",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "audits_codigo_run_full_stack_smoke_rows",
       "community": 2,
@@ -1587,7 +1937,7 @@
       "label": "smoke_events()",
       "file_type": "code",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L27",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "audits_codigo_run_full_stack_smoke_events",
       "community": 2,
@@ -1597,7 +1947,7 @@
       "label": "smoke_funnel()",
       "file_type": "code",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L33",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "audits_codigo_run_full_stack_smoke_funnel",
       "community": 2,
@@ -1607,21 +1957,21 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L48",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "audits_codigo_run_full_stack_main",
       "community": 2,
       "norm_label": "main()"
     },
     {
-      "label": "CLI reproducible para ejecutar A0-A9 en secuencia y luego A7 Funnel.  El stack",
+      "label": "CLI reproducible para ejecutar evidencia A0-A9 real o contract-smoke.",
       "file_type": "rationale",
       "source_file": "audits/codigo/run_full_stack.py",
       "source_location": "L1",
       "_origin": "ast",
       "id": "audits_codigo_run_full_stack_rationale_1",
       "community": 2,
-      "norm_label": "cli reproducible para ejecutar a0-a9 en secuencia y luego a7 funnel.  el stack"
+      "norm_label": "cli reproducible para ejecutar evidencia a0-a9 real o contract-smoke."
     },
     {
       "label": "temporal.py",
@@ -1760,7 +2110,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "detectors_bos_bosconfig",
-      "community": 4,
+      "community": 23,
       "norm_label": "bosconfig"
     },
     {
@@ -1870,7 +2220,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "detectors_displacement",
-      "community": 216,
+      "community": 106,
       "norm_label": "displacement.py"
     },
     {
@@ -1880,7 +2230,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "detectors_displacement_displacementconfig",
-      "community": 4,
+      "community": 6,
       "norm_label": "displacementconfig"
     },
     {
@@ -1890,7 +2240,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "detectors_displacement_avg_candle_range",
-      "community": 216,
+      "community": 106,
       "norm_label": "_avg_candle_range()"
     },
     {
@@ -1900,7 +2250,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_displacement_py_dataframe",
-      "community": 216,
+      "community": 106,
       "norm_label": "dataframe"
     },
     {
@@ -1910,7 +2260,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_displacement_py_series",
-      "community": 216,
+      "community": 106,
       "norm_label": "series"
     },
     {
@@ -1920,7 +2270,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "detectors_displacement_detect_displacement",
-      "community": 216,
+      "community": 106,
       "norm_label": "detect_displacement()"
     },
     {
@@ -1930,7 +2280,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "detectors_displacement_rationale_20",
-      "community": 216,
+      "community": 106,
       "norm_label": "rango promedio de la vela = media movil de (high - low).      matematica pura"
     },
     {
@@ -1940,7 +2290,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "detectors_fvg",
-      "community": 106,
+      "community": 72,
       "norm_label": "fvg.py"
     },
     {
@@ -1950,7 +2300,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "detectors_fvg_detect_fvg",
-      "community": 106,
+      "community": 72,
       "norm_label": "detect_fvg()"
     },
     {
@@ -1960,7 +2310,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_fvg_py_dataframe",
-      "community": 106,
+      "community": 72,
       "norm_label": "dataframe"
     },
     {
@@ -1970,7 +2320,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "detectors_fvg_track_fvg_fill",
-      "community": 106,
+      "community": 72,
       "norm_label": "_track_fvg_fill()"
     },
     {
@@ -1980,7 +2330,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_fvg_py_series",
-      "community": 106,
+      "community": 72,
       "norm_label": "series"
     },
     {
@@ -2260,7 +2610,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "detectors_ob",
-      "community": 239,
+      "community": 106,
       "norm_label": "ob.py"
     },
     {
@@ -2270,7 +2620,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "detectors_ob_detect_order_blocks",
-      "community": 239,
+      "community": 106,
       "norm_label": "detect_order_blocks()"
     },
     {
@@ -2280,7 +2630,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_ob_py_dataframe",
-      "community": 239,
+      "community": 106,
       "norm_label": "dataframe"
     },
     {
@@ -2290,7 +2640,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "detectors_ob_track_ob_validity",
-      "community": 239,
+      "community": 106,
       "norm_label": "_track_ob_validity()"
     },
     {
@@ -2300,7 +2650,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_ob_py_series",
-      "community": 239,
+      "community": 106,
       "norm_label": "series"
     },
     {
@@ -3560,7 +3910,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "engine_bias_narrative_swing_points",
-      "community": 63,
+      "community": 37,
       "norm_label": "_swing_points()"
     },
     {
@@ -3580,7 +3930,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_bias_narrative_py_series",
-      "community": 63,
+      "community": 37,
       "norm_label": "series"
     },
     {
@@ -3590,7 +3940,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "engine_bias_narrative_label_swings",
-      "community": 63,
+      "community": 37,
       "norm_label": "_label_swings()"
     },
     {
@@ -3690,7 +4040,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "engine_bias_narrative_rationale_103",
-      "community": 63,
+      "community": 37,
       "norm_label": "swing high/low sin look-ahead, version humana.      confirmacion por rotura/re"
     },
     {
@@ -3700,7 +4050,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "engine_bias_narrative_rationale_144",
-      "community": 63,
+      "community": 37,
       "norm_label": "etiqueta hh/hl/lh/ll por swing confirmado (version humana)."
     },
     {
@@ -3800,7 +4150,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "engine_bias_from_tools_bias_from_tools_htf",
-      "community": 83,
+      "community": 37,
       "norm_label": "bias_from_tools_htf()"
     },
     {
@@ -3850,7 +4200,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "engine_bias_from_tools_rationale_196",
-      "community": 83,
+      "community": 37,
       "norm_label": "sesgo htf unificado usando las herramientas corregidas de tools/.      equival"
     },
     {
@@ -4260,7 +4610,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative",
-      "community": 83,
+      "community": 37,
       "norm_label": "htf_narrative.py"
     },
     {
@@ -4270,7 +4620,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_resolve_bias",
-      "community": 83,
+      "community": 37,
       "norm_label": "_resolve_bias()"
     },
     {
@@ -4280,7 +4630,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_py_dataframe",
-      "community": 83,
+      "community": 12,
       "norm_label": "dataframe"
     },
     {
@@ -4290,7 +4640,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_last_bos_event",
-      "community": 83,
+      "community": 12,
       "norm_label": "_last_bos_event()"
     },
     {
@@ -4300,7 +4650,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_fmt",
-      "community": 83,
+      "community": 37,
       "norm_label": "_fmt()"
     },
     {
@@ -4310,7 +4660,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_build_summary",
-      "community": 83,
+      "community": 37,
       "norm_label": "_build_summary()"
     },
     {
@@ -4320,7 +4670,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_build_htf_narrative",
-      "community": 83,
+      "community": 12,
       "norm_label": "build_htf_narrative()"
     },
     {
@@ -4330,7 +4680,7 @@
       "source_location": "L257",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_narrative_ready_for_trade",
-      "community": 83,
+      "community": 37,
       "norm_label": "narrative_ready_for_trade()"
     },
     {
@@ -4340,7 +4690,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_1",
-      "community": 83,
+      "community": 37,
       "norm_label": "compatibility htf narrative \u2014 non-authoritative reader.  une los pedazos suelt"
     },
     {
@@ -4350,7 +4700,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_44",
-      "community": 83,
+      "community": 37,
       "norm_label": "sesgo htf vigente. si no se pasa uno, se deriva del propio frame.      el fram"
     },
     {
@@ -4360,7 +4710,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_69",
-      "community": 83,
+      "community": 12,
       "norm_label": "ultimo bos del frame: {'index': i, 'direction': bullish|bearish}.      con exp"
     },
     {
@@ -4370,7 +4720,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_90",
-      "community": 83,
+      "community": 37,
       "norm_label": "formato compacto de precio para el resumen."
     },
     {
@@ -4380,7 +4730,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_98",
-      "community": 83,
+      "community": 37,
       "norm_label": "resumen legible en espanol de la idea del dia."
     },
     {
@@ -4390,7 +4740,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_127",
-      "community": 83,
+      "community": 12,
       "norm_label": "mapa ict completo de la vela actual (la idea del dia).      args:         fra"
     },
     {
@@ -4400,7 +4750,7 @@
       "source_location": "L258",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_258",
-      "community": 83,
+      "community": 37,
       "norm_label": "true solo si el htf esta completo: sesgo + zona + poi + objetivo."
     },
     {
@@ -4860,7 +5210,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_dealing_range_eq",
-      "community": 5,
+      "community": 92,
       "norm_label": "dealing_range_eq.py"
     },
     {
@@ -4870,7 +5220,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_eq",
-      "community": 5,
+      "community": 92,
       "norm_label": "_eq()"
     },
     {
@@ -4880,7 +5230,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_classify_zone",
-      "community": 5,
+      "community": 92,
       "norm_label": "classify_zone()"
     },
     {
@@ -4890,7 +5240,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_zone_ok_for_direction",
-      "community": 5,
+      "community": 92,
       "norm_label": "zone_ok_for_direction()"
     },
     {
@@ -4900,7 +5250,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput",
-      "community": 5,
+      "community": 92,
       "norm_label": "dealingrangeinput"
     },
     {
@@ -4910,7 +5260,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_eq",
-      "community": 5,
+      "community": 92,
       "norm_label": ".eq()"
     },
     {
@@ -4920,7 +5270,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_rng",
-      "community": 5,
+      "community": 92,
       "norm_label": ".rng()"
     },
     {
@@ -4930,7 +5280,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_classify",
-      "community": 5,
+      "community": 92,
       "norm_label": ".classify()"
     },
     {
@@ -4940,7 +5290,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_ok_for_direction",
-      "community": 5,
+      "community": 92,
       "norm_label": ".ok_for_direction()"
     },
     {
@@ -4950,7 +5300,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_is_close_to",
-      "community": 5,
+      "community": 92,
       "norm_label": "_is_close_to()"
     },
     {
@@ -4960,7 +5310,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_compute_zone_class",
-      "community": 5,
+      "community": 92,
       "norm_label": "compute_zone_class()"
     },
     {
@@ -4970,7 +5320,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_resolve_swing_from_ms",
-      "community": 5,
+      "community": 92,
       "norm_label": "resolve_swing_from_ms()"
     },
     {
@@ -4980,7 +5330,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_1",
-      "community": 5,
+      "community": 92,
       "norm_label": "ict_backtest/dealing_range.py \u2014 brecha c: dealing range premium/discount (fase 5"
     },
     {
@@ -4990,7 +5340,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_27",
-      "community": 5,
+      "community": 92,
       "norm_label": "clasifica la zona segun el dealing range del swing htf.      usa el midpoint d"
     },
     {
@@ -5000,7 +5350,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_44",
-      "community": 5,
+      "community": 92,
       "norm_label": "si la zona favorece la direccion del setup.      long (1) quiere discount; sho"
     },
     {
@@ -5010,7 +5360,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_97",
-      "community": 5,
+      "community": 92,
       "norm_label": "devuelve la clase del deal range para la senal actual, o ``none``     cuando no"
     },
     {
@@ -5020,7 +5370,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_125",
-      "community": 5,
+      "community": 92,
       "norm_label": "swing htf cerrado antes de ``at_time``.      anti look-ahead: solo velas con `"
     },
     {
@@ -5050,7 +5400,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_fvg",
-      "community": 56,
+      "community": 9,
       "norm_label": "fvg.py"
     },
     {
@@ -5060,7 +5410,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "engine_detectors_fvg_candle",
-      "community": 56,
+      "community": 9,
       "norm_label": "_candle"
     },
     {
@@ -5100,7 +5450,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_fvg_rationale_1",
-      "community": 56,
+      "community": 9,
       "norm_label": "canonical causal ict fair value gap detector."
     },
     {
@@ -5120,7 +5470,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_ob",
-      "community": 56,
+      "community": 9,
       "norm_label": "ob.py"
     },
     {
@@ -5130,7 +5480,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle",
-      "community": 56,
+      "community": 9,
       "norm_label": "_candle"
     },
     {
@@ -5140,7 +5490,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_body_ratio",
-      "community": 56,
+      "community": 9,
       "norm_label": ".body_ratio()"
     },
     {
@@ -5150,7 +5500,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_bullish",
-      "community": 56,
+      "community": 9,
       "norm_label": ".bullish()"
     },
     {
@@ -5160,7 +5510,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_bearish",
-      "community": 56,
+      "community": 9,
       "norm_label": ".bearish()"
     },
     {
@@ -5200,7 +5550,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_ob_rationale_1",
-      "community": 56,
+      "community": 9,
       "norm_label": "canonical ict order block detector."
     },
     {
@@ -5630,7 +5980,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_narrative",
-      "community": 83,
+      "community": 37,
       "norm_label": "htf_narrative.py"
     },
     {
@@ -5640,7 +5990,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_narrative_rationale_1",
-      "community": 83,
+      "community": 37,
       "norm_label": "compatibility wrapper for the former htf narrative module.  the implementation"
     },
     {
@@ -5860,7 +6210,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "engine_invalidation_opposite_swing_level",
-      "community": 1,
+      "community": 37,
       "norm_label": "_opposite_swing_level()"
     },
     {
@@ -5910,7 +6260,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "engine_invalidation_rationale_102",
-      "community": 1,
+      "community": 37,
       "norm_label": "nivel del swing opuesto confirmado cerrado hasta el sweep (ley 4)."
     },
     {
@@ -6760,7 +7110,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_market_object",
-      "community": 56,
+      "community": 5,
       "norm_label": "market_object.py"
     },
     {
@@ -6770,7 +7120,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "engine_market_object_objecttype",
-      "community": 56,
+      "community": 5,
       "norm_label": "objecttype"
     },
     {
@@ -6780,7 +7130,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_market_object_py_str",
-      "community": 56,
+      "community": 5,
       "norm_label": "str"
     },
     {
@@ -6790,7 +7140,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_market_object_py_enum",
-      "community": 56,
+      "community": 5,
       "norm_label": "enum"
     },
     {
@@ -6800,7 +7150,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "engine_market_object_role",
-      "community": 56,
+      "community": 5,
       "norm_label": "role"
     },
     {
@@ -6810,7 +7160,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "engine_market_object_objectstate",
-      "community": 56,
+      "community": 71,
       "norm_label": "objectstate"
     },
     {
@@ -6870,7 +7220,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_can_transition_to",
-      "community": 1,
+      "community": 71,
       "norm_label": ".can_transition_to()"
     },
     {
@@ -6880,7 +7230,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_transition_to",
-      "community": 1,
+      "community": 71,
       "norm_label": ".transition_to()"
     },
     {
@@ -6900,7 +7250,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_to_dict",
-      "community": 56,
+      "community": 5,
       "norm_label": ".to_dict()"
     },
     {
@@ -6910,7 +7260,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_from_dict",
-      "community": 56,
+      "community": 52,
       "norm_label": ".from_dict()"
     },
     {
@@ -6920,7 +7270,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_market_object_rationale_1",
-      "community": 56,
+      "community": 5,
       "norm_label": "objeto de mercado ict (fuente canonica del motor).  un marketobject representa"
     },
     {
@@ -7250,7 +7600,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "engine_mtf_navigation_zone_to_dict",
-      "community": 13,
+      "community": 56,
       "norm_label": ".to_dict()"
     },
     {
@@ -7260,7 +7610,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_mtf_navigation_py_any",
-      "community": 13,
+      "community": 56,
       "norm_label": "any"
     },
     {
@@ -7270,7 +7620,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "engine_mtf_navigation_layersnapshot",
-      "community": 16,
+      "community": 56,
       "norm_label": "layersnapshot"
     },
     {
@@ -7280,7 +7630,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "engine_mtf_navigation_layersnapshot_to_dict",
-      "community": 13,
+      "community": 56,
       "norm_label": ".to_dict()"
     },
     {
@@ -7290,7 +7640,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "engine_mtf_navigation_contextconstraints",
-      "community": 16,
+      "community": 6,
       "norm_label": "contextconstraints"
     },
     {
@@ -7300,7 +7650,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "engine_mtf_navigation_contextconstraints_to_dict",
-      "community": 13,
+      "community": 56,
       "norm_label": ".to_dict()"
     },
     {
@@ -7310,7 +7660,7 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigationpath",
-      "community": 13,
+      "community": 56,
       "norm_label": "navigationpath"
     },
     {
@@ -7320,7 +7670,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigationpath_add",
-      "community": 13,
+      "community": 56,
       "norm_label": ".add()"
     },
     {
@@ -7330,7 +7680,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigationpath_to_dict",
-      "community": 13,
+      "community": 56,
       "norm_label": ".to_dict()"
     },
     {
@@ -7350,7 +7700,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "engine_mtf_navigation_marketstate_to_dict",
-      "community": 13,
+      "community": 56,
       "norm_label": ".to_dict()"
     },
     {
@@ -7360,7 +7710,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "engine_mtf_navigation_ensure_time",
-      "community": 23,
+      "community": 13,
       "norm_label": "_ensure_time()"
     },
     {
@@ -7370,7 +7720,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_mtf_navigation_py_dataframe",
-      "community": 23,
+      "community": 13,
       "norm_label": "dataframe"
     },
     {
@@ -7450,7 +7800,7 @@
       "source_location": "L376",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigatorconfig",
-      "community": 14,
+      "community": 13,
       "norm_label": "navigatorconfig"
     },
     {
@@ -7470,7 +7820,7 @@
       "source_location": "L403",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_init",
-      "community": 23,
+      "community": 13,
       "norm_label": ".__init__()"
     },
     {
@@ -7510,7 +7860,7 @@
       "source_location": "L563",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_d1",
-      "community": 13,
+      "community": 56,
       "norm_label": "._answer_d1()"
     },
     {
@@ -7520,7 +7870,7 @@
       "source_location": "L577",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_h4",
-      "community": 13,
+      "community": 56,
       "norm_label": "._answer_h4()"
     },
     {
@@ -7530,7 +7880,7 @@
       "source_location": "L612",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_h1",
-      "community": 13,
+      "community": 56,
       "norm_label": "._answer_h1()"
     },
     {
@@ -7540,7 +7890,7 @@
       "source_location": "L650",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_ltf",
-      "community": 13,
+      "community": 56,
       "norm_label": "._answer_ltf()"
     },
     {
@@ -7550,7 +7900,7 @@
       "source_location": "L669",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_build_constraints",
-      "community": 13,
+      "community": 56,
       "norm_label": "._build_constraints()"
     },
     {
@@ -7590,7 +7940,7 @@
       "source_location": "L776",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_navigate",
-      "community": 13,
+      "community": 56,
       "norm_label": ".navigate()"
     },
     {
@@ -7600,7 +7950,7 @@
       "source_location": "L844",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_navigate_series",
-      "community": 13,
+      "community": 56,
       "norm_label": ".navigate_series()"
     },
     {
@@ -7630,7 +7980,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_117",
-      "community": 16,
+      "community": 56,
       "norm_label": "estado point-in-time de una temporalidad (solo velas cerradas)."
     },
     {
@@ -7640,7 +7990,7 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_155",
-      "community": 16,
+      "community": 6,
       "norm_label": "mapa de restricciones emitido por el grafo (no es senal)."
     },
     {
@@ -7650,7 +8000,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_186",
-      "community": 13,
+      "community": 56,
       "norm_label": "camino recorrido en el grafo (auditoria)."
     },
     {
@@ -7730,7 +8080,7 @@
       "source_location": "L782",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_782",
-      "community": 13,
+      "community": 56,
       "norm_label": "recorre el grafo d1\u2192...\u2192exec y devuelve marketstate + constraints.          neve"
     },
     {
@@ -8220,7 +8570,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "engine_plan_attach_zone_ok_for_m15",
-      "community": 5,
+      "community": 92,
       "norm_label": "_zone_ok_for_m15()"
     },
     {
@@ -9340,7 +9690,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "engine_sequence_sequenceconfig",
-      "community": 56,
+      "community": 1,
       "norm_label": "sequenceconfig"
     },
     {
@@ -9390,7 +9740,7 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "engine_sequence_sequencestate_from_snapshot",
-      "community": 1,
+      "community": 52,
       "norm_label": ".from_snapshot()"
     },
     {
@@ -9410,7 +9760,7 @@
       "source_location": "L246",
       "_origin": "ast",
       "id": "engine_sequence_sequencestate_load",
-      "community": 1,
+      "community": 52,
       "norm_label": ".load()"
     },
     {
@@ -9430,7 +9780,7 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "engine_sequence_nan_safe",
-      "community": 1,
+      "community": 52,
       "norm_label": "_nan_safe()"
     },
     {
@@ -9460,7 +9810,7 @@
       "source_location": "L284",
       "_origin": "ast",
       "id": "engine_sequence_rule_from_dict",
-      "community": 1,
+      "community": 52,
       "norm_label": "_rule_from_dict()"
     },
     {
@@ -9470,7 +9820,7 @@
       "source_location": "L297",
       "_origin": "ast",
       "id": "engine_sequence_candle_objects",
-      "community": 39,
+      "community": 1,
       "norm_label": "_candle_objects()"
     },
     {
@@ -9480,7 +9830,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_sequence_py_dataframe",
-      "community": 39,
+      "community": 1,
       "norm_label": "dataframe"
     },
     {
@@ -9690,7 +10040,7 @@
       "source_location": "L1105",
       "_origin": "ast",
       "id": "engine_sequence_run_sequence_traced",
-      "community": 39,
+      "community": 1,
       "norm_label": "run_sequence_traced()"
     },
     {
@@ -9700,7 +10050,7 @@
       "source_location": "L1132",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner",
-      "community": 39,
+      "community": 1,
       "norm_label": "sequencerunner"
     },
     {
@@ -9710,7 +10060,7 @@
       "source_location": "L1145",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner_init",
-      "community": 39,
+      "community": 1,
       "norm_label": ".__init__()"
     },
     {
@@ -9720,7 +10070,7 @@
       "source_location": "L1164",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner_step",
-      "community": 39,
+      "community": 1,
       "norm_label": ".step()"
     },
     {
@@ -9730,7 +10080,7 @@
       "source_location": "L1186",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner_run_all",
-      "community": 39,
+      "community": 1,
       "norm_label": ".run_all()"
     },
     {
@@ -9770,7 +10120,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "engine_sequence_rationale_200",
-      "community": 1,
+      "community": 52,
       "norm_label": "reconstruye sequencestate desde un snapshot (round-trip)."
     },
     {
@@ -9780,7 +10130,7 @@
       "source_location": "L298",
       "_origin": "ast",
       "id": "engine_sequence_rationale_298",
-      "community": 39,
+      "community": 1,
       "norm_label": "envuelve cada vela del ltf en un marketobject(type=candle).      carga en `met"
     },
     {
@@ -9950,7 +10300,7 @@
       "source_location": "L1112",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1112",
-      "community": 39,
+      "community": 1,
       "norm_label": "b1: (signals, phase_seen, expedientes, state) - trazabilidad + estado.      de"
     },
     {
@@ -9960,7 +10310,7 @@
       "source_location": "L1133",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1133",
-      "community": 39,
+      "community": 1,
       "norm_label": "opcion b (change gate mayor 2026-08-14, autorizado por director).      runner"
     },
     {
@@ -9970,7 +10320,7 @@
       "source_location": "L1165",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1165",
-      "community": 39,
+      "community": 1,
       "norm_label": "procesa solo la transicion de la vela i (indice absoluto).          usa single"
     },
     {
@@ -9980,7 +10330,7 @@
       "source_location": "L1187",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1187",
-      "community": 39,
+      "community": 1,
       "norm_label": "conveniencia: corre step(i) para i en [start_i+1, end_i)."
     },
     {
@@ -10470,7 +10820,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_trade_levels",
-      "community": 172,
+      "community": 63,
       "norm_label": "trade_levels.py"
     },
     {
@@ -10480,7 +10830,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "engine_trade_levels_tp_liquidity",
-      "community": 172,
+      "community": 63,
       "norm_label": "_tp_liquidity()"
     },
     {
@@ -10490,7 +10840,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_trade_levels_py_series",
-      "community": 172,
+      "community": 63,
       "norm_label": "series"
     },
     {
@@ -10500,7 +10850,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_trade_levels_py_dataframe",
-      "community": 172,
+      "community": 63,
       "norm_label": "dataframe"
     },
     {
@@ -10510,7 +10860,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "engine_trade_levels_calc_structural_sl",
-      "community": 172,
+      "community": 63,
       "norm_label": "calc_structural_sl()"
     },
     {
@@ -10520,7 +10870,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_trade_levels_rationale_1",
-      "community": 172,
+      "community": 63,
       "norm_label": "decision-owned trade levels.  these helpers express where the market thesis is"
     },
     {
@@ -10530,7 +10880,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "engine_trade_levels_rationale_22",
-      "community": 172,
+      "community": 63,
       "norm_label": "return internal and external liquidity targets for a decision."
     },
     {
@@ -10540,7 +10890,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "engine_trade_levels_rationale_62",
-      "community": 172,
+      "community": 63,
       "norm_label": "calculate the structural invalidation level for a trade decision."
     },
     {
@@ -11438,7 +11788,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_fvg_ob_objects",
-      "community": 9,
+      "community": 14,
       "norm_label": "_fvg_ob_objects()"
     },
     {
@@ -11448,7 +11798,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_py_any",
-      "community": 9,
+      "community": 14,
       "norm_label": "any"
     },
     {
@@ -11508,7 +11858,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_rationale_73",
-      "community": 9,
+      "community": 14,
       "norm_label": "extrae objetos fvg/ob reales en el esquema que espera audit_object_excursions."
     },
     {
@@ -11898,7 +12248,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_time_index",
-      "community": 374,
+      "community": 13,
       "norm_label": "_time_index()"
     },
     {
@@ -11908,7 +12258,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_py_dataframe",
-      "community": 374,
+      "community": 13,
       "norm_label": "dataframe"
     },
     {
@@ -11918,7 +12268,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_py_ndarray",
-      "community": 374,
+      "community": 6,
       "norm_label": "ndarray"
     },
     {
@@ -12018,7 +12368,7 @@
       "source_location": "L189",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_streaminglayer_init",
-      "community": 6,
+      "community": 13,
       "norm_label": ".__init__()"
     },
     {
@@ -12108,7 +12458,7 @@
       "source_location": "L376",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_batchfingerprintnavigator_init",
-      "community": 374,
+      "community": 13,
       "norm_label": ".__init__()"
     },
     {
@@ -12138,7 +12488,7 @@
       "source_location": "L416",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_streamingfingerprintnavigator_init",
-      "community": 374,
+      "community": 13,
       "norm_label": ".__init__()"
     },
     {
@@ -12498,7 +12848,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes",
-      "community": 237,
+      "community": 0,
       "norm_label": "brief_lunes.py"
     },
     {
@@ -12508,7 +12858,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_ok",
-      "community": 237,
+      "community": 0,
       "norm_label": "ok()"
     },
     {
@@ -12518,7 +12868,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_as_float",
-      "community": 237,
+      "community": 0,
       "norm_label": "as_float()"
     },
     {
@@ -12528,7 +12878,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_load_raw",
-      "community": 237,
+      "community": 0,
       "norm_label": "load_raw()"
     },
     {
@@ -12538,7 +12888,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_compute",
-      "community": 237,
+      "community": 0,
       "norm_label": "compute()"
     },
     {
@@ -12548,7 +12898,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_last_val",
-      "community": 237,
+      "community": 0,
       "norm_label": "last_val()"
     },
     {
@@ -12558,7 +12908,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_active_pd_array",
-      "community": 237,
+      "community": 0,
       "norm_label": "active_pd_array()"
     },
     {
@@ -12568,7 +12918,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_recent_sweep",
-      "community": 237,
+      "community": 0,
       "norm_label": "recent_sweep()"
     },
     {
@@ -12578,7 +12928,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_current_week_summary",
-      "community": 237,
+      "community": 0,
       "norm_label": "current_week_summary()"
     },
     {
@@ -12588,7 +12938,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_htf_bias",
-      "community": 237,
+      "community": 0,
       "norm_label": "htf_bias()"
     },
     {
@@ -12598,7 +12948,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_build_symbol_section",
-      "community": 237,
+      "community": 0,
       "norm_label": "build_symbol_section()"
     },
     {
@@ -12608,7 +12958,7 @@
       "source_location": "L400",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_last_date_of",
-      "community": 237,
+      "community": 0,
       "norm_label": "last_date_of()"
     },
     {
@@ -12618,7 +12968,7 @@
       "source_location": "L411",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_main",
-      "community": 237,
+      "community": 0,
       "norm_label": "main()"
     },
     {
@@ -12628,7 +12978,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_1",
-      "community": 237,
+      "community": 0,
       "norm_label": "brief de lectura ict/wyckoff \u2014 preparado para revisar antes de la sesion ny."
     },
     {
@@ -12638,7 +12988,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_46",
-      "community": 237,
+      "community": 0,
       "norm_label": "true si x es un valor util (no none, no nan)."
     },
     {
@@ -12648,7 +12998,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_51",
-      "community": 237,
+      "community": 0,
       "norm_label": "convierte un valor a float de forma segura, devolviendo none si no aplica."
     },
     {
@@ -12658,7 +13008,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_97",
-      "community": 237,
+      "community": 0,
       "norm_label": "construye features una vez por simbolo para todos los tf necesarios."
     },
     {
@@ -12668,7 +13018,7 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "scripts_daily_brief_lunes_rationale_157",
-      "community": 237,
+      "community": 0,
       "norm_label": "ohlc de la semana calendario en curso, closed-only hasta el feed."
     },
     {
@@ -13028,7 +13378,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root",
-      "community": 4,
+      "community": 8,
       "norm_label": "diag_seq_causal_root.py"
     },
     {
@@ -13038,7 +13388,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root_chains_at",
-      "community": 4,
+      "community": 8,
       "norm_label": "chains_at()"
     },
     {
@@ -13048,7 +13398,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root_main",
-      "community": 4,
+      "community": 8,
       "norm_label": "main()"
     },
     {
@@ -13058,7 +13408,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root_rationale_1",
-      "community": 4,
+      "community": 8,
       "norm_label": "aislar raiz del leakage de sequence_depth (paso 4).  compara run_sequential(df"
     },
     {
@@ -13178,7 +13528,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state",
-      "community": 371,
+      "community": 8,
       "norm_label": "exp_seq_x_context_state.py"
     },
     {
@@ -13188,7 +13538,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_h1_alignment",
-      "community": 371,
+      "community": 8,
       "norm_label": "h1_alignment()"
     },
     {
@@ -13198,7 +13548,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_context_bucket",
-      "community": 371,
+      "community": 8,
       "norm_label": "context_bucket()"
     },
     {
@@ -13208,7 +13558,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_measure_outcome",
-      "community": 371,
+      "community": 8,
       "norm_label": "measure_outcome()"
     },
     {
@@ -13218,7 +13568,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_py_ndarray",
-      "community": 371,
+      "community": 8,
       "norm_label": "ndarray"
     },
     {
@@ -13228,7 +13578,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_chi2_and_cramers",
-      "community": 371,
+      "community": 8,
       "norm_label": "chi2_and_cramers()"
     },
     {
@@ -13238,7 +13588,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_main",
-      "community": 371,
+      "community": 8,
       "norm_label": "main()"
     },
     {
@@ -13248,7 +13598,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_1",
-      "community": 371,
+      "community": 8,
       "norm_label": "exp sequence x context state \u2014 event-anchored, point-in-time, local.  diseno a"
     },
     {
@@ -13258,7 +13608,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_48",
-      "community": 371,
+      "community": 8,
       "norm_label": "favor/neutral/contra agregado (conservamos las 3 individuales tambien)."
     },
     {
@@ -13268,7 +13618,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_71",
-      "community": 371,
+      "community": 8,
       "norm_label": "c/r/f en horizon barras h1 despues de bar_k. solo futuro (bar_k+1 .. bar_k+horiz"
     },
     {
@@ -13278,7 +13628,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_99",
-      "community": 371,
+      "community": 8,
       "norm_label": "chi2 de una tabla (filas=contextos, cols=[cont,rev,fail]). devuelve (chi2, p, cr"
     },
     {
@@ -13428,7 +13778,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state",
-      "community": 372,
+      "community": 4,
       "norm_label": "exp_sequence_x_context_state.py"
     },
     {
@@ -13438,7 +13788,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_load",
-      "community": 372,
+      "community": 4,
       "norm_label": "_load()"
     },
     {
@@ -13448,7 +13798,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_py_dataframe",
-      "community": 372,
+      "community": 4,
       "norm_label": "dataframe"
     },
     {
@@ -13458,7 +13808,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_bucket",
-      "community": 372,
+      "community": 4,
       "norm_label": "_bucket()"
     },
     {
@@ -13468,7 +13818,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_location_favorable",
-      "community": 372,
+      "community": 4,
       "norm_label": "_location_favorable()"
     },
     {
@@ -13478,7 +13828,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_extract_location",
-      "community": 372,
+      "community": 4,
       "norm_label": "_extract_location()"
     },
     {
@@ -13488,7 +13838,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_py_any",
-      "community": 372,
+      "community": 4,
       "norm_label": "any"
     },
     {
@@ -13498,7 +13848,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_outcomes",
-      "community": 372,
+      "community": 4,
       "norm_label": "_outcomes()"
     },
     {
@@ -13508,7 +13858,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_agg",
-      "community": 372,
+      "community": 4,
       "norm_label": "_agg()"
     },
     {
@@ -13518,7 +13868,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_main",
-      "community": 372,
+      "community": 4,
       "norm_label": "main()"
     },
     {
@@ -13528,7 +13878,7 @@
       "source_location": "L257",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_write_md",
-      "community": 372,
+      "community": 4,
       "norm_label": "_write_md()"
     },
     {
@@ -14758,7 +15108,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading",
-      "community": 72,
+      "community": 172,
       "norm_label": "plot_htf_reading.py"
     },
     {
@@ -14768,7 +15118,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_load",
-      "community": 72,
+      "community": 172,
       "norm_label": "load()"
     },
     {
@@ -14778,7 +15128,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_bias_color",
-      "community": 72,
+      "community": 172,
       "norm_label": "bias_color()"
     },
     {
@@ -14788,7 +15138,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_plot_tf",
-      "community": 72,
+      "community": 172,
       "norm_label": "plot_tf()"
     },
     {
@@ -14798,7 +15148,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_main",
-      "community": 72,
+      "community": 172,
       "norm_label": "main()"
     },
     {
@@ -14808,7 +15158,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_rationale_1",
-      "community": 72,
+      "community": 172,
       "norm_label": "grafico de lectura htf (d1/h4/h1) sobre datos reales eurusd.  objetivo: mostra"
     },
     {
@@ -14818,7 +15168,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones",
-      "community": 92,
+      "community": 9,
       "norm_label": "plot_tradingview_zones.py"
     },
     {
@@ -14828,7 +15178,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_load",
-      "community": 92,
+      "community": 9,
       "norm_label": "_load()"
     },
     {
@@ -14838,7 +15188,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_py_dataframe",
-      "community": 92,
+      "community": 9,
       "norm_label": "dataframe"
     },
     {
@@ -14858,7 +15208,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_timestamp",
-      "community": 92,
+      "community": 9,
       "norm_label": "_timestamp()"
     },
     {
@@ -14868,7 +15218,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_select_recent",
-      "community": 92,
+      "community": 9,
       "norm_label": "_select_recent()"
     },
     {
@@ -14878,7 +15228,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_x_for_time",
-      "community": 92,
+      "community": 9,
       "norm_label": "_x_for_time()"
     },
     {
@@ -14888,7 +15238,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_py_series",
-      "community": 92,
+      "community": 9,
       "norm_label": "series"
     },
     {
@@ -14898,7 +15248,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_format_price",
-      "community": 92,
+      "community": 9,
       "norm_label": "_format_price()"
     },
     {
@@ -14908,7 +15258,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_plot",
-      "community": 92,
+      "community": 9,
       "norm_label": "_plot()"
     },
     {
@@ -14918,7 +15268,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_py_path",
-      "community": 92,
+      "community": 9,
       "norm_label": "path"
     },
     {
@@ -14928,7 +15278,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_main",
-      "community": 92,
+      "community": 9,
       "norm_label": "main()"
     },
     {
@@ -14938,7 +15288,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_tradingview_zones_rationale_1",
-      "community": 92,
+      "community": 9,
       "norm_label": "genera graficos oscuros tipo tradingview para lectura eurusd.  solo percepcion"
     },
     {
@@ -17358,7 +17708,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds",
-      "community": 47,
+      "community": 25,
       "norm_label": "confirmation_thresholds.py"
     },
     {
@@ -17368,7 +17718,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_choch_class_from_score",
-      "community": 47,
+      "community": 25,
       "norm_label": "choch_class_from_score()"
     },
     {
@@ -17378,7 +17728,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_excursion_k",
-      "community": 47,
+      "community": 25,
       "norm_label": "excursion_k()"
     },
     {
@@ -17388,7 +17738,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_rationale_1",
-      "community": 47,
+      "community": 25,
       "norm_label": "umbrales de confirmacion calibrados \u2014 single source of truth.  calibracion 202"
     },
     {
@@ -17398,7 +17748,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_rationale_76",
-      "community": 47,
+      "community": 25,
       "norm_label": "clase canonica a partir de score 0-100."
     },
     {
@@ -17408,7 +17758,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "tools_confirmation_thresholds_rationale_85",
-      "community": 47,
+      "community": 25,
       "norm_label": "k de excursion por tf y modo (scan|confirm|premium)."
     },
     {
@@ -26355,27 +26705,27 @@
       "label": "Startup contract",
       "file_type": "document",
       "source_file": "audits/MANIFEST.md",
-      "source_location": "L24",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "audits_manifest_startup_contract",
       "community": 187,
       "norm_label": "startup contract"
     },
     {
-      "label": "Pending implementations",
+      "label": "Full-stack evidence",
       "file_type": "document",
       "source_file": "audits/MANIFEST.md",
-      "source_location": "L34",
+      "source_location": "L37",
       "_origin": "ast",
-      "id": "audits_manifest_pending_implementations",
+      "id": "audits_manifest_full_stack_evidence",
       "community": 187,
-      "norm_label": "pending implementations"
+      "norm_label": "full-stack evidence"
     },
     {
       "label": "Rule",
       "file_type": "document",
       "source_file": "audits/MANIFEST.md",
-      "source_location": "L38",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "audits_manifest_rule",
       "community": 187,
@@ -42536,8 +42886,19 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_audit_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L13",
+      "source_location": "L9",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack",
       "target": "audits_codigo_audit_stack",
@@ -42885,6 +43246,28 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_audit_stack_a3_semantics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L103",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a3",
+      "target": "audits_codigo_audit_stack_a3_semantics",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -42925,6 +43308,28 @@
       "source_location": "L136",
       "weight": 1.0,
       "source": "audits_codigo_audit_stack_run_stack",
+      "target": "audits_codigo_audit_stack_a4_metamorphic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_audit_stack_a4_metamorphic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L208",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
       "target": "audits_codigo_audit_stack_a4_metamorphic",
       "confidence_score": 1.0
     },
@@ -43153,7 +43558,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L13",
+      "source_location": "L9",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack",
       "target": "audits_codigo_audit_stack_run_stack",
@@ -43164,7 +43569,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L50",
+      "source_location": "L53",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack_main",
       "target": "audits_codigo_audit_stack_run_stack",
@@ -43464,6 +43869,68 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "audits_codigo_close_pre_backtest_gates",
+      "target": "audits_codigo_close_pre_backtest_gates_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "audits_codigo_close_pre_backtest_gates",
+      "target": "audits_codigo_close_pre_backtest_gates_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "audits_codigo_close_pre_backtest_gates",
+      "target": "audits_codigo_close_pre_backtest_gates_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "audits_codigo_close_pre_backtest_gates_rationale_1",
+      "target": "audits_codigo_close_pre_backtest_gates",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "audits_codigo_close_pre_backtest_gates_close",
+      "target": "audits_codigo_close_pre_backtest_gates_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/close_pre_backtest_gates.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "audits_codigo_close_pre_backtest_gates_main",
+      "target": "audits_codigo_close_pre_backtest_gates_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "audits/codigo/data_integrity.py",
       "source_location": "L11",
       "weight": 1.0,
@@ -43529,6 +43996,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_data_integrity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/test_audit_subsystem.py",
       "source_location": "L1",
       "weight": 1.0,
@@ -43573,6 +44051,28 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_data_integrity_audit_ohlc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a0",
+      "target": "audits_codigo_data_integrity_audit_ohlc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "tests/test_audit_subsystem.py",
       "source_location": "L1",
       "weight": 1.0,
@@ -43600,6 +44100,747 @@
       "weight": 1.0,
       "source": "tests_test_audit_subsystem_test_data_integrity_rejects_invalid_high",
       "target": "audits_codigo_data_integrity_audit_ohlc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze",
+      "target": "audits_codigo_execution_freeze_sha256",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze",
+      "target": "audits_codigo_execution_freeze_synthetic_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze",
+      "target": "audits_codigo_execution_freeze_validate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze",
+      "target": "engine_execution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze",
+      "target": "engine_execution_fine_execution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze_rationale_1",
+      "target": "audits_codigo_execution_freeze",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "audits_codigo_run_execution_freeze",
+      "target": "audits_codigo_execution_freeze",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze_sha256",
+      "target": "audits_codigo_execution_freeze_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze_validate",
+      "target": "audits_codigo_execution_freeze_sha256",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze_synthetic_frames",
+      "target": "audits_codigo_execution_freeze_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze_validate",
+      "target": "audits_codigo_execution_freeze_synthetic_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze_validate",
+      "target": "engine_execution_fine_execution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "audits_codigo_run_execution_freeze",
+      "target": "audits_codigo_execution_freeze_validate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "audits_codigo_run_execution_freeze_main",
+      "target": "audits_codigo_execution_freeze_validate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_git_blob_sha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_load_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L182",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_real_a9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L200",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_run_real_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_gate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack",
+      "target": "audits_codigo_gate_gatestatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_rationale_1",
+      "target": "audits_codigo_full_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_full_stack.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "audits_codigo_run_full_stack",
+      "target": "audits_codigo_full_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_load_frames",
+      "target": "audits_codigo_full_stack_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L201",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_load_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a0",
+      "target": "audits_codigo_full_stack_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a1",
+      "target": "audits_codigo_full_stack_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a5",
+      "target": "audits_codigo_full_stack_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a8",
+      "target": "audits_codigo_full_stack_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_git_blob_sha",
+      "target": "audits_codigo_full_stack_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L218",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_git_blob_sha",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a0",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a1",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L93",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a2",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a3",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a5",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a6",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a7",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a8",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L192",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a9",
+      "target": "audits_codigo_full_stack_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a0",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L204",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a1",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a2",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a3",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a5",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a6",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a7",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a8",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L182",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_real_a9",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L200",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L205",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L206",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L207",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L211",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L212",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L213",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L214",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/full_stack.py",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "audits_codigo_full_stack_run_real_stack",
+      "target": "audits_codigo_full_stack_real_a9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_full_stack.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "audits_codigo_run_full_stack",
+      "target": "audits_codigo_full_stack_run_real_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_full_stack.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "audits_codigo_run_full_stack_main",
+      "target": "audits_codigo_full_stack_run_real_stack",
       "confidence_score": 1.0
     },
     {
@@ -43837,7 +45078,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L85",
+      "source_location": "L91",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel_one_tf",
       "target": "audits_codigo_funnel_funnelaudit",
@@ -43968,7 +45209,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L29",
+      "source_location": "L35",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel",
       "target": "audits_codigo_fvg_ob_funnel_load_csv",
@@ -43978,7 +45219,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L108",
+      "source_location": "L114",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel",
       "target": "audits_codigo_fvg_ob_funnel_main",
@@ -43988,10 +45229,20 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L50",
+      "source_location": "L56",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel",
       "target": "audits_codigo_fvg_ob_funnel_one_tf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/fvg_ob_funnel.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "audits_codigo_fvg_ob_funnel",
+      "target": "audits_codigo_fvg_ob_funnel_source_for",
       "confidence_score": 1.0
     },
     {
@@ -44086,7 +45337,40 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L112",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "audits_codigo_fvg_ob_funnel_main",
+      "target": "audits_codigo_fvg_ob_funnel_source_for",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/fvg_ob_funnel.py",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "audits_codigo_fvg_ob_funnel_source_for",
+      "target": "audits_codigo_fvg_ob_funnel_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/fvg_ob_funnel.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "audits_codigo_fvg_ob_funnel_load_csv",
+      "target": "audits_codigo_fvg_ob_funnel_py_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/fvg_ob_funnel.py",
+      "source_location": "L118",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel_main",
       "target": "audits_codigo_fvg_ob_funnel_load_csv",
@@ -44097,7 +45381,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L113",
+      "source_location": "L119",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel_main",
       "target": "audits_codigo_fvg_ob_funnel_one_tf",
@@ -44108,7 +45392,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L51",
+      "source_location": "L57",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel_one_tf",
       "target": "engine_detectors_fvg_detect_fvg",
@@ -44119,7 +45403,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L52",
+      "source_location": "L58",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel_one_tf",
       "target": "engine_detectors_ob_detect_order_blocks",
@@ -44130,7 +45414,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L53",
+      "source_location": "L59",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel_one_tf",
       "target": "engine_relations_relate_fvg_ob",
@@ -44141,7 +45425,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/fvg_ob_funnel.py",
-      "source_location": "L54",
+      "source_location": "L60",
       "weight": 1.0,
       "source": "audits_codigo_fvg_ob_funnel_one_tf",
       "target": "engine_relations_relation_links",
@@ -45174,8 +46458,28 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "audits_codigo_run_execution_freeze",
+      "target": "audits_codigo_run_execution_freeze_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/run_execution_freeze.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "audits_codigo_run_execution_freeze_rationale_1",
+      "target": "audits_codigo_run_execution_freeze",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L48",
+      "source_location": "L45",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack",
       "target": "audits_codigo_run_full_stack_main",
@@ -45185,7 +46489,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L27",
+      "source_location": "L24",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack",
       "target": "audits_codigo_run_full_stack_smoke_events",
@@ -45195,7 +46499,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L33",
+      "source_location": "L30",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack",
       "target": "audits_codigo_run_full_stack_smoke_funnel",
@@ -45205,7 +46509,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L19",
+      "source_location": "L16",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack",
       "target": "audits_codigo_run_full_stack_smoke_rows",
@@ -45226,7 +46530,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L50",
+      "source_location": "L53",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack_main",
       "target": "audits_codigo_run_full_stack_smoke_rows",
@@ -45237,7 +46541,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L50",
+      "source_location": "L53",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack_main",
       "target": "audits_codigo_run_full_stack_smoke_events",
@@ -45248,7 +46552,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/run_full_stack.py",
-      "source_location": "L50",
+      "source_location": "L53",
       "weight": 1.0,
       "source": "audits_codigo_run_full_stack_main",
       "target": "audits_codigo_run_full_stack_smoke_funnel",
@@ -90545,6 +91849,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/MANIFEST.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "audits_manifest_audit_subsystem_manifest",
+      "target": "audits_manifest_full_stack_evidence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/MANIFEST.md",
       "source_location": "L15",
       "weight": 1.0,
       "source": "audits_manifest_audit_subsystem_manifest",
@@ -90555,17 +91869,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/MANIFEST.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "audits_manifest_audit_subsystem_manifest",
-      "target": "audits_manifest_pending_implementations",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "audits/MANIFEST.md",
-      "source_location": "L38",
+      "source_location": "L44",
       "weight": 1.0,
       "source": "audits_manifest_audit_subsystem_manifest",
       "target": "audits_manifest_rule",
@@ -90575,7 +91879,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/MANIFEST.md",
-      "source_location": "L24",
+      "source_location": "L27",
       "weight": 1.0,
       "source": "audits_manifest_audit_subsystem_manifest",
       "target": "audits_manifest_startup_contract",
@@ -102933,5 +104237,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "5a39a1f758f57d64e515d004965f99c83b2f9ad5"
+  "built_at_commit": "d7986651bdd300c5bb2752c848b6277eb5e44e77"
 }

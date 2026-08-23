@@ -1,0 +1,39 @@
+{
+  "freeze_id": "EXECUTION_INTRADAY_M15_V1",
+  "status": "FROZEN",
+  "effective_date": "2026-08-22",
+  "scope": "pre-backtest execution contract; no PnL, no order submission",
+  "profile": {
+    "htf": ["H1", "H4"],
+    "itf": "M15",
+    "exec_tf": "M15",
+    "timestamp_basis": "closed UTC candle; time <= decision_time",
+    "bias": "last closed HTF context must be directionally available",
+    "zone": "canonical FVG/OB on ITF with valid lineage",
+    "retest": "first subsequent closed M15 candle returning to the validated zone",
+    "entry": "last confirmed opposite swing on exec TF; closed-candle close fallback",
+    "sl": "sweep wick on M15 plus/minus 0.3 times the mean closed M15 range",
+    "tp": "deterministic 3R level; expose opposing-liquidity extreme for consumer validation",
+    "rr_min": 3.0,
+    "timezone": "UTC canonical; killzone conversion uses engine.killzone",
+    "max_active_positions": 1,
+    "no_pyramiding": true
+  },
+  "prohibited": [
+    "scalping M5/M1 without a new freeze",
+    "OTE/Fibonacci",
+    "ATR as directional or stop rule",
+    "future candles",
+    "PnL-based parameter selection",
+    "order submission"
+  ],
+  "source_hashes_sha256": {
+    "engine/execution.py": "6b7e897b8d08b53b625876045e7aaeb60a8c13558634b0115f882910a827675d",
+    "engine/killzone.py": "52ffa602aa39164f5df2cd1663c2fd47fec8bca4ef57c942e6990b30206a8eeb",
+    "docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md": "abf8999a77d455e40884a68afc5f6a6772d1171a66be8f21d9ff658aa3997a6d"
+  },
+  "limitations": [
+    "This freeze covers the intraday M15 profile only.",
+    "M5/M1/scalping and a separate M15 execution dataset require a future authorized freeze or data gate."
+  ]
+}

@@ -1,7 +1,7 @@
 # Estrategia de ejecución — ICT 2.0
 
 **Decisión:** 2026-08-19 (Ruben)
-**Estado:** VIGENTE
+**Estado:** VIGENTE — perfil `EXECUTION_INTRADAY_M15_V1` congelado para esta etapa
 **Responsable de pesados:** Grok (servidores de la nube del Director)
 
 ---
@@ -69,15 +69,23 @@ python scripts/grok_run_funnel_20y_full.py
 
 Ese runner orquesta FVG/OB + Sequence + MTF dense con `sample_every=100`. El artifact canónico es `reports/audits/mtf_seq_funnel.json` y está protegido por assert CI. `audits/codigo/mtf_seq_funnel.py` contiene funciones canónicas, pero no debe confundirse con el orquestador pesado que produjo el artifact.
 
-**TNA 20Y:** el trace estratificado ya tiene PASS de integridad; el behavioral/full-span sigue pendiente. El driver pesado actual es:
+**TNA 20Y:** el trace estratificado y el behavioral/full-span streaming tienen PASS de integridad. El artefacto cerrado de esta etapa es:
+
+```text
+reports/audits/tna_streaming_prefix_2026-08-22.json
+```
+
+El driver pesado histórico sigue disponible para una revalidación autorizada:
 
 ```bash
 python scripts/tna_20y_parallel.py
 ```
 
-No interpretar el PASS de trace como edge ni como autorización de backtest.
+No interpretar ningún PASS de integridad como edge ni como autorización de backtest.
 
-**Backtest / walk-forward:** bloqueado hasta cerrar la pila pre-backtest requerida.
+**Ejecución congelada:** `docs/planificacion/EXECUTION_FREEZE_2026-08-22.json`; cubre intradía M15, no M5/M1/scalping.
+
+**Backtest / walk-forward:** requiere decisión explícita del cliente después del cierre de la pila; no se dispara automáticamente.
 
 ### E — Entrega
 
@@ -102,9 +110,11 @@ git pull origin main
 | --- | --- | --- |
 | Funnel 20Y FVG/OB + Sequence + MTF | **CERRADO — PASS + GATE CI** | `reports/audits/mtf_seq_funnel.json` + worklog 2026-08-20 |
 | TNA temporal AHF/MTF — TRACE | **PASS estratificado** | `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` |
-| TNA temporal AHF/MTF — BEHAVIORAL/full-span | **PENDIENTE** | plan TNA + `scripts/tna_20y_parallel.py` |
+| TNA temporal AHF/MTF — BEHAVIORAL/full-span | **PASS local / gate PASS** | `reports/audits/tna_streaming_prefix_2026-08-22.json` |
+| A0-A9 full-stack | **PASS local / CI pendiente** | `reports/audits/A0_A9_audit_stack.json` + workflow 20 |
+| Ejecución congelada | **PASS M15 / limitado** | `reports/audits/execution_freeze_2026-08-22.json` |
 | SEQUENCE × CONTEXT STATE | **INSUFFICIENT_N** | `reports/audits/exp_sequence_x_context_state_H1_20Y.json` |
-| Backtest / Walk-forward | **BLOQUEADO** | requiere pila pre-backtest + Funnel + TNA aceptables |
+| Backtest / Walk-forward | **REQUIERE DECISIÓN EXPLÍCITA** | gates locales PASS; sin autorización automática |
 
 ---
 

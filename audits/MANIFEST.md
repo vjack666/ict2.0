@@ -14,9 +14,12 @@ There must be no second executable audit implementation outside this folder.
 
 ## Implemented
 
-- A0: `audits/codigo/data_integrity.py`
-- A2: `audits/codigo/temporal.py`
-- A7: `audits/codigo/funnel.py`
+- A0: `audits/codigo/data_integrity.py` + `audits/codigo/full_stack.py`
+- A1: `audits/codigo/full_stack.py`
+- A2: `audits/codigo/temporal.py` + `audits/codigo/full_stack.py`
+- A3-A6: `audits/codigo/audit_stack.py` + `audits/codigo/full_stack.py`
+- A7: `audits/codigo/funnel.py` + `audits/codigo/full_stack.py`
+- A8-A9: `audits/codigo/full_stack.py`
 - Shared Gate contract: `audits/codigo/gate.py`
 - Mandatory bootstrap: `audits/codigo/bootstrap.py`
 - Contract tests: `tests/test_audit_subsystem.py`
@@ -31,9 +34,12 @@ The bootstrap loops:
 
 until the configured "medianamente bueno" threshold is reached or the iteration limit is exhausted.
 
-## Pending implementations
+## Full-stack evidence
 
-A1, A3, A4, A5, A6, A8 and A9 remain contract-defined and must receive dedicated executable checks before their Gates can close.
+`python -m audits.codigo.run_full_stack --scope real` validates the versioned
+Dukascopy snapshot and the versioned real Funnel/TNA artifacts without PnL,
+entries, downloads, or dataset mutation. The smoke runner remains available via
+`--scope smoke` for unit tests.
 
 ## Rule
 

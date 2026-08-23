@@ -1,8 +1,8 @@
 # SDD — Mapa de Arquitectura y Plan FVG/OB
 
 **Proyecto:** `ict2.0`  
-**Estado:** DOCUMENTO NORMATIVO VIVO — sincronizado hasta Funnel 20Y, Context State y TNA trace  
-**Última sincronización:** 2026-08-20  
+**Estado:** DOCUMENTO NORMATIVO VIVO — sincronizado hasta Funnel 20Y, Context State, TNA FULL/PREFIX y freeze M15
+**Última sincronización:** 2026-08-22
 **Regla:** este SDD se actualiza al cerrar cada fase, experimento arquitectónico o cambio de contrato relevante.
 
 ## 1. Objetivo
@@ -22,8 +22,8 @@ Cadena objetivo:
 - D-extension FVG↔OB 20Y: `PASS STRICT + gate CI`.
 - Funnel MTF+Sequence 20Y: `PASS + gate CI`.
 - AHF: `IMPLEMENTADO v1`.
-- TNA trace integrity: `PASS estratificado`; behavioral/full-span pendiente.
-- Fase E — Ejecución: **BLOQUEADA como backtest hasta cerrar la pila pre-backtest/TNA**.
+- TNA trace integrity: `PASS estratificado + FULL/PREFIX PASS_BY_LAYER_INDUCTION`.
+- Fase E — Ejecución: **perfil intradía M15 congelado; backtest requiere decisión explícita**.
 - F/G/H: `PENDING`.
 
 ## 2. Arquitectura vigente
@@ -129,7 +129,7 @@ El Funnel 20Y está **CERRADO CON GATE CI**.
 
 La auditoría temporal AHF tiene evidencia `PASS_TRACE_INTEGRITY` en una muestra estratificada: 750 trazas, 501 transiciones y 193 invalidaciones. Esto valida integridad del trace de esa muestra, **no** el behavioral/full-span de 20 años.
 
-El siguiente gate es TNA behavioral/full-span.
+El gate TNA behavioral/full-span quedó cerrado mediante el artefacto streaming FULL/PREFIX; no constituye evidencia de edge.
 
 ## 8. Plan y gates vigentes
 
@@ -143,10 +143,11 @@ El siguiente gate es TNA behavioral/full-span.
 | Funnel MTF+SEQ 20Y | PASS + CI |
 | Context State contract | NORMATIVO |
 | AHF implementation | IMPLEMENTADO v1 |
-| TNA trace | PASS estratificado |
-| TNA behavioral/full-span | PENDIENTE |
+| TNA trace | PASS estratificado + FULL/PREFIX |
+| TNA behavioral/full-span | PASS_BY_LAYER_INDUCTION + GATE PASS |
 | Sequence×Context State | INSUFFICIENT_N |
-| Fase E execution/backtest | BLOQUEADA hasta gates previos |
+| Fase E execution | Perfil M15 congelado; `EXECUTION_INTRADAY_M15_V1` |
+| Backtest | Requiere decisión explícita y gate propio de datos/runtime |
 | F/G/H | PENDING |
 
 ## 9. Lo que todavía NO está terminado
@@ -155,9 +156,9 @@ El siguiente gate es TNA behavioral/full-span.
 2. Detección especializada de Breaker y BPR.
 3. Lifecycle completo de mitigación/touch a nivel de ejecución.
 4. Integración HTF/ITF/EXEC como grafo causal completo de producción.
-5. POI → retest → entry → SL → TP como especificación de ejecución congelada.
+5. POI → retest → entry → SL → TP como especificación de ejecución congelada (`EXECUTION_INTRADAY_M15_V1`).
 6. Dataset causal de outcome para backtest.
-7. TNA behavioral/full-span.
+7. Confirmación CI de A0-A9 y cierre de las limitaciones de ejecución si se requiere M5/M1/scalping.
 8. Experimentos con n suficiente para declarar edge.
 9. Ablación, OOS y robustez.
 10. Validación específica M5; actualmente diferida.
@@ -209,4 +210,4 @@ Para cualquier vela histórica `t`, el motor debe poder reconstruir sin consulta
 
 > estructura vigente → liquidez/sweep → displacement → BOS/CHOCH/MSS → FVG/OB generado → lifecycle → lineage → Context State → navegación → retest → ejecución → outcome.
 
-La arquitectura está preparada para que la siguiente evidencia cierre TNA behavioral/full-span y, posteriormente, permita una especificación de ejecución/backtest sin confundir integridad con edge.
+La arquitectura tiene TNA behavioral/full-span y un perfil intradía M15 congelados. La siguiente evidencia es la confirmación CI de A0-A9; cualquier backtest posterior requiere decisión explícita y no debe confundirse integridad con edge.

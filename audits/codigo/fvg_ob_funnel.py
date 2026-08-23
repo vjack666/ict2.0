@@ -18,12 +18,18 @@ from .funnel import FunnelAudit
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "reports" / "audits" / "fvg_ob_funnel.json"
-BASE = "https://raw.githubusercontent.com/ejtraderLabs/historical-data/main/EURUSD/"
-SOURCES = {
-    "H1": str(ROOT / "data/raw/EURUSD/EURUSD_H1.csv"),
-    "H4": str(ROOT / "data/raw/EURUSD/EURUSD_H4.csv"),
-    "D1": str(ROOT / "data/raw/EURUSD/EURUSD_D1.csv"),
-}
+DATA = ROOT / "data" / "raw" / "EURUSD"
+DATA_ALT = ROOT / "datasets" / "eurusd_dukascopy_20y"
+
+
+def _source_for(tf: str) -> Path:
+    primary = DATA / f"EURUSD_{tf}.csv"
+    alternate = DATA_ALT / f"EURUSD_{tf}.csv"
+    if primary.exists():
+        return primary
+    if alternate.exists():
+        return alternate
+    raise FileNotFoundError(f"EURUSD_{tf}.csv not found in {DATA} or {DATA_ALT}")
 
 
 def load_csv(url: str) -> list[dict]:
@@ -108,8 +114,8 @@ def one_tf(tf: str, rows: list[dict]) -> dict:
 def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     report = {"dataset": "dukascopy-node EURUSD 2006-01-01..2026-01-01 (20Y) + FVG_OB relation", "symbol": "EURUSD", "timeframes": {}}
-    for tf, url in SOURCES.items():
-        rows = load_csv(url)
+    for tf in ("H1", "H4", "D1"):
+        rows = load_csv(str(_source_for(tf)))
         report["timeframes"][tf] = one_tf(tf, rows)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))

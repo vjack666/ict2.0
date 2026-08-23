@@ -1,16 +1,16 @@
 # Graph Report - ICT SYSTEM  (2026-08-22)
 
 ## Corpus Check
-- 461 files · ~285,106 words
+- 468 files · ~287,264 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3963 nodes · 6084 edges · 376 communities (301 shown, 75 thin omitted)
+- 3998 nodes · 6173 edges · 371 communities (296 shown, 75 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 271 edges (avg confidence: 0.52)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5a39a1f7`
+- Built from commit: `d7986651`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -252,9 +252,7 @@
 - update_mt5_ict.py
 - b0_baseline_measure.py
 - b1_label_audit_real.py
-- plot_htf_reading.py
 - smoke_motor.py
-- detect_order_blocks
 - FASE B — CIERRE
 - 5. Liquidity Sweep / Stop Hunt
 - 5. Spring (UTAD — Upthrust After Distribution)
@@ -378,10 +376,7 @@
 - update_mt5_ict.py
 - verify_engine.py
 - __init__.py
-- exp_seq_x_context_state.py
-- exp_sequence_x_context_state.py
 - apply_validation
-- .__init__
 - Fe de erratas — metadata EURUSD Dukascopy 20Y
 
 ## God Nodes (most connected - your core abstractions)
@@ -411,47 +406,47 @@
 ## Import Cycles
 - None detected.
 
-## Communities (376 total, 75 thin omitted)
+## Communities (371 total, 75 thin omitted)
 
 ### Community 0 - "score_fusion.py"
-Cohesion: 0.09
-Nodes (48): build_wyckoff_snapshot(), _context_direction(), _layer_snapshot(), _prefix(), Any, DataFrame, Adaptador read-only de Wyckoff al snapshot ICT/MTF/LTF., Construye un snapshot Wyckoff closed-only y subordinado a ICT. (+40 more)
+Cohesion: 0.06
+Nodes (65): build_wyckoff_snapshot(), _context_direction(), _layer_snapshot(), _prefix(), Any, DataFrame, Adaptador read-only de Wyckoff al snapshot ICT/MTF/LTF., Construye un snapshot Wyckoff closed-only y subordinado a ICT. (+57 more)
 
 ### Community 1 - "sequence.py"
 Cohesion: 0.05
-Nodes (57): build_rules(), check_invalidation(), InvalidationRule, _opposite_swing_level(), Any, engine/invalidation.py — Invalidacion predefinida y explicita (B3).  Ley 6 (in, Nivel del swing opuesto CONFIRMADO cerrado hasta el sweep (Ley 4)., Evalua las reglas contra la vela i. Devuelve la regla que mata, o None.      S (+49 more)
+Nodes (62): build_rules(), check_invalidation(), InvalidationRule, Any, engine/invalidation.py — Invalidacion predefinida y explicita (B3).  Ley 6 (in, Evalua las reglas contra la vela i. Devuelve la regla que mata, o None.      S, Una condicion de muerte predefinida para el expediente de la senal., Congela las reglas de invalidacion en el nacimiento (sweep).      `cfg` es Seq (+54 more)
 
 ### Community 2 - "drift.py"
-Cohesion: 0.08
-Nodes (58): a0_data(), a1_schema(), a2_point_in_time(), a3_semantics(), a4_metamorphic(), a5_cross_tf(), a6_lineage(), a7_funnel() (+50 more)
+Cohesion: 0.07
+Nodes (75): a0_data(), a1_schema(), a2_point_in_time(), a3_semantics(), a4_metamorphic(), a5_cross_tf(), a6_lineage(), a7_funnel() (+67 more)
 
 ### Community 3 - "build_daily_motor_snapshot"
 Cohesion: 0.08
 Nodes (63): _annotation_state(), _asof_time(), build_daily_motor_snapshot(), _canonical_zone_state(), _closed_time(), _coerce_market_object(), _context_state_payload(), DailyMotorConfig (+55 more)
 
 ### Community 4 - "audit_stack.py"
-Cohesion: 0.09
-Nodes (41): BosConfig, DisplacementConfig, Run sequential engine on sequence_tf; index max depth visible at each bar., _Atomic, _avg_range(), _build_eq_pools(), _causal_swings(), _detect_atomics() (+33 more)
+Cohesion: 0.07
+Nodes (46): Run sequential engine on sequence_tf; index max depth visible at each bar., _Atomic, _avg_range(), _build_eq_pools(), _causal_swings(), _detect_atomics(), _next_stage(), Any (+38 more)
 
 ### Community 5 - "ModelRegistry"
-Cohesion: 0.06
-Nodes (62): classify_zone(), compute_zone_class(), DealingRangeInput, _eq(), _is_close_to(), ict_backtest/dealing_range.py — Brecha C: dealing range premium/discount (Fase 5, Swing HTF cerrado antes de ``at_time``.      Anti look-ahead: solo velas con `, Clasifica la zona segun el dealing range del swing HTF.      Usa el midpoint d (+54 more)
+Cohesion: 0.07
+Nodes (54): ObjectType, Enum, str, Objeto de mercado ICT (fuente canónica del motor).  Un MarketObject representa, Role, attach_alignment(), _confirm_objs(), ict_backtest/plan_attach.py — Brecha A1: loop driver nivel 2 (modo OBSERVE). (+46 more)
 
 ### Community 6 - "__init__.py"
 Cohesion: 0.10
-Nodes (38): _asof_index(), MarketState, NavQuestion, Enum, str, Grafo de navegación multi-timeframe — Context State (no entry).  Implementa la, Estado multinivel completo en un decision_time., Última barra con time <= decision_time (vela cerrada disponible). (+30 more)
+Nodes (42): DisplacementConfig, _asof_index(), ContextConstraints, MarketState, NavQuestion, Enum, str, Grafo de navegación multi-timeframe — Context State (no entry).  Implementa la (+34 more)
 
 ### Community 7 - "CheckpointStore"
 Cohesion: 0.04
 Nodes (43): Estructura, Fuentes origen (en disco, no en repo), Inventario de datos — ICT SYSTEM/data/, ml/ (features ya procesadas — NO son OHLC crudo), Nota para el motor, Reproducir la importación, Símbolos y TFs disponibles (raw), 🟢 Autoridad vigente (+35 more)
 
 ### Community 8 - "DatasetSnapshotError"
-Cohesion: 0.11
-Nodes (27): _count_extra_stages(), funnel_fvg_ob(), funnel_mtf_navigation(), funnel_sequence(), _load_tf(), main(), DataFrame, Funnel de auditoría: FVG/OB + secuencia + navegación MTF (Context State).  Ext (+19 more)
+Cohesion: 0.07
+Nodes (40): _count_extra_stages(), funnel_fvg_ob(), funnel_mtf_navigation(), funnel_sequence(), _load_tf(), main(), DataFrame, Funnel de auditoría: FVG/OB + secuencia + navegación MTF (Context State).  Ext (+32 more)
 
 ### Community 9 - "plan_driver.py"
-Cohesion: 0.13
-Nodes (25): load_csv(), main(), one_tf(), Funnel real FVG/OB + relación explícita sobre EURUSD H1/H4/D1.  Descarga CSV p, _as_candles(), detect_fvg(), Any, Detect 3-candle FVGs using only data through the confirmation candle. (+17 more)
+Cohesion: 0.08
+Nodes (39): load_csv(), main(), one_tf(), Path, Funnel real FVG/OB + relación explícita sobre EURUSD H1/H4/D1.  Descarga CSV p, _source_for(), _as_candles(), _Candle (+31 more)
 
 ### Community 10 - "adapter.py"
 Cohesion: 0.04
@@ -462,16 +457,16 @@ Cohesion: 0.04
 Nodes (44): 0. PRINCIPIOS RECTORES DEL PLAN MAESTRO, 10. ORDEN DE EJECUCIÓN MAESTRO, 11. OBJETIVO FINAL, 1. TRAMO A — AUDITORÍA AUTÓNOMA INTEGRAL DEL REPOSITORIO, 2. TRAMO B — DESCUBRIMIENTO DEL LABORATORIO DE LECTURA DE MERCADO, 3. TRAMO C — REGLAS DE METODOLOGÍA EXPERIMENTAL, 4. TRAMO D — PROMOTION GATE, 5. TRAMO E — GESTIÓN DE WYCKOFF EN PRODUCCIÓN (+36 more)
 
 ### Community 12 - "calibration.py"
-Cohesion: 0.09
-Nodes (35): engine.bos — CAPA 2 del motor ICT: Market Structure (BOS / CHOCH / MSS).  Desp, _assert_no_upstream_label_consumption(), _bos_volume_ratio(), _compute_bos_quality(), _consecutive_break(), _derive_trend(), detect_market_structure(), _exp012_choch_marks() (+27 more)
+Cohesion: 0.08
+Nodes (40): engine.bos — CAPA 2 del motor ICT: Market Structure (BOS / CHOCH / MSS).  Desp, _assert_no_upstream_label_consumption(), _bos_volume_ratio(), _compute_bos_quality(), _consecutive_break(), _derive_trend(), detect_market_structure(), _exp012_choch_marks() (+32 more)
 
 ### Community 13 - "mtf_seq_funnel.py"
-Cohesion: 0.11
-Nodes (18): MTFNavigator, NavigationPath, Any, Camino recorrido en el grafo (auditoría)., Grafo de navegación Context State.      Parameters     ----------     frames, Recorre el grafo D1→…→exec y devuelve MarketState + constraints.          Neve, load_tf(), main() (+10 more)
+Cohesion: 0.13
+Nodes (19): _ensure_time(), MTFNavigator, NavigatorConfig, DataFrame, Grafo de navegación Context State.      Parameters     ----------     frames, load_tf(), main(), DataFrame (+11 more)
 
 ### Community 14 - "htf_narrative.py"
-Cohesion: 0.11
-Nodes (33): audit_object_excursions(), audit_snapshots(), _percentile(), _pip_size_for_object(), Any, Audit AHF temporal navigation plus descriptive FVG/OB magnitude.  This is not, Audit AHF run_timeline()/serialized snapshots plus optional FVG/OB metrics., Measure FVG/OB size and future-only excursion in pips.      Object schema requ (+25 more)
+Cohesion: 0.10
+Nodes (35): audit_object_excursions(), audit_snapshots(), _percentile(), _pip_size_for_object(), Any, Audit AHF temporal navigation plus descriptive FVG/OB magnitude.  This is not, Audit AHF run_timeline()/serialized snapshots plus optional FVG/OB metrics., Measure FVG/OB size and future-only excursion in pips.      Object schema requ (+27 more)
 
 ### Community 15 - "detect_market_structure"
 Cohesion: 0.11
@@ -479,7 +474,7 @@ Nodes (33): CausalLink, link(), Any, engine/lineage.py — Consumidor puro de tr
 
 ### Community 16 - "agent"
 Cohesion: 0.13
-Nodes (23): AdaptiveHierarchicalFunnel, AHFEvent, AHFSnapshot, AHFState, AHFTransition, _ctx_blob(), Any, Enum (+15 more)
+Nodes (19): AdaptiveHierarchicalFunnel, AHFEvent, AHFSnapshot, AHFState, AHFTransition, _ctx_blob(), Any, Enum (+11 more)
 
 ### Community 17 - "NavigatorConfig"
 Cohesion: 0.11
@@ -506,16 +501,16 @@ Cohesion: 0.07
 Nodes (29): BRIEF DE LECTURA ICT/WYCKOFF — generado 2026-08-19 12:21 (Ecuador), EURUSD, GBPUSD, Killzones a vigilar (sesión NY), Killzones a vigilar (sesión NY), Killzones a vigilar (sesión NY), Killzones a vigilar (sesión NY), Liquidez objetivo (BSL/SSL H4) (+21 more)
 
 ### Community 23 - "bias_from_tools.py"
-Cohesion: 0.15
-Nodes (17): _compute_atr(), detect_bos(), _label_swings(), DataFrame, Series, Causal pivots: a bar j is a swing only once lookback bars to its RIGHT have clos, _swing_points(), _causal_swings() (+9 more)
+Cohesion: 0.18
+Nodes (16): BosConfig, _compute_atr(), detect_bos(), _label_swings(), DataFrame, Series, Causal pivots: a bar j is a swing only once lookback bars to its RIGHT have clos, _swing_points() (+8 more)
 
 ### Community 24 - "brief_lunes.py"
 Cohesion: 0.07
 Nodes (26): 1. Objetivo, 2. Estado del motor ICT, 3. Hallazgos internos críticos, 4.1 `detectors/fvg.py` — VALOR ALTO / RESCATE SELECTIVO, 4.2 `detectors/ob.py` — VALOR ALTO / RESCATE SELECTIVO, 4.3 `detectors/displacement.py` — VALOR ALTO / POSIBLE RESCATE, 4.4 `detectors/liquidity.py` / `liquidity_context.py` — REFERENCIA, 4.5 `detectors/zones.py` — RECHAZADO (+18 more)
 
 ### Community 25 - "MissionController"
-Cohesion: 0.18
-Nodes (18): build_daily_bias(), Cableado PARA USO DIARIO: sesgo HTF jerarquico listo para el motor.      Carga, label_bos_file(), label_file(), main(), P4 — Etiqueta HUMANO SINTETICO (teacher labeling) sobre los 226k eventos.  Obj, Procesa features.jsonl de BOS -> labels_human.jsonl usando score_bos_rubric., Procesa un features.jsonl -> labels_human.jsonl. Devuelve ruta out.     htf_ctx (+10 more)
+Cohesion: 0.13
+Nodes (23): build_daily_bias(), Cableado PARA USO DIARIO: sesgo HTF jerarquico listo para el motor.      Carga, label_bos_file(), label_file(), main(), P4 — Etiqueta HUMANO SINTETICO (teacher labeling) sobre los 226k eventos.  Obj, Procesa features.jsonl de BOS -> labels_human.jsonl usando score_bos_rubric., Procesa un features.jsonl -> labels_human.jsonl. Devuelve ruta out.     htf_ctx (+15 more)
 
 ### Community 26 - "MarketObject"
 Cohesion: 0.15
@@ -562,16 +557,16 @@ Cohesion: 0.10
 Nodes (19): 10. Calibración umbrales 2026-08-17 (nota en el cuadro), 1. Resumen ejecutivo, 2. Arquitectura (single source of truth), 3. Pipeline del score híbrido CHOCH, 4.1 Generación de dataset (TODA la data), 4.2 Entrenamiento y ROC, 4.3 Integración activa (smoke test), 4. Evidencia (reproducible) (+11 more)
 
 ### Community 37 - "LayerSnapshot"
-Cohesion: 0.14
-Nodes (18): Bias, engine.bias — CAPA 1 del motor ICT: Narrativa HTF (SPEC §1).  Lo primero que h, _bias_for_frame(), _compose_htf_bias(), compute_htf_bias(), compute_htf_bias_series(), HtfBias, DataFrame (+10 more)
+Cohesion: 0.07
+Nodes (37): Bias, bias_from_tools_htf(), Sesgo HTF unificado usando las herramientas corregidas de tools/.      Equival, engine.bias — CAPA 1 del motor ICT: Narrativa HTF (SPEC §1).  Lo primero que h, _bias_for_frame(), _compose_htf_bias(), compute_htf_bias(), compute_htf_bias_series() (+29 more)
 
 ### Community 38 - "exp_B3_runner.py"
 Cohesion: 0.22
 Nodes (6): Compatibility re-exports for the ICT analysis agent., ICTAgent, Any, DataFrame, Series, Read feature columns already present; do not invent structure.
 
 ### Community 39 - "CertifiedArtifactError"
-Cohesion: 0.11
-Nodes (18): dict, build_multitf_context(), extract_htf_layer(), MultiTFContext, Any, Fase 1 — MultiTFContext: infraestructura de lectura multitemporal.  Objetivo ú, Dict {tf: snapshot_closed_only} para todos los TF de la cadena.      Es un dic, Construye el MultiTFContext closed-only en t.      Delega en build_context_sta (+10 more)
+Cohesion: 0.27
+Nodes (9): dict, build_multitf_context(), extract_htf_layer(), MultiTFContext, Any, Fase 1 — MultiTFContext: infraestructura de lectura multitemporal.  Objetivo ú, Dict {tf: snapshot_closed_only} para todos los TF de la cadena.      Es un dic, Construye el MultiTFContext closed-only en t.      Delega en build_context_sta (+1 more)
 
 ### Community 40 - "block_builder.py"
 Cohesion: 0.11
@@ -602,8 +597,8 @@ Cohesion: 0.11
 Nodes (18): 10.1 CUADRO — Resultados B0–B4 (evidencia real), 10.2 Hallazgos acumulados (honestos), 10.3 Estado de cierre de sesión (apagado 2026-08-16), 10.4 Archivos nuevos (este pipeline), 10. Pipeline Científico de Aprendizaje (B0–B4, 2026-08-16), 1. Decisión de diseño (origen), 2. CUADRO — Distribución de `human_score` (rúbrica teacher), 3. Hallazgo empírico central (P3 — Naturaleza CHOCH) (+10 more)
 
 ### Community 47 - "exp_B4_runner.py"
-Cohesion: 0.11
-Nodes (22): _commit(), main(), _process(), B2 — DATASET FACTORY MULTI-PAR (pipeline científico).  Generaliza la generacio, _sha(), _find_model(), _htf_bias_array(), _load_model() (+14 more)
+Cohesion: 0.16
+Nodes (17): _commit(), main(), _process(), B2 — DATASET FACTORY MULTI-PAR (pipeline científico).  Generaliza la generacio, _sha(), _find_model(), _htf_bias_array(), _load_model() (+9 more)
 
 ### Community 48 - "exp_B5_runner.py"
 Cohesion: 0.39
@@ -622,8 +617,8 @@ Cohesion: 0.11
 Nodes (17): 10. Dependencias, 1. Principio, 2. Funnel canónico, 3. Unidad de auditoría, 4. Métricas, 5.1 Reproducibilidad, 5.2 Truncation invariance, 5.3 Temporalidad (+9 more)
 
 ### Community 52 - "OutcomeConfig"
-Cohesion: 0.14
-Nodes (10): Expediente, PhaseEvent, Any, engine/expediente.py — Expediente por señal (Ley 8 / Ley 7 / Ley 4).  Cada señ, Crea un expediente en su nacimiento (al confirmarse el sweep)., Registra un hecho ya decidido. Índice monótono no decreciente., Marca la señal como invalidada por su regla predefinida., Reconstruye un Expediente desde su to_dict (round-trip persistence). (+2 more)
+Cohesion: 0.11
+Nodes (13): Expediente, PhaseEvent, Any, engine/expediente.py — Expediente por señal (Ley 8 / Ley 7 / Ley 4).  Cada señ, Crea un expediente en su nacimiento (al confirmarse el sweep)., Registra un hecho ya decidido. Índice monótono no decreciente., Marca la señal como invalidada por su regla predefinida., Reconstruye un Expediente desde su to_dict (round-trip persistence). (+5 more)
 
 ### Community 53 - "turtle_soup.py"
 Cohesion: 0.16
@@ -638,8 +633,8 @@ Cohesion: 0.12
 Nodes (15): BRIEF DE LECTURA ICT/WYCKOFF — generado 2026-08-20 13:23 (Ecuador), EURUSD, Killzones a vigilar (sesión NY), Liquidez objetivo (BSL/SSL H4), LTF / exec M15 (motor diario), PD arrays activos (M15 — zonas de reacción), Semana en curso (OHLC del mismo feed MT5), Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS) (+7 more)
 
 ### Community 56 - "test_phase_d_lineage.py"
-Cohesion: 0.24
-Nodes (11): _Candle, Canonical causal ICT Fair Value Gap detector., _Candle, Canonical ICT Order Block detector., ObjectState, ObjectType, Enum, str (+3 more)
+Cohesion: 0.23
+Nodes (6): LayerSnapshot, NavigationPath, Any, Estado point-in-time de una temporalidad (solo velas cerradas)., Camino recorrido en el grafo (auditoría)., Recorre el grafo D1→…→exec y devuelve MarketState + constraints.          Neve
 
 ### Community 57 - "SwingTool"
 Cohesion: 0.18
@@ -666,8 +661,8 @@ Cohesion: 0.12
 Nodes (15): 1. Objetivo, 2. Capa DATA — Integridad, 3. Funnel de detección — Resultados, 4. Interpretación (hechos, no narrativa), 5. Limitaciones de esta auditoría, 6. Guía de recomendaciones, 7. Decisiones que NO se toman con esta auditoría, 8. Archivos de evidencia (+7 more)
 
 ### Community 63 - "AgentRegistryResolver"
-Cohesion: 0.17
-Nodes (15): _label_swings(), Series, Swing high/low SIN look-ahead, versión humana.      Confirmación por rotura/re, Etiqueta HH/HL/LH/LL por swing confirmado (versión humana)., _swing_points(), _closed_df_at_time(), fine_execution(), _lvl() (+7 more)
+Cohesion: 0.10
+Nodes (25): DataFrame, Path, Validate the frozen intraday M15 execution contract.  This is a configuration/in, _sha256(), _synthetic_frames(), validate(), main(), CLI for the frozen execution contract gate. (+17 more)
 
 ### Community 64 - "__init__.py"
 Cohesion: 0.12
@@ -698,12 +693,12 @@ Cohesion: 0.13
 Nodes (15): §0 Tesis en una frase (CITABLE), 10. Auditoría y veracidad (libro 13, auditorías #1–#7), 11. Mapa código ↔ tesis, 12. Conclusión, 1. Marco de mercado: el ciclo PO3/AMD (libro 08), 2. Estructura: cómo se confirma el giro (libro 02), 3. Liquidez: el motor de todo (libro 05), 4. Los dos setups del ciclo (libros 06, 07, 08) (+7 more)
 
 ### Community 71 - "StructureAgent"
-Cohesion: 0.29
-Nodes (13): _asof_prefix(), build_ltf_canonical_feed(), Any, DataFrame, Adaptador read-only de objetos canónicos para la lectura LTF.  Este módulo no, Aplica observación causal de touch sobre una copia lógica del objeto., Construye la entrada canónica read-only del motor diario.      ``frames`` pued, _sequence_summary() (+5 more)
+Cohesion: 0.23
+Nodes (14): _asof_prefix(), build_ltf_canonical_feed(), Any, DataFrame, Adaptador read-only de objetos canónicos para la lectura LTF.  Este módulo no, Aplica observación causal de touch sobre una copia lógica del objeto., Construye la entrada canónica read-only del motor diario.      ``frames`` pued, _sequence_summary() (+6 more)
 
 ### Community 72 - ".analyze_bar"
 Cohesion: 0.18
-Nodes (19): build_features(), _fvg_state(), load_frames(), load_tf(), _ob_dir(), DataFrame, Path, Series (+11 more)
+Nodes (18): detect_fvg(), DataFrame, Series, _track_fvg_fill(), build_features(), _fvg_state(), load_frames(), load_tf() (+10 more)
 
 ### Community 73 - "detect_order_blocks"
 Cohesion: 0.13
@@ -746,8 +741,8 @@ Cohesion: 0.21
 Nodes (7): main(), _nature_targets(), NatureHead, P5 — HEAD B: modelo que aprende la NATURALEZA del CHOCH (recomendacion auditoria, Re-mide la naturaleza P3 (confirm vs reclaim) y devuelve (bars, cds, labels)., CHOCHTool, DataFrame
 
 ### Community 83 - "MarketStructure"
-Cohesion: 0.13
-Nodes (22): bias_from_tools_htf(), Sesgo HTF unificado usando las herramientas corregidas de tools/.      Equival, build_htf_narrative(), _build_summary(), _fmt(), _last_bos_event(), narrative_ready_for_trade(), DataFrame (+14 more)
+Cohesion: 0.53
+Nodes (5): compute_dealing_range(), dealing_range_htf(), DealingRangeConfig, _is_favorable(), Premium/Discount EQ50%. SIN indicadores, SIN OTE/Fibonacci (ICT_RULEBOOK §9).
 
 ### Community 84 - "label_bos_outcome"
 Cohesion: 0.15
@@ -782,8 +777,8 @@ Cohesion: 0.33
 Nodes (12): _check_decision_cutoffs(), _check_sequence_history(), _check_swings(), _git_blob_sha(), _load_tf(), main(), _manifest(), _metadata_check() (+4 more)
 
 ### Community 92 - "train_choch_score.py"
-Cohesion: 0.27
-Nodes (11): _format_price(), _load(), main(), _plot(), DataFrame, Path, Series, Genera gráficos oscuros tipo TradingView para lectura EURUSD.  Solo percepción (+3 more)
+Cohesion: 0.16
+Nodes (13): classify_zone(), compute_zone_class(), DealingRangeInput, _eq(), _is_close_to(), ict_backtest/dealing_range.py — Brecha C: dealing range premium/discount (Fase 5, Swing HTF cerrado antes de ``at_time``.      Anti look-ahead: solo velas con `, Clasifica la zona segun el dealing range del swing HTF.      Usa el midpoint d (+5 more)
 
 ### Community 93 - "dealing_range.py"
 Cohesion: 0.17
@@ -838,8 +833,8 @@ Cohesion: 0.18
 Nodes (9): _folds(), main(), _nature_blocks(), NatureHead, _pr_auc(), B4 — NATURE HEAD + BASELINES (pipeline científico, BLOQUE 4).  Entrena natural, Re-mide naturaleza P3 y devuelve (X_flat, y, years) por CHOCH real., BOSTool (+1 more)
 
 ### Community 106 - "test_department_registry.py"
-Cohesion: 0.33
-Nodes (8): detect_fvg(), DataFrame, Series, _track_fvg_fill(), compute_zones(), DataFrame, _swing_range(), ZoneConfig
+Cohesion: 0.21
+Nodes (13): _avg_candle_range(), detect_displacement(), DataFrame, Series, Rango promedio de la vela = media móvil de (high - low).      MATEMÁTICA PURA, detect_order_blocks(), DataFrame, Series (+5 more)
 
 ### Community 107 - "detect_choch"
 Cohesion: 0.18
@@ -1102,8 +1097,8 @@ Cohesion: 0.36
 Nodes (7): load_frames(), load_tf(), DataFrame, Path, engine/data_feed.py — Carga de velas para el MOTOR (permanente).  Lee los parq, Carga un TF crudo. Devuelve df con columnas time/open/high/low/close., Carga varios TF. Devuelve {tf: df}. Sin features del backtest.
 
 ### Community 172 - "calc_structural_sl"
-Cohesion: 0.29
-Nodes (7): calc_structural_sl(), DataFrame, Series, Decision-owned trade levels.  These helpers express where the market thesis is, Return internal and external liquidity targets for a decision., Calculate the structural invalidation level for a trade decision., _tp_liquidity()
+Cohesion: 0.53
+Nodes (5): bias_color(), load(), main(), plot_tf(), Grafico de lectura HTF (D1/H4/H1) sobre datos reales EURUSD.  Objetivo: mostra
 
 ### Community 173 - "START HERMES — Protocolo obligatorio de arranque"
 Cohesion: 0.25
@@ -1163,7 +1158,7 @@ Nodes (7): _label_ep_stats(), _load(), main(), _nature_stats(), B1 — AUDITORÍ
 
 ### Community 187 - "Audit Subsystem Manifest"
 Cohesion: 0.29
-Nodes (6): Audit Subsystem Manifest, Canonical executable location, Implemented, Pending implementations, Rule, Startup contract
+Nodes (6): Audit Subsystem Manifest, Canonical executable location, Full-stack evidence, Implemented, Rule, Startup contract
 
 ### Community 188 - "Auditorías ICT 2.0"
 Cohesion: 0.29
@@ -1278,8 +1273,8 @@ Cohesion: 0.33
 Nodes (5): Contract, Loading protocol, Skill Registry — ICT SYSTEM, Skills, Sources scanned
 
 ### Community 216 - "detect_displacement"
-Cohesion: 0.47
-Nodes (5): _avg_candle_range(), detect_displacement(), DataFrame, Series, Rango promedio de la vela = media móvil de (high - low).      MATEMÁTICA PURA
+Cohesion: 0.60
+Nodes (4): close(), main(), Close the two remaining pre-backtest gate conditions without running a backtest., _read()
 
 ### Community 217 - "Arquitectura de detectores — dos interfaces intencionales"
 Cohesion: 0.33
@@ -1361,17 +1356,9 @@ Nodes (5): _git_commit(), main(), B0 baseline measurement — REAL, not hardcode
 Cohesion: 0.47
 Nodes (5): _leakage_check(), main(), B1 — AUDITORÍA REAL de label_ep / label_peak / label_dir sobre el dataset CHOCH., Point-in-time: el label de la fila k solo usa close desde break_bar+1 en adelant, _stability()
 
-### Community 237 - "plot_htf_reading.py"
-Cohesion: 0.22
-Nodes (17): active_pd_array(), as_float(), build_symbol_section(), compute(), current_week_summary(), htf_bias(), last_date_of(), last_val() (+9 more)
-
 ### Community 238 - "smoke_motor.py"
 Cohesion: 0.47
 Nodes (5): make_ohlc(), DataFrame, FASE 2b — primer arranque real del motor dentro de ICT SYSTEM.  Objetivo: hace, run(), step()
-
-### Community 239 - "detect_order_blocks"
-Cohesion: 0.70
-Nodes (4): detect_order_blocks(), DataFrame, Series, _track_ob_validity()
 
 ### Community 240 - "FASE B — CIERRE"
 Cohesion: 0.40
@@ -1565,21 +1552,9 @@ Nodes (3): 28. INDEXACIÓN Y DESCUBRIMIENTO, Mantenimiento del índice, Índice 
 Cohesion: 0.67
 Nodes (3): 4. Principio de AUTONOMÍA CONTROLADA, No puedo inventar, Puedo decidir autónomamente
 
-### Community 371 - "exp_seq_x_context_state.py"
-Cohesion: 0.27
-Nodes (10): chi2_and_cramers(), context_bucket(), h1_alignment(), main(), measure_outcome(), ndarray, EXP SEQUENCE x CONTEXT STATE — event-anchored, point-in-time, local.  Diseno a, Favor/Neutral/Contra agregado (conservamos las 3 individuales tambien). (+2 more)
-
-### Community 372 - "exp_sequence_x_context_state.py"
-Cohesion: 0.31
-Nodes (10): _agg(), _bucket(), _extract_location(), _load(), _location_favorable(), main(), _outcomes(), Any (+2 more)
-
 ### Community 373 - "apply_validation"
 Cohesion: 0.27
 Nodes (9): _cho_events(), main(), P3 — Probe de NATURALEZA del CHOCH (responde la hipotesis del usuario).  El us, apply_validation(), DataFrame, Validador de BOS (copia aislada de engine/invalidation.py + engine/bos/structure, Devuelve 'active' o 'invalidated' para un BOS dado.      mode="strict" (criter, Valida una lista de ToolEvent BOS in-place (setea status).      `events` son T (+1 more)
-
-### Community 374 - ".__init__"
-Cohesion: 0.70
-Nodes (3): DataFrame, ndarray, _time_index()
 
 ### Community 375 - "Fe de erratas — metadata EURUSD Dukascopy 20Y"
 Cohesion: 0.50
@@ -1593,12 +1568,12 @@ Nodes (3): Corrección, Fe de erratas — metadata EURUSD Dukascopy 20Y, Integri
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `MarketObject` connect `sequence.py` to `build_daily_motor_snapshot`, `ModelRegistry`, `StructureAgent`, `CertifiedArtifactError`, `plan_driver.py`, `MissionStore`, `detect_market_structure`, `test_phase_d_lineage.py`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `DisplacementConfig` connect `audit_stack.py` to `__init__.py`, `test_department_registry.py`, `calibration.py`, `mtf_seq_funnel.py`, `htf_narrative.py`, `agent`, `NavigatorConfig`, `detect_displacement`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
-- **Why does `build_features()` connect `.analyze_bar` to `plot_tradingview_zones.py`, `test_department_registry.py`, `calibration.py`, `plot_htf_reading.py`, `smoke_motor.py`, `detect_order_blocks`, `MarketStructure`, `detect_displacement`, `gen_choch_dataset.py`, `train_choch_score.py`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+- **Why does `MarketObject` connect `sequence.py` to `build_daily_motor_snapshot`, `ModelRegistry`, `StructureAgent`, `plan_driver.py`, `MissionStore`, `detect_market_structure`, `OutcomeConfig`?**
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **Why does `build_features()` connect `.analyze_bar` to `score_fusion.py`, `plot_tradingview_zones.py`, `plan_driver.py`, `test_department_registry.py`, `calibration.py`, `calc_structural_sl`, `smoke_motor.py`, `MarketStructure`, `gen_choch_dataset.py`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `detect_displacement()` connect `NavigatorConfig` to `exp_agentA_runner.py`, `audit_stack.py`, `__init__.py`, `import_forex_data.py`, `exp_B4_runner.py`, `MultiTFContext`, `apply_validation`, `WyckoffAgent`, `bias_from_tools.py`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **Are the 12 inferred relationships involving `MarketObject` (e.g. with `DailyMotorConfig` and `_Candle`) actually correct?**
   _`MarketObject` has 12 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 17 inferred relationships involving `MTFNavigator` (e.g. with `AdaptiveHierarchicalFunnel` and `AHFConfig`) actually correct?**

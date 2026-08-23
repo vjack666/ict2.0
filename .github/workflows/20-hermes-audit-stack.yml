@@ -35,20 +35,20 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Run A0-A9 in sequence
+      - name: Run real EURUSD FVG/OB Funnel — H1/H4/D1
         run: |
           set -euxo pipefail
-          python -m audits.codigo.run_full_stack | tee audit-stack.log
+          python -m audits.codigo.fvg_ob_funnel | tee fvg-ob-funnel.log
+
+      - name: Run A0-A9 full-stack evidence
+        run: |
+          set -euxo pipefail
+          python -m audits.codigo.run_full_stack --scope real | tee audit-stack.log
 
       - name: Run audit tests
         run: |
           set -euxo pipefail
           python -m pytest -q tests/test_audit_stack.py tests/test_audit_subsystem.py --disable-warnings --maxfail=1
-
-      - name: Run real EURUSD FVG/OB Funnel — H1/H4/D1
-        run: |
-          set -euxo pipefail
-          python -m audits.codigo.fvg_ob_funnel | tee fvg-ob-funnel.log
 
       - name: Upload audit evidence
         if: always()

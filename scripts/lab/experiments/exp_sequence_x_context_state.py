@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""EXP SEQUENCE × CONTEXT STATE — H1 20Y.
+"""Historical EXP SEQUENCE × CONTEXT STATE — H1 20Y.
 
 Pregunta: ¿la misma secuencia (depth≥4) tiene distribución de outcome
 distinta según Context State (ALIGNED / AGAINST / NEUTRAL)?
@@ -7,6 +7,7 @@ distinta según Context State (ALIGNED / AGAINST / NEUTRAL)?
 - NO emite entradas ni PnL de sistema.
 - Context State vía MTFNavigator (estructura/BOS, regime, location) — NO EMA.
 - Contrato: docs/contratos/CONTRATO_CONTEXT_STATE.md
+- Superseded by exp_seq_ctx_01.py and the local-only EXP-SEQ-CTX-01 docs.
 """
 from __future__ import annotations
 
@@ -244,7 +245,7 @@ def main():
         "navigate_errors": errors,
         "elapsed_s": round(time.time() - t0, 2),
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "host": "Grok cloud",
+        "host": "historical_local_only_metadata",
     }
 
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)

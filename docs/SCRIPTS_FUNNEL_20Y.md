@@ -1,4 +1,7 @@
-# Scripts — Funnel 20Y + anti-indicadores (Grok cloud)
+# Scripts — Funnel 20Y + anti-indicadores (ejecución local-only)
+
+> El nombre `grok_*` de algunos runners se conserva por trazabilidad histórica.
+> El host vigente es el PC local; no usar Grok, AWS ni GitHub Actions para correrlos.
 
 **Tarea:** Funnel 20Y completo (FVG/OB + Sequence + MTF dense) + corrección anti-OTE en `dealing_range`.  
 **Repo:** `vjack666/ict2.0`  

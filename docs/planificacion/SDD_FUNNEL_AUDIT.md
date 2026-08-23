@@ -3,7 +3,7 @@
 **Estado:** NORMATIVO — **Funnel 20Y cerrado con gate CI**
 **Fase:** Pre-backtest
 **Código canónico:** `audits/codigo/funnel.py` y funciones de `audits/codigo/mtf_seq_funnel.py`
-**Runner pesado versionado:** `scripts/audit/grok_run_funnel_20y_full.py`
+**Runner pesado versionado:** `scripts/audit/grok_run_funnel_20y_full.py` (nombre histórico; host vigente: PC local)
 **Propósito:** auditar la transformación causal de OHLC a candidatos ICT sin evaluar todavía rentabilidad.
 
 ## 1. Principio
@@ -90,7 +90,10 @@ No se usan PnL, win rate ni Sharpe como métricas del Funnel.
 
 Mismo dataset + mismo commit + misma configuración → mismo reporte, salvo campos explícitamente no deterministas como timestamp de generación.
 
-La corrida 20Y que cerró este gate fue ejecutada en Grok mediante `scripts/audit/grok_run_funnel_20y_full.py`, que orquesta las funciones canónicas. El módulo `audits/codigo/mtf_seq_funnel.py` no debe confundirse con ese orquestador.
+La corrida 20Y que cerró este gate conserva una traza histórica cuyo nombre de
+runner contiene `grok`; la revalidación vigente se ejecutó localmente con el mismo
+orquestador. El módulo `audits/codigo/mtf_seq_funnel.py` no debe confundirse con
+ese orquestador. Ninguna referencia histórica autoriza ejecución cloud.
 
 ### 5.2 Truncation invariance
 

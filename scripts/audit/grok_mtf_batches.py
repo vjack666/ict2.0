@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Grok cloud runner — MTF dense por batches (resume-friendly).
+"""Historical-name runner — MTF dense por batches (resume-friendly).
 
-Usado cuando el MTF denso (sample_every=100, ~1239 puntos) se corta por
-timeout de sesión. Reanuda desde RESUME_FROM (índice en la lista de samples).
+Usado localmente cuando el MTF denso (sample_every=100, ~1239 puntos) se corta
+por timeout de sesión. Reanuda desde RESUME_FROM (índice en la lista de samples).
+El nombre histórico se conserva; no ejecuta en Grok/AWS/GitHub Actions.
 
 Commiteado en scripts/ para trazabilidad.
 """

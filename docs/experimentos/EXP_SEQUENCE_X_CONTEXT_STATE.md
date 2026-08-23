@@ -1,7 +1,7 @@
 # EXP — SEQUENCE × CONTEXT STATE (H1 20Y)
 
 **Fecha:** 2026-08-19  
-**Estado:** EJECUTADO (Grok cloud)  
+**Estado:** HISTÓRICO — corrida anterior a la política local-only; no autoritativo para ejecución vigente
 **Pregunta:** ¿La misma secuencia tiene una distribución de resultados distinta según Context State?  
 **Contrato:** `../contratos/CONTRATO_CONTEXT_STATE.md`  
 **Driver:** `scripts/lab/experiments/exp_sequence_x_context_state.py`
@@ -75,7 +75,13 @@ Gate de **interpretación**:
 
 ---
 
-## 5. Resultado (corrida 2026-08-19 — Grok)
+## 5. Resultado histórico (corrida 2026-08-19)
+
+> Este resultado conserva la trazabilidad de una corrida anterior. Desde
+> 2026-08-23, experimentos, auditorías, tests y backtests se ejecutan solo en
+> el PC local. La referencia vigente es [`EXP_SEQ_CTX_01.md`](EXP_SEQ_CTX_01.md),
+> con gate causal FULL-vs-PREFIX `PASS` (0/120) y matriz actual
+> `INSUFFICIENT_N` (53 observaciones).
 
 **Gate:** `INSUFFICIENT_N`
 

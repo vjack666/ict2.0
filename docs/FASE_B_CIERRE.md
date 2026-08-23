@@ -1,5 +1,8 @@
 # FASE B — CIERRE
 
+> **HISTÓRICO.** El run de GitHub Actions citado abajo es evidencia pasada; la
+> ejecución vigente de tests y gates es local-only.
+
 **Estado:** `PASS — GATE B CERRADO`  
 **Evidencia:** GitHub Actions `Hermes Tests` run `#37` / `32082219119`  
 **Resultado:** `13 passed in 0.03s`

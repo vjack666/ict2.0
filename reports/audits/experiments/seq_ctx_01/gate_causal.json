@@ -1,0 +1,31 @@
+{
+  "experiment": "EXP-SEQ-CTX-01",
+  "gate": "FULL_VS_PREFIX_CAUSAL",
+  "status": "PASS",
+  "usable_for_inference": true,
+  "decision_count": 120,
+  "warmup_h1": 1000,
+  "time_boundary": "inclusive time <= decision_time",
+  "navigator_config": {
+    "precompute_sequences": false,
+    "swing_left": 3
+  },
+  "dataset": {
+    "root": "datasets/eurusd_dukascopy_20y",
+    "timeframes": [
+      "D1",
+      "H4",
+      "H1"
+    ],
+    "rows": {
+      "D1": 6258,
+      "H4": 32133,
+      "H1": 124377
+    }
+  },
+  "commit": "bef711409c1f204b1bb09511a9f539bdff378734",
+  "violations": [],
+  "generated_at": "2026-08-23T17:16:33.197965+00:00",
+  "elapsed_s": 98.112,
+  "policy": "AUDIT_ONLY; no outcomes, PnL or entries"
+}

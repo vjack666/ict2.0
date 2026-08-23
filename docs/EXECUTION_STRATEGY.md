@@ -1,8 +1,8 @@
 # Estrategia de ejecución — ICT 2.0
 
-**Decisión:** 2026-08-19 (Ruben)
-**Estado:** VIGENTE — perfil `EXECUTION_INTRADAY_M15_V1` congelado para esta etapa
-**Responsable de pesados:** Grok (servidores de la nube del Director)
+**Decisión vigente:** 2026-08-23 (Ruben)
+**Estado:** VIGENTE — ejecución exclusivamente local en el PC de Ruben
+**Responsable de ejecución:** PC local de Ruben; no se usa GitHub Actions ni otra nube
 
 ---
 
@@ -10,10 +10,12 @@
 
 | Tipo de proceso | Dónde se ejecuta | Quién lo dispara |
 | --- | --- | --- |
-| Liviano (A0-A9 audit <1s, smoke tests, lectura de archivos, commits, `git pull/push`, edición de docs/código) | **Local** — PC de Ruben (20 vCPU / 16 GB RAM) | Hermes, autónomamente |
-| Pesado (Funnel 20Y, TNA 20Y, backtest, walk-forward, experimentos pandas/sklearn grandes sobre EURUSD 20Y) | **Grok** — servidores de la nube del Director | Usuario, tras aviso de Hermes |
+| Experimentos, tests, auditorías, backtests, walk-forward y jobs de laboratorio | **Local** — PC de Ruben | Hermes, con autorización del alcance correspondiente |
+| Git, revisión, historial y publicación de cambios | **GitHub como repositorio** | Usuario/Codex, según autorización explícita |
 
-**La nube manda.** Cuando hay que correr un proceso pesado, Hermes AVISA en el chat; el usuario lo lleva al chat de Grok. Nada pesado se corre local ni en AWS.
+**Regla local-only.** Ningún experimento, test, auditoría, backtest, descarga de datos ni job de laboratorio se ejecuta en GitHub Actions, Grok, AWS u otra nube. Si el PC no puede completar el trabajo, el estado es `WAITING`/`BLOCKED` y se informa al usuario; no se migra automáticamente a la nube.
+
+La evidencia histórica producida antes de esta decisión conserva su valor documental, pero no autoriza nuevas ejecuciones cloud ni cambia la regla vigente.
 
 ---
 
@@ -22,7 +24,7 @@
 - Se evaluó AWS EC2 `t4g.small` y se **descartó EC2**.
 - Evidencia del benchmark local (`reports/audits/benchmark_spayk.json`, host `spayk`, 20 cores / 16.8 GB): A0-A9 audit ~0.12 s; AHF_TEMPORAL serial llegó a timeout de 1800 s antes del parche de navegación.
 - El motor `engine/mtf_navigation.py` recibió posteriormente una optimización O(n) de precompute; la regresión publicada reporta equivalencia bit-exact frente al motor anterior en 600 layer-checks.
-- Grok ya dispone de servidores en la nube → es el canal de procesamiento pesado acordado.
+- La decisión del 2026-08-23 reemplaza el canal cloud anterior: toda ejecución futura debe quedar trazada al PC local.
 - Ver `docs/AWS_EXECUTION_HOST.md` (marcado **DESCARTADO**) para la traza completa de la evaluación AWS.
 
 ---
@@ -30,44 +32,38 @@
 ## 3. Criterio liviano vs pesado (operativo)
 
 - **Liviano:** termina en segundos. Smoke tests, lectura de archivos, edición/commit de docs y código, `git pull/push`. → **Local**.
-- **Pesado:** procesa el dataset EURUSD 20Y (D1/H4/H1; ~139k barras H1) o corre TNA/backtests/walk-forward/experimentos grandes. → **Grok**.
+- **Pesado:** procesa el dataset EURUSD 20Y (D1/H4/H1; ~139k barras H1) o corre TNA/backtests/walk-forward/experimentos grandes. → **PC local**, con progreso/heartbeat y evidencia persistida.
 
 ---
 
-## 4. Procedimiento para Grok
+## 4. Protocolo local obligatorio
 
-### A — Preparar entorno
+### A — Preparar y verificar el entorno
 
-```text
-Trabajando en ICT 2.0 (repo github.com/vjack666/ict2.0). Es un motor de trading ICT/SMC
-Python 3.11+. Necesito correr un proceso pesado sobre EURUSD 20Y. El dataset está en
-data/raw/EURUSD/ o en datasets/eurusd_dukascopy_20y/ como snapshot versionado.
-NO calcules PnL ni emitas entradas salvo que el plan/SDD de la tarea lo autorice
-explícitamente. Devuélveme resumen, JSON detallado y evidencia de commit/dataset.
+```powershell
+git status --short
+git rev-parse HEAD
+C:\Python314\python.exe --version
+C:\Python314\python.exe -m pytest tests -q
 ```
 
-### B — Traer repo
+El experimento debe ejecutarse desde el checkout local autorizado, con el commit,
+dataset y dependencias registrados antes de iniciar. No se clonan repositorios ni
+se instalan dependencias en un runner cloud para ejecutar el trabajo.
 
-```bash
-git clone https://github.com/vjack666/ict2.0.git
-cd ict2.0
-python -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt
-```
-
-### C — Verificar dataset
+### B — Verificar dataset
 
 Verificar `datasets/eurusd_dukascopy_20y/SHA256SUMS` y `metadata.json` cuando la tarea use el snapshot 20Y. No sustituir silenciosamente el dataset por otro.
 
 ### D — Drivers canónicos actuales
 
-**Funnel 20Y ya cerrado.** No volver a ejecutarlo salvo que una nueva evidencia o cambio de código lo requiera. La ejecución histórica usó el runner versionado:
+**Funnel 20Y ya cerrado.** No volver a ejecutarlo salvo que una nueva evidencia o cambio de código lo requiera. La ejecución histórica usó un runner versionado cuyo nombre conserva `grok`; cualquier revalidación autorizada se ejecutará localmente:
 
-```bash
-python scripts/grok_run_funnel_20y_full.py
+```powershell
+C:\Python314\python.exe scripts/grok_run_funnel_20y_full.py
 ```
 
-Ese runner orquesta FVG/OB + Sequence + MTF dense con `sample_every=100`. El artifact canónico es `reports/audits/mtf_seq_funnel.json` y está protegido por assert CI. `audits/codigo/mtf_seq_funnel.py` contiene funciones canónicas, pero no debe confundirse con el orquestador pesado que produjo el artifact.
+Ese runner orquesta FVG/OB + Sequence + MTF dense con `sample_every=100`. El artifact canónico es `reports/audits/mtf_seq_funnel.json` y conserva un assert histórico; no debe ejecutarse en CI. `audits/codigo/mtf_seq_funnel.py` contiene funciones canónicas, pero no debe confundirse con el orquestador pesado que produjo el artifact. Las referencias a CI en documentación antigua describen evidencia histórica, no un host permitido.
 
 **TNA 20Y:** el trace estratificado y el behavioral/full-span streaming tienen PASS de integridad. El artefacto cerrado de esta etapa es:
 
@@ -77,8 +73,8 @@ reports/audits/tna_streaming_prefix_2026-08-22.json
 
 El driver pesado histórico sigue disponible para una revalidación autorizada:
 
-```bash
-python scripts/tna_20y_parallel.py
+```powershell
+C:\Python314\python.exe scripts/tna_20y_parallel.py
 ```
 
 No interpretar ningún PASS de integridad como edge ni como autorización de backtest.
@@ -102,6 +98,9 @@ Toda ejecución pesada debe devolver:
 git pull origin main
 ```
 
+`git pull`/`git push` solo sincronizan código y evidencia autorizada; no deben
+disparar jobs remotos. Los workflows históricos de GitHub están desactivados.
+
 ---
 
 ## 5. Estado de trabajos pesados
@@ -111,7 +110,7 @@ git pull origin main
 | Funnel 20Y FVG/OB + Sequence + MTF | **CERRADO — PASS + GATE CI** | `reports/audits/mtf_seq_funnel.json` + worklog 2026-08-20 |
 | TNA temporal AHF/MTF — TRACE | **PASS estratificado** | `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json` |
 | TNA temporal AHF/MTF — BEHAVIORAL/full-span | **PASS local / gate PASS** | `reports/audits/tna_streaming_prefix_2026-08-22.json` |
-| A0-A9 full-stack | **PASS local / CI pendiente** | `reports/audits/A0_A9_audit_stack.json` + workflow 20 |
+| A0-A9 full-stack | **PASS local + evidencia CI histórica** | `reports/audits/A0_A9_audit_stack.json` + worklog de cierre |
 | Ejecución congelada | **PASS M15 / limitado** | `reports/audits/execution_freeze_2026-08-22.json` |
 | SEQUENCE × CONTEXT STATE | **INSUFFICIENT_N** | `reports/audits/exp_sequence_x_context_state_H1_20Y.json` |
 | Backtest / Walk-forward | **REQUIERE DECISIÓN EXPLÍCITA** | gates locales PASS; sin autorización automática |
@@ -122,11 +121,15 @@ git pull origin main
 
 - Dataset 20Y versionado: `datasets/eurusd_dukascopy_20y/` con SHA256/metadata.
 - M5 permanece diferido; no es requisito para cerrar H1/H4/D1 del Funnel.
-- AWS queda DESCARTADO; `scripts/aws/*` es referencia histórica.
+- AWS, Grok y GitHub Actions quedan fuera de la ejecución vigente; cualquier referencia cloud es histórica.
 - Los resultados de auditoría son integridad/estructura/navegación salvo que un experimento declare explícitamente otra métrica.
 
 ---
 
 ## 7. Señal para Hermes
 
-Cuando un proceso supere ~60s locales o toque el dataset 20Y completo, Hermes lo marca PESADO y avisa: “toca correr X en Grok”. El usuario lo dispara allá; Hermes sincroniza y audita el resultado.
+Cuando un proceso supere ~60s locales o toque el dataset 20Y completo, Hermes lo
+marca PESADO, mantiene la ejecución en el PC local y exige progreso/heartbeat,
+artefactos y evidencia reproducible. Si no puede continuar localmente, informa
+`WAITING`/`BLOCKED`; nunca propone Grok, GitHub Actions, AWS u otra nube como
+ejecutor por defecto.

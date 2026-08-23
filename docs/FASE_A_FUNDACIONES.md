@@ -1,5 +1,9 @@
 # FASE A — FUNDACIONES DEL MOTOR ICT
 
+> **HISTÓRICO.** Las referencias a GitHub Actions en esta fase describen la
+> evidencia CI de 2026-08-17; desde 2026-08-23 la ejecución vigente de tests,
+> auditorías y experimentos es exclusivamente local.
+
 **Fecha:** 2026-08-17  
 **Fase:** A — Fundaciones / contratos base  
 **Estado:** `PASS — GATE A CERRADO`  
@@ -11,7 +15,8 @@ Fase A no implementa nuevos detectores de estrategia. Su responsabilidad es aseg
 
 ### A1 — Ejecución reproducible
 
-- El repositorio instala sus dependencias en GitHub Actions.
+- La evidencia histórica instaló dependencias en GitHub Actions; la política
+  vigente instala y ejecuta localmente.
 - La suite arranca sin depender de archivos inexistentes.
 - Las dependencias están declaradas explícitamente en `requirements.txt`.
 
@@ -44,7 +49,10 @@ La representación de un objeto no permite registrar una confirmación, disponib
 
 ### A5 — CI como evidencia
 
-GitHub Actions ejecuta la suite sobre Python 3.11 con dependencias fijadas. El workflow fuerza explícitamente el root del repositorio en `PYTHONPATH` y verifica la importación de `engine` antes de ejecutar pytest.
+La evidencia histórica de GitHub Actions ejecutó la suite sobre Python 3.11 con
+dependencias fijadas. El workflow fuerza explícitamente el root del repositorio
+en `PYTHONPATH` y verifica la importación de `engine` antes de ejecutar pytest;
+no es un host vigente.
 
 ## 2. Gate A — RESULTADO
 

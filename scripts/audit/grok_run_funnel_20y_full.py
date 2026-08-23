@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Grok cloud runner — Funnel 20Y FULL (FVG/OB + Sequence + MTF dense).
+"""Local runner — Funnel 20Y FULL (FVG/OB + Sequence + MTF dense).
 
-Commiteado en scripts/ para trazabilidad. No es el módulo canónico
-(audits/codigo/mtf_seq_funnel.py); es el orquestador pesado usado en la nube
-con checkpoints y densificación MTF (sample_every=100).
+Versionado en scripts/ para trazabilidad. No es el módulo canónico
+(audits/codigo/mtf_seq_funnel.py); es el orquestador pesado con checkpoints y
+densificación MTF (sample_every=100). El nombre histórico del archivo se
+conserva, pero su host vigente es el PC local y no se ejecuta en nube.
 
 Policy: AUDIT_FUNNEL_NO_PNL_NO_ENTRY. Anti-indicadores: no EMA/ATR/OTE.
 """
@@ -15,7 +16,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from audits.codigo.mtf_seq_funnel import (  # noqa: E402
@@ -64,7 +65,8 @@ def main() -> None:
         "sequence": {},
         "mtf_navigation": {},
         "started_at": datetime.now(timezone.utc).isoformat(),
-        "runner": "scripts/grok_run_funnel_20y_full.py",
+        "runner": "scripts/audit/grok_run_funnel_20y_full.py",
+        "execution_host": "local_pc",
     }
 
     for tf in ("H1", "H4", "D1"):

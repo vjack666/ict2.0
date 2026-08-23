@@ -1,8 +1,9 @@
 > ⚠️ **DESCARTADO 2026-08-19.** Se creó la cuenta AWS (nueva, free-tier post-2025-07-15)
 > y el IAM user `hermes-ict2-0`, pero se decidió **NO usar EC2**. Los procesos pesados
-> (Funnel 20Y, TNA 20Y, backtest) se ejecutan en **Grok** (servidores de la nube del Director).
-> Ver `docs/EXECUTION_STRATEGY.md`. Los scripts de `scripts/aws/` quedan como referencia
-> histórica y **no se usarán**.
+> **HISTÓRICO / NO VIGENTE.** El texto inferior describe una opción evaluada antes
+> de la política local-only. Funnel 20Y, TNA, experimentos, tests y backtests se
+> ejecutan ahora únicamente en el PC local; no se usa Grok, AWS ni GitHub Actions.
+> Los scripts de `scripts/aws/` quedan como referencia histórica y no se usarán.
 >
 > La traza de gobernanza sambias aquí abajo por integridad.
 
@@ -12,7 +13,7 @@ Este documento define el marco de operacion de la EC2 `hermes-ict2-0`
 (AWS_EXECUTION_HOST). Es vinculante: Hermes NO crea/modifica IAM/borra recursos
 sin OK explicito de Ruben.
 
-## 1. Tipo de instancia y free-tier (verificado contra docs AWS 2026)
+## 1. Tipo de instancia y free-tier (referencia histórica; no autoriza despliegue)
 
 | Cuenta | Free-tier eligible | Duracion | Nota |
 |---|---|---|---|

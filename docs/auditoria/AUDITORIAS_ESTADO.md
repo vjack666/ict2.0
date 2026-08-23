@@ -1,10 +1,11 @@
 # Índice de Auditorías — ICT 2.0
 
 **Propósito:** evitar confusiones sobre qué auditorías YA están corridas y versionadas,
-cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports/audits/`,
+cuáles faltan, y qué evidencia las respalda. Todos los jobs se ejecutan localmente.
+Fuente de verdad: `reports/audits/`,
 `.hermes/audit_state.json`, `.hermes-index.md`.
 
-**Actualizado:** 2026-08-19
+**Actualizado:** 2026-08-23
 
 ---
 
@@ -39,28 +40,32 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 
 ---
 
-## 3. PENDIENTES — GROK (nube, pesado)
+## 3. PENDIENTES — LOCAL (PC de Ruben)
 
-| Auditoría | Driver | Por qué Grok |
+| Auditoría | Driver | Estado |
 | --- | --- | --- |
-| **TNA-BEHAVIORAL** (gate separado de integridad) | `scripts/tna_audit_runner.py` | AHF serial, no termina local (timeout 1800s); 139k barras H1 |
-| **Backtest / Walk-forward (EXP-004b)** | por definir | Bloqueado hasta A0-A9 + Funnel + TNA |
-| Experimentos pandas/sklearn grandes | por definir | Carga pesada |
+| **EXP-SEQ-CTX-01 gate causal** | `scripts/lab/experiments/exp_seq_ctx_01_gate.py` | PASS 0/120 |
+| **EXP-SEQ-CTX-01 matriz** | `scripts/lab/experiments/exp_seq_ctx_01.py` | INSUFFICIENT_N; 53 obs., no inferencia |
+| **EXP-SEQ-CTX-01B expansión canonical** | `scripts/lab/experiments/exp_seq_ctx_01b_oos.py` | INSUFFICIENT_N; no amplió población |
+| **EXP-SEQ-CTX-01C enmienda lite** | `scripts/lab/experiments/exp_seq_ctx_01b_oos.py` | PASS_SAMPLE_SUFFICIENT descriptivo; 117 obs. |
+| **Backtest / Walk-forward (EXP-004b)** | por definir | Requiere decisión explícita del cliente |
 
 ---
 
-## 4. División de ejecución (vigente)
+## 4. Política de ejecución (vigente)
 
-- **Local (Hermes):** A0-07, A0-08, AUDIT-CI-01, smoke tests, commits, `git pull/push`.
-- **Grok (nube):** TNA-BEHAVIORAL, Funnel 20Y (si se re-corre), backtest, walk-forward.
-- Ver `docs/EXECUTION_STRATEGY.md` para el procedimiento copy-paste a Grok.
+- Todos los experimentos, tests, auditorías, backtests, walk-forwards,
+  descargas y jobs de laboratorio se ejecutan en el PC local.
+- GitHub queda limitado a repositorio, historial, revisión y sincronización
+  explícitamente autorizada; no es host de ejecución.
+- Ver `.hermes-state/execution_host_policy.md`.
 
 ---
 
 ## 5. Notas
 
-- El benchmark hoy probó que el AHF (`run_timeline`) es **single-threaded por barra**
-  → 20 cores locales no ayudan; por eso TNA-BEHAVIORAL va a Grok.
+- El benchmark histórico probó que el AHF (`run_timeline`) es **single-threaded por barra**;
+  esto afecta el tiempo local, pero no autoriza migrar el trabajo a la nube.
 - AWS EC2 descartado (ver `docs/AWS_EXECUTION_HOST.md`).
-- Orden de cuellos: BOS PIT (HECHO) → TNA 20Y (Grok) → validar navegación →
-  Funnel 20Y (Grok) → SEQUENCE×CONTEXT → BACKTEST (Grok).
+- Orden vigente: gate causal EXP-SEQ-CTX-01 → matriz canonical → expansiones
+  separadas y OOS → decisión explícita para backtest, siempre en el PC local.

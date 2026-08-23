@@ -1,5 +1,9 @@
 # FASE B — CONTRATO DE DOMINIO FVG / OB / BREAKER / BPR
 
+> **HISTÓRICO / NO VIGENTE COMO INSTRUCCIÓN DE HOST.** La referencia a GitHub
+> Actions conserva un gate pasado; actualmente los tests y gates se ejecutan
+> solo en el PC local.
+
 **Fecha:** 2026-08-17  
 **Fase:** B — Contratos de dominio  
 **Estado:** `IN_PROGRESS / GATE_PENDING`  
@@ -92,7 +96,7 @@ PARTIALLY_MITIGATED
 
 ## 4. Gate B
 
-No se declara PASS hasta que GitHub Actions ejecute:
+No se declaraba PASS hasta que la evidencia CI histórica ejecutara:
 
 1. instalación reproducible;
 2. verificación de importación;

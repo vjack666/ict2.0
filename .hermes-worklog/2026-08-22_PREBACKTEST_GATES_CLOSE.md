@@ -15,6 +15,7 @@
 - `C:\Python314\python.exe -m audits.codigo.run_execution_freeze` terminó con `status=PASS`; la prueba de invariancia de vela cerrada conserva `entry`, `sl`, `tp` y `rr=3.0` frente a una vela futura añadida.
 - `C:\Python314\python.exe -m audits.codigo.close_pre_backtest_gates` terminó con `status=PASS` en las cuatro condiciones agregadas.
 - No se ejecutaron experimentos, backtests, PnL, descargas de mercado ni jobs de laboratorio. No se modificaron datasets.
+- El primer CI del cierre (`Hermes A0-A9 Audit Stack #46`) alcanzó el Funnel, pero falló al iniciar el full-stack porque el contrato `requirements.txt` no declaraba `numpy`/`pandas`; la suite CI general tenía la misma causa de entorno. Se añadió esa dependencia mínima antes de repetir CI.
 
 ## Inferencias y límites
 

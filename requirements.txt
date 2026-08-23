@@ -1,6 +1,7 @@
 # Runtime/test dependencies for ICT 2.0 CI
-# Keep this file intentionally small: the current automated suite only
-# requires pytest and pytest-cov. Add runtime packages only when the code
-# imports them in a verified execution path.
+# The audit runner and the automated suite exercise the canonical pandas/numpy
+# data path; keep these dependencies explicit so CI matches local validation.
 pytest==8.3.5
 pytest-cov==6.1.1
+numpy>=1.26,<3
+pandas>=2.2,<3

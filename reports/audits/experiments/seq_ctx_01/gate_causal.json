@@ -1,0 +1,104 @@
+{
+  "experiment": "EXP-SEQ-CTX-01_GATE_CAUSAL",
+  "description": "navigate(full,t) == navigate(prefix_through_t,t) on H1 20Y sample",
+  "generated_at": "2026-08-23T16:24:09.451443+00:00",
+  "motor_lineage": "engine-seq-v2-causal (PIT _build_eq_pools) merged into current checkout",
+  "n_samples": 120,
+  "n_checked": 120,
+  "n_violations": 31,
+  "status": "INVALIDATED",
+  "reason": "CAUSALITY_CHECK_FAIL",
+  "usable_for_inference": false,
+  "violations_sample": [
+    {
+      "bar": 2600,
+      "time": "2006-06-01 04:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'TREND_BEAR' != 'COMPRESSION'",
+        "root.layers.H1.structure_bias: 'BEARISH' != 'MIXED'",
+        "root.constraints.regime_stack.H1: 'TREND_BEAR' != 'COMPRESSION'"
+      ]
+    },
+    {
+      "bar": 2900,
+      "time": "2006-06-19 16:00:00",
+      "diffs": [
+        "root.layers.H1.n_zones: 148 != 147"
+      ]
+    },
+    {
+      "bar": 4100,
+      "time": "2006-08-28 16:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'COMPRESSION' != 'TREND_BULL'",
+        "root.layers.H1.structure_bias: 'MIXED' != 'BULLISH'",
+        "root.constraints.regime_stack.H1: 'COMPRESSION' != 'TREND_BULL'"
+      ]
+    },
+    {
+      "bar": 4700,
+      "time": "2006-10-02 16:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'COMPRESSION' != 'RETRACEMENT'",
+        "root.layers.H1.structure_bias: 'MIXED' != 'BEARISH'",
+        "root.constraints.regime_stack.H1: 'COMPRESSION' != 'RETRACEMENT'"
+      ]
+    },
+    {
+      "bar": 5600,
+      "time": "2006-11-23 04:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'COMPRESSION' != 'RETRACEMENT'",
+        "root.layers.H1.structure_bias: 'MIXED' != 'BEARISH'",
+        "root.constraints.regime_stack.H1: 'COMPRESSION' != 'RETRACEMENT'"
+      ]
+    },
+    {
+      "bar": 5900,
+      "time": "2006-12-11 14:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'COMPRESSION' != 'TREND_BEAR'",
+        "root.layers.H1.structure_bias: 'MIXED' != 'BEARISH'",
+        "root.constraints.regime_stack.H1: 'COMPRESSION' != 'TREND_BEAR'"
+      ]
+    },
+    {
+      "bar": 7100,
+      "time": "2007-02-19 08:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'RANGE' != 'TREND_BULL'",
+        "root.layers.H1.structure_bias: 'MIXED' != 'BULLISH'",
+        "root.constraints.regime_stack.H1: 'RANGE' != 'TREND_BULL'"
+      ]
+    },
+    {
+      "bar": 8600,
+      "time": "2007-05-16 17:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'COMPRESSION' != 'RETRACEMENT'",
+        "root.layers.H1.structure_bias: 'MIXED' != 'BULLISH'",
+        "root.layers.H1.n_zones: 338 != 337",
+        "root.constraints.regime_stack.H1: 'COMPRESSION' != 'RETRACEMENT'"
+      ]
+    },
+    {
+      "bar": 10100,
+      "time": "2007-08-13 05:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'RETRACEMENT' != 'COMPRESSION'",
+        "root.layers.H1.structure_bias: 'BULLISH' != 'MIXED'",
+        "root.constraints.regime_stack.H1: 'RETRACEMENT' != 'COMPRESSION'"
+      ]
+    },
+    {
+      "bar": 10400,
+      "time": "2007-08-29 17:00:00",
+      "diffs": [
+        "root.layers.H1.regime: 'TREND_BULL' != 'COMPRESSION'",
+        "root.layers.H1.structure_bias: 'BULLISH' != 'MIXED'",
+        "root.constraints.regime_stack.H1: 'TREND_BULL' != 'COMPRESSION'"
+      ]
+    }
+  ],
+  "elapsed_s": 450.2
+}

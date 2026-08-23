@@ -1267,7 +1267,7 @@
       "label": "_sha256()",
       "file_type": "code",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L21",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "audits_codigo_execution_freeze_sha256",
       "community": 63,
@@ -1287,7 +1287,7 @@
       "label": "_synthetic_frames()",
       "file_type": "code",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L25",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "audits_codigo_execution_freeze_synthetic_frames",
       "community": 63,
@@ -1307,7 +1307,7 @@
       "label": "validate()",
       "file_type": "code",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L32",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "audits_codigo_execution_freeze_validate",
       "community": 63,
@@ -1322,6 +1322,16 @@
       "id": "audits_codigo_execution_freeze_rationale_1",
       "community": 63,
       "norm_label": "validate the frozen intraday m15 execution contract.  this is a configuration/in"
+    },
+    {
+      "label": "Hash the committed Git blob when clean; use worktree bytes for a draft.",
+      "file_type": "rationale",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "audits_codigo_execution_freeze_rationale_23",
+      "community": 63,
+      "norm_label": "hash the committed git blob when clean; use worktree bytes for a draft."
     },
     {
       "label": "full_stack.py",
@@ -2110,7 +2120,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "detectors_bos_bosconfig",
-      "community": 23,
+      "community": 4,
       "norm_label": "bosconfig"
     },
     {
@@ -2290,7 +2300,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "detectors_fvg",
-      "community": 72,
+      "community": 106,
       "norm_label": "fvg.py"
     },
     {
@@ -2300,7 +2310,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "detectors_fvg_detect_fvg",
-      "community": 72,
+      "community": 106,
       "norm_label": "detect_fvg()"
     },
     {
@@ -2310,7 +2320,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_fvg_py_dataframe",
-      "community": 72,
+      "community": 106,
       "norm_label": "dataframe"
     },
     {
@@ -2320,7 +2330,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "detectors_fvg_track_fvg_fill",
-      "community": 72,
+      "community": 106,
       "norm_label": "_track_fvg_fill()"
     },
     {
@@ -2330,7 +2340,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "detectors_fvg_py_series",
-      "community": 72,
+      "community": 106,
       "norm_label": "series"
     },
     {
@@ -4150,7 +4160,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "engine_bias_from_tools_bias_from_tools_htf",
-      "community": 37,
+      "community": 56,
       "norm_label": "bias_from_tools_htf()"
     },
     {
@@ -4200,7 +4210,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "engine_bias_from_tools_rationale_196",
-      "community": 37,
+      "community": 56,
       "norm_label": "sesgo htf unificado usando las herramientas corregidas de tools/.      equival"
     },
     {
@@ -4610,7 +4620,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative",
-      "community": 37,
+      "community": 56,
       "norm_label": "htf_narrative.py"
     },
     {
@@ -4620,7 +4630,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_resolve_bias",
-      "community": 37,
+      "community": 56,
       "norm_label": "_resolve_bias()"
     },
     {
@@ -4630,7 +4640,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_py_dataframe",
-      "community": 12,
+      "community": 56,
       "norm_label": "dataframe"
     },
     {
@@ -4640,7 +4650,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_last_bos_event",
-      "community": 12,
+      "community": 56,
       "norm_label": "_last_bos_event()"
     },
     {
@@ -4650,7 +4660,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_fmt",
-      "community": 37,
+      "community": 56,
       "norm_label": "_fmt()"
     },
     {
@@ -4660,7 +4670,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_build_summary",
-      "community": 37,
+      "community": 56,
       "norm_label": "_build_summary()"
     },
     {
@@ -4670,7 +4680,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_build_htf_narrative",
-      "community": 12,
+      "community": 56,
       "norm_label": "build_htf_narrative()"
     },
     {
@@ -4680,7 +4690,7 @@
       "source_location": "L257",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_narrative_ready_for_trade",
-      "community": 37,
+      "community": 56,
       "norm_label": "narrative_ready_for_trade()"
     },
     {
@@ -4690,7 +4700,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_1",
-      "community": 37,
+      "community": 56,
       "norm_label": "compatibility htf narrative \u2014 non-authoritative reader.  une los pedazos suelt"
     },
     {
@@ -4700,7 +4710,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_44",
-      "community": 37,
+      "community": 56,
       "norm_label": "sesgo htf vigente. si no se pasa uno, se deriva del propio frame.      el fram"
     },
     {
@@ -4710,7 +4720,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_69",
-      "community": 12,
+      "community": 56,
       "norm_label": "ultimo bos del frame: {'index': i, 'direction': bullish|bearish}.      con exp"
     },
     {
@@ -4720,7 +4730,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_90",
-      "community": 37,
+      "community": 56,
       "norm_label": "formato compacto de precio para el resumen."
     },
     {
@@ -4730,7 +4740,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_98",
-      "community": 37,
+      "community": 56,
       "norm_label": "resumen legible en espanol de la idea del dia."
     },
     {
@@ -4740,7 +4750,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_127",
-      "community": 12,
+      "community": 56,
       "norm_label": "mapa ict completo de la vela actual (la idea del dia).      args:         fra"
     },
     {
@@ -4750,7 +4760,7 @@
       "source_location": "L258",
       "_origin": "ast",
       "id": "engine_compat_htf_narrative_rationale_258",
-      "community": 37,
+      "community": 56,
       "norm_label": "true solo si el htf esta completo: sesgo + zona + poi + objetivo."
     },
     {
@@ -5210,7 +5220,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_dealing_range_eq",
-      "community": 92,
+      "community": 5,
       "norm_label": "dealing_range_eq.py"
     },
     {
@@ -5220,7 +5230,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_eq",
-      "community": 92,
+      "community": 5,
       "norm_label": "_eq()"
     },
     {
@@ -5230,7 +5240,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_classify_zone",
-      "community": 92,
+      "community": 5,
       "norm_label": "classify_zone()"
     },
     {
@@ -5240,7 +5250,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_zone_ok_for_direction",
-      "community": 92,
+      "community": 5,
       "norm_label": "zone_ok_for_direction()"
     },
     {
@@ -5250,7 +5260,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput",
-      "community": 92,
+      "community": 5,
       "norm_label": "dealingrangeinput"
     },
     {
@@ -5260,7 +5270,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_eq",
-      "community": 92,
+      "community": 5,
       "norm_label": ".eq()"
     },
     {
@@ -5270,7 +5280,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_rng",
-      "community": 92,
+      "community": 5,
       "norm_label": ".rng()"
     },
     {
@@ -5280,7 +5290,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_classify",
-      "community": 92,
+      "community": 5,
       "norm_label": ".classify()"
     },
     {
@@ -5290,7 +5300,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_dealingrangeinput_ok_for_direction",
-      "community": 92,
+      "community": 5,
       "norm_label": ".ok_for_direction()"
     },
     {
@@ -5300,7 +5310,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_is_close_to",
-      "community": 92,
+      "community": 5,
       "norm_label": "_is_close_to()"
     },
     {
@@ -5310,7 +5320,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_compute_zone_class",
-      "community": 92,
+      "community": 5,
       "norm_label": "compute_zone_class()"
     },
     {
@@ -5320,7 +5330,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_resolve_swing_from_ms",
-      "community": 92,
+      "community": 5,
       "norm_label": "resolve_swing_from_ms()"
     },
     {
@@ -5330,7 +5340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_1",
-      "community": 92,
+      "community": 5,
       "norm_label": "ict_backtest/dealing_range.py \u2014 brecha c: dealing range premium/discount (fase 5"
     },
     {
@@ -5340,7 +5350,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_27",
-      "community": 92,
+      "community": 5,
       "norm_label": "clasifica la zona segun el dealing range del swing htf.      usa el midpoint d"
     },
     {
@@ -5350,7 +5360,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_44",
-      "community": 92,
+      "community": 5,
       "norm_label": "si la zona favorece la direccion del setup.      long (1) quiere discount; sho"
     },
     {
@@ -5360,7 +5370,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_97",
-      "community": 92,
+      "community": 5,
       "norm_label": "devuelve la clase del deal range para la senal actual, o ``none``     cuando no"
     },
     {
@@ -5370,7 +5380,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "engine_dealing_range_eq_rationale_125",
-      "community": 92,
+      "community": 5,
       "norm_label": "swing htf cerrado antes de ``at_time``.      anti look-ahead: solo velas con `"
     },
     {
@@ -5400,7 +5410,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_fvg",
-      "community": 9,
+      "community": 92,
       "norm_label": "fvg.py"
     },
     {
@@ -5410,7 +5420,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "engine_detectors_fvg_candle",
-      "community": 9,
+      "community": 92,
       "norm_label": "_candle"
     },
     {
@@ -5420,7 +5430,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "engine_detectors_fvg_as_candles",
-      "community": 9,
+      "community": 92,
       "norm_label": "_as_candles()"
     },
     {
@@ -5430,7 +5440,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_detectors_fvg_py_any",
-      "community": 9,
+      "community": 92,
       "norm_label": "any"
     },
     {
@@ -5450,7 +5460,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_detectors_fvg_rationale_1",
-      "community": 9,
+      "community": 92,
       "norm_label": "canonical causal ict fair value gap detector."
     },
     {
@@ -5480,7 +5490,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle",
-      "community": 9,
+      "community": 92,
       "norm_label": "_candle"
     },
     {
@@ -5490,7 +5500,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_body_ratio",
-      "community": 9,
+      "community": 92,
       "norm_label": ".body_ratio()"
     },
     {
@@ -5500,7 +5510,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_bullish",
-      "community": 9,
+      "community": 92,
       "norm_label": ".bullish()"
     },
     {
@@ -5510,7 +5520,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "engine_detectors_ob_candle_bearish",
-      "community": 9,
+      "community": 92,
       "norm_label": ".bearish()"
     },
     {
@@ -5980,7 +5990,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_narrative",
-      "community": 37,
+      "community": 56,
       "norm_label": "htf_narrative.py"
     },
     {
@@ -5990,7 +6000,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_narrative_rationale_1",
-      "community": 37,
+      "community": 56,
       "norm_label": "compatibility wrapper for the former htf narrative module.  the implementation"
     },
     {
@@ -6000,7 +6010,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_pd_index",
-      "community": 18,
+      "community": 56,
       "norm_label": "htf_pd_index.py"
     },
     {
@@ -6010,7 +6020,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "engine_htf_pd_index_htfpdzone",
-      "community": 18,
+      "community": 56,
       "norm_label": "htfpdzone"
     },
     {
@@ -6110,7 +6120,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_htf_pd_index_rationale_1",
-      "community": 18,
+      "community": 56,
       "norm_label": "engine/htf_pd_index.py \u2014 indice temporal de pd arrays htf (rescate de la capa ba"
     },
     {
@@ -6120,7 +6130,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "engine_htf_pd_index_rationale_37",
-      "community": 18,
+      "community": 56,
       "norm_label": "un pd array vigente del htf, ya detectado por los detectores existentes."
     },
     {
@@ -7110,7 +7120,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_market_object",
-      "community": 5,
+      "community": 92,
       "norm_label": "market_object.py"
     },
     {
@@ -7120,7 +7130,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "engine_market_object_objecttype",
-      "community": 5,
+      "community": 92,
       "norm_label": "objecttype"
     },
     {
@@ -7130,7 +7140,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_market_object_py_str",
-      "community": 5,
+      "community": 92,
       "norm_label": "str"
     },
     {
@@ -7140,7 +7150,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_market_object_py_enum",
-      "community": 5,
+      "community": 92,
       "norm_label": "enum"
     },
     {
@@ -7150,7 +7160,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "engine_market_object_role",
-      "community": 5,
+      "community": 92,
       "norm_label": "role"
     },
     {
@@ -7160,7 +7170,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "engine_market_object_objectstate",
-      "community": 71,
+      "community": 92,
       "norm_label": "objectstate"
     },
     {
@@ -7220,7 +7230,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_can_transition_to",
-      "community": 71,
+      "community": 92,
       "norm_label": ".can_transition_to()"
     },
     {
@@ -7230,7 +7240,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_transition_to",
-      "community": 71,
+      "community": 92,
       "norm_label": ".transition_to()"
     },
     {
@@ -7250,7 +7260,7 @@
       "source_location": "L178",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_to_dict",
-      "community": 5,
+      "community": 92,
       "norm_label": ".to_dict()"
     },
     {
@@ -7260,7 +7270,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "engine_market_object_marketobject_from_dict",
-      "community": 52,
+      "community": 92,
       "norm_label": ".from_dict()"
     },
     {
@@ -7270,7 +7280,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_market_object_rationale_1",
-      "community": 5,
+      "community": 92,
       "norm_label": "objeto de mercado ict (fuente canonica del motor).  un marketobject representa"
     },
     {
@@ -7500,7 +7510,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_mtf_navigation",
-      "community": 6,
+      "community": 23,
       "norm_label": "mtf_navigation.py"
     },
     {
@@ -7560,7 +7570,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "engine_mtf_navigation_structurebias",
-      "community": 6,
+      "community": 172,
       "norm_label": "structurebias"
     },
     {
@@ -7600,7 +7610,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "engine_mtf_navigation_zone_to_dict",
-      "community": 56,
+      "community": 6,
       "norm_label": ".to_dict()"
     },
     {
@@ -7610,7 +7620,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_mtf_navigation_py_any",
-      "community": 56,
+      "community": 13,
       "norm_label": "any"
     },
     {
@@ -7620,7 +7630,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "engine_mtf_navigation_layersnapshot",
-      "community": 56,
+      "community": 16,
       "norm_label": "layersnapshot"
     },
     {
@@ -7630,7 +7640,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "engine_mtf_navigation_layersnapshot_to_dict",
-      "community": 56,
+      "community": 13,
       "norm_label": ".to_dict()"
     },
     {
@@ -7640,7 +7650,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "engine_mtf_navigation_contextconstraints",
-      "community": 6,
+      "community": 16,
       "norm_label": "contextconstraints"
     },
     {
@@ -7650,7 +7660,7 @@
       "source_location": "L168",
       "_origin": "ast",
       "id": "engine_mtf_navigation_contextconstraints_to_dict",
-      "community": 56,
+      "community": 13,
       "norm_label": ".to_dict()"
     },
     {
@@ -7660,7 +7670,7 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigationpath",
-      "community": 56,
+      "community": 13,
       "norm_label": "navigationpath"
     },
     {
@@ -7670,7 +7680,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigationpath_add",
-      "community": 56,
+      "community": 13,
       "norm_label": ".add()"
     },
     {
@@ -7680,7 +7690,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigationpath_to_dict",
-      "community": 56,
+      "community": 13,
       "norm_label": ".to_dict()"
     },
     {
@@ -7700,7 +7710,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "engine_mtf_navigation_marketstate_to_dict",
-      "community": 56,
+      "community": 13,
       "norm_label": ".to_dict()"
     },
     {
@@ -7710,7 +7720,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "engine_mtf_navigation_ensure_time",
-      "community": 13,
+      "community": 23,
       "norm_label": "_ensure_time()"
     },
     {
@@ -7720,7 +7730,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "engine_mtf_navigation_py_dataframe",
-      "community": 13,
+      "community": 23,
       "norm_label": "dataframe"
     },
     {
@@ -7730,7 +7740,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "engine_mtf_navigation_asof_index",
-      "community": 6,
+      "community": 23,
       "norm_label": "_asof_index()"
     },
     {
@@ -7800,7 +7810,7 @@
       "source_location": "L376",
       "_origin": "ast",
       "id": "engine_mtf_navigation_navigatorconfig",
-      "community": 13,
+      "community": 6,
       "norm_label": "navigatorconfig"
     },
     {
@@ -7820,7 +7830,7 @@
       "source_location": "L403",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_init",
-      "community": 13,
+      "community": 23,
       "norm_label": ".__init__()"
     },
     {
@@ -7860,7 +7870,7 @@
       "source_location": "L563",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_d1",
-      "community": 56,
+      "community": 13,
       "norm_label": "._answer_d1()"
     },
     {
@@ -7870,7 +7880,7 @@
       "source_location": "L577",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_h4",
-      "community": 56,
+      "community": 13,
       "norm_label": "._answer_h4()"
     },
     {
@@ -7880,7 +7890,7 @@
       "source_location": "L612",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_h1",
-      "community": 56,
+      "community": 13,
       "norm_label": "._answer_h1()"
     },
     {
@@ -7890,7 +7900,7 @@
       "source_location": "L650",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_answer_ltf",
-      "community": 56,
+      "community": 13,
       "norm_label": "._answer_ltf()"
     },
     {
@@ -7900,7 +7910,7 @@
       "source_location": "L669",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_build_constraints",
-      "community": 56,
+      "community": 13,
       "norm_label": "._build_constraints()"
     },
     {
@@ -7940,7 +7950,7 @@
       "source_location": "L776",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_navigate",
-      "community": 56,
+      "community": 13,
       "norm_label": ".navigate()"
     },
     {
@@ -7950,7 +7960,7 @@
       "source_location": "L844",
       "_origin": "ast",
       "id": "engine_mtf_navigation_mtfnavigator_navigate_series",
-      "community": 56,
+      "community": 13,
       "norm_label": ".navigate_series()"
     },
     {
@@ -7960,7 +7970,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_1",
-      "community": 6,
+      "community": 23,
       "norm_label": "grafo de navegacion multi-timeframe \u2014 context state (no entry).  implementa la"
     },
     {
@@ -7980,7 +7990,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_117",
-      "community": 56,
+      "community": 16,
       "norm_label": "estado point-in-time de una temporalidad (solo velas cerradas)."
     },
     {
@@ -7990,7 +8000,7 @@
       "source_location": "L155",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_155",
-      "community": 6,
+      "community": 16,
       "norm_label": "mapa de restricciones emitido por el grafo (no es senal)."
     },
     {
@@ -8000,7 +8010,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_186",
-      "community": 56,
+      "community": 13,
       "norm_label": "camino recorrido en el grafo (auditoria)."
     },
     {
@@ -8020,7 +8030,7 @@
       "source_location": "L242",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_242",
-      "community": 6,
+      "community": 23,
       "norm_label": "ultima barra con time <= decision_time (vela cerrada disponible)."
     },
     {
@@ -8080,7 +8090,7 @@
       "source_location": "L782",
       "_origin": "ast",
       "id": "engine_mtf_navigation_rationale_782",
-      "community": 56,
+      "community": 13,
       "norm_label": "recorre el grafo d1\u2192...\u2192exec y devuelve marketstate + constraints.          neve"
     },
     {
@@ -8570,7 +8580,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "engine_plan_attach_zone_ok_for_m15",
-      "community": 92,
+      "community": 5,
       "norm_label": "_zone_ok_for_m15()"
     },
     {
@@ -9740,7 +9750,7 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "engine_sequence_sequencestate_from_snapshot",
-      "community": 52,
+      "community": 92,
       "norm_label": ".from_snapshot()"
     },
     {
@@ -9760,7 +9770,7 @@
       "source_location": "L246",
       "_origin": "ast",
       "id": "engine_sequence_sequencestate_load",
-      "community": 52,
+      "community": 92,
       "norm_label": ".load()"
     },
     {
@@ -9780,7 +9790,7 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "engine_sequence_nan_safe",
-      "community": 52,
+      "community": 92,
       "norm_label": "_nan_safe()"
     },
     {
@@ -9810,7 +9820,7 @@
       "source_location": "L284",
       "_origin": "ast",
       "id": "engine_sequence_rule_from_dict",
-      "community": 52,
+      "community": 92,
       "norm_label": "_rule_from_dict()"
     },
     {
@@ -10040,7 +10050,7 @@
       "source_location": "L1105",
       "_origin": "ast",
       "id": "engine_sequence_run_sequence_traced",
-      "community": 1,
+      "community": 239,
       "norm_label": "run_sequence_traced()"
     },
     {
@@ -10050,7 +10060,7 @@
       "source_location": "L1132",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner",
-      "community": 1,
+      "community": 239,
       "norm_label": "sequencerunner"
     },
     {
@@ -10060,7 +10070,7 @@
       "source_location": "L1145",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner_init",
-      "community": 1,
+      "community": 239,
       "norm_label": ".__init__()"
     },
     {
@@ -10070,7 +10080,7 @@
       "source_location": "L1164",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner_step",
-      "community": 1,
+      "community": 239,
       "norm_label": ".step()"
     },
     {
@@ -10080,7 +10090,7 @@
       "source_location": "L1186",
       "_origin": "ast",
       "id": "engine_sequence_sequencerunner_run_all",
-      "community": 1,
+      "community": 239,
       "norm_label": ".run_all()"
     },
     {
@@ -10120,7 +10130,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "engine_sequence_rationale_200",
-      "community": 52,
+      "community": 92,
       "norm_label": "reconstruye sequencestate desde un snapshot (round-trip)."
     },
     {
@@ -10300,7 +10310,7 @@
       "source_location": "L1112",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1112",
-      "community": 1,
+      "community": 239,
       "norm_label": "b1: (signals, phase_seen, expedientes, state) - trazabilidad + estado.      de"
     },
     {
@@ -10310,7 +10320,7 @@
       "source_location": "L1133",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1133",
-      "community": 1,
+      "community": 239,
       "norm_label": "opcion b (change gate mayor 2026-08-14, autorizado por director).      runner"
     },
     {
@@ -10320,7 +10330,7 @@
       "source_location": "L1165",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1165",
-      "community": 1,
+      "community": 239,
       "norm_label": "procesa solo la transicion de la vela i (indice absoluto).          usa single"
     },
     {
@@ -10330,7 +10340,7 @@
       "source_location": "L1187",
       "_origin": "ast",
       "id": "engine_sequence_rationale_1187",
-      "community": 1,
+      "community": 239,
       "norm_label": "conveniencia: corre step(i) para i en [start_i+1, end_i)."
     },
     {
@@ -10570,7 +10580,7 @@
       "source_location": "L644",
       "_origin": "ast",
       "id": "engine_sequential_events_summarize_chains",
-      "community": 4,
+      "community": 172,
       "norm_label": "summarize_chains()"
     },
     {
@@ -10650,7 +10660,7 @@
       "source_location": "L645",
       "_origin": "ast",
       "id": "engine_sequential_events_rationale_645",
-      "community": 4,
+      "community": 172,
       "norm_label": "conteos por profundidad de cadena y completitud."
     },
     {
@@ -11210,7 +11220,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_zone_authority",
-      "community": 18,
+      "community": 56,
       "norm_label": "zone_authority.py"
     },
     {
@@ -11220,7 +11230,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "engine_zone_authority_zoneauthority",
-      "community": 18,
+      "community": 56,
       "norm_label": "zoneauthority"
     },
     {
@@ -11230,7 +11240,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "engine_zone_authority_zoneauthority_post_init",
-      "community": 18,
+      "community": 56,
       "norm_label": ".__post_init__()"
     },
     {
@@ -11240,7 +11250,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "engine_zone_authority_higher_tier",
-      "community": 18,
+      "community": 56,
       "norm_label": "_higher_tier()"
     },
     {
@@ -11250,7 +11260,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "engine_zone_authority_evaluate_zone_authority",
-      "community": 18,
+      "community": 56,
       "norm_label": "evaluate_zone_authority()"
     },
     {
@@ -11260,7 +11270,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "engine_zone_authority_rationale_1",
-      "community": 18,
+      "community": 56,
       "norm_label": "engine/zone_authority.py \u2014 evaluador de autoridad de zona (rescate de la capa ba"
     },
     {
@@ -11270,7 +11280,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "engine_zone_authority_rationale_63",
-      "community": 18,
+      "community": 56,
       "norm_label": "evalua la calidad contextual de una zona ltf ya existente.      `ltf_zone` es"
     },
     {
@@ -11608,7 +11618,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_audit_diag_nav_baseline",
-      "community": 6,
+      "community": 23,
       "norm_label": "diag_nav_baseline.py"
     },
     {
@@ -11758,7 +11768,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner",
-      "community": 14,
+      "community": 237,
       "norm_label": "tna_audit_runner.py"
     },
     {
@@ -11768,7 +11778,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_load_tf",
-      "community": 14,
+      "community": 237,
       "norm_label": "_load_tf()"
     },
     {
@@ -11778,7 +11788,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_py_dataframe",
-      "community": 14,
+      "community": 237,
       "norm_label": "dataframe"
     },
     {
@@ -11788,7 +11798,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_fvg_ob_objects",
-      "community": 14,
+      "community": 237,
       "norm_label": "_fvg_ob_objects()"
     },
     {
@@ -11798,7 +11808,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_py_any",
-      "community": 14,
+      "community": 237,
       "norm_label": "any"
     },
     {
@@ -11808,7 +11818,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_behavioral_gate",
-      "community": 14,
+      "community": 237,
       "norm_label": "_behavioral_gate()"
     },
     {
@@ -11818,7 +11828,7 @@
       "source_location": "L160",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_main",
-      "community": 14,
+      "community": 237,
       "norm_label": "main()"
     },
     {
@@ -11828,7 +11838,7 @@
       "source_location": "L229",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_write_md",
-      "community": 14,
+      "community": 237,
       "norm_label": "_write_md()"
     },
     {
@@ -11838,7 +11848,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_rationale_1",
-      "community": 14,
+      "community": 237,
       "norm_label": "tna 20y \u2014 auditoria temporal ahf/mtf (comando: `ejecuta auditoria temporal`)."
     },
     {
@@ -11848,7 +11858,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_rationale_51",
-      "community": 14,
+      "community": 237,
       "norm_label": "load tf preferring complete dukascopy csv snapshot; fallback to parquet."
     },
     {
@@ -11858,7 +11868,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_rationale_73",
-      "community": 14,
+      "community": 237,
       "norm_label": "extrae objetos fvg/ob reales en el esquema que espera audit_object_excursions."
     },
     {
@@ -11868,7 +11878,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_rationale_104",
-      "community": 14,
+      "community": 237,
       "norm_label": "tna-behavioral: juzga diseno de navegacion, no solo reproducibilidad.      un"
     },
     {
@@ -11878,7 +11888,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "scripts_audit_tna_audit_runner_rationale_161",
-      "community": 14,
+      "community": 237,
       "norm_label": "corre la auditoria temporal ahf/mtf 20y y emite ambos gates a disco/consola."
     },
     {
@@ -12248,7 +12258,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_time_index",
-      "community": 13,
+      "community": 6,
       "norm_label": "_time_index()"
     },
     {
@@ -12258,7 +12268,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_py_dataframe",
-      "community": 13,
+      "community": 6,
       "norm_label": "dataframe"
     },
     {
@@ -12368,7 +12378,7 @@
       "source_location": "L189",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_streaminglayer_init",
-      "community": 13,
+      "community": 6,
       "norm_label": ".__init__()"
     },
     {
@@ -12458,7 +12468,7 @@
       "source_location": "L376",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_batchfingerprintnavigator_init",
-      "community": 13,
+      "community": 6,
       "norm_label": ".__init__()"
     },
     {
@@ -12488,7 +12498,7 @@
       "source_location": "L416",
       "_origin": "ast",
       "id": "scripts_audit_tna_streaming_prefix_compare_streamingfingerprintnavigator_init",
-      "community": 13,
+      "community": 6,
       "norm_label": ".__init__()"
     },
     {
@@ -13378,7 +13388,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root",
-      "community": 8,
+      "community": 4,
       "norm_label": "diag_seq_causal_root.py"
     },
     {
@@ -13388,7 +13398,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root_chains_at",
-      "community": 8,
+      "community": 4,
       "norm_label": "chains_at()"
     },
     {
@@ -13398,7 +13408,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root_main",
-      "community": 8,
+      "community": 4,
       "norm_label": "main()"
     },
     {
@@ -13408,7 +13418,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_diag_seq_causal_root_rationale_1",
-      "community": 8,
+      "community": 4,
       "norm_label": "aislar raiz del leakage de sequence_depth (paso 4).  compara run_sequential(df"
     },
     {
@@ -13528,7 +13538,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state",
-      "community": 8,
+      "community": 4,
       "norm_label": "exp_seq_x_context_state.py"
     },
     {
@@ -13538,7 +13548,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_h1_alignment",
-      "community": 8,
+      "community": 4,
       "norm_label": "h1_alignment()"
     },
     {
@@ -13548,7 +13558,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_context_bucket",
-      "community": 8,
+      "community": 4,
       "norm_label": "context_bucket()"
     },
     {
@@ -13558,7 +13568,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_measure_outcome",
-      "community": 8,
+      "community": 4,
       "norm_label": "measure_outcome()"
     },
     {
@@ -13568,7 +13578,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_py_ndarray",
-      "community": 8,
+      "community": 4,
       "norm_label": "ndarray"
     },
     {
@@ -13578,7 +13588,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_chi2_and_cramers",
-      "community": 8,
+      "community": 4,
       "norm_label": "chi2_and_cramers()"
     },
     {
@@ -13588,7 +13598,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_main",
-      "community": 8,
+      "community": 4,
       "norm_label": "main()"
     },
     {
@@ -13598,7 +13608,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_1",
-      "community": 8,
+      "community": 4,
       "norm_label": "exp sequence x context state \u2014 event-anchored, point-in-time, local.  diseno a"
     },
     {
@@ -13608,7 +13618,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_48",
-      "community": 8,
+      "community": 4,
       "norm_label": "favor/neutral/contra agregado (conservamos las 3 individuales tambien)."
     },
     {
@@ -13618,7 +13628,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_71",
-      "community": 8,
+      "community": 4,
       "norm_label": "c/r/f en horizon barras h1 despues de bar_k. solo futuro (bar_k+1 .. bar_k+horiz"
     },
     {
@@ -13628,7 +13638,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "scripts_exp_seq_x_context_state_rationale_99",
-      "community": 8,
+      "community": 4,
       "norm_label": "chi2 de una tabla (filas=contextos, cols=[cont,rev,fail]). devuelve (chi2, p, cr"
     },
     {
@@ -13778,7 +13788,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state",
-      "community": 4,
+      "community": 172,
       "norm_label": "exp_sequence_x_context_state.py"
     },
     {
@@ -13788,7 +13798,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_load",
-      "community": 4,
+      "community": 172,
       "norm_label": "_load()"
     },
     {
@@ -13798,7 +13808,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_py_dataframe",
-      "community": 4,
+      "community": 172,
       "norm_label": "dataframe"
     },
     {
@@ -13808,7 +13818,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_bucket",
-      "community": 4,
+      "community": 172,
       "norm_label": "_bucket()"
     },
     {
@@ -13818,7 +13828,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_location_favorable",
-      "community": 4,
+      "community": 172,
       "norm_label": "_location_favorable()"
     },
     {
@@ -13828,7 +13838,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_extract_location",
-      "community": 4,
+      "community": 172,
       "norm_label": "_extract_location()"
     },
     {
@@ -13838,7 +13848,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_py_any",
-      "community": 4,
+      "community": 172,
       "norm_label": "any"
     },
     {
@@ -13848,7 +13858,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_outcomes",
-      "community": 4,
+      "community": 172,
       "norm_label": "_outcomes()"
     },
     {
@@ -13858,7 +13868,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_agg",
-      "community": 4,
+      "community": 172,
       "norm_label": "_agg()"
     },
     {
@@ -13868,7 +13878,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_main",
-      "community": 4,
+      "community": 172,
       "norm_label": "main()"
     },
     {
@@ -13878,7 +13888,7 @@
       "source_location": "L257",
       "_origin": "ast",
       "id": "scripts_lab_experiments_exp_sequence_x_context_state_write_md",
-      "community": 4,
+      "community": 172,
       "norm_label": "_write_md()"
     },
     {
@@ -15108,7 +15118,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading",
-      "community": 172,
+      "community": 72,
       "norm_label": "plot_htf_reading.py"
     },
     {
@@ -15118,7 +15128,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_load",
-      "community": 172,
+      "community": 72,
       "norm_label": "load()"
     },
     {
@@ -15128,7 +15138,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_bias_color",
-      "community": 172,
+      "community": 72,
       "norm_label": "bias_color()"
     },
     {
@@ -15138,7 +15148,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_plot_tf",
-      "community": 172,
+      "community": 72,
       "norm_label": "plot_tf()"
     },
     {
@@ -15148,7 +15158,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_main",
-      "community": 172,
+      "community": 72,
       "norm_label": "main()"
     },
     {
@@ -15158,7 +15168,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_presentation_plot_htf_reading_rationale_1",
-      "community": 172,
+      "community": 72,
       "norm_label": "grafico de lectura htf (d1/h4/h1) sobre datos reales eurusd.  objetivo: mostra"
     },
     {
@@ -18462,10 +18472,20 @@
       "norm_label": "pre-backtest audit stack"
     },
     {
-      "label": "Funnel MTF + Sequence 20Y",
+      "label": "Cierre pre-backtest (2026-08-22)",
       "file_type": "document",
       "source_file": ".hermes-index.md",
       "source_location": "L64",
+      "_origin": "ast",
+      "id": "hermes_index_cierre_pre_backtest_2026_08_22",
+      "community": 45,
+      "norm_label": "cierre pre-backtest (2026-08-22)"
+    },
+    {
+      "label": "Funnel MTF + Sequence 20Y",
+      "file_type": "document",
+      "source_file": ".hermes-index.md",
+      "source_location": "L73",
       "_origin": "ast",
       "id": "hermes_index_funnel_mtf_sequence_20y",
       "community": 45,
@@ -18475,7 +18495,7 @@
       "label": "Auditor\u00eda temporal AHF / MTF",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L73",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "hermes_index_auditor\u00eda_temporal_ahf_mtf",
       "community": 45,
@@ -18485,7 +18505,7 @@
       "label": "Sequence \u00d7 Context State",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L78",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "hermes_index_sequence_context_state",
       "community": 45,
@@ -18495,7 +18515,7 @@
       "label": "Backtest",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L81",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "hermes_index_backtest",
       "community": 45,
@@ -18505,7 +18525,7 @@
       "label": "Bloqueadores activos",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L84",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "hermes_index_bloqueadores_activos",
       "community": 45,
@@ -18515,7 +18535,7 @@
       "label": "Evidencia TNA full-span (2026-08-22)",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L110",
+      "source_location": "L120",
       "_origin": "ast",
       "id": "hermes_index_evidencia_tna_full_span_2026_08_22",
       "community": 45,
@@ -18525,7 +18545,7 @@
       "label": "Evidencia reciente (2026-08-20)",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L124",
+      "source_location": "L134",
       "_origin": "ast",
       "id": "hermes_index_evidencia_reciente_2026_08_20",
       "community": 45,
@@ -18535,7 +18555,7 @@
       "label": "Regla de oro",
       "file_type": "document",
       "source_file": ".hermes-index.md",
-      "source_location": "L150",
+      "source_location": "L160",
       "_origin": "ast",
       "id": "hermes_index_regla_de_oro",
       "community": 45,
@@ -24182,6 +24202,76 @@
       "norm_label": "gates actuales"
     },
     {
+      "label": "2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_prebacktest_gates_close",
+      "community": 371,
+      "norm_label": "2026-08-22_prebacktest_gates_close.md"
+    },
+    {
+      "label": "Worklog \u2014 Cierre de gates pre-backtest",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_prebacktest_gates_close_worklog_cierre_de_gates_pre_backtest",
+      "community": 371,
+      "norm_label": "worklog \u2014 cierre de gates pre-backtest"
+    },
+    {
+      "label": "Hechos verificados",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_prebacktest_gates_close_hechos_verificados",
+      "community": 371,
+      "norm_label": "hechos verificados"
+    },
+    {
+      "label": "Inferencias y l\u00edmites",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_prebacktest_gates_close_inferencias_y_l\u00edmites",
+      "community": 371,
+      "norm_label": "inferencias y limites"
+    },
+    {
+      "label": "Evidencia y archivos",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_prebacktest_gates_close_evidencia_y_archivos",
+      "community": 371,
+      "norm_label": "evidencia y archivos"
+    },
+    {
+      "label": "Riesgos",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_prebacktest_gates_close_riesgos",
+      "community": 371,
+      "norm_label": "riesgos"
+    },
+    {
+      "label": "Siguiente acci\u00f3n",
+      "file_type": "document",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L44",
+      "_origin": "ast",
+      "id": "hermes_worklog_2026_08_22_prebacktest_gates_close_siguiente_acci\u00f3n",
+      "community": 371,
+      "norm_label": "siguiente accion"
+    },
+    {
       "label": "2026-08-22_TNA_FULL_PREFIX_PROOF.md",
       "file_type": "document",
       "source_file": ".hermes-worklog/2026-08-22_TNA_FULL_PREFIX_PROOF.md",
@@ -27665,7 +27755,7 @@
       "label": "E \u2014 Entrega",
       "file_type": "document",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L82",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "docs_execution_strategy_e_entrega",
       "community": 69,
@@ -27675,7 +27765,7 @@
       "label": "F \u2014 Sincronizaci\u00f3n",
       "file_type": "document",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L91",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "docs_execution_strategy_f_sincronizaci\u00f3n",
       "community": 69,
@@ -27685,7 +27775,7 @@
       "label": "5. Estado de trabajos pesados",
       "file_type": "document",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L99",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "docs_execution_strategy_5_estado_de_trabajos_pesados",
       "community": 69,
@@ -27695,7 +27785,7 @@
       "label": "6. Notas de datos y l\u00edmites",
       "file_type": "document",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L111",
+      "source_location": "L121",
       "_origin": "ast",
       "id": "docs_execution_strategy_6_notas_de_datos_y_l\u00edmites",
       "community": 69,
@@ -27705,7 +27795,7 @@
       "label": "7. Se\u00f1al para Hermes",
       "file_type": "document",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L120",
+      "source_location": "L130",
       "_origin": "ast",
       "id": "docs_execution_strategy_7_se\u00f1al_para_hermes",
       "community": 69,
@@ -28625,7 +28715,7 @@
       "label": "4. Regla de evidencia",
       "file_type": "document",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L48",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "docs_plan_pre_backtest_audit_stack_4_regla_de_evidencia",
       "community": 150,
@@ -28635,7 +28725,7 @@
       "label": "5. Funnel FVG/OB",
       "file_type": "document",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L52",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "docs_plan_pre_backtest_audit_stack_5_funnel_fvg_ob",
       "community": 150,
@@ -28645,21 +28735,31 @@
       "label": "6. Cierre del stack",
       "file_type": "document",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L66",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "docs_plan_pre_backtest_audit_stack_6_cierre_del_stack",
       "community": 150,
       "norm_label": "6. cierre del stack"
     },
     {
-      "label": "7. Backtest",
+      "label": "7. Ejecuci\u00f3n congelada",
       "file_type": "document",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L77",
+      "source_location": "L83",
       "_origin": "ast",
-      "id": "docs_plan_pre_backtest_audit_stack_7_backtest",
+      "id": "docs_plan_pre_backtest_audit_stack_7_ejecuci\u00f3n_congelada",
       "community": 150,
-      "norm_label": "7. backtest"
+      "norm_label": "7. ejecucion congelada"
+    },
+    {
+      "label": "8. Backtest",
+      "file_type": "document",
+      "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "docs_plan_pre_backtest_audit_stack_8_backtest",
+      "community": 150,
+      "norm_label": "8. backtest"
     },
     {
       "label": "REPOSITORY_MAP.md",
@@ -35145,7 +35245,7 @@
       "label": "9. Lo que todav\u00eda NO est\u00e1 terminado",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L152",
+      "source_location": "L153",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_architecture_map_9_lo_que_todav\u00eda_no_est\u00e1_terminado",
       "community": 31,
@@ -35155,7 +35255,7 @@
       "label": "10. Criterios de aceptaci\u00f3n global",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L167",
+      "source_location": "L168",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_architecture_map_10_criterios_de_aceptaci\u00f3n_global",
       "community": 31,
@@ -35165,7 +35265,7 @@
       "label": "T\u00e9cnica",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L169",
+      "source_location": "L170",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_architecture_map_t\u00e9cnica",
       "community": 31,
@@ -35175,7 +35275,7 @@
       "label": "Emp\u00edrica",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L178",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_architecture_map_emp\u00edrica",
       "community": 31,
@@ -35185,7 +35285,7 @@
       "label": "11. Bucle Hermes",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L182",
+      "source_location": "L183",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_architecture_map_11_bucle_hermes",
       "community": 31,
@@ -35195,7 +35295,7 @@
       "label": "12. Resultado arquitect\u00f3nico esperado",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L206",
+      "source_location": "L207",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_architecture_map_12_resultado_arquitect\u00f3nico_esperado",
       "community": 31,
@@ -35455,7 +35555,7 @@
       "label": "Runners",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_PREBACKTEST_ADDENDUM.md",
-      "source_location": "L58",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_prebacktest_addendum_runners",
       "community": 165,
@@ -35465,7 +35565,7 @@
       "label": "Regla",
       "file_type": "document",
       "source_file": "docs/planificacion/SDD_FVG_OB_PREBACKTEST_ADDENDUM.md",
-      "source_location": "L64",
+      "source_location": "L69",
       "_origin": "ast",
       "id": "docs_planificacion_sdd_fvg_ob_prebacktest_addendum_regla",
       "community": 165,
@@ -44106,7 +44206,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze",
       "target": "audits_codigo_execution_freeze_sha256",
@@ -44116,7 +44216,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L25",
+      "source_location": "L39",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze",
       "target": "audits_codigo_execution_freeze_synthetic_frames",
@@ -44126,7 +44226,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L32",
+      "source_location": "L46",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze",
       "target": "audits_codigo_execution_freeze_validate",
@@ -44137,7 +44237,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze",
       "target": "engine_execution",
@@ -44148,7 +44248,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze",
       "target": "engine_execution_fine_execution",
@@ -44176,11 +44276,21 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "audits/codigo/execution_freeze.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "audits_codigo_execution_freeze_rationale_23",
+      "target": "audits_codigo_execution_freeze_sha256",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze_sha256",
       "target": "audits_codigo_execution_freeze_py_path",
@@ -44191,7 +44301,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L36",
+      "source_location": "L50",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze_validate",
       "target": "audits_codigo_execution_freeze_sha256",
@@ -44202,7 +44312,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L25",
+      "source_location": "L39",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze_synthetic_frames",
       "target": "audits_codigo_execution_freeze_py_dataframe",
@@ -44213,7 +44323,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L48",
+      "source_location": "L62",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze_validate",
       "target": "audits_codigo_execution_freeze_synthetic_frames",
@@ -44224,7 +44334,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "audits/codigo/execution_freeze.py",
-      "source_location": "L50",
+      "source_location": "L64",
       "weight": 1.0,
       "source": "audits_codigo_execution_freeze_validate",
       "target": "engine_execution_fine_execution",
@@ -84319,7 +84429,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L84",
+      "source_location": "L93",
       "weight": 1.0,
       "source": "hermes_index_hermes_\u00edndice_maestro_de_trabajo",
       "target": "hermes_index_bloqueadores_activos",
@@ -84349,7 +84459,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L124",
+      "source_location": "L134",
       "weight": 1.0,
       "source": "hermes_index_hermes_\u00edndice_maestro_de_trabajo",
       "target": "hermes_index_evidencia_reciente_2026_08_20",
@@ -84359,7 +84469,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L110",
+      "source_location": "L120",
       "weight": 1.0,
       "source": "hermes_index_hermes_\u00edndice_maestro_de_trabajo",
       "target": "hermes_index_evidencia_tna_full_span_2026_08_22",
@@ -84369,7 +84479,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L150",
+      "source_location": "L160",
       "weight": 1.0,
       "source": "hermes_index_hermes_\u00edndice_maestro_de_trabajo",
       "target": "hermes_index_regla_de_oro",
@@ -84379,7 +84489,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L73",
+      "source_location": "L82",
       "weight": 1.0,
       "source": "hermes_index_estado_del_plan",
       "target": "hermes_index_auditor\u00eda_temporal_ahf_mtf",
@@ -84389,10 +84499,20 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L81",
+      "source_location": "L90",
       "weight": 1.0,
       "source": "hermes_index_estado_del_plan",
       "target": "hermes_index_backtest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-index.md",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "hermes_index_estado_del_plan",
+      "target": "hermes_index_cierre_pre_backtest_2026_08_22",
       "confidence_score": 1.0
     },
     {
@@ -84459,7 +84579,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L64",
+      "source_location": "L73",
       "weight": 1.0,
       "source": "hermes_index_estado_del_plan",
       "target": "hermes_index_funnel_mtf_sequence_20y",
@@ -84479,7 +84599,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".hermes-index.md",
-      "source_location": "L78",
+      "source_location": "L87",
       "weight": 1.0,
       "source": "hermes_index_estado_del_plan",
       "target": "hermes_index_sequence_context_state",
@@ -89438,6 +89558,66 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_prebacktest_gates_close",
+      "target": "hermes_worklog_2026_08_22_prebacktest_gates_close_worklog_cierre_de_gates_pre_backtest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_prebacktest_gates_close_worklog_cierre_de_gates_pre_backtest",
+      "target": "hermes_worklog_2026_08_22_prebacktest_gates_close_evidencia_y_archivos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_prebacktest_gates_close_worklog_cierre_de_gates_pre_backtest",
+      "target": "hermes_worklog_2026_08_22_prebacktest_gates_close_hechos_verificados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_prebacktest_gates_close_worklog_cierre_de_gates_pre_backtest",
+      "target": "hermes_worklog_2026_08_22_prebacktest_gates_close_inferencias_y_l\u00edmites",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_prebacktest_gates_close_worklog_cierre_de_gates_pre_backtest",
+      "target": "hermes_worklog_2026_08_22_prebacktest_gates_close_riesgos",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".hermes-worklog/2026-08-22_PREBACKTEST_GATES_CLOSE.md",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "hermes_worklog_2026_08_22_prebacktest_gates_close_worklog_cierre_de_gates_pre_backtest",
+      "target": "hermes_worklog_2026_08_22_prebacktest_gates_close_siguiente_acci\u00f3n",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": ".hermes-worklog/2026-08-22_TNA_FULL_PREFIX_PROOF.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -92679,7 +92859,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L99",
+      "source_location": "L107",
       "weight": 1.0,
       "source": "docs_execution_strategy_estrategia_de_ejecuci\u00f3n_ict_2_0",
       "target": "docs_execution_strategy_5_estado_de_trabajos_pesados",
@@ -92689,7 +92869,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L111",
+      "source_location": "L121",
       "weight": 1.0,
       "source": "docs_execution_strategy_estrategia_de_ejecuci\u00f3n_ict_2_0",
       "target": "docs_execution_strategy_6_notas_de_datos_y_l\u00edmites",
@@ -92699,7 +92879,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L120",
+      "source_location": "L130",
       "weight": 1.0,
       "source": "docs_execution_strategy_estrategia_de_ejecuci\u00f3n_ict_2_0",
       "target": "docs_execution_strategy_7_se\u00f1al_para_hermes",
@@ -92749,7 +92929,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L82",
+      "source_location": "L90",
       "weight": 1.0,
       "source": "docs_execution_strategy_4_procedimiento_para_grok",
       "target": "docs_execution_strategy_e_entrega",
@@ -92759,7 +92939,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/EXECUTION_STRATEGY.md",
-      "source_location": "L91",
+      "source_location": "L99",
       "weight": 1.0,
       "source": "docs_execution_strategy_4_procedimiento_para_grok",
       "target": "docs_execution_strategy_f_sincronizaci\u00f3n",
@@ -93609,7 +93789,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L48",
+      "source_location": "L50",
       "weight": 1.0,
       "source": "docs_plan_pre_backtest_audit_stack_plan_de_auditor\u00edas_pre_backtest_ict_fvg_ob",
       "target": "docs_plan_pre_backtest_audit_stack_4_regla_de_evidencia",
@@ -93619,7 +93799,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L52",
+      "source_location": "L54",
       "weight": 1.0,
       "source": "docs_plan_pre_backtest_audit_stack_plan_de_auditor\u00edas_pre_backtest_ict_fvg_ob",
       "target": "docs_plan_pre_backtest_audit_stack_5_funnel_fvg_ob",
@@ -93629,7 +93809,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "source": "docs_plan_pre_backtest_audit_stack_plan_de_auditor\u00edas_pre_backtest_ict_fvg_ob",
       "target": "docs_plan_pre_backtest_audit_stack_6_cierre_del_stack",
@@ -93639,10 +93819,20 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
-      "source_location": "L77",
+      "source_location": "L83",
       "weight": 1.0,
       "source": "docs_plan_pre_backtest_audit_stack_plan_de_auditor\u00edas_pre_backtest_ict_fvg_ob",
-      "target": "docs_plan_pre_backtest_audit_stack_7_backtest",
+      "target": "docs_plan_pre_backtest_audit_stack_7_ejecuci\u00f3n_congelada",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/PLAN_PRE_BACKTEST_AUDIT_STACK.md",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "docs_plan_pre_backtest_audit_stack_plan_de_auditor\u00edas_pre_backtest_ict_fvg_ob",
+      "target": "docs_plan_pre_backtest_audit_stack_8_backtest",
       "confidence_score": 1.0
     },
     {
@@ -99579,7 +99769,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L167",
+      "source_location": "L168",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_architecture_map_sdd_mapa_de_arquitectura_y_plan_fvg_ob",
       "target": "docs_planificacion_sdd_fvg_ob_architecture_map_10_criterios_de_aceptaci\u00f3n_global",
@@ -99589,7 +99779,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L182",
+      "source_location": "L183",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_architecture_map_sdd_mapa_de_arquitectura_y_plan_fvg_ob",
       "target": "docs_planificacion_sdd_fvg_ob_architecture_map_11_bucle_hermes",
@@ -99599,7 +99789,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L206",
+      "source_location": "L207",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_architecture_map_sdd_mapa_de_arquitectura_y_plan_fvg_ob",
       "target": "docs_planificacion_sdd_fvg_ob_architecture_map_12_resultado_arquitect\u00f3nico_esperado",
@@ -99689,7 +99879,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L152",
+      "source_location": "L153",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_architecture_map_sdd_mapa_de_arquitectura_y_plan_fvg_ob",
       "target": "docs_planificacion_sdd_fvg_ob_architecture_map_9_lo_que_todav\u00eda_no_est\u00e1_terminado",
@@ -99769,7 +99959,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L178",
+      "source_location": "L179",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_architecture_map_10_criterios_de_aceptaci\u00f3n_global",
       "target": "docs_planificacion_sdd_fvg_ob_architecture_map_emp\u00edrica",
@@ -99779,7 +99969,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md",
-      "source_location": "L169",
+      "source_location": "L170",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_architecture_map_10_criterios_de_aceptaci\u00f3n_global",
       "target": "docs_planificacion_sdd_fvg_ob_architecture_map_t\u00e9cnica",
@@ -100019,7 +100209,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_PREBACKTEST_ADDENDUM.md",
-      "source_location": "L64",
+      "source_location": "L69",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_prebacktest_addendum_addendum_sdd_pre_backtest_audit_stack",
       "target": "docs_planificacion_sdd_fvg_ob_prebacktest_addendum_regla",
@@ -100029,7 +100219,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "docs/planificacion/SDD_FVG_OB_PREBACKTEST_ADDENDUM.md",
-      "source_location": "L58",
+      "source_location": "L61",
       "weight": 1.0,
       "source": "docs_planificacion_sdd_fvg_ob_prebacktest_addendum_addendum_sdd_pre_backtest_audit_stack",
       "target": "docs_planificacion_sdd_fvg_ob_prebacktest_addendum_runners",
@@ -104237,5 +104427,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d7986651bdd300c5bb2752c848b6277eb5e44e77"
+  "built_at_commit": "93204094666fa2be0e670ecbd3fef75d45926d03"
 }

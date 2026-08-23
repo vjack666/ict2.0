@@ -1,5 +1,25 @@
 {
+  "audit": "A0_A9_FULL_STACK",
   "status": "PASS",
+  "scope": "versioned Dukascopy snapshot + versioned real Funnel/TNA evidence; no PnL/no entry",
+  "generated_at": "2026-08-23T00:31:23.064448+00:00",
+  "commit": "93204094666fa2be0e670ecbd3fef75d45926d03",
+  "dataset": "datasets\\eurusd_dukascopy_20y",
+  "csv_hashes": {
+    "EURUSD_D1.csv": {
+      "manifest": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+      "git_blob": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2"
+    },
+    "EURUSD_H1.csv": {
+      "manifest": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+      "git_blob": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139"
+    },
+    "EURUSD_H4.csv": {
+      "manifest": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+      "git_blob": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b"
+    }
+  },
+  "hashes_match_git_blobs": true,
   "gates": {
     "A0_DATA_INTEGRITY": "PASS",
     "A1_SCHEMA": "PASS",
@@ -12,8 +32,163 @@
     "A8_COVERAGE_REGIME": "PASS",
     "A9_GOVERNANCE": "PASS"
   },
-  "findings": [],
-  "fingerprint": "ab1bb627d668f52d74f44b6a587c8799394b9c6f8581dc3b439bda21cc5cb538",
-  "scope": "contract-smoke",
-  "timestamp": "2026-08-23T00:30:29.500575+00:00"
+  "evidence": {
+    "A0_DATA_INTEGRITY": {
+      "H1": {
+        "status": "PASS",
+        "rows": 124377,
+        "accepted": 124377,
+        "findings": [],
+        "audit_score": 1.0
+      },
+      "H4": {
+        "status": "PASS",
+        "rows": 32133,
+        "accepted": 32133,
+        "findings": [],
+        "audit_score": 1.0
+      },
+      "D1": {
+        "status": "PASS",
+        "rows": 6258,
+        "accepted": 6258,
+        "findings": [],
+        "audit_score": 1.0
+      }
+    },
+    "A1_SCHEMA": {
+      "H1": {
+        "columns": [
+          "time",
+          "open",
+          "high",
+          "low",
+          "close"
+        ],
+        "columns_ok": true,
+        "time_monotonic_unique": true,
+        "numeric_ohlc": true,
+        "rows": 124377
+      },
+      "H4": {
+        "columns": [
+          "time",
+          "open",
+          "high",
+          "low",
+          "close"
+        ],
+        "columns_ok": true,
+        "time_monotonic_unique": true,
+        "numeric_ohlc": true,
+        "rows": 32133
+      },
+      "D1": {
+        "columns": [
+          "time",
+          "open",
+          "high",
+          "low",
+          "close"
+        ],
+        "columns_ok": true,
+        "time_monotonic_unique": true,
+        "numeric_ohlc": true,
+        "rows": 6258
+      }
+    },
+    "A2_POINT_IN_TIME": {
+      "artifact": "reports\\audits\\tna_streaming_prefix_2026-08-22.json",
+      "coverage": "ALL_H1_DECISIONS",
+      "decisions_checked": 124377,
+      "mismatch_count_reported": 0,
+      "event_checks_all_true": true
+    },
+    "A3_SEMANTICS": {
+      "required_contracts": [
+        "docs\\contratos\\CONTRATO_FUNNEL_AUDIT.md",
+        "docs\\planificacion\\SDD_FVG_OB_ARCHITECTURE_MAP.md",
+        "docs\\PLAN_PRE_BACKTEST_AUDIT_STACK.md"
+      ]
+    },
+    "A4_DETECTOR_METAMORPHIC": {
+      "status": "PASS",
+      "findings": []
+    },
+    "A5_CROSS_TIMEFRAME": {
+      "h1_decisions": 124377,
+      "mapped_parent_rows": {
+        "H4": 124377,
+        "D1": 124377
+      },
+      "no_future_parent": true
+    },
+    "A6_LINEAGE": {
+      "artifact": "reports\\audits\\fvg_ob_funnel.json",
+      "timeframes": {
+        "H1": {
+          "audit_status": "PASS",
+          "relation_count": 702,
+          "causal_links": 702,
+          "valid": true
+        },
+        "H4": {
+          "audit_status": "PASS",
+          "relation_count": 206,
+          "causal_links": 206,
+          "valid": true
+        },
+        "D1": {
+          "audit_status": "PASS",
+          "relation_count": 58,
+          "causal_links": 58,
+          "valid": true
+        }
+      }
+    },
+    "A7_FUNNEL": {
+      "artifact": "reports\\audits\\mtf_seq_funnel.json",
+      "status": "COMPLETE",
+      "fvg_pass": true,
+      "sequence_pass": "PASS",
+      "mtf_complete": true,
+      "mtf_ok_rate": 1.0
+    },
+    "A8_COVERAGE_REGIME": {
+      "artifact": "reports\\audits\\fvg_ob_funnel.json",
+      "timeframes": {
+        "H1": {
+          "bars_match": true,
+          "directional_coverage": true,
+          "fvg_count": 22477,
+          "ob_count": 2799
+        },
+        "H4": {
+          "bars_match": true,
+          "directional_coverage": true,
+          "fvg_count": 6497,
+          "ob_count": 862
+        },
+        "D1": {
+          "bars_match": true,
+          "directional_coverage": true,
+          "fvg_count": 1543,
+          "ob_count": 214
+        }
+      }
+    },
+    "A9_GOVERNANCE": {
+      "required_paths": [
+        ".hermes-index.md",
+        "docs\\PLAN_PRE_BACKTEST_AUDIT_STACK.md",
+        "docs\\contratos\\CONTRATO_FUNNEL_AUDIT.md",
+        ".hermes-worklog"
+      ],
+      "commit": "93204094666fa2be0e670ecbd3fef75d45926d03",
+      "reports_present": true,
+      "policy": "NO_PNL_NO_ENTRY"
+    }
+  },
+  "fingerprint": "c80d48a1055cab123e62ba09b06f57683ca28ca824814ef0a926c249af63844c",
+  "timestamp": "2026-08-23T00:31:23.114030+00:00"
 }

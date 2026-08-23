@@ -1,7 +1,7 @@
 {
   "audit": "PRE_BACKTEST_GATE_CLOSE",
   "status": "PASS",
-  "generated_at": "2026-08-23T00:25:20.305964+00:00",
+  "generated_at": "2026-08-23T00:31:44.466505+00:00",
   "conditions": {
     "A0_A9_FULL_STACK": true,
     "FUNNEL_20Y": true,

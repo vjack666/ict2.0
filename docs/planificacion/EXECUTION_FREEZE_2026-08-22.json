@@ -28,7 +28,7 @@
     "order submission"
   ],
   "source_hashes_sha256": {
-    "engine/execution.py": "6b7e897b8d08b53b625876045e7aaeb60a8c13558634b0115f882910a827675d",
+    "engine/execution.py": "fc650049bfe985735e38d8dc418ed3c9e443c35e2647f6012addca192ff96cbe",
     "engine/killzone.py": "52ffa602aa39164f5df2cd1663c2fd47fec8bca4ef57c942e6990b30206a8eeb",
     "docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md": "abf8999a77d455e40884a68afc5f6a6772d1171a66be8f21d9ff658aa3997a6d"
   },

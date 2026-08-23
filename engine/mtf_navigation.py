@@ -17,8 +17,10 @@ Uso típico::
 """
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass, field, asdict
 from enum import Enum
+from math import ceil, floor
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -254,6 +256,12 @@ def _asof_index(df: pd.DataFrame, decision_time: Any) -> int | None:
 
 
 def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[list[tuple[int, float]], list[tuple[int, float]]]:
+    """Return swings at their confirmation bar, never at formation time.
+
+    The pivot at ``j`` needs the right-hand window through ``conf`` to be
+    closed before it is observable.  Publishing it at ``j`` makes a full
+    dataset expose future-confirmed structure to a prefix ending at ``j``.
+    """
     n = len(high)
     sh, sl = [], []
     for conf in range(left * 2, n):
@@ -261,9 +269,9 @@ def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[li
         if j < left:
             continue
         if high[j] >= high[j - left : j + left + 1].max():
-            sh.append((j, float(high[j])))
+            sh.append((conf, float(high[j])))
         if low[j] <= low[j - left : j + left + 1].min():
-            sl.append((j, float(low[j])))
+            sl.append((conf, float(low[j])))
     return sh, sl
 
 
@@ -300,35 +308,48 @@ def _eq_pools(
     min_touches: int = 2,
     tol_mult: float = 0.25,
 ) -> list[Zone]:
+    """Build EQ pools from the first confirmed touches only.
+
+    A pool becomes visible when its first ``min_touches`` chronological
+    swings are available.  Later swings that match the same level are
+    consumed but do not rewrite the historical pool, which keeps FULL and
+    PREFIX snapshots identical at every decision bar.
+    """
     seg = [(b, p) for b, p in swings if b <= upto]
     if len(seg) < min_touches:
         return []
     zones: list[Zone] = []
-    used: set[int] = set()
-    for i, (bi, pi) in enumerate(seg):
-        if i in used:
-            continue
-        rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
-        tol = max(rng * tol_mult, 1e-9)
-        group = [(bi, pi)]
-        idxs = [i]
-        for j in range(i + 1, len(seg)):
-            if abs(seg[j][1] - pi) <= tol:
-                group.append(seg[j])
-                idxs.append(j)
-        if len(group) >= min_touches:
-            for j in idxs:
-                used.add(j)
-            prices = [g[1] for g in group]
-            zones.append(
-                Zone(
+    bucket_size = 0.001
+    buckets: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    max_tolerance = 0.0
+    for order, (bi, pi) in enumerate(seg):
+        bucket = floor(pi / bucket_size)
+        span = int(ceil(max(max_tolerance, 1e-9) / bucket_size)) + 1
+        candidates = []
+        for key in range(bucket - span, bucket + span + 1):
+            for root in buckets.get(key, []):
+                if abs(pi - root["price"]) <= root["tol"]:
+                    candidates.append(root)
+        if candidates:
+            root = min(candidates, key=lambda item: item["order"])
+            root["matches"].append((bi, pi))
+            if not root["formed"] and len(root["matches"]) >= min_touches:
+                group = root["matches"][:min_touches]
+                prices = [g[1] for g in group]
+                root["formed"] = True
+                zones.append(Zone(
                     low=float(min(prices)),
                     high=float(max(prices)),
                     kind="BSL" if is_high else "SSL",
                     bar_index=int(max(g[0] for g in group)),
                     detail="EQH" if is_high else "EQL",
-                )
-            )
+                ))
+            continue
+        rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
+        tolerance = max(rng * tol_mult, 1e-9)
+        root = {"order": order, "price": pi, "tol": tolerance, "matches": [(bi, pi)], "formed": False}
+        buckets[bucket].append(root)
+        max_tolerance = max(max_tolerance, tolerance)
     return zones
 
 

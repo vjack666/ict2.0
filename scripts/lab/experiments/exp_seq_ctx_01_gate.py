@@ -36,8 +36,8 @@ OUT_DIR = ROOT / "reports" / "audits" / "experiments" / "seq_ctx_01"
 OUT_JSON = OUT_DIR / "gate_causal.json"
 
 N_SAMPLES = 120          # barras de la muestra causal (determinista, amplia)
-SEED_BAR = 2000          # empezar despues de warmup de swings/BOS
-STRIDE = 300             # separacion determinista entre barras muestreadas
+WARMUP_H1 = 1000          # alineado con f38c (warmup de swings/BOS)
+# Muestra: linspace determinista desde WARMUP_H1 hasta el final (igual que f38c)
 
 
 def _state_fields(st):
@@ -103,14 +103,12 @@ def main() -> None:
     n_total = len(h1)
     print(f"H1 barras totales: {n_total}", flush=True)
 
-    # Muestra determinista de barras (warmup + stride)
-    sample_bars = list(range(SEED_BAR, n_total - 50, STRIDE))[:N_SAMPLES]
-    if len(sample_bars) < N_SAMPLES:
-        # si el rango es corto, llenar con paso menor
-        sample_bars = list(range(SEED_BAR, n_total - 50, max(1, (n_total - SEED_BAR - 50) // N_SAMPLES)))[:N_SAMPLES]
+    # Muestra determinista (linspace desde WARMUP_H1, igual que f38c)
+    import numpy as np
+    sample_bars = [int(x) for x in np.linspace(WARMUP_H1, n_total - 1, N_SAMPLES)]
     print(f"muestra: {len(sample_bars)} barras (primera={sample_bars[0]}, ultima={sample_bars[-1]})", flush=True)
 
-    nav_full = M.MTFNavigator(frames, M.NavigatorConfig(precompute_sequences=True, sequence_tf="H1"))
+    nav_full = M.MTFNavigator(frames, M.NavigatorConfig(precompute_sequences=False, sequence_tf="H1"))
 
     violations = []
     checked = 0
@@ -119,8 +117,10 @@ def main() -> None:
         st_full = nav_full.navigate(t, exec_tf="H1")
         f_full = _state_fields(st_full)
 
-        trunc = {tf: frames[tf].iloc[: bar + 1].copy().reset_index(drop=True) for tf in frames}
-        nav_pref = M.MTFNavigator(trunc, M.NavigatorConfig(precompute_sequences=True, sequence_tf="H1"))
+        # Prefix por TIMESTAMP (time <= t), igual que f38c (particion causal correcta).
+        # El recorte por indice iloc[:bar+1] diverge del asof interno de navigate().
+        trunc = {tf: frames[tf].loc[frames[tf]["time"] <= t].copy().reset_index(drop=True) for tf in frames}
+        nav_pref = M.MTFNavigator(trunc, M.NavigatorConfig(precompute_sequences=False, sequence_tf="H1"))
         st_pref = nav_pref.navigate(t, exec_tf="H1")
         f_pref = _state_fields(st_pref)
 

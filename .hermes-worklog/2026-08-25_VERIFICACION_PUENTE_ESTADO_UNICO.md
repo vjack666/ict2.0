@@ -42,4 +42,3 @@ credenciales, tokens, API keys, contraseñas, transcripciones crudas y datos sen
 El cliente prepara la decisión científica siguiente. Codex la recuperará desde
 Engram compartido, la convertirá en un handoff seguro para Engram local y Hermes,
 y verificará su rama, bitácora, gates y siguiente acción antes de cualquier ejecución.
-

@@ -15,7 +15,7 @@
   `docs/tesis/SDD_*.md` = specs de **diseño de estrategia**; `docs/specs/SDD_GOVERNANCE.md`
   = **meta-SDD** (proceso DoR/DoD/estados/semántica); `docs/specs/INDICE_MDS.md` = índice de
   componentes. `openspec/` = línea base forense **congelada** (no SDD vivo).
-  `engine/` es motor; `ict_backtest/` es consumidor; `results/` salidas; `data/` datos;
+  `engine/` es motor; `backtest/` es consumidor; `results/` salidas; `data/` datos;
   `scripts/` herramientas.
 - Sigue `AGENTS.md` (Ley Fundamental) y `docs/specs/INDICE_MDS.md`.
 
@@ -32,7 +32,7 @@
 
 ## 4. Código causal y verificado (Ley del motor)
 
-- Sin look-ahead. Vela a vela. `engine/` NUNCA importa `ict_backtest/`.
+- Sin look-ahead. Vela a vela. `engine/` NUNCA importa `backtest/`.
 - Tests corren antes de declarar listo (`pytest`, `py_compile`, import smoke-test).
 - Volumen = única excepción a cero-indicadores; SOLO confirmación (`volume_ratio`), NUNCA gate.
 

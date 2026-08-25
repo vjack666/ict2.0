@@ -3,8 +3,8 @@
 Does NOT reimplement BOS/CHOCH/sweep/FVG/OB geometry. Those come from detectors
 (or market_structure) already written into the context DataFrame columns.
 
-Trade signals (entry/SL/TP) must come from ``ict_backtest.canonical.evaluate_signals``
-(sequence). This agent only scores ICT structure/liquidity evidence for the orchestrator vote.
+Trade signals (entry/SL/TP) must come from the canonical engine sequence (``engine.sequence``).
+This agent only scores ICT structure/liquidity evidence for the orchestrator vote.
 OTE is intentionally excluded from the operating model.
 """
 from __future__ import annotations

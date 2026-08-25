@@ -23,7 +23,7 @@ sesgo de datos) y emitirla con severidad para que Hermes reaccione automáticame
 | `INFO` | Suceso normal (nuevo módulo, cambio rutinario) | Continuar |
 | `WARNING` | Riesgo leve (falta test específico, doc huérfana) | Continuar + registrar |
 | `CRITICAL` | Riesgo serio (backtest usa datos post-timestamp; deuda creciente) | Detener PROMOCIÓN |
-| `BLOCKING` | Violación dura (engine/ importa ict_backtest/; secreto expuesto) | Detener EJECUCIÓN |
+| `BLOCKING` | Violación dura (engine/ importa backtest/; secreto expuesto) | Detener EJECUCIÓN |
 
 Ejemplos:
 
@@ -31,7 +31,7 @@ Ejemplos:
 INFO      Se agregó un nuevo módulo engine/liquidity_zones.py
 WARNING   No existe test específico para el nuevo POI
 CRITICAL  El backtest usa datos posteriores al timestamp de entrada
-BLOCKING  engine/ importa ict_backtest/  →  ejecución detenida
+BLOCKING  engine/ importa backtest/  →  ejecución detenida
 ```
 
 ## 4. Responsabilidades permanentes (adaptativas)
@@ -41,7 +41,7 @@ BLOCKING  engine/ importa ict_backtest/  →  ejecución detenida
 **4.2 Deuda de orden.** Detecta archivos huérfanos, junk no ignorado, carpetas sin
 responsabilidad única.
 
-**4.3 Desviaciones de la Ley.** Si `engine/` importa `ict_backtest/`, o el volumen se usa
+**4.3 Desviaciones de la Ley.** Si `engine/` importa `backtest/`, o el volumen se usa
 como gate → `BLOCKING`.
 
 **4.4 Forzar `--audit-only`.** Ante riesgo real, exige modo solo-auditoría hasta decisión.

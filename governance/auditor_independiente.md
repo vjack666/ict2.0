@@ -27,7 +27,7 @@ sobrevive, lo mata (en piso 4, validación).
 
 **3.3 Anti data-snooping.** Ninguna plantilla se toca post-registro; sin lift en pool.
 
-**3.4 Auditoría de procesos.** Verifica Ley Fundamental (engine/ ≠ ict_backtest/), look-ahead
+**3.4 Auditoría de procesos.** Verifica Ley Fundamental (engine/ ≠ backtest/), look-ahead
 cero, volumen SOLO confirmación (no gate), y que nadie se auto-apruebe edge.
 
 **3.5 Registro de muerte.** Documenta en qué piso del edificio murió cada setup. Acumulativo.

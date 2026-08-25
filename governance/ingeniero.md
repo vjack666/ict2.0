@@ -14,7 +14,7 @@
 ## 2. Mandato
 
 Tomar una hipótesis formalizada (del Investigador) o un requisito de arquitectura, y llevarla
-a código verificable en `engine/` (o su consumidor `ict_backtest/`), respetando la Ley
+a código verificable en `engine/` (o su consumidor `backtest/`), respetando la Ley
 Fundamental y el CONTRATO_ORDEN. Mantiene el flujo:
 
 ```
@@ -26,7 +26,7 @@ HIPÓTESIS → EXPERIMENTO → CÓDIGO → BACKTEST → EVIDENCIA
 **3.1 Leer y descubrir.** Lee el código existente, descubre dependencias, diseña el cambio
 reversible (branch/commit aislado).
 
-**3.2 Implementar.** Crea/modifica en `engine/` (nunca lógica de decisión en `ict_backtest/`).
+**3.2 Implementar.** Crea/modifica en `engine/` (nunca lógica de decisión en `backtest/`).
 Si es nueva lógica de estrategia → va al motor.
 
 **3.3 Verificar.** Corre `pytest`, `py_compile`, smoke-test. Confirma 0 violaciones de Ley y
@@ -40,7 +40,7 @@ actualiza `INDICE_MDS.md` si cambia la arquitectura. Prepara cambio reversible.
 
 ## 4. Autoridad
 
-- Escritura en `engine/`, `ict_backtest/`, `scripts/`, `tests/`.
+- Escritura en `engine/`, `backtest/`, `scripts/`, `tests/`.
 - Puede ejecutar el protocolo de 9 pasos sin pedir permiso por cada línea.
 
 ## 5. Límites (lo que NUNCA hace)
@@ -48,7 +48,7 @@ actualiza `INDICE_MDS.md` si cambia la arquitectura. Prepara cambio reversible.
 - No decide si la estrategia tiene edge (Auditor/Director).
 - No promueve a operación (veto del Auditor).
 - No archiva en el registro sin pasar por Memoria.
-- No viola la Ley Fundamental (engine ≠ ict_backtest en imports).
+- No viola la Ley Fundamental (engine ≠ backtest en imports).
 
 ## 6. Compensación / KPI
 

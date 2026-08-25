@@ -15,5 +15,5 @@
   ],
   "routing": {"daily_reading":"D2", "ai_model_or_drift":"D3", "data_or_lineage":"D4", "hypothesis_or_experiment":"D6", "bug_or_refactor":"D2", "risk_or_gate":"D5", "docs_or_worklog":"D1", "commit_release_or_push":"D7"},
   "mandatory_controls": ["context_discovery", "single_owner", "independent_verification", "worklog_closeout", "no_unapproved_promotion"],
-  "protected_invariants": ["daily_motor_is_separate_from_lab", "engine_does_not_import_ict_backtest", "shadow_mode_can_trade_false", "gen_000_is_protected"]
+  "protected_invariants": ["daily_motor_is_separate_from_lab", "engine_does_not_import_backtest", "shadow_mode_can_trade_false", "gen_000_is_protected"]
 }

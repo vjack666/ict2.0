@@ -8,7 +8,7 @@
 
 ## Decisión de trabajo
 
-M5 queda **DEFERRED** por ahora. Los intentos contra el endpoint directo de Dukascopy desde GitHub Actions presentaron 503 y timeouts, por lo que no se debe bloquear el desarrollo del motor esperando M5.
+M5 queda **DEFERRED** por ahora. Los intentos históricos contra el endpoint directo de Dukascopy presentaron 503 y timeouts; no se usan destinos remotos de ejecución ni se debe bloquear el desarrollo del motor esperando M5.
 
 La implementación continuará con los datos EURUSD disponibles en H1, H4 y D1. El código de detección de FVG/Order Block debe diseñarse de forma agnóstica al timeframe, pero toda afirmación específicamente M5 queda pendiente de validación posterior.
 
@@ -37,7 +37,7 @@ data/raw/EURUSD/EURUSD_D1.parquet
 data/metadata/EURUSD_H1_H4_D1.json
 ```
 
-Los Parquet anteriores **no se consideran versionados en GitHub hasta que aparezcan en el árbol de `main`**. El pipeline reproducible para regenerarlos está en `tools/data/acquire_eurusd_higher_tf.py`.
+Los Parquet anteriores **no se consideran parte del árbol versionado hasta que aparezcan en la rama de referencia**. El pipeline reproducible para regenerarlos está en `tools/data/acquire_eurusd_higher_tf.py`.
 
 ## Restricciones
 

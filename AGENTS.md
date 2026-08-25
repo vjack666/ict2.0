@@ -35,7 +35,7 @@ La organización vigente es lógica sobre las carpetas canónicas existentes. No
 | 2 | CTO / ingeniería diaria | `engine/`, `agents/`, `analysis/`, `orchestration/`, `detectors/`, `tools/`, `runtime/` | motor de uso diario e integración técnica |
 | 3 | CAIO / IA | `runtime/ai_learning/`, contratos INF | modelos, lineage, calibración, abstención y drift |
 | 4 | CDO / datos | `data/`, `datasets/` | procedencia, calidad y almacenamiento; acceso controlado |
-| 5 | CRO / assurance | `audits/`, `.github/`, `tests/` | riesgo, QA, gates y reproducibilidad |
+| 5 | CRO / assurance | `audits/`, `tests/` | riesgo, QA, gates y reproducibilidad |
 | 6 | Research / laboratorio | `lab/`, scripts y reportes experimentales | hipótesis y evaluación; nunca promoción autónoma |
 | 7 | Delivery / interfaces | `scripts/`, `start_hermes.py`, reportes publicados | entrypoints, operación y entrega |
 

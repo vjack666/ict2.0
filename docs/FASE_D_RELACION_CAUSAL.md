@@ -33,9 +33,7 @@ FVG/OB se integran como objetos derivados del movimiento correspondiente y no pu
 
 ## Evidencia Gate D
 
-**Workflow:** `Hermes Tests`  
-**Run:** `#85`  
-**Run ID:** `32084187515`  
+**Evidencia histórica:** suite `Hermes Tests`, run `#85`, ID `32084187515` (las futuras verificaciones son locales)
 **Resultado:** **27 passed in 0.05s**
 
 Cobertura específica:

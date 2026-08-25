@@ -244,7 +244,7 @@ def main():
         "navigate_errors": errors,
         "elapsed_s": round(time.time() - t0, 2),
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "host": "Grok cloud",
+        "host": "local-only",
     }
 
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)

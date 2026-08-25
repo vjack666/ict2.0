@@ -36,7 +36,7 @@ El auditor no se certifica a sí mismo. El laboratorio puede proponer y evaluar,
 | 2 | Ingeniería y motor diario | `engine/`, `agents/`, `analysis/`, `orchestration/`, `detectors/`, `tools/`, `runtime/` | CTO, Engineer, Integration Agent | construir y mantener el motor y sus APIs | mezclar laboratorio con runtime diario |
 | 3 | IA | `runtime/ai_learning/` y contratos INF | CAIO, ML Scientist, MLOps, Model Evaluator | lineage, training, calibration, OOD, abstention, drift y Shadow | activar `can_trade` o saltar gates |
 | 4 | Datos | `data/`, `datasets/` | CDO, Data Engineer, Dataset Steward | controlar procedencia, manifests, hashes y calidad | alterar datasets protegidos sin autorización |
-| 5 | Riesgo y assurance | `audits/`, `.github/`, `tests/` | CRO, QA, Independent Auditor, Reproducibility Auditor | bloquear riesgos, validar y certificar evidencia | diseñar la hipótesis que luego certifica |
+| 5 | Riesgo y assurance | `audits/`, `tests/` | CRO, QA, Independent Auditor, Reproducibility Auditor | bloquear riesgos, validar y certificar evidencia | diseñar la hipótesis que luego certifica |
 | 6 | Investigación y laboratorio | `lab/` y rutas experimentales clasificadas | Hermes, Scientist, Trader, Spec Author, Research Engineer | formular y evaluar hipótesis pre-registradas | modificar el motor diario o promover resultados |
 | 7 | Entrega y operación | `scripts/`, `start_hermes.py`, reportes publicados | Release Manager, Operator, Presentation Agent | ejecutar entrypoints autorizados y preparar entregas | publicar resultados sin auditoría/documentación |
 

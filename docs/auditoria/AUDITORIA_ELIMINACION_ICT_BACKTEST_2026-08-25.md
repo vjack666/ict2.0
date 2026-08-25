@@ -23,7 +23,7 @@ que la dependencia era ict_backtest → engine; el motor no dependía del backte
 4. Imports Python actuales (from/import ict_backtest, __import__, import_module)
    → cero.
 5. engine/, detectors/, tools/, runtime/, scripts/daily/, scripts/audit/,
-   audits/codigo/ y workflows → no dependen ejecutablemente de ict_backtest.
+   audits/codigo/ y la automatización remota → no dependen ejecutablemente de ict_backtest.
 6. Lectura diaria actual: scripts/daily/brief_lunes.py consume
    engine.market_features, engine.daily_motor, engine.ltf_canonical_feed,
    engine.mtf_navigation, engine.Wyckoff, engine.plan y

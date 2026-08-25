@@ -53,7 +53,6 @@ def run() -> tuple[int, dict[str, object]]:
         ROOT / name for name in (
             "AGENTS.md", "README.md", "start_hermes.py", "governance",
             "orchestration", "runtime", "engine", "analysis", "scripts",
-            ".github",
         )
     ]
     source_files = []

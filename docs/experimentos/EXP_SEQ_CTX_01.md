@@ -4,7 +4,7 @@
 **Estado:** EN EJECUCIÓN (gate causal previo a matriz)
 **Motor:** `engine-seq-v2-causal` (PIT `_build_eq_pools`) ya mergeado en `feature/a5-audit-datos`
 **Autoría:** Ruben (objetivo) → Hermes (ejecución) bajo `AGENTS.md` / `autonomy_policy.md`
-**Línea de comando (100% local, Python sistema, sin nube):**
+**Línea de comando (100% local, Python sistema, sin servicio remoto):**
 
 ```bash
 C:/Python314/python.exe scripts/lab/experiments/exp_seq_ctx_01_gate.py   # Paso A: barrera causal
@@ -39,7 +39,7 @@ muestra → eventualmente IA/backtest.
 
 | Corrida | Resultado | Causa |
 |---|---|---|
-| v1 (2026-08-19, Grok) | `INSUFFICIENT_N` | Solo 24 cadenas a depth≥4 → n=5/11/8 por bucket. Ruido. |
+| v1 (2026-08-19, ejecución histórica externa) | `INSUFFICIENT_N` | Solo 24 cadenas a depth≥4 → n=5/11/8 por bucket. Ruido. |
 | v2 (2026-08-20) | **INVALIDADO** `CAUSALITY_CHECK_FAIL` | `run_sequential` no era PIT-estable: FULL(853)=0 vs PREFIX(853)=39. Raíz: `_build_eq_pools` retroactivo (agrupaba swings futuros). |
 
 Lección → REGLA DE ORO (2026-08-20): el TNA NO cierra con `asof<=decision`.

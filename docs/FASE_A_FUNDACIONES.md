@@ -11,7 +11,7 @@ Fase A no implementa nuevos detectores de estrategia. Su responsabilidad es aseg
 
 ### A1 — Ejecución reproducible
 
-- El repositorio instala sus dependencias en GitHub Actions.
+- El repositorio instala sus dependencias desde el terminal local.
 - La suite arranca sin depender de archivos inexistentes.
 - Las dependencias están declaradas explícitamente en `requirements.txt`.
 
@@ -42,9 +42,9 @@ La representación de un objeto no permite registrar una confirmación, disponib
 
 `MarketObject.to_dict()` / `from_dict()` conserva identidad, estado, temporalidad y lineage directo.
 
-### A5 — CI como evidencia
+### A5 — Suite local como evidencia
 
-GitHub Actions ejecuta la suite sobre Python 3.11 con dependencias fijadas. El workflow fuerza explícitamente el root del repositorio en `PYTHONPATH` y verifica la importación de `engine` antes de ejecutar pytest.
+La suite local se ejecuta sobre Python 3.11 con dependencias fijadas. El comando de terminal fuerza explícitamente el root del repositorio en `PYTHONPATH` y verifica la importación de `engine` antes de ejecutar pytest.
 
 ## 2. Gate A — RESULTADO
 
@@ -52,11 +52,9 @@ GitHub Actions ejecuta la suite sobre Python 3.11 con dependencias fijadas. El w
 
 Ejecución real:
 
-- **Workflow:** `Hermes Tests`
-- **Run:** `#26`
-- **Run ID:** `32081912747`
+- **Evidencia histórica:** suite `Hermes Tests`, run `#26`, ID `32081912747` (no se repite fuera del checkout local)
 - **Commit:** `dacf7b221d22d1549b6aa687fbf2421da6430212`
-- **Merge ref probado por GitHub:** `dc0e9948ce44c8c25f6a8084364389e37b7abd95`
+- **Referencia de integración histórica:** `dc0e9948ce44c8c25f6a8084364389e37b7abd95`
 - `setup-python`: PASS
 - instalación de dependencias: PASS
 - verificación `import engine`: PASS

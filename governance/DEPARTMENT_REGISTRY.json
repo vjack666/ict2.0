@@ -9,7 +9,7 @@
     {"id":"D2","name":"engineering_daily_motor","floor":2,"paths":["engine","agents","analysis","orchestration","detectors","tools","runtime"],"roles":["CTO","Engineer","Integration Agent"]},
     {"id":"D3","name":"ai_infrastructure","floor":3,"paths":["runtime/ai_learning"],"roles":["CAIO","ML Scientist","MLOps","Model Evaluator"]},
     {"id":"D4","name":"data_lineage","floor":4,"paths":["data","datasets"],"roles":["CDO","Data Engineer","Dataset Steward"]},
-    {"id":"D5","name":"risk_assurance","floor":5,"paths":["audits",".github","tests"],"roles":["CRO","QA","Independent Auditor","Reproducibility Auditor"]},
+    {"id":"D5","name":"risk_assurance","floor":5,"paths":["audits","tests"],"roles":["CRO","QA","Independent Auditor","Reproducibility Auditor"]},
     {"id":"D6","name":"research_laboratory","floor":6,"paths":["lab"],"roles":["Hermes","Scientist","Trader","Spec Author","Research Engineer"]},
     {"id":"D7","name":"delivery_operations","floor":7,"paths":["scripts","start_hermes.py"],"roles":["Release Manager","Operator","Presentation Agent"]}
   ],

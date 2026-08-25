@@ -48,7 +48,7 @@ como gate → `BLOCKING`.
 
 ## 5. Autoridad
 
-- Lectura de todo el repo y salida de CI/tests.
+- Lectura de todo el repo y salida de tests locales.
 - Puede emitir `BLOCKING` (detiene ejecución) y escalar al Director.
 - No tiene veto de promoción (ese es el Auditor) ni de escritura (ese es Cumplimiento).
 

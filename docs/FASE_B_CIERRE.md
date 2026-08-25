@@ -1,7 +1,7 @@
 # FASE B — CIERRE
 
 **Estado:** `PASS — GATE B CERRADO`  
-**Evidencia:** GitHub Actions `Hermes Tests` run `#37` / `32082219119`  
+**Evidencia histórica:** suite `Hermes Tests`, run `#37` / `32082219119`; futuras verificaciones son locales
 **Resultado:** `13 passed in 0.03s`
 
 ## Alcance cerrado

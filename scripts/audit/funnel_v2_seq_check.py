@@ -4,7 +4,7 @@ Corre run_sequential (fix PIT) sobre H1 20Y y reporta la distribucion:
 chains, unique_setups (colapsado por dir+stages+nivel), COMPLETE, depth, status.
 Compara contra v1 baseline (1460 chains, 3 COMPLETE) para ver el impacto de PIT.
 
-Escribe reports/audits/experiments/fvg_ob/funnel_v2_seq_20Y.json (NO toca reportes v1 de Grok).
+Escribe reports/audits/experiments/fvg_ob/funnel_v2_seq_20Y.json (NO toca reportes históricos de otra ejecución).
 """
 from __future__ import annotations
 import time, json, sys

@@ -1,7 +1,7 @@
 # Índice de Auditorías — ICT 2.0
 
 **Propósito:** evitar confusiones sobre qué auditorías YA están corridas y versionadas,
-cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports/audits/`,
+cuáles faltan, y quién las ejecuta localmente. Fuente de verdad: `reports/audits/`,
 `.hermes/audit_state.json`, `.hermes-index.md`.
 
 **Actualizado:** 2026-08-19
@@ -12,7 +12,7 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 
 | Auditoría | Archivo local | Estado | Dónde corrió |
 | --- | --- | --- | --- |
-| A0 Data Integrity (stack) | `reports/audits/data/A0_A9_audit_stack.json` | PASS | repo (CI/local) |
+| A0 Data Integrity (stack) | `reports/audits/data/A0_A9_audit_stack.json` | PASS | checkout local |
 | A0 real 20Y | `reports/audits/data/A0_real_20Y.json` | PASS | repo |
 | A0–A9 stack completo | `reports/audits/data/A0_A9_audit_stack.json` + `.hermes/audit_state.json` | PASS score 1.0 | repo |
 | A7 Funnel FVG/OB | `reports/audits/experiments/fvg_ob/fvg_ob_funnel.json`, `fvg_ob_funnel_20y_relation.json`, `fvg_ob_funnel_20y_strict.json` | PASS | repo |
@@ -35,32 +35,32 @@ cuáles faltan, y quién las ejecuta (Local vs Grok). Fuente de verdad: `reports
 | --- | --- | --- |
 | **A0-07** Ruta raw vs loader | OPEN | Edición de código, liviano |
 | **A0-08** OTE residual | OPEN | grep + parche, liviano (OTE prohibido) |
-| **AUDIT-CI-01** Evidencia CI stack A0-A9 | OPEN | Correr workflow y corregir hasta PASS |
+| **AUDIT-CI-01** Automatización remota | RETIRADO | No existe; validar localmente |
 
 ---
 
-## 3. PENDIENTES — GROK (nube, pesado)
+## 3. PENDIENTES — LOCAL (incluye cargas pesadas)
 
-| Auditoría | Driver | Por qué Grok |
+| Auditoría | Driver local | Control |
 | --- | --- | --- |
-| **TNA-BEHAVIORAL** (gate separado de integridad) | `scripts/tna_audit_runner.py` | AHF serial, no termina local (timeout 1800s); 139k barras H1 |
+| **TNA-BEHAVIORAL** (gate separado de integridad) | `scripts/audit/tna_audit_runner.py` | Solo ejecutar con permiso y recursos locales |
 | **Backtest / Walk-forward (EXP-004b)** | por definir | Bloqueado hasta A0-A9 + Funnel + TNA |
-| Experimentos pandas/sklearn grandes | por definir | Carga pesada |
+| Experimentos pandas/sklearn grandes | por definir | `WAITING/BLOCKED` si el PC no puede completarlos |
 
 ---
 
 ## 4. División de ejecución (vigente)
 
-- **Local (Hermes):** A0-07, A0-08, AUDIT-CI-01, smoke tests, commits, `git pull/push`.
-- **Grok (nube):** TNA-BEHAVIORAL, Funnel 20Y (si se re-corre), backtest, walk-forward.
-- Ver `docs/EXECUTION_STRATEGY.md` para el procedimiento copy-paste a Grok.
+- **Local (Hermes/Codex):** A0-07, A0-08, gates, smoke tests, auditorías, commits y trabajos autorizados.
+- **Sin host remoto:** si el PC no puede completar una tarea, el estado es `WAITING/BLOCKED`; no se migra automáticamente.
+- Ver `docs/EXECUTION_STRATEGY.md` para el procedimiento local.
 
 ---
 
 ## 5. Notas
 
 - El benchmark hoy probó que el AHF (`run_timeline`) es **single-threaded por barra**
-  → 20 cores locales no ayudan; por eso TNA-BEHAVIORAL va a Grok.
-- AWS EC2 descartado (ver `docs/AWS_EXECUTION_HOST.md`).
-- Orden de cuellos: BOS PIT (HECHO) → TNA 20Y (Grok) → validar navegación →
-  Funnel 20Y (Grok) → SEQUENCE×CONTEXT → BACKTEST (Grok).
+  → la carga se ejecuta en el equipo local; si no termina, queda `WAITING/BLOCKED`.
+- Los hosts remotos de ejecución están retirados.
+- Orden de cuellos: BOS PIT (HECHO) → TNA 20Y local → validar navegación →
+  Funnel 20Y local → SEQUENCE×CONTEXT → BACKTEST local autorizado.

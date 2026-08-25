@@ -92,7 +92,7 @@ PARTIALLY_MITIGATED
 
 ## 4. Gate B
 
-No se declara PASS hasta que GitHub Actions ejecute:
+No se declara PASS hasta que la suite local ejecute:
 
 1. instalación reproducible;
 2. verificación de importación;

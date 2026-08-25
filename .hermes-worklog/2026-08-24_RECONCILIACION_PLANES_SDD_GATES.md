@@ -98,5 +98,14 @@ Contradicciones detectadas (ver FASE 3/4): (a) addendum §3 vs ampliación ejecu
 10. Shadow Mode — skeleton histórico, no op.
 11. Nunca promoción automática — respetado.
 
+## COMMIT DE CIERRE (autorizado por el cliente, 2026-08-24)
+- Commit local (SIN push): `0405079` — "feat(lab): EXP-SEQ-CTX-01 OOS expansion + reconciliacion planes/SDD/gates".
+- 82 archivos, +7671/-158. Incluye: SDD OOS_DATASET §9, addendum §8, índice, bitácora, preregistro OOS, factory multi-símbolo, snapshot fail-closed, tests focales, reconciliación TNA, manifiestos OOS.
+- **EXCLUÍDOS** `.github/` y `.codex/` por regla de no-nube (siguen sin commitear en worktree, 2 entradas).
+- Worktree quedó limpio salvo esos dos: **deuda de reproducibilidad CERRADA** para el alcance del experimento.
+- Engram #546 registra el cierre.
+- NO se modificaron datasets fuente; `can_trade=false` preservado; sin entrenamiento/promoción.
+
+
 
 

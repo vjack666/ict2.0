@@ -133,3 +133,41 @@ no dice `PASS` (barrera cumplida).
   `navigate` sobre PREFIX reales por barra (como hacía la v2 del 2026-08-20 con
   `SEC_PIT_WITHIN_RANGE`), asumiendo su propia deuda documentada. No recomendada
   mientras el gate del navigator siga fallando.
+
+---
+
+## 7. Reconciliación 2026-08-25 (supera §6.1 — cadena de autoridad: JSON en disco > texto)
+
+El gate causal fue **re-ejecutado localmente** después de cerrar la raíz de
+leakage de la capa H1. Resultado en `reports/audits/experiments/seq_ctx_01/gate_causal.json`
+(generado 2026-08-25T13:35, `generator_commit=05bdece…`):
+
+- `n_checked=120`, `n_violations=0`, **`status=PASS`**, `usable_for_inference=true`.
+- Hashes fuente registrados: `engine/mtf_navigation.py=2905f8…`,
+  `engine/sequential_events.py=dc56cc…`.
+
+Esto **SUPERSEDE** el §6.1 (que reportaba `INVALIDATED 31/120`). La raíz de
+§6.2 (ventana **centrada** de `_causal_swings` que miraba `left` barras al
+futuro) fue resuelta en el motor mediante partición por timestamp
+(`time <= t`, `precompute_sequences=False`), según confirma
+`seq_ctx_01c_lite_audit.md` §1. Las secciones §6.2/§6.3 se conservan como
+historia de la deuda ya corregida.
+
+**El veredicto del experimento NO cambia.** El gate PASS habilita la matriz,
+pero la escasez de muestra persiste:
+
+- Cierre canónico: **`OOS_EXPANSION_EXHAUSTED_NO_SUFFICIENT_EVIDENCE`**
+  (625 filas totales, 397 HOLDOUT, `canonical_bos 19/110/23`,
+  `lite 24/177/44`, 3/6 celdas `< n≥30`).
+- Sin snapshot elegible, sin entrenamiento de IA, `can_trade=false`.
+
+**Nota de no-confusión:** el `exp_seq_x_context_state.md` (v3, depth≥2) mostró
+una modulación *real* de Context State en la tasa de reversión
+(`FAVORABLE > NEUTRAL ≈ CONTRA`, IC excluye 0 frente a `CONTRA`), pero es
+**AUDIT_ONLY** y requiere réplica en otro período/símbolo. No es este
+experimento canónico y **no** altera el cierre negativo.
+
+**Siguiente paso (pendiente de go de Ruben):** pre-registro de
+`EXP-WYCKOFF-ICT-01` (Wyckoff × ICT conflict) — ver
+`docs/experimentos/EXP_WYCKOFF_ICT_01_PREREGISTRATION.md`. NO reutiliza el
+`B2` del grupo B (que ya es "valor incremental del filtro HTF").

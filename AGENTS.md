@@ -42,8 +42,9 @@ La organización vigente es lógica sobre las carpetas canónicas existentes. No
 ## Límites no negociables
 
 - El motor diario es para lectura/uso diario; la investigación y el laboratorio permanecen separados.
+- backtest/ es un consumidor nuevo y aislado del motor; no reutiliza ni importa el backtest histórico.
 - `Research propone → Lab evalúa → Auditoría verifica → Cliente/autoridad decide`.
-- `engine/` no importa `ict_backtest/`; no reintroducir OTE ni reglas históricas retiradas.
+- `engine/` no importa `backtest/`; no reintroducir OTE ni reglas históricas retiradas.
 - GEN-000 y los gates científicos conservan su autoridad; un diagnóstico no es promoción.
 - La primera integración de IA permanece en Shadow Mode con `can_trade=false`.
 - No ejecutar experimentos, backtests, cambios de datasets o promoción sin el contrato y el permiso de la zona correspondiente.

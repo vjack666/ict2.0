@@ -38,7 +38,7 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
   §3, verificación semántica §4). Si no hay SDD de diseño para tu componente, pídelo al
   Investigador/Arquitecto y no implementes sin DoR cumplido.
 - Identifica a qué componente del motor/backtest afecta (`INDICE_MDS.md`).
-- Si es nueva lógica de estrategia → DEBE ir a `engine/` (nunca a `ict_backtest/`).
+- Si es nueva lógica de estrategia → DEBE ir a `engine/` (nunca a `backtest/`).
 
 ## 3. LEE LOS CONTRATOS RELEVANTES
 
@@ -50,7 +50,7 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
 
 - Usa grep/read_file para ver el código actual, no asumas.
 - Verifica dependencias (qué importa, qué lo importa).
-- Confirma que no violas la Ley Fundamental (`engine/` ≠ `ict_backtest/`).
+- Confirma que no violas la Ley Fundamental (`engine/` ≠ `backtest/`).
 - Antes de actuar, consulta Engram y Graphify para recuperar decisiones, límites, causas raíz y relaciones relevantes de la misión.
 
 ## 5. IDENTIFICA LA FUNCIÓN QUE DEBES CUMPLIR

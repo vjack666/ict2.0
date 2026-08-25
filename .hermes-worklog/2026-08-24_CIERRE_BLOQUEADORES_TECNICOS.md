@@ -66,3 +66,13 @@ los 3 audidores + _provenance; el grafo AST debe actualizarse).
 `COMPLETED_WITH_DOCUMENTED_BLOCKERS` (auditado el motor, lineage cerrado en gate/funnel/TNA;
 alcance de commit anterior reconocido y corregido para el siguiente; streaming-prefix y
 worktree-charts fuera de alcance local). No se declara COMPLETED definitivo.
+
+## COMMITS DE CIERRE (selectivos, sin push)
+- `c42d8fc` — audit(engine): revalidar motor con lineage embebido (gate causal, funnel v2, TNA 20Y).
+  8 archivos: _provenance.py, 3 audidores parcheados, 3 reportes revalidados, bitácora.
+  EXCLUYE data/raw, reports/charts, .github, .codex.
+- Worktree restante tras commit: solo `data/raw/EURUSD/*.parquet` (M1/M5, 4 bytes), 4 charts,
+  `.codex/`, `.github/` — todos de otras sesiones/procesos, fuera de alcance, sin stage.
+- Engram #548 (correccion bug) + #549 (commit c42d8fc) registran el cierre.
+- Graphify: `graphify update .` ejecutado (5668 nodos reconstruidos).
+

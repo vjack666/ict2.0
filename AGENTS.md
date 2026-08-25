@@ -47,7 +47,10 @@ La organización vigente es lógica sobre las carpetas canónicas existentes. No
 - GEN-000 y los gates científicos conservan su autoridad; un diagnóstico no es promoción.
 - La primera integración de IA permanece en Shadow Mode con `can_trade=false`.
 - No ejecutar experimentos, backtests, cambios de datasets o promoción sin el contrato y el permiso de la zona correspondiente.
-- No hacer commit o push automáticamente; reportar el estado y hacerlo solo cuando forme parte de la instrucción autorizada.
+- Al terminar una tarea autorizada, el responsable debe cerrar bitácora, actualizar Graphify y crear un commit local selectivo. El commit no equivale a promoción ni a publicación.
+- `git push` queda prohibido durante el cierre normal; solo puede ejecutarse después de una auditoría independiente de Codex u otro auditor autorizado y de una instrucción explícita de publicación.
+- Hermes/Codex deben ejecutar una autoauditoría antes de declarar `COMPLETED`; si detectan un error o faltante corregible, deben corregirlo o complementarlo en la misma misión y volver a verificarlo.
+- El encargado de la misión asume el papel de director del departamento asignado: coordina el alcance, distribuye trabajo, integra resultados y entrega el resultado completo. Debe preferir multiagentes en paralelo con write sets disjuntos cuando no existan dependencias; si existe dependencia, respeta el orden lógico y espera el resultado necesario.
 
 ## Formato de entrega
 

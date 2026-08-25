@@ -63,12 +63,14 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
 - Solo tras 1–5. Implementa el cambio reversible (branch/commit aislado).
 - En backtest/experimentos: respeta pre-registro SDD (sin tuneo post-hoc).
 - Volumen = confirmación, NUNCA gate.
+- El encargado de la misión opera como director del departamento asignado: divide el trabajo y usa multiagentes en paralelo cuando las tareas sean independientes y tengan write sets separados. Si existe dependencia, conserva el orden lógico y no duplica trabajo.
 
 ## 7. VERIFICA
 
 - Corre tests (`pytest`), `py_compile`, smoke-test de import.
 - Confirma 0 violaciones de la Ley y 0 look-ahead.
 - Si algo falla → vuelve a 4, no parchees a ciegas.
+- Antes de declarar `COMPLETED`, realiza una autoauditoría contra el objetivo, el contrato, el SDD, los gates y los artefactos esperados. Todo error o faltante corregible debe resolverse o complementarse dentro de la misma misión y verificarse de nuevo.
 
 ## 8. REPORTA
 
@@ -80,6 +82,19 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
 - Decisión de arquitectura / patrón → `mem_save` o bitácora (`docs/bitacora/`).
 - La Memoria Institucional es AUTORIDAD sobre qué entra al registro, pero cualquier
   agente puede escribir su hallazgo; la Memoria lo valida/estructura (ver su contrato).
+
+## 10. CIERRE OBLIGATORIO DE MISIÓN
+
+Una tarea autorizada no se cierra solo con una respuesta textual. Después de verificar el resultado, el responsable debe:
+
+1. registrar el resultado, evidencias, riesgos y siguiente acción en la bitácora;
+2. actualizar el índice o documentación afectada;
+3. actualizar Graphify sin omitir cambios relevantes;
+4. crear un commit local selectivo que contenga únicamente el trabajo de la misión;
+5. comprobar `git status`, el commit y los artefactos finales;
+6. entregar `AGENTE`, `DEPARTAMENTO`, `TAREA`, `STATUS`, `EVIDENCIA`, `ARCHIVOS`, `RIESGOS` y `SIGUIENTE ACCIÓN`.
+
+`git push` queda bloqueado en este cierre. Solo se permite después de una auditoría independiente de Codex u otro auditor autorizado y de una instrucción explícita de publicación.
 
 ## Regla de oro
 >

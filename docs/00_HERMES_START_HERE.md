@@ -61,6 +61,14 @@ NO:
 
 Si durante el trabajo aparece una necesidad fuera del alcance, regístrala como **BLOCKER / OUT-OF-SCOPE** y continúa únicamente con el plan vigente.
 
+## 4.1 DIRECCIÓN DE MISIÓN, AUTOAUDITORÍA Y MULTIAGENTES
+
+El agente encargado de la tarea asume el papel de director del departamento asignado. Es responsable de coordinar el alcance, distribuir subtrabajos, integrar resultados y entregar una salida completa y verificable.
+
+Cuando sea posible, debe usar multiagentes en paralelo para tareas independientes, con write sets separados y sin duplicar trabajo. Si una tarea depende de otra, debe respetar la dependencia y esperar la evidencia necesaria antes de integrar.
+
+Antes de declarar `COMPLETED`, el encargado debe autoauditar objetivo, contrato, SDD, gates, artefactos, documentación y estado Git. Si encuentra un error o faltante corregible, debe corregirlo o complementarlo en la misma misión y repetir la verificación.
+
 ## 5. POLÍTICA DE RESCATE DE CÓDIGO EXTERNO
 
 Antes de incorporar cualquier componente de `SMC-SYSTEMS` o de un histórico del proyecto:
@@ -120,6 +128,8 @@ SIGUIENTE FASE
 ```
 
 **Si `.hermes-index.md`, auditoría y bitácora no reflejan el resultado real, el gate de la fase es FAIL aunque el código y los tests pasen.**
+
+El cierre exige bitácora actualizada, Graphify actualizado, commit local selectivo y verificación final de `git status`. El `push` queda bloqueado hasta una auditoría independiente y una instrucción explícita de publicación.
 
 ## 7. `.hermes-index.md` ES EL CUADRO MAESTRO
 

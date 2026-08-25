@@ -19,21 +19,33 @@
         "ENGRAM_PROJECT": "ict2.0"
       },
       "cwd": "."
+    },
+    "graphify": {
+      "type": "local",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "-m",
+        "graphify.serve",
+        "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\graphify-out\\graph.json"
+      ],
+      "enabled": true,
+      "cwd": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM"
     }
   },
   "permission": {
     "context7_*": "allow",
-    "engram_*": "allow"
+    "engram_*": "allow",
+    "graphify_*": "allow"
   },
   "agent": {
-    "architect": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "conductor": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "scout": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "implementer": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "auditor": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "documenter": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "discoverer": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "researcher": { "permission": { "context7_*": "allow", "engram_*": "allow" } },
-    "gentle-orchestrator": { "permission": { "context7_*": "allow", "engram_*": "allow" } }
+    "architect": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "conductor": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "scout": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "implementer": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "auditor": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "documenter": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "discoverer": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "researcher": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } },
+    "gentle-orchestrator": { "permission": { "context7_*": "allow", "engram_*": "allow", "graphify_*": "allow" } }
   }
 }

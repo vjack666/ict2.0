@@ -65,6 +65,8 @@ Si durante el trabajo aparece una necesidad fuera del alcance, regístrala como 
 
 El agente encargado de la tarea asume el papel de director del departamento asignado. Es responsable de coordinar el alcance, distribuir subtrabajos, integrar resultados y entregar una salida completa y verificable.
 
+Antes de comenzar, debe leer el contexto relevante de Engram y Graphify, junto con la bitácora, el índice y los contratos aplicables. Al finalizar, debe guardar en Engram el resultado verificado, decisiones, hallazgos, riesgos y siguiente acción.
+
 Cuando sea posible, debe usar multiagentes en paralelo para tareas independientes, con write sets separados y sin duplicar trabajo. Si una tarea depende de otra, debe respetar la dependencia y esperar la evidencia necesaria antes de integrar.
 
 Antes de declarar `COMPLETED`, el encargado debe autoauditar objetivo, contrato, SDD, gates, artefactos, documentación y estado Git. Si encuentra un error o faltante corregible, debe corregirlo o complementarlo en la misma misión y repetir la verificación.

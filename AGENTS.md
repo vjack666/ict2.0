@@ -15,13 +15,13 @@ Codex puede decidir los pasos técnicos intermedios cuando preservan el objetivo
 
 ## Protocolo automático de cada misión
 
-1. Leer este archivo, `.hermes-index.md`, el último worklog y los contratos de la zona afectada.
+1. Leer este archivo, `.hermes-index.md`, el último worklog y los contratos de la zona afectada; antes de actuar, consultar el contexto relevante de Engram y Graphify.
 2. Inspeccionar `git status --short`, consumidores, límites de escritura y estado de los gates.
 3. Clasificar la solicitud con `governance/DEPARTMENT_REGISTRY.json` y asignar un dueño; añadir auditoría o cumplimiento cuando la matriz lo exige.
 4. Ejecutar el protocolo de `governance/PROTOCOLO_AGENTE.md`.
 5. Verificar con tests, guardas, hashes o evidencia reproducible proporcional al cambio.
 6. Cerrar la misión actualizando índice, worklog y documentación afectada.
-7. Consultar/guardar memoria institucional en Engram cuando exista una integración disponible. Solo guardar decisiones duraderas: arquitectura, gates, hipótesis rechazadas, causas raíz, límites y próximos pasos; no ruido de cada comando.
+7. Al iniciar, leer Engram para recuperar decisiones, límites, causas raíz y próximos pasos relevantes; al finalizar, guardar en Engram el resultado, hallazgos, decisión, riesgos y siguiente acción. Solo registrar decisiones duraderas, no ruido de cada comando.
 8. Informar al cliente con estado, evidencia, cambios, riesgos y siguiente acción.
 
 ## Pisos y departamentos

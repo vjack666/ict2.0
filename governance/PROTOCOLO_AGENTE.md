@@ -51,6 +51,7 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
 - Usa grep/read_file para ver el código actual, no asumas.
 - Verifica dependencias (qué importa, qué lo importa).
 - Confirma que no violas la Ley Fundamental (`engine/` ≠ `ict_backtest/`).
+- Antes de actuar, consulta Engram y Graphify para recuperar decisiones, límites, causas raíz y relaciones relevantes de la misión.
 
 ## 5. IDENTIFICA LA FUNCIÓN QUE DEBES CUMPLIR
 
@@ -90,9 +91,10 @@ Una tarea autorizada no se cierra solo con una respuesta textual. Después de ve
 1. registrar el resultado, evidencias, riesgos y siguiente acción en la bitácora;
 2. actualizar el índice o documentación afectada;
 3. actualizar Graphify sin omitir cambios relevantes;
-4. crear un commit local selectivo que contenga únicamente el trabajo de la misión;
-5. comprobar `git status`, el commit y los artefactos finales;
-6. entregar `AGENTE`, `DEPARTAMENTO`, `TAREA`, `STATUS`, `EVIDENCIA`, `ARCHIVOS`, `RIESGOS` y `SIGUIENTE ACCIÓN`.
+4. guardar en Engram el resultado verificado, decisiones, hallazgos, riesgos y siguiente acción;
+5. crear un commit local selectivo que contenga únicamente el trabajo de la misión;
+6. comprobar `git status`, el commit y los artefactos finales;
+7. entregar `AGENTE`, `DEPARTAMENTO`, `TAREA`, `STATUS`, `EVIDENCIA`, `ARCHIVOS`, `RIESGOS` y `SIGUIENTE ACCIÓN`.
 
 `git push` queda bloqueado en este cierre. Solo se permite después de una auditoría independiente de Codex u otro auditor autorizado y de una instrucción explícita de publicación.
 

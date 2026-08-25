@@ -7,13 +7,16 @@ Compara contra v1 baseline (1460 chains, 3 COMPLETE) para ver el impacto de PIT.
 Escribe reports/audits/experiments/fvg_ob/funnel_v2_seq_20Y.json (NO toca reportes v1 de Grok).
 """
 from __future__ import annotations
-import time, json
+import time, json, sys
 from collections import Counter
 from pathlib import Path
 import pandas as pd
 import numpy as np
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import engine.sequential_events as SE
 from audits.codigo.mtf_seq_funnel import _load_tf
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _provenance import provenance_block
 
 OUT = Path("reports/audits/experiments/fvg_ob/funnel_v2_seq_20Y.json")
 t0 = time.time()
@@ -57,6 +60,7 @@ report = {
         "has_complete": len(complete) >= 1,
         "not_explosive": len(ch) < 50000,
     },
+    **provenance_block(["engine/sequential_events.py", "engine/mtf_navigation.py", "audits/codigo/mtf_seq_funnel.py"]),
 }
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps(report, indent=2, default=str))

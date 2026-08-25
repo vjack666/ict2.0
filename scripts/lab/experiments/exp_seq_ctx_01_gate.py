@@ -32,6 +32,8 @@ if str(ROOT) not in sys.path:
 
 import engine.mtf_navigation as M
 from audits.codigo.mtf_seq_funnel import _load_tf
+sys.path.insert(0, str(ROOT / "scripts" / "audit"))
+from _provenance import provenance_block
 OUT_DIR = ROOT / "reports" / "audits" / "experiments" / "seq_ctx_01"
 OUT_JSON = OUT_DIR / "gate_causal.json"
 
@@ -145,6 +147,7 @@ def main() -> None:
         "usable_for_inference": passed,
         "violations_sample": violations[:10],
         "elapsed_s": round(time.time() - t0, 1),
+        **provenance_block(["engine/mtf_navigation.py", "engine/sequential_events.py", "audits/codigo/mtf_seq_funnel.py"]),
     }
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     OUT_JSON.write_text(json.dumps(report, indent=2, default=str))

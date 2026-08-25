@@ -10,16 +10,22 @@ Policy: CONTEXT_STATE_NOT_ENTRY. No PnL.
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+# Insertar raíz del repo ANTES de cualquier import de engine/audits
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import json
 import time
 from collections import Counter
 from datetime import datetime, timezone
-from pathlib import Path
-
 import pandas as pd
 
 import engine.mtf_navigation as M
 from audits.codigo.mtf_seq_funnel import _load_tf
+from _provenance import provenance_block
 
 N_CORES = 20
 OUT = Path("reports/audits/temporal/tna_20y.json")
@@ -115,6 +121,7 @@ def main():
             "layer_combinations": {str(k): v for k, v in layer_c.most_common(10)},
             "avg_zones_per_state": round(avg_zones, 2),
             "avg_path_steps": round(avg_path, 2),
+            **provenance_block(["engine/mtf_navigation.py", "engine/sequential_events.py", "audits/codigo/mtf_seq_funnel.py"]),
         },
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)

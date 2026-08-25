@@ -1,7 +1,7 @@
 {
   "experiment": "EXP-SEQ-CTX-01_GATE_CAUSAL",
   "description": "navigate(full,t) == navigate(prefix_through_t,t) on H1 20Y sample",
-  "generated_at": "2026-08-23T19:09:28.941677+00:00",
+  "generated_at": "2026-08-25T13:35:54.546371+00:00",
   "motor_lineage": "engine-seq-v2-causal (PIT _build_eq_pools) merged into current checkout",
   "n_samples": 120,
   "n_checked": 120,
@@ -10,5 +10,12 @@
   "reason": null,
   "usable_for_inference": true,
   "violations_sample": [],
-  "elapsed_s": 106.9
+  "elapsed_s": 284.7,
+  "generator_commit": "05bdecee143df80617e66de327f18754be4a55c7",
+  "generator_worktree": "DIRTY",
+  "generator_source_hashes": {
+    "engine/mtf_navigation.py": "2905f8f88ef9ac372622eaa5ec90e7508dd9a4ce853e0ba6b82ee9be84007921",
+    "engine/sequential_events.py": "dc56cc6ae10b1860a8bc76d205287a69db741bc6225850ae4f0a7ecee61323ff",
+    "audits/codigo/mtf_seq_funnel.py": "a11feb2e3c77b940260664c56ade9b3d02af521d1e852dbf147f11fd8b092be1"
+  }
 }

@@ -4,7 +4,7 @@
 **Estado:** **EJECUTADO — MUESTRA INSUFICIENTE (n=5)**  
 **Entrada:** cierre de la barra de **RETEST** (secuencia ya COMPLETE)  
 **Data:** EURUSD H1 Dukascopy 2006–2025  
-**Artefacto:** `reports/audits/sequential_expectancy_COMPLETE_H1_20Y.json`
+**Artefacto:** `reports/audits/experiments/sequential/sequential_expectancy_COMPLETE_H1_20Y.json`
 
 ---
 

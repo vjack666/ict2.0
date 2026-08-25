@@ -186,6 +186,8 @@ def main() -> None:
             seq_high = float(max(high_r[nb] for nb in node_bars))
             seq_low = float(min(low_r[nb] for nb in node_bars))
             outcome = measure_outcome(high_r, low_r, bar_rel, ch.direction, seq_high, seq_low)
+            if len(obs) % 50 == 0:
+                print(f"  ...heartbeat obs={len(obs)} chain={ch.chain_id} k={kk} t={t}", flush=True)
             obs.append({
                 "chain_id": ch.chain_id,
                 "bar_k": int(idx_start + bar_rel),

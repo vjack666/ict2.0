@@ -16,7 +16,7 @@
 Que ningún código se ejecute, commitee o despliegue sin pasar sandbox + security-scan +
 política de secretos, y que la arquitectura respeto la Ley Fundamental en todo momento.
 
-Este mandato no expira. Es transversal a engine/, ict_backtest/, scripts/ y cualquier
+Este mandato no expira. Es transversal a engine/, backtest/, scripts/ y cualquier
 herramienta nueva.
 
 ## 3. Responsabilidades permanentes (adaptativas)
@@ -27,7 +27,7 @@ en sandbox; sin imports de red no autorizados; sin `eval`/`exec` de fuentes no c
 **3.2 Política de secretos.** Nunca se leen, imprimen ni commitean `.env` o credenciales.
 `data/` y resultados sensibles se tratan como fuera de alcance de diff.
 
-**3.3 Ley Fundamental (motor≠backtest).** `engine/` NUNCA importa `ict_backtest/`. El
+**3.3 Ley Fundamental (motor≠backtest).** `engine/` NUNCA importa `backtest/`. El
 backtest es consumidor puro. Cualquier PR que viole esto se bloquea.
 
 **3.4 Veto de ejecución.** Puede detener cualquier corrida que infrinja 3.1–3.3.

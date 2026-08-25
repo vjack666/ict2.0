@@ -7,7 +7,7 @@
 
 Se implementó una secuencia ejecutable A0→A9 en `audits/codigo/audit_stack.py` y un runner reproducible en `audits/codigo/run_full_stack.py`.
 
-También se añadió `audits/codigo/fvg_ob_funnel.py`, que descarga EURUSD H1/H4/D1 desde `ejtraderLabs/historical-data`, normaliza escala, ejecuta los detectores canónicos FVG y OB y produce `reports/audits/fvg_ob_funnel.json`.
+También se añadió `audits/codigo/fvg_ob_funnel.py`, que descarga EURUSD H1/H4/D1 desde `ejtraderLabs/historical-data`, normaliza escala, ejecuta los detectores canónicos FVG y OB y produce `reports/audits/experiments/fvg_ob/fvg_ob_funnel.json`.
 
 ## Auditorías
 

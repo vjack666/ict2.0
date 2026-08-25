@@ -10,6 +10,12 @@ La descripción completa de carpetas, capas activas y reglas de migración está
 en [`REPOSITORY_MAP.md`](REPOSITORY_MAP.md) y
 [`REPOSITORY_ORDER.md`](REPOSITORY_ORDER.md).
 
+El modelo operativo de departamentos, la autoridad de Codex como dirección
+ejecutiva y las reglas de delegación están en
+[`../AGENTS.md`](../AGENTS.md),
+[`../governance/ORGANIGRAMA_ICT_2_0.md`](../governance/ORGANIGRAMA_ICT_2_0.md) y
+[`../governance/DEPARTMENT_REGISTRY.json`](../governance/DEPARTMENT_REGISTRY.json).
+
 ---
 
 ## 🟢 Autoridad vigente

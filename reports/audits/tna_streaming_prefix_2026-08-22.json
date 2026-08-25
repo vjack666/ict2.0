@@ -1,0 +1,79 @@
+{
+  "audit": "TNA_STREAMING_PREFIX_COMPARE",
+  "coverage": "ALL_H1_DECISIONS",
+  "decisions_checked": 124377,
+  "mismatch_count_reported": 0,
+  "mismatches": [],
+  "exact_event_checks": {
+    "D1.swing_highs": true,
+    "D1.swing_lows": true,
+    "D1.zone_events": true,
+    "H4.swing_highs": true,
+    "H4.swing_lows": true,
+    "H4.zone_events": true,
+    "H1.swing_highs": true,
+    "H1.swing_lows": true,
+    "H1.zone_events": true
+  },
+  "exact_samples": {
+    "0": {
+      "exact_equal": true,
+      "full_digest": "72965056314915c8bd147c61ff6abfbf7e22e2c919da96b2651c1edce1b9eef3",
+      "prefix_digest": "72965056314915c8bd147c61ff6abfbf7e22e2c919da96b2651c1edce1b9eef3"
+    },
+    "71981": {
+      "exact_equal": true,
+      "full_digest": "e17493f0180e86e901911720fe0a7d6f3b6c3f823d581980bf242cf530f6040c",
+      "prefix_digest": "e17493f0180e86e901911720fe0a7d6f3b6c3f823d581980bf242cf530f6040c"
+    },
+    "77791": {
+      "exact_equal": true,
+      "full_digest": "c86336bad468270b2c4beb59542900a7a78280b6613a9b29b1c69b9dbac4f6c3",
+      "prefix_digest": "c86336bad468270b2c4beb59542900a7a78280b6613a9b29b1c69b9dbac4f6c3"
+    },
+    "85125": {
+      "exact_equal": true,
+      "full_digest": "8112b2e6f8fd3fb561daef01c171d08225868c170ce8f870b942d4f675a9d605",
+      "prefix_digest": "8112b2e6f8fd3fb561daef01c171d08225868c170ce8f870b942d4f675a9d605"
+    },
+    "111568": {
+      "exact_equal": true,
+      "full_digest": "60f40c202ef3738b62293ea948ffbe743b35bff84f5b15f80989e969d71fd1c9",
+      "prefix_digest": "60f40c202ef3738b62293ea948ffbe743b35bff84f5b15f80989e969d71fd1c9"
+    },
+    "117488": {
+      "exact_equal": true,
+      "full_digest": "ff15e7942d93a93063b1de751d016d2ac59eaad04fcfd1f5c9f448eab9e9dfc4",
+      "prefix_digest": "ff15e7942d93a93063b1de751d016d2ac59eaad04fcfd1f5c9f448eab9e9dfc4"
+    },
+    "124376": {
+      "exact_equal": true,
+      "full_digest": "4f5aec3893ec1ee175105bdf85b1e8e052267aa4b10eb1e529252bb5acaadbd8",
+      "prefix_digest": "4f5aec3893ec1ee175105bdf85b1e8e052267aa4b10eb1e529252bb5acaadbd8"
+    }
+  },
+  "full_prefix": "PASS_BY_LAYER_INDUCTION",
+  "sequence_history": "FULL_CAUSAL_INDEX_REPLAY",
+  "provenance": {
+    "actual_rows": {
+      "D1": 6258,
+      "H4": 32133,
+      "H1": 124377
+    },
+    "declared_rows": {
+      "D1": 6258,
+      "H4": 32133,
+      "H1": 124377
+    },
+    "declared_raw_rows": {
+      "D1": 6258,
+      "H4": 32137,
+      "H1": 124390
+    },
+    "metadata_count_field": "n_clean",
+    "metadata_consistent": true
+  },
+  "gate": "PASS",
+  "blocking_reasons": [],
+  "note": "Layer snapshots are compared for every decision. Path and constraints are deterministic functions of these snapshots; exact full MarketState equality is checked at control points. Sequence history is sourced from the full causal history index."
+}

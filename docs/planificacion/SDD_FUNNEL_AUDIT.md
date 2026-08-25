@@ -1,9 +1,9 @@
 # SDD — Funnel Audit ICT FVG/OB
 
-**Estado:** NORMATIVO — **Funnel 20Y cerrado con gate CI**
+**Estado:** NORMATIVO — **Funnel 20Y cerrado con evidencia versionada local**
 **Fase:** Pre-backtest
 **Código canónico:** `audits/codigo/funnel.py` y funciones de `audits/codigo/mtf_seq_funnel.py`
-**Runner pesado versionado:** `scripts/audit/grok_run_funnel_20y_full.py`
+**Runner versionado:** funciones locales de `audits/codigo/mtf_seq_funnel.py`
 **Propósito:** auditar la transformación causal de OHLC a candidatos ICT sin evaluar todavía rentabilidad.
 
 ## 1. Principio
@@ -90,7 +90,7 @@ No se usan PnL, win rate ni Sharpe como métricas del Funnel.
 
 Mismo dataset + mismo commit + misma configuración → mismo reporte, salvo campos explícitamente no deterministas como timestamp de generación.
 
-La corrida 20Y que cerró este gate fue ejecutada en Grok mediante `scripts/audit/grok_run_funnel_20y_full.py`, que orquesta las funciones canónicas. El módulo `audits/codigo/mtf_seq_funnel.py` no debe confundirse con ese orquestador.
+La corrida histórica que cerró este gate queda como evidencia versionada. Las futuras validaciones se ejecutan desde el checkout operativo local mediante las funciones canónicas; no se usa un destino remoto de ejecución.
 
 ### 5.2 Truncation invariance
 
@@ -126,9 +126,9 @@ Sequence H1: **1460 cadenas, 3 COMPLETE**. La población COMPLETE sigue siendo i
 
 MTF dense: **1239 samples, `sample_every=100`, `ok_rate=1.0`**, interpretado como integridad de navegación, no win rate.
 
-Artifact: `reports/audits/mtf_seq_funnel.json`.
+Artifact: `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json`.
 
-Gate CI: `.github/workflows/30-hermes-fvg-ob-funnel.yml` valida `status=COMPLETE`, PASS por TF, `causal_links == relation_count`, Sequence PASS y cobertura MTF mínima.
+Gate local: el auditor ejecutado desde el checkout operativo valida `status=COMPLETE`, PASS por TF, `causal_links == relation_count`, Sequence PASS y cobertura MTF mínima. No existe automatización remota vigente.
 
 ## 7. Estado del pre-backtest
 

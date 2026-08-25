@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A2FIX",
+  "role": "TP_LIQUIDEZ_HTF_REAL (variante de A1/B1)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "code_commit_head": "ff6ed31530e646482d6283f1b9499f9010b5d3ba",
+  "date": "2026-08-22T00:56:43.058860+00:00",
+  "gate": {
+    "n_ge_30": true,
+    "expectancy_gt_0": false,
+    "ci_lower_gt_0": false
+  },
+  "protocol": {
+    "leakage_check": "OK: run_sequential UNA sola pasada sobre rango acotado 2019-2024 (PIT-estable DENTRO del rango). El TP HTF usa solo barras HTF CERRADAS por timestamp (as-of index en H4/D1); detect_liquidity asigna cada zona forward desde su barra de confirmacion, por lo que leer el valor en el bar as-of es PIT-seguro (sin mapeo de indice de cadena del navigator). NOTA: detect_liquidity forward-fill de la ultima zona global (visible=2) produce niveles HTF estaticos, no liquidez dinamica cerca del precio; el codigo filtra lado y hace fallback. Sin look-ahead de futuro.",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true,
+      "origin": "csv",
+      "note": "Dataset canonico H1 verificado por SHA256; TP HTF derivado de EURUSD_H4.csv y EURUSD_D1.csv (canonicos). Unica diferencia vs A1/B1: fuente del TP del tratamiento."
+    },
+    "detect_liquidity_behavior": "intrinseco al detector (visible=2 global clusters forward-filled); no es desviacion de protocolo. A2 ejecutado EXACTAMENTE bajo protocolo; veredicto mecanico = FAIL (expectancy<0)."
+  },
+  "verdict": "FAIL",
+  "rationale": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_R)>0 AND bootstrap CI95 lower>0; BLOCKED si n_closed<30; FAIL en otro caso. Calculado por el gate, no por interpretacion."
+}

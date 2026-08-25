@@ -3,7 +3,7 @@
 ## Qué se ejecutó (plan: "hacer ejecutar el motor real dentro de ICT SYSTEM")
 
 - FASE 2a: migración de autoridad documental (SPEC + rulebooks + wyckoff).
-- FASE 2b: motor rescatado bajo demanda (engine/, ict_backtest/, detectors/)
+- FASE 2b: motor rescatado bajo demanda (engine/, backtest/, detectors/)
   y arrancado: build_features(OHLC) -> 52 columnas -> AgentOrchestrator -> 25 agent_*.
 - FASE 2c: mapeo agente<->motor; integrada premium_discount_zone
   (engine.dealing_range) en build_features.

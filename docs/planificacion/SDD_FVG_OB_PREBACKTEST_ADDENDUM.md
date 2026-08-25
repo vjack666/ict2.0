@@ -51,13 +51,13 @@ El backtest mide comportamiento de una especificación de ejecución. Si la pobl
 
 ## Artefactos canónicos actuales
 
-- Funnel: `reports/audits/mtf_seq_funnel.json`.
-- TNA trace estratificado: `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json`.
-- Sequence × Context State: `reports/audits/exp_sequence_x_context_state_H1_20Y.json`.
+- Funnel: `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json`.
+- TNA trace estratificado: `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json`.
+- Sequence × Context State: `reports/audits/experiments/sequential/exp_sequence_x_context_state_H1_20Y.json`.
 
 ## Runners
 
-El Funnel 20Y fue producido por `scripts/audit/grok_run_funnel_20y_full.py`, que orquesta las funciones canónicas de `audits/codigo/mtf_seq_funnel.py`. El artifact está protegido por un assert CI.
+El Funnel 20Y es evidencia histórica versionada producida con las funciones canónicas de `audits/codigo/mtf_seq_funnel.py`. Las futuras validaciones se ejecutan localmente y no dependen de automatización remota.
 
 El TNA full-span tiene driver versionado `scripts/audit/tna_20y_parallel.py`. Su PASS behavioral actual en código no debe declararse como resultado empírico hasta ejecutar el driver y versionar el reporte correspondiente.
 

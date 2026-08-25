@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A4",
+  "component_isolated": "Anclaje secuencial depth>=4 en M15 (parquet, defensa pareja)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-21T16:16:40.053597+00:00",
+  "gate": {
+    "n_ge_30": true,
+    "expectancy_gt_0": true,
+    "ci_lower_gt_0": true
+  },
+  "protocol": {
+    "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado; PIT-estable DENTRO del rango (deuda FULL-vs-PREFIX afecta al indice HTF del navigator, NO a este diseno mono-TF de una pasada).",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "M15",
+      "source": "data/raw/EURUSD/EURUSD_M15.parquet",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 72288,
+      "dataset_hash": "336d6f1d3f39736238f12f9d15e1d2b7f8bd10a4d42944b21d9d1fe74f505ef7",
+      "is_canonical": false,
+      "origin": "parquet",
+      "note": "Origen PARQUET distinto al CSV canonico; rango solo 2022-2024 (no 2019-2024); hash 336d6f1d3f39736238f12f9d15e1d2b7f8bd10a4d42944b21d9d1fe74f505ef7"
+    }
+  },
+  "verdict": "PASS",
+  "rationale": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0."
+}

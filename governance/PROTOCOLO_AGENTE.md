@@ -38,7 +38,7 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
   §3, verificación semántica §4). Si no hay SDD de diseño para tu componente, pídelo al
   Investigador/Arquitecto y no implementes sin DoR cumplido.
 - Identifica a qué componente del motor/backtest afecta (`INDICE_MDS.md`).
-- Si es nueva lógica de estrategia → DEBE ir a `engine/` (nunca a `ict_backtest/`).
+- Si es nueva lógica de estrategia → DEBE ir a `engine/` (nunca a `backtest/`).
 
 ## 3. LEE LOS CONTRATOS RELEVANTES
 
@@ -50,7 +50,8 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
 
 - Usa grep/read_file para ver el código actual, no asumas.
 - Verifica dependencias (qué importa, qué lo importa).
-- Confirma que no violas la Ley Fundamental (`engine/` ≠ `ict_backtest/`).
+- Confirma que no violas la Ley Fundamental (`engine/` ≠ `backtest/`).
+- Antes de actuar, consulta Engram y Graphify para recuperar decisiones, límites, causas raíz y relaciones relevantes de la misión.
 
 ## 5. IDENTIFICA LA FUNCIÓN QUE DEBES CUMPLIR
 
@@ -63,12 +64,14 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
 - Solo tras 1–5. Implementa el cambio reversible (branch/commit aislado).
 - En backtest/experimentos: respeta pre-registro SDD (sin tuneo post-hoc).
 - Volumen = confirmación, NUNCA gate.
+- El encargado de la misión opera como director del departamento asignado: divide el trabajo y usa multiagentes en paralelo cuando las tareas sean independientes y tengan write sets separados. Si existe dependencia, conserva el orden lógico y no duplica trabajo.
 
 ## 7. VERIFICA
 
 - Corre tests (`pytest`), `py_compile`, smoke-test de import.
 - Confirma 0 violaciones de la Ley y 0 look-ahead.
 - Si algo falla → vuelve a 4, no parchees a ciegas.
+- Antes de declarar `COMPLETED`, realiza una autoauditoría contra el objetivo, el contrato, el SDD, los gates y los artefactos esperados. Todo error o faltante corregible debe resolverse o complementarse dentro de la misma misión y verificarse de nuevo.
 
 ## 8. REPORTA
 
@@ -80,6 +83,20 @@ Al recibir una tarea, NO edites nada. El primer instinto es descubrir, no ejecut
 - Decisión de arquitectura / patrón → `mem_save` o bitácora (`docs/bitacora/`).
 - La Memoria Institucional es AUTORIDAD sobre qué entra al registro, pero cualquier
   agente puede escribir su hallazgo; la Memoria lo valida/estructura (ver su contrato).
+
+## 10. CIERRE OBLIGATORIO DE MISIÓN
+
+Una tarea autorizada no se cierra solo con una respuesta textual. Después de verificar el resultado, el responsable debe:
+
+1. registrar el resultado, evidencias, riesgos y siguiente acción en la bitácora;
+2. actualizar el índice o documentación afectada;
+3. actualizar Graphify sin omitir cambios relevantes;
+4. guardar en Engram el resultado verificado, decisiones, hallazgos, riesgos y siguiente acción;
+5. crear un commit local selectivo que contenga únicamente el trabajo de la misión;
+6. comprobar `git status`, el commit y los artefactos finales;
+7. entregar `AGENTE`, `DEPARTAMENTO`, `TAREA`, `STATUS`, `EVIDENCIA`, `ARCHIVOS`, `RIESGOS` y `SIGUIENTE ACCIÓN`.
+
+`git push` queda bloqueado en este cierre. Solo se permite después de una auditoría independiente de Codex u otro auditor autorizado y de una instrucción explícita de publicación.
 
 ## Regla de oro
 >

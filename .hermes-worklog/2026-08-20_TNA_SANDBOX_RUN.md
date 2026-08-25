@@ -10,8 +10,8 @@ Adaptar TNA para correr en entorno sandbox (CPU/tiempo limitado) y validar el fi
 ## Qué se creó
 - `scripts/tna_sandbox_runner.py` — runner multi-ventana mínima (STEP=4, 3 ventanas, ~55-60 steps c/u)
 - Reportes:
-  - `reports/audits/ahf_temporal_navigation_SANDBOX.json`
-  - `reports/audits/ahf_temporal_navigation_SANDBOX.md`
+  - `reports/audits/temporal/ahf_temporal_navigation_SANDBOX.json`
+  - `reports/audits/temporal/ahf_temporal_navigation_SANDBOX.md`
 
 ## Resultados de la corrida
 

@@ -17,8 +17,10 @@ Uso típico::
 """
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass, field, asdict
 from enum import Enum
+from math import ceil, floor
 from typing import Any, Mapping, Sequence
 
 import numpy as np
@@ -254,6 +256,12 @@ def _asof_index(df: pd.DataFrame, decision_time: Any) -> int | None:
 
 
 def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[list[tuple[int, float]], list[tuple[int, float]]]:
+    """Return swings at their confirmation bar, never at formation time.
+
+    The pivot at ``j`` needs the right-hand window through ``conf`` to be
+    closed before it is observable.  Publishing it at ``j`` makes a full
+    dataset expose future-confirmed structure to a prefix ending at ``j``.
+    """
     n = len(high)
     sh, sl = [], []
     for conf in range(left * 2, n):
@@ -261,9 +269,9 @@ def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[li
         if j < left:
             continue
         if high[j] >= high[j - left : j + left + 1].max():
-            sh.append((j, float(high[j])))
+            sh.append((conf, float(high[j])))
         if low[j] <= low[j - left : j + left + 1].min():
-            sl.append((j, float(low[j])))
+            sl.append((conf, float(low[j])))
     return sh, sl
 
 
@@ -300,35 +308,48 @@ def _eq_pools(
     min_touches: int = 2,
     tol_mult: float = 0.25,
 ) -> list[Zone]:
+    """Build EQ pools from the first confirmed touches only.
+
+    A pool becomes visible when its first ``min_touches`` chronological
+    swings are available.  Later swings that match the same level are
+    consumed but do not rewrite the historical pool, which keeps FULL and
+    PREFIX snapshots identical at every decision bar.
+    """
     seg = [(b, p) for b, p in swings if b <= upto]
     if len(seg) < min_touches:
         return []
     zones: list[Zone] = []
-    used: set[int] = set()
-    for i, (bi, pi) in enumerate(seg):
-        if i in used:
-            continue
-        rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
-        tol = max(rng * tol_mult, 1e-9)
-        group = [(bi, pi)]
-        idxs = [i]
-        for j in range(i + 1, len(seg)):
-            if abs(seg[j][1] - pi) <= tol:
-                group.append(seg[j])
-                idxs.append(j)
-        if len(group) >= min_touches:
-            for j in idxs:
-                used.add(j)
-            prices = [g[1] for g in group]
-            zones.append(
-                Zone(
+    bucket_size = 0.001
+    buckets: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    max_tolerance = 0.0
+    for order, (bi, pi) in enumerate(seg):
+        bucket = floor(pi / bucket_size)
+        span = int(ceil(max(max_tolerance, 1e-9) / bucket_size)) + 1
+        candidates = []
+        for key in range(bucket - span, bucket + span + 1):
+            for root in buckets.get(key, []):
+                if abs(pi - root["price"]) <= root["tol"]:
+                    candidates.append(root)
+        if candidates:
+            root = min(candidates, key=lambda item: item["order"])
+            root["matches"].append((bi, pi))
+            if not root["formed"] and len(root["matches"]) >= min_touches:
+                group = root["matches"][:min_touches]
+                prices = [g[1] for g in group]
+                root["formed"] = True
+                zones.append(Zone(
                     low=float(min(prices)),
                     high=float(max(prices)),
                     kind="BSL" if is_high else "SSL",
                     bar_index=int(max(g[0] for g in group)),
                     detail="EQH" if is_high else "EQL",
-                )
-            )
+                ))
+            continue
+        rng = float(np.mean(high[max(0, bi - 14) : bi + 1] - low[max(0, bi - 14) : bi + 1]))
+        tolerance = max(rng * tol_mult, 1e-9)
+        root = {"order": order, "price": pi, "tol": tolerance, "matches": [(bi, pi)], "formed": False}
+        buckets[bucket].append(root)
+        max_tolerance = max(max_tolerance, tolerance)
     return zones
 
 
@@ -543,19 +564,45 @@ class MTFNavigator:
         return ok
 
     def _answer_h4(self, snap: LayerSnapshot, d1: LayerSnapshot | None, path: NavigationPath) -> str:
+        # --- Corrección de procedencia (Objetivo 1 / 7) ---
+        # El `location` normativo se calcula SOBRE EL DEALING RANGE DEL PROPIO TF
+        # (H4), con EQ = 50% del rango y banda ambigua ±12% (dealing_range_eq),
+        # NO sobre el rango D1 ni con tercios 0.33/0.67.
         price = snap.last_close
-        loc = "OUTSIDE"
-        if d1 and d1.range_low is not None and d1.range_high is not None:
-            if d1.range_low <= price <= d1.range_high:
-                # position in D1 dealing range
-                span = d1.range_high - d1.range_low
-                pos = (price - d1.range_low) / span if span > 0 else 0.5
-                if pos < 0.33:
-                    loc = "DISCOUNT"
-                elif pos > 0.67:
-                    loc = "PREMIUM"
+        rh = snap.range_high
+        rl = snap.range_low
+        # Dealing range H4 (propio TF)
+        h4_range = {"high": rh, "low": rl, "eq": None}
+        if rh is not None and rl is not None and rh > rl:
+            eq_h4 = 0.5 * (rh + rl)
+            h4_range["eq"] = eq_h4
+            band = (rh - rl) * 0.12
+            if abs(price - eq_h4) <= band:
+                loc = "EQUILIBRIUM"
+            elif price < eq_h4:
+                loc = "DISCOUNT"
+            else:
+                loc = "PREMIUM"
+        else:
+            loc = "OUTSIDE"
+        # Contexto D1 (solo para trazabilidad; NO redefine `location`)
+        d1_range = {"high": None, "low": None, "eq": None, "location_vs_d1": None}
+        if d1 and d1.range_high is not None and d1.range_low is not None:
+            d1_high, d1_low = d1.range_high, d1.range_low
+            d1_range["high"], d1_range["low"] = d1_high, d1_low
+            if d1_high > d1_low:
+                eq_d1 = 0.5 * (d1_high + d1_low)
+                d1_range["eq"] = eq_d1
+                if d1_low <= price <= d1_high:
+                    band = (d1_high - d1_low) * 0.12
+                    if abs(price - eq_d1) <= band:
+                        d1_range["location_vs_d1"] = "EQUILIBRIUM"
+                    elif price < eq_d1:
+                        d1_range["location_vs_d1"] = "DISCOUNT"
+                    else:
+                        d1_range["location_vs_d1"] = "PREMIUM"
                 else:
-                    loc = "EQUILIBRIUM"
+                    d1_range["location_vs_d1"] = "OUTSIDE"
         # near D1 liquidity?
         near = []
         if d1:
@@ -568,12 +615,16 @@ class MTFNavigator:
             "location": loc,
             "near_d1_zones": near,
             "h4_bias": snap.structure_bias.value,
+            "h4_dealing_range": h4_range,
+            "d1_dealing_range": d1_range,
         }
         path.add(
             TimeframeLayer.H4,
             NavQuestion.WHERE_IN_CONTEXT,
             loc,
-            detail=f"near={near}, h4_bias={snap.structure_bias.value}",
+            detail=f"near={near}, h4_bias={snap.structure_bias.value}, "
+                   f"h4_eq={h4_range['eq']}, d1_eq={d1_range['eq']}, "
+                   f"loc_vs_d1={d1_range['location_vs_d1']}",
         )
         return loc
 

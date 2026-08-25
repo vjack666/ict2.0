@@ -463,3 +463,115 @@ Este SDD queda listo para implementación cuando:
 - una frontera humana produzca `ESCALATED` con evidencia;
 - la condición `MISSION_COMPLETE` sea demostrable por tests;
 - documentación, índice y worklog estén sincronizados.
+
+## 19. Frontera Hermes ↔ Codex para IA 2.0
+
+El objetivo de la iniciativa es construir infraestructura para aprender señales
+ICT + Wyckoff, combinarlas, estimar probabilidad/confianza y abstenerse fuera
+del dominio conocido. La separación normativa es:
+
+| Parte | Responsable | Autoridad |
+|---|---|---|
+| Laboratorio y experimentos B0–B8 | Hermes | Ejecutar, observar, certificar y documentar experimentos |
+| Infraestructura de IA | Codex/equipo multiagente | Consumir certificados y construir modelos, checkpoints, fusión, confianza, OOD/drift, shadow y observabilidad |
+| Motor activo y promoción | GEN-000 / usuario | GEN-000 conserva autoridad; el usuario aprueba cambios de producción |
+
+Codex no puede lanzar ni duplicar experimentos de Hermes, modificar sus
+runners, datasets, protocolos o resultados. Solo puede leer artefactos
+certificados y construir consumidores reproducibles alrededor de ellos.
+
+### Handoff de resultado certificado
+
+El adaptador Hermes → Codex acepta exclusivamente un manifest que incluya:
+
+- `experiment_id`, `verdict`, `gate` y `certifier`;
+- `dataset_hash`, `code_commit`, `scope` (símbolo/TF/período) y `produced_at`;
+- `metrics`, `artifact_paths`, protocolo y caveats.
+
+La ausencia de un campo o un veredicto distinto de `PASS` deja el resultado en
+modo informativo y no permite usarlo como evidencia de entrenamiento o
+promoción. Codex conserva la referencia al artefacto original y no reescribe
+su contenido.
+
+La implementación inicial vive en `runtime/ai_learning/certified_artifacts.py`
+y es read-only. El esquema `1.0` valida SHA-256, hash Git, scope y metrics no
+vacíos, rutas relativas sin traversal y timestamp ISO-8601. No traduce nombres
+históricos como `experiment` → `experiment_id` o `date` → `produced_at`: un
+manifest incompleto se rechaza para evitar certificarlo por inferencia.
+
+La prueba determinista asociada es
+`tests/test_ai_learning_certified_manifest.py`. El resultado aceptado se
+convierte en un objeto inmutable y el JSON de origen no se modifica.
+
+### Gates de infraestructura
+
+El carril Codex avanza por `INF-0..INF-8`:
+
+```text
+certificados → contrato de features → modelos/checkpoints → score fusion
+→ confianza/abstención → OOD/drift → Shadow Mode → adapter advisory → auditoría
+```
+
+Cada gate debe producir código o artefactos versionados, tests, configuración,
+lineage, checkpoint y un informe en el worklog. Los modelos deben usar señales
+de Swing, Liquidez, Sweep, BOS/CHOCH, FVG/OB, HTF y Wyckoff sin afirmar que una
+señal aporta valor hasta que Hermes la haya certificado.
+
+### INF-2 — snapshots de consumo
+
+El lector `runtime/ai_learning/dataset_snapshots.py` es read-only respecto al
+workspace de Hermes. Solo acepta datasets cuyo path figure en
+`artifact_paths` y cuyo hash de contenido coincida exactamente con
+`dataset_hash`. Soporta datasets tabulares JSON/JSONL/CSV/TSV, registra un
+schema fingerprint y rechaza cambios de esquema. El snapshot se escribe solo
+en un destino propio fuera de `scripts/lab/`, `data/learning/pipeline/`,
+`reports/audits/experiments/` y `datasets/`; contiene lineage del experimento,
+commit de origen, commit del consumidor, configuración y timestamp.
+
+La identidad del snapshot se calcula con dataset hash, schema hash, commits,
+experiment_id y configuración ordenada; por tanto, la misma entrada produce
+el mismo snapshot aunque cambie la hora de registro. Los snapshots existentes
+no se sobrescriben y su copia se vuelve a verificar antes de ser consumida.
+
+### INF-3 — Model Registry y checkpoints
+
+El Registry de infraestructura acepta únicamente snapshots de INF-2 con
+lineage completo. Cada registro conserva `model_id`, versión, commit, snapshot
+ID, dataset/schema hash, experimento, features, labels, seed, configuración y
+timestamp. La compatibilidad se comprueba contra las columnas y el schema del
+snapshot; features y labels no pueden solaparse ni incluir columnas ausentes.
+
+Los checkpoints se almacenan fuera del laboratorio, con hash de contenido,
+metadata compatible con el modelo, publicación atómica, no sobrescritura,
+recuperación después de reinicio y rollback hacia una identidad íntegra. La
+carga rechaza tampering, referencias inexistentes, lineage incompleto y rutas
+protegidas. Ninguna de estas operaciones concede autoridad a la IA ni altera
+GEN-000.
+
+### INF-4..INF-8 — contratos científicos fuera del laboratorio
+
+La infraestructura ya contiene contratos aislados y deterministas para las
+fases posteriores:
+
+- INF-4: split temporal train/validation/test, selección limitada a TRAIN +
+  VALIDATION, seed/config y resume seguro; todavía es un skeleton y no entrena.
+- INF-5: scores ICT/Wyckoff, baseline separado, pesos aprendidos solo en TRAIN
+  y evaluación OOS sin refit.
+- INF-6: calibrador isotónico permitido explícitamente, Brier, reliability,
+  error de calibración, probabilidad, confianza e incertidumbre separadas.
+- INF-7: estados `ACCEPT`, `REVIEW` y `ABSTAIN` con motivos fail-closed; la
+  abstención no es una señal de compra ni venta.
+- INF-8: dominio conocido congelado, drift de features/labels por símbolo,
+  temporalidad, régimen y período, umbrales congelados e informe reproducible.
+
+Estas fases no leen ni escriben artefactos Hermes, no recalibran con OOS y no
+alteran GEN-000. La activación productiva continúa prohibida hasta completar
+INF-9..INF-13, Shadow Mode y aprobación explícita.
+
+### Seguridad de producción
+
+La primera integración siempre es `can_trade=false`. Debe registrar estado de
+mercado, features, decisión GEN-000, probabilidad, confianza, decisión IA,
+abstención, OOD/drift, latencia y resultado futuro. GEN-000 conserva autoridad;
+`bias_from_tools` solo puede recibir una propuesta advisory reversible después
+de completar los gates y Shadow Mode.

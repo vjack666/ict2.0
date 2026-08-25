@@ -48,10 +48,10 @@ Ejecutar la pila pre-backtest A0→A9 y el funnel real de detectores FVG/OB sobr
 | **GLOBAL** | **PASS** |
 
 Fingerprint: `ab1bb627d668f52d74f44b6a587c8799394b9c6f8581dc3b439bda21cc5cb538`  
-Artefacto: `reports/audits/A0_A9_audit_stack.json`
+Artefacto: `reports/audits/data/A0_A9_audit_stack.json`
 
 > Nota: A1–A9 del runner contractual usan filas/eventos de smoke + existencia de contratos.  
-> A0 real sobre las 124k barras se reporta aparte (`reports/audits/A0_real_20Y.json`).
+> A0 real sobre las 124k barras se reporta aparte (`reports/audits/data/A0_real_20Y.json`).
 
 ---
 
@@ -66,7 +66,7 @@ Artefacto: `reports/audits/A0_A9_audit_stack.json`
 - Balance direccional FVG ≈ 50/50 (sano).  
 - **Confluencia FVG↔OB:** 0 aceptada — intencional (`NO_FVG/OB_RELATION_AUDITED`).  
   La relación causal formal es trabajo de Fase D/E; este funnel solo mide poblaciones de detector.  
-- Artefacto: `reports/audits/fvg_ob_funnel.json`
+- Artefacto: `reports/audits/experiments/fvg_ob/fvg_ob_funnel.json`
 
 ---
 
@@ -109,9 +109,9 @@ Las densidades FVG/OB en 20Y son estables y utilizables como baseline de poblaci
 
 ```
 AUDITORIA_A0_A9_FVG_OB_20Y.md          ← este documento
-reports/audits/A0_A9_audit_stack.json
-reports/audits/A0_real_20Y.json
-reports/audits/fvg_ob_funnel.json
+reports/audits/data/A0_A9_audit_stack.json
+reports/audits/data/A0_real_20Y.json
+reports/audits/experiments/fvg_ob/fvg_ob_funnel.json
 data/metadata/EURUSD_20Y.json
 data/raw/EURUSD/EURUSD_{H1,H4,D1}.parquet   (gitignored)
 ```

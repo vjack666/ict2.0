@@ -17,7 +17,6 @@ posterior que los sustituye y el cambio está documentado.
 
 | Orden | Ruta | Rol | Estado | Autoridad |
 |---:|---|---|---|---|
-| 00 | `.github/` | Automatización CI y gates de GitHub | Activo | Workflows |
 | 01 | `.hermes/`, `.hermes-index.md`, `.hermes.md` | Gobierno y estado de trabajo | Activo | Contrato Hermes |
 | 02 | `.hermes-worklog/` | Bitácora append-only | Activo | Evidencia de trabajo |
 | 03 | `governance/` | Roles y protocolos | Activo | Gobierno operativo |
@@ -30,12 +29,12 @@ posterior que los sustituye y el cambio está documentado.
 | 10 | `tools/` | Herramientas aisladas y aprendizaje base | Activo | Contratos de tools |
 | 11 | `audits/` | Código ejecutable de auditorías | Activo | Gates A0–A9/Funnel/TNA |
 | 12 | `scripts/` | Entrypoints clasificados y wrappers de compatibilidad | Activo, clasificado | Cada script declara su función |
-| 13 | `tests/` | Tests automatizados | Activo | Pytest/CI |
-| 14 | `reports/` | Evidencia generada legible | Activo | Reportes publicados |
-| 15 | `datasets/` | Fixtures o datasets pequeños versionados | Activo | Metadata del dataset |
-| 16 | `data/` | Datos locales grandes, ignorados por Git | Local | Inventario en [`DATA_INVENTARIO.md`](DATA_INVENTARIO.md) |
-| 17 | `lab/` | Entrada ordenada para experimentos y aprendizaje | Activo | README del laboratorio; no autoriza runtime |
-| 18 | `runtime/` | Punto de entrada del uso diario de lectura | Activo | README de runtime; solo observación |
+| 12 | `tests/` | Tests automatizados | Activo | Pytest local |
+| 13 | `reports/` | Evidencia generada legible | Activo | Reportes publicados |
+| 14 | `datasets/` | Fixtures o datasets pequeños versionados | Activo | Metadata del dataset |
+| 15 | `data/` | Datos locales grandes, ignorados por Git | Local | Inventario en [`DATA_INVENTARIO.md`](DATA_INVENTARIO.md) |
+| 16 | `lab/` | Entrada ordenada para experimentos y aprendizaje | Activo | README del laboratorio; no autoriza runtime |
+| 17 | `runtime/` | Punto de entrada del uso diario de lectura | Activo | README de runtime; solo observación |
 
 ## Capas activas de agentes
 
@@ -88,7 +87,7 @@ Laboratorio: lab/ → scripts/lab/ → data/learning/
 ```
 
 La siguiente migración puede crear `lab/` con wrappers compatibles; no se deben
-mover scripts sin actualizar imports, CI y documentación.
+mover scripts sin actualizar imports y documentación.
 
 ## Datos y outputs
 
@@ -135,7 +134,7 @@ una copia histórica o un output generado.
 | briefs del 15 y 19 de agosto | Generados antes de la eliminación normativa de OTE | Históricos, no autoridad actual |
 | `analysis/wyckoff_agent.py` | Implementación de agente anterior al `engine/Wyckoff/` | Activo como adaptador; migración progresiva |
 
-### Estado local que no pertenece a GitHub
+### Estado local fuera del árbol versionado
 
 | Ruta | Motivo |
 |---|---|
@@ -146,10 +145,10 @@ una copia histórica o un output generado.
 | `graphify-out/` | Imágenes/HTML generados |
 | `graphify-tmp/` | Temporales de visualización |
 
-### GitHub y ramas
+### Ramas e historial
 
-Los workflows fueron ordenados y renombrados con prefijos numéricos. Las ramas
-remotas existentes se conservaron porque pueden contener trabajo no fusionado:
+Las ramas remotas existentes se conservan porque pueden contener trabajo no fusionado;
+no son hosts de ejecución ni disparan jobs:
 
 ```text
 agent/fase-a-fundaciones
@@ -157,7 +156,6 @@ agent/fase-b-domain
 agent/fase-c-domain
 agent/fase-c-v2
 agent/fase-d-domain
-ci/fvg-ob-funnel-cloud-run
 docs/ltf-autonomous-spec-2026-08-20
 docs/sync-plans-sdd-2026-08-20
 docs/wyckoff-engine-integration-2026-08-20

@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "active_engine": {
+    "id": "GEN-000",
+    "status": "ACTIVE",
+    "mode": "DAILY_READ_ONLY",
+    "entrypoint": "engine.daily_motor.build_daily_motor_snapshot",
+    "profile_id": "DAILY_D1_H4_H1_M15_READING",
+    "policy": "OBSERVE_ONLY_NO_ORDER",
+    "deployment_state": "UNPINNED_WORKTREE",
+    "promotion_locked": true,
+    "scope": [
+      "daily_reading",
+      "market_briefs",
+      "charts"
+    ]
+  },
+  "research_engine": {
+    "id": "CANDIDATE-NONE",
+    "status": "NONE",
+    "promotion_state": "NOT_PROMOTED",
+    "scope": [
+      "experiments",
+      "lab_artifacts",
+      "candidate_changes"
+    ],
+    "may_replace_active": false
+  },
+  "promotion_policy": {
+    "requires_user_approval": true,
+    "requires_sdd_and_plan": true,
+    "requires_independent_validation": true,
+    "active_engine_must_remain_unchanged_during_research": true
+  }
+}

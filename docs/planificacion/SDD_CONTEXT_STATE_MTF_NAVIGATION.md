@@ -126,7 +126,7 @@ Reglas:
 6. `Context State`, `constraints` y `navigation state` no son entradas.
 7. El trace debe conservar estado, `active_tf`, contexto confirmado, evento/tiempo de transición, parent state y causa de invalidación.
 
-El AHF está **implementado v1** y existe evidencia de auditoría temporal en `reports/audits/AUDITORIA_TEMPORAL_AHF_RESULT.json`: estado `PASS_TRACE_INTEGRITY`, 750 trazas, 501 transiciones y 193 invalidaciones. Esta evidencia es **estratificada**, no una validación full-span conductual.
+El AHF está **implementado v1** y existe evidencia de auditoría temporal en `reports/audits/temporal/AUDITORIA_TEMPORAL_AHF_RESULT.json`: estado `PASS_TRACE_INTEGRITY`, 750 trazas, 501 transiciones y 193 invalidaciones. Esta evidencia es **estratificada**, no una validación full-span conductual.
 
 ---
 

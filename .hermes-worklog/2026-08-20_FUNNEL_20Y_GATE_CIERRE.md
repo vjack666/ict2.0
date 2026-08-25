@@ -79,8 +79,8 @@ MTF_SEQ_FUNNEL_REPORT: PASS
 
 | Path | Tipo |
 |------|------|
-| `reports/audits/mtf_seq_funnel.json` | artifact 20Y |
-| `reports/audits/mtf_seq_funnel_20Y.md` | resumen |
+| `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json` | artifact 20Y |
+| `reports/audits/experiments/fvg_ob/mtf_seq_funnel_20Y.md` | resumen |
 | `scripts/grok_run_funnel_20y_full.py` | runner full |
 | `scripts/grok_mtf_batches.py` | runner MTF batches |
 | `docs/SCRIPTS_FUNNEL_20Y.md` | reproducibilidad |

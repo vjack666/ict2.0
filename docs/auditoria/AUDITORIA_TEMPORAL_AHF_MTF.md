@@ -430,7 +430,7 @@ Su función es comprobar que, antes del backtest, el motor sabe **navegar, esper
 ## 14. Artefactos
 
 ```text
-reports/audits/ahf_temporal_navigation.json
+reports/audits/temporal/ahf_temporal_navigation.json
 AUDITORIA_TEMPORAL_AHF_MTF.md
 ```
 

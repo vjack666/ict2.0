@@ -171,38 +171,49 @@ def _build_eq_pools(
     tol_mult: float,
     min_touches: int,
 ) -> list[dict[str, Any]]:
-    """Clusters EQH/EQL: ≥ min_touches swings within tolerance."""
+    """Clusters EQH/EQL: >= min_touches swings within tolerance.
+
+    PIT (point-in-time) FIX 2026-08-20 (engine-seq-v2-causal):
+    Los pools se fijan (form_bar) en la PRIMERA barra donde alcanzan min_touches,
+    usando SOLO swings ya conocidos hasta esa barra. NO se agrupan swings futuros
+    ni se reescribe form_bar retroactivamente. Cada swing pertenece a UN solo grupo
+    (used set). Esto hace FULL(t) == PREFIX(t) (GATE PASS). Consecuencia: mas pools
+    que v1 (cada touch post-min_touches que antes fusionaba ahora inicia pool nuevo).
+    """
     if len(swings) < min_touches:
         return []
+    sw = sorted(swings, key=lambda x: x[0])  # swings ordenados por barra
     pools: list[dict[str, Any]] = []
+    open_groups: list[dict[str, Any]] = []
     used = set()
-    for i, (bi, pi) in enumerate(swings):
-        if i in used:
+    for idx, (bi, pi) in enumerate(sw):
+        if idx in used:
             continue
         tol = _avg_range(high, low, bi) * tol_mult
-        group = [(bi, pi)]
-        idxs = [i]
-        for j in range(i + 1, len(swings)):
-            bj, pj = swings[j]
-            if abs(pj - pi) <= tol:
-                group.append((bj, pj))
-                idxs.append(j)
-        if len(group) >= min_touches:
-            for j in idxs:
-                used.add(j)
-            bars = [g[0] for g in group]
-            prices = [g[1] for g in group]
-            pools.append(
-                {
-                    "kind": "EQH" if is_high else "EQL",
-                    "direction_target": -1 if is_high else 1,  # sweep EQH → bearish narrative
-                    "level": float(np.mean(prices)),
-                    "top": float(max(prices)),
-                    "bot": float(min(prices)),
-                    "form_bar": int(max(bars)),  # pool known after last touch confirmed
-                    "touch_bars": bars,
-                }
-            )
+        extended = False
+        for g in open_groups:
+            if abs(pi - g["price"]) <= tol:
+                g["bars"].append(bi)
+                g["prices"].append(pi)
+                used.add(idx)
+                extended = True
+                if len(g["bars"]) >= min_touches:
+                    pools.append(
+                        {
+                            "kind": "EQH" if is_high else "EQL",
+                            "direction_target": -1 if is_high else 1,
+                            "level": float(np.mean(g["prices"])),
+                            "top": float(max(g["prices"])),
+                            "bot": float(min(g["prices"])),
+                            "form_bar": int(bi),  # PIT: se fija aqui, no se reescribe
+                            "touch_bars": list(g["bars"]),
+                        }
+                    )
+                    open_groups.remove(g)
+                break
+        if not extended:
+            open_groups.append({"bars": [bi], "prices": [pi], "price": pi})
+            used.add(idx)
     return pools
 
 

@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-18  
 **Estado:** **CONGELADO — EVIDENCIA EXPLORATORIA**  
 **Resultado:** no se encontró edge operativo con co-ocurrencia simple de factores  
-**Artefacto:** `reports/audits/multifactor_structure_disp_liq_htf_H1.json`
+**Artefacto:** `reports/audits/experiments/sequential/multifactor_structure_disp_liq_htf_H1.json`
 
 ---
 

@@ -1,0 +1,52 @@
+{
+  "probe": "P2ALT_H4_PIT_FULL_VS_PREFIX",
+  "h4_rows": 32133,
+  "cuts": [
+    3213,
+    9639,
+    16066,
+    22493,
+    28919
+  ],
+  "per_cut_prefix_wide_violations": [
+    {
+      "cut": 3213,
+      "bos_direction": 0,
+      "choch_signal": 0,
+      "htf_break_dir": 0
+    },
+    {
+      "cut": 9639,
+      "bos_direction": 0,
+      "choch_signal": 0,
+      "htf_break_dir": 0
+    },
+    {
+      "cut": 16066,
+      "bos_direction": 0,
+      "choch_signal": 0,
+      "htf_break_dir": 0
+    },
+    {
+      "cut": 22493,
+      "bos_direction": 0,
+      "choch_signal": 0,
+      "htf_break_dir": 0
+    },
+    {
+      "cut": 28919,
+      "bos_direction": 0,
+      "choch_signal": 0,
+      "htf_break_dir": 0
+    }
+  ],
+  "totals": {
+    "bos_direction": 0,
+    "choch_signal": 0,
+    "htf_break_dir": 0
+  },
+  "n_cuts": 5,
+  "cuts_with_violations": 0,
+  "pit_stable": true,
+  "elapsed_s": 184.67
+}

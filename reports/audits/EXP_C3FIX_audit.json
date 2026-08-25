@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C3FIX",
+  "role": "MICRO_AGENTE_C3FIX",
+  "hypothesis_under_test": "El edge LTF depth>=4 sobrevive fuera de muestra (EURUSD post-2024). Metrica: expectancy (mean_R). Gate: n_closed>=30.",
+  "gate_logic": "n_closed<30 -> BLOCKED; n_closed>=30 & mean_R>0 & IC95_low>0 -> PASS (edge robusto OOS); n>=30 & edge no positivo -> FAIL (falsacion OOS).",
+  "verdict": "FAIL",
+  "verdict_reason": "n_closed=34>=30 PERO edge OOS NO positivo/robusto (mean_R=0.111, IC95=[-0.2950,+0.5325] incluye 0): falsacion OOS exitosa, no infraestructura.",
+  "gate": {
+    "n_ge_30": true,
+    "expectancy_gt_0": true,
+    "ci_lower_gt_0": false,
+    "n_closed": 34,
+    "mean_R": 0.111,
+    "ci95_low": -0.29500911201928226,
+    "ci95_high": 0.5325471318735835
+  },
+  "protocol": {
+    "code_commit": "ff6ed31",
+    "code_commit_note": "HEAD del working tree. Motor engine/sequential_events.py y engine/sequential_outcome.py SON byte-identicos a daef67cf (git diff vacio): mismo motor garantizado. No se modifico run_sequential/sequential_outcome.",
+    "engine": "run_sequential(structure_mode='lite', max_active_chains=4096, swing_left=3) + resolve_outcome",
+    "invariants_held": true,
+    "no_param_change_post_hoc": true,
+    "parameter_change_vs_A1_B1_C": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "data/raw/EURUSD/EURUSD_H1.parquet",
+      "source_kind": "parquet",
+      "data_origin": "NO-canonico: parquet data/raw (origen distinto al CSV Dukascopy canonico de datasets/eurusd_dukascopy_20y/EURUSD_H1.csv)",
+      "declared_hash": "ac028d7d8a6cd977a7d40ed632642a9bb3f60410d05971a05169cb8f3d380cc7",
+      "actual_file_sha256": "ac028d7d8a6cd977a7d40ed632642a9bb3f60410d05971a05169cb8f3d380cc7",
+      "range": [
+        "2025-01-01",
+        "2026-08-14"
+      ],
+      "range_label": "OOS EXTENDIDO (2025-01-01..2026-08-14), NO solo 2025, para alcanzar n>=30",
+      "bars": 10245,
+      "cross_origin_caveat": true,
+      "canonical_dataset_note": "CSV canonico Dukascopy 20Y (SHA256 2dbb5757) cubre solo hasta 2025-12-31 y en 2025 entrega n_closed=24<30 (EXP_C3 BLOCKED). Por ello el OOS se extiende con parquet (origen distinto) hasta 2026-08-14. El OOS 2025 proviene de parquet, NO del CSV canonico.",
+      "leakage_check": "clean_single_pass_PIT: run_sequential UNA llamada sobre el rango; anchor=STRUCTURE close; SL/TP derivados de rango sweep_bar->structure_bar y swings confirmados (PIT-safe); sin fuga de futuro.",
+      "oos_2025_from_parquet": true
+    },
+    "config": {
+      "min_depth": 4,
+      "horizon_bars": 200,
+      "sl_buffer": 0.0001,
+      "tie_policy": "pessimistic",
+      "warmup_bars": 20,
+      "bootstrap_resamples": 2000,
+      "bootstrap_seed": 42,
+      "baseline_seed": 42,
+      "min_n_gate": 30,
+      "costs_applied": false
+    },
+    "date": "2026-08-22T01:06:14.892920+00:00"
+  },
+  "metrics_summary": {
+    "treatment": {
+      "n_closed": 34,
+      "mean_R": 0.111,
+      "median_R": -1.0,
+      "win_rate": 0.4706,
+      "win_rate_wilson95": [
+        0.3145,
+        0.6326
+      ],
+      "profit_factor": 1.2096,
+      "drawdown": -6.4741,
+      "bootstrap_mean_r_ci": [
+        -0.29500911201928226,
+        0.5325471318735835
+      ]
+    },
+    "baseline": {
+      "n_closed": 34,
+      "mean_R": -0.2579,
+      "win_rate": 0.3235,
+      "bootstrap_mean_r_ci": [
+        -0.6098790080589934,
+        0.14400460435651904
+      ]
+    },
+    "in_sample_reference_mean_R": 0.25
+  },
+  "result_raw_file": "reports/audits/EXP_C3FIX_raw.json"
+}

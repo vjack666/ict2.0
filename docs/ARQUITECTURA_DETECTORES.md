@@ -37,7 +37,7 @@ solo riesgo.
 - Si algún día se unifica, el adaptador debe ser `list[MarketObject] ->
   DataFrame`, no al revés (el DataFrame es el contrato de la capa de consenso).
 
-## Nota sobre `fase-c-domain` (rama de la nube)
+## Nota sobre `fase-c-domain` (rama histórica)
 
 La rama `origin/agent/fase-c-domain` (HEAD `94ab410`, 2026-08-17) quedó
 **obsoleta**: diff contra `main` = 108 archivos borrados, 0 nuevos netos. No

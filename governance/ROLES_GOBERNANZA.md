@@ -76,7 +76,7 @@ Investigador "encontré una posible nueva habitación"; Ingeniero "la construyo"
 | Cumplimiento Operativo | Director | Sandbox, secretos, Ley Fundamental (motor≠backtest) | Veto ejecución | `cumplimiento_operativo.md` |
 | Alertas Tempranas | Director | Riesgos/desviaciones con severidad | Forzar `--audit-only` | `alertas_tempranas.md` |
 | Motor (SMC/ICT) | Director | Infraestructura neutral (`engine/`) | Sin veto | `engine/` |
-| Backtest Canónico (consumidor) | Director | Reloj vela-a-vela, consume `engine/` | Sin veto | `ict_backtest/` |
+| Backtest visual nuevo (consumidor) | Director | Replay causal, consume `engine/` | Sin veto | `backtest/` |
 
 ## Principio rey
 >

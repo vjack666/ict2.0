@@ -42,15 +42,15 @@ Un archivo solo se mueve a histórico si:
 - ya no es importado por código activo;
 - existe sustituto documentado;
 - se conserva su referencia Git;
-- los tests y workflows ya no lo necesitan.
+- los tests locales ya no lo necesitan.
 
 Esto aplica especialmente a módulos de OTE/Fibonacci y a outputs antiguos. No
 aplica a `agents/` ni `orchestration/`, que permanecen activos.
 
-## Fase 5 — GitHub
+## Fase 5 — Ejecución local
 
-- Workflows ordenados por prefijo numérico.
-- Un README de CI explica qué gate ejecuta cada workflow.
+- Los tests y gates se ejecutan desde el checkout operativo local.
+- La evidencia se conserva en reportes, bitácoras y Engram.
 - Las ramas remotas no se borran automáticamente: primero se verifica si
   contienen trabajo no fusionado y se decide su archivado explícito.
 - `main` recibe solo cambios que pasan imports, tests y gates afectados.

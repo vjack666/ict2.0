@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_P2ALT",
+  "role": "P2_INCREMENTAL \u2014 HTF (H4) como FILTRO DE ESTRUCTURA sobre anchors LTF de B1",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-22T01:36:45.696079+00:00",
+  "gate": {
+    "n_ge_30": true,
+    "expectancy_gt_0": true,
+    "ci_lower_gt_0": true,
+    "n_closed": 116,
+    "expectancy": 0.3402,
+    "bootstrap_ci_95": [
+      0.12756856465571828,
+      0.5400033204536264
+    ]
+  },
+  "incremental_gate": {
+    "comparator": "EXP_B1 (mismos anchors sin filtro HTF, mismo SL/TP)",
+    "delta_expectancy": 0.0903,
+    "delta_ci_95": [
+      -0.044975,
+      0.240387
+    ],
+    "delta_ci_excludes_zero": false,
+    "htf_aporta": false
+  },
+  "protocol": {
+    "leakage_check": "OK: (1) run_sequential una sola pasada sobre H1 2019-2024 (PIT-estable dentro del rango, deuda FULL-vs-PREFIX del navigator HTF no aplica a este diseno). (2) Columnas de estructura H4 (bos_direction/choch_signal) y la serie derivada htf_break_dir verificadas FULL-vs-PREFIX en 5 cortes sobre TODO el prefijo: violaciones totales={'bos_direction': 0, 'choch_signal': 0, 'htf_break_dir': 0} -> pit_stable=True. (3) Mapeo H4->H1 usa solo barras H4 CERRADAS (close H4 = label+4h <= close de la barra H1 de entrada); lag observado [0.0, 723.0] h >= 0, sin adelanto.",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true,
+      "origin": "csv",
+      "note": "H1 canonico verificado por SHA256 (coincide con el hash del contrato). Contexto H4 del mismo dataset; D1 no usado.",
+      "h1_hash_matches_contract": true,
+      "h4_source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+      "h4_rows": 32133,
+      "h4_dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "b1_reproduction_exact": true,
+      "htf_pit_probe": {
+        "pit_stable": true,
+        "totals": {
+          "bos_direction": 0,
+          "choch_signal": 0,
+          "htf_break_dir": 0
+        },
+        "n_cuts": 5
+      },
+      "unmapped_h1_bars": 0,
+      "h4_coverage_gaps_gt_72h": [
+        {
+          "ends_at": "2023-05-01 00:00:00",
+          "delta_hours": 724.0
+        }
+      ],
+      "h4_coverage_note": "DEFECTO DE COBERTURA H4 detectado y reportado: hueco(s) >72h en la serie H4. Efecto = contexto HTF ENVEJECIDO (stale) en esos tramos; NO es leakage (el mapeo sigue usando solo barras H4 ya cerradas). No se corrige en esta corrida porque cambiar los datos tras ver el resultado violaria el contrato."
+    }
+  },
+  "verdict": "FAIL",
+  "rationale": "mecanico. BLOCKED si el experimento no es ejecutable limpio (hash H1 != contrato, barras H1 sin mapeo H4, B1 no reproducido bit a bit, o columnas H4 no PIT-estables) o si n_closed<30. PASS iff n_closed>=30 AND expectancy>0 AND bootstrap CI95 lower>0 AND el IC95 del delta de expectancy vs B1 EXCLUYE 0 con delta>0 ('HTF aporta'). FAIL (incremental) en cualquier otro caso: el filtro HTF no demuestra informacion incremental sobre B1. NO se promueve a senal."
+}

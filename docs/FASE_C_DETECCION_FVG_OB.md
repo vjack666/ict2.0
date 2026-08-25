@@ -20,7 +20,7 @@ Se exige invariancia por prefijo: añadir velas futuras no modifica señales ya 
 
 ## Evidencia
 
-GitHub Actions `Hermes Tests` run `#69` / `32082868430`: **20 passed in 0.05s**.
+Evidencia histórica de la suite `Hermes Tests`, run `#69` / `32082868430`: **20 passed in 0.05s**. Las futuras verificaciones son locales.
 
 ## Decisión
 

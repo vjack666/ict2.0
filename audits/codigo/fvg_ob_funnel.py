@@ -17,7 +17,7 @@ from engine.relations import relate_fvg_ob, relation_links
 from .funnel import FunnelAudit
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "reports" / "audits" / "fvg_ob_funnel.json"
+OUT = ROOT / "reports" / "audits" / "experiments" / "fvg_ob" / "fvg_ob_funnel.json"
 BASE = "https://raw.githubusercontent.com/ejtraderLabs/historical-data/main/EURUSD/"
 SOURCES = {
     "H1": str(ROOT / "data/raw/EURUSD/EURUSD_H1.csv"),
@@ -111,6 +111,7 @@ def main() -> int:
     for tf, url in SOURCES.items():
         rows = load_csv(url)
         report["timeframes"][tf] = one_tf(tf, rows)
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0

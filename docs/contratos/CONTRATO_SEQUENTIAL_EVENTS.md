@@ -50,6 +50,6 @@ PASS si:
 
 ## Evidencia inicial H1 20Y
 
-Ver `reports/audits/sequential_events_H1_20Y.json`.
+Ver `reports/audits/experiments/sequential/sequential_events_H1_20Y.json`.
 
 Interpretación: el embudo es deliberadamente estrecho; la mayoría de cadenas expiran en POOL o SWEEP. Eso es coherente con “secuencia ≠ flags”.

@@ -23,9 +23,9 @@
       "H1": 124377
     }
   },
-  "commit": "bef711409c1f204b1bb09511a9f539bdff378734",
+  "commit": "c2e9aecbff16a69fe3df61ddef60812a97b62f03",
   "violations": [],
-  "generated_at": "2026-08-23T17:16:33.197965+00:00",
-  "elapsed_s": 98.112,
+  "generated_at": "2026-08-25T19:15:31.004645+00:00",
+  "elapsed_s": 272.952,
   "policy": "AUDIT_ONLY; no outcomes, PnL or entries"
 }

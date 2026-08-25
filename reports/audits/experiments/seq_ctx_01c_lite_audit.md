@@ -2,7 +2,8 @@
 
 **Fecha:** 2026-08-23
 **Auditor:** Hermes (Dirección de Laboratorio)
-**Base auditada:** `C:/Users/v_jac/.codex/worktrees/f38c/ICT SYSTEM`
+**Base auditada:** `C:/Users/v_jac/.codex/worktrees/f38c/ICT SYSTEM` (artefacto
+histórico V1; no representa el dataset V2 actual de Desktop)
 **Artefacto:** `reports/audits/experiments/seq_ctx_01c_lite_oos/report.json` + `report.md`
 **Contrato:** `docs/experimentos/EXP_SEQ_CTX_01C_LITE_AMENDMENT.md`
 
@@ -80,3 +81,13 @@ en PASS de edge.
 
 **Veredicto:** `PASS_SAMPLE_SUFFICIENT` (descriptivo) — se interpreta solo como
 descriptivo, conforme al amendment y a las reglas no negociables.
+
+## 10. Nota de alcance V2 (Desktop, 2026-08-24)
+
+La auditoría anterior conserva sus resultados históricos y no debe citarse como
+la validación del artefacto actual. La fábrica V2 local en
+`C:/Users/v_jac/Desktop/ICT SYSTEM` genera `canonical_bos=100` y `lite=192`,
+con hash canónico, procedencia por hashes de fuentes, deduplicación por
+`(structure_bar, direction)` y purga `+48`. El validador V2 reportó 292/292
+`event_id` únicos y 0 errores. El manifest actual sigue
+`WAITING_FOR_OOS_EVIDENCE` porque los buckets HOLDOUT no cumplen `n>=30`.

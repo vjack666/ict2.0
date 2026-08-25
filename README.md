@@ -1,5 +1,19 @@
 # ICT SYSTEM — Versión ordenada (andamiaje de subagentes)
 
+## Modelo operativo por departamentos
+
+El repositorio se opera como una empresa-laboratorio: el usuario es el cliente,
+Codex ejerce la dirección ejecutiva operativa y delega cada solicitud al
+departamento adecuado. La ley operativa persistente está en
+[`AGENTS.md`](AGENTS.md), el organigrama en
+[`governance/ORGANIGRAMA_ICT_2_0.md`](governance/ORGANIGRAMA_ICT_2_0.md) y el
+registro de enrutamiento en
+[`governance/DEPARTMENT_REGISTRY.json`](governance/DEPARTMENT_REGISTRY.json).
+
+La separación es lógica sobre las rutas canónicas actuales. El motor diario,
+la infraestructura IA, el laboratorio, los datos y la auditoría conservan sus
+límites; una migración física requiere pruebas de consumidores y wrappers.
+
 Carpeta de trabajo nueva, arrancada desde `SMC-SYSTEMS` el 2026-08-15.
 Objetivo de esta primera pasada: **reunir los subagentes en una estructura
 ordenada y autónoma**, siguiendo el ciclo de migración controlada

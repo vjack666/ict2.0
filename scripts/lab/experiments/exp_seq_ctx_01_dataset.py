@@ -7,7 +7,18 @@ falla CERRADO si falta cualquier guarda del contrato.
 Genera ejemplos con el schema de CONTRATO_DATASET_SEQ_CTX_01.md:
   event_id, dataset_id, dataset_sha256, generator_commit, contract_version,
   symbol, timeframe, event_time, direction, structure_mode, sequence_depth,
-  context_bucket, features_at_t, label_end_6/12/24/48, split, can_trade=false
+  context_bucket, chain_id, features_at_t, label_end_6/12/24/48, split, can_trade=false
+
+Integridad (correcciones V2):
+  - dataset_sha256 = SHA-256 del payload JSONL canónico (filas normalizadas,
+    sin el campo autorreferente dataset_sha256). El manifest y el validador
+    usan exactamente la misma serialización; no se presenta como hash de bytes
+    crudos del archivo.
+  - event_id = SHA-256 completo de (dataset_id, symbol, timeframe, event_time,
+    structure_mode, chain_id, sequence_depth).
+  - purga +48: si el timestamp de T+48 cae fuera del bloque de T, la
+    observacion se EXCLUYE del dataset (reporte de exclusiones); no se queda
+    con label failure dentro del split.
 
 Fallos cerrados (exit != 0) si:
   - falta gate causal (PASS) -> G0
@@ -21,7 +32,7 @@ El dataset es SOLO investigacion offline. No entrena, no promociona.
 """
 
 from __future__ import annotations
-import sys, os, json, time, hashlib, subprocess
+import sys, json, hashlib, subprocess
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -38,10 +49,12 @@ from audits.codigo.mtf_seq_funnel import _load_tf
 
 OUT_DIR = ROOT / "data" / "learning" / "seq_ctx_01"
 MANIFEST = OUT_DIR / "manifest.json"
-CONTRACT_VERSION = "v1"
+CONTRACT_VERSION = "v2"
 GATE_CAUSAL = ROOT / "reports/audits/experiments/seq_ctx_01/gate_causal.json"
 GATE_TNA = ROOT / "reports/audits/tna_streaming_prefix_2026-08-22.json"
 TIMEFRAMES = ["D1", "H4", "H1"]
+SYMBOL = "EURUSD"
+TIMEFRAME = "H1"
 
 # Bloques temporales CONGELADOS (SDD/OOS addendum)
 BLOCKS = [
@@ -54,13 +67,61 @@ MODES = ["canonical_bos", "lite"]
 MIN_DEPTH = 4
 MAX_ACTIVE = 10_000_000
 
+# Fuentes que deben quedar identificadas junto al commit. El commit por sí solo
+# no describe cambios locales no committeados; estos hashes sí permiten detectar
+# que el artefacto fue generado con otra versión de una dependencia relevante.
+PROVENANCE_FILES = (
+    "scripts/lab/experiments/exp_seq_ctx_01_dataset.py",
+    "engine/sequential_events.py",
+    "engine/mtf_navigation.py",
+    "audits/codigo/mtf_seq_funnel.py",
+    "docs/contratos/CONTRATO_DATASET_SEQ_CTX_01.md",
+)
+
 
 def _commit() -> str:
     try:
         return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT,
-                                        text=True).strip()[:12]
+                                        text=True).strip()
     except Exception:
         return "UNKNOWN"
+
+
+def _source_hashes() -> dict[str, str]:
+    result = {}
+    for rel in PROVENANCE_FILES:
+        path = ROOT / rel
+        if not path.exists():
+            raise FileNotFoundError(path)
+        result[rel] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return result
+
+
+def _worktree_dirty() -> bool:
+    try:
+        proc = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no", "--", *PROVENANCE_FILES],
+            cwd=ROOT, text=True, capture_output=True, check=False,
+        )
+        return bool(proc.stdout.strip())
+    except Exception:
+        return True
+
+
+def _canonical_payload(rows: list[dict]) -> bytes:
+    """Serialización única de integridad, sin el campo autorreferente."""
+    normalized = []
+    for row in rows:
+        item = dict(row)
+        item.pop("dataset_sha256", None)
+        normalized.append(json.dumps(
+            item, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=str
+        ))
+    return ("\n".join(normalized) + ("\n" if normalized else "")).encode("utf-8")
+
+
+def _canonical_rows_hash(rows: list[dict]) -> str:
+    return hashlib.sha256(_canonical_payload(rows)).hexdigest()
 
 
 def _fail(msg: str, code: int = 1) -> int:
@@ -77,8 +138,6 @@ def _check_gates() -> int:
     if not GATE_TNA.exists():
         return _fail(f"falta gate TNA: {GATE_TNA}")
     gt = json.loads(GATE_TNA.read_text())
-    # TNA reporta behavioral/full-span mismatches; el artefacto de f38c usa
-    # 'mismatches': [] / 'mismatch_count_reported' (sin campo 'status' literal).
     n_mism = 0
     if isinstance(gt, dict):
         n_mism = len(gt.get("mismatches", [])) or gt.get("mismatch_count_reported", 0) or 0
@@ -99,26 +158,73 @@ def _load_frames():
     return frames
 
 
-def _context_bucket(nav_state) -> str:
-    """ALIGNED / NEUTRAL / AGAINST desde el MarketState PIT."""
-    cons = nav_state.constraints
-    allow = []
-    if cons is not None:
-        if cons.allow_long:
-            allow.append("long")
-        if cons.allow_short:
-            allow.append("short")
-    if cons is not None and cons.direction_hint is not None:
-        hint = cons.direction_hint.value  # 'bull'/'bear'
-        bull = hint == "bull"
-        if (bull and "short" in allow and "long" not in allow) or \
-           (not bull and "long" in allow and "short" not in allow):
-            return "AGAINST"
-        if bull and "long" in allow and "short" not in allow:
-            return "ALIGNED"
-        if (not bull) and "short" in allow and "long" not in allow:
-            return "ALIGNED"
+def _bias_name(value) -> str:
+    """Devuelve la taxonomía normativa, incluyendo valores de Enum."""
+    raw = value.value if hasattr(value, "value") else value
+    return str(raw).upper() if raw is not None else "UNKNOWN"
+
+
+def _direction_sign(seq_dir) -> int | None:
+    """Normaliza la dirección de secuencia a +1/-1 sin inferirla del contexto."""
+    raw = seq_dir.value if hasattr(seq_dir, "value") else seq_dir
+    if isinstance(raw, bool):
+        return None
+    try:
+        sign = int(raw)
+    except (TypeError, ValueError):
+        aliases = {"BULLISH": 1, "BEARISH": -1, "BULL": 1, "BEAR": -1}
+        return aliases.get(str(raw).upper())
+    return sign if sign in (1, -1) else None
+
+
+def h1_alignment(seq_dir: int, h1_bias: str) -> str:
+    """Clasifica H1 respecto de la dirección explícita de la secuencia."""
+    seq_sign = _direction_sign(seq_dir)
+    bias = _bias_name(h1_bias)
+    if seq_sign is None or bias not in ("BULLISH", "BEARISH"):
+        return "NEUTRAL"
+    h1_sign = 1 if bias == "BULLISH" else -1
+    return "ALIGNED" if h1_sign == seq_sign else "AGAINST"
+
+
+def context_bucket(seq_dir: int, d1_bias: str, h4_loc: str, h1_align: str) -> str:
+    """Agrega los cuatro componentes PIT a ALIGNED/NEUTRAL/AGAINST.
+
+    ``seq_dir`` es obligatorio: el mismo contexto puede apoyar una secuencia
+    alcista y oponerse a una bajista. D1 y H4 se puntúan relativos a esa
+    dirección; H1 llega ya reducido a ALIGNED/AGAINST por ``h1_alignment``.
+    """
+    seq_sign = _direction_sign(seq_dir)
+    if seq_sign is None:
+        return "NEUTRAL"
+
+    score = 0
+    d1 = _bias_name(d1_bias)
+    if d1 in ("BULLISH", "BEARISH"):
+        d1_sign = 1 if d1 == "BULLISH" else -1
+        score += 1 if d1_sign == seq_sign else -1
+
+    location = _bias_name(h4_loc)
+    if location in ("DISCOUNT", "PREMIUM"):
+        location_sign = 1 if location == "DISCOUNT" else -1
+        score += 1 if location_sign == seq_sign else -1
+
+    alignment = _bias_name(h1_align)
+    if alignment == "ALIGNED":
+        score += 1
+    elif alignment == "AGAINST":
+        score -= 1
+
+    if score >= 2:
+        return "ALIGNED"
+    if score <= -2:
+        return "AGAINST"
     return "NEUTRAL"
+
+
+def _context_bucket(seq_dir: int, d1_bias: str, h4_loc: str, h1_align: str) -> str:
+    """Compatibilidad nominal para consumidores del helper privado anterior."""
+    return context_bucket(seq_dir, d1_bias, h4_loc, h1_align)
 
 
 def _label(h1, bar_k, horizon, rng_lo, rng_hi) -> str:
@@ -126,7 +232,7 @@ def _label(h1, bar_k, horizon, rng_lo, rng_hi) -> str:
     end = min(bar_k + horizon + 1, len(h1))
     fut = h1.iloc[bar_k + 1: end]
     if len(fut) < horizon:
-        return "failure"  # insuficiente horizonte dentro del bloque
+        return "failure"  # insuficiente horizonte (no es purga; es dato corto real)
     hh = fut["high"].max()
     ll = fut["low"].min()
     if hh > rng_hi:
@@ -143,114 +249,187 @@ def _block_of(t: pd.Timestamp) -> str:
     return "OUT"
 
 
-def _gen_mode(mode: str, frames, h1) -> list[dict]:
+def _block_end(name: str) -> pd.Timestamp:
+    for n, a, b in BLOCKS:
+        if n == name:
+            return pd.Timestamp(b, tz="UTC")
+    raise KeyError(name)
+
+
+def _gen_mode(mode: str, frames, h1) -> tuple[list[dict], dict]:
+    """Devuelve (filas aceptadas, reporte de exclusiones por motivo)."""
     print(f"[FACTORY] generando modo={mode} ...", flush=True)
     chains = run_sequential(h1, SeqConfig(structure_mode=mode, max_active_chains=MAX_ACTIVE),
-                            symbol="EURUSD", timeframe="H1")
+                            symbol=SYMBOL, timeframe=TIMEFRAME)
     rows = []
+    excluded = {
+        "out_of_block": 0,
+        "purge_48_crosses_boundary": 0,
+        "dedup_structure_bar_direction": 0,
+    }
+    seen_structure_direction = set()
+    h1_time = h1["time"].reset_index(drop=True)
     for ch in chains:
         if str(getattr(ch, "status", ch)) != "COMPLETE":
             continue
         nodes = ch.nodes
+        chain_id = str(getattr(ch, "chain_id", ""))
         for k in range(1, len(nodes)):
-            node = nodes[k]
             if k + 1 < MIN_DEPTH:
                 continue
-            bar_k = int(node.bar)
+            bar_k = int(nodes[k].bar)
+            dir_val = nodes[k].direction.value if hasattr(nodes[k].direction, "value") else int(nodes[k].direction)
+            dedup_key = (bar_k, int(dir_val))
+            if dedup_key in seen_structure_direction:
+                excluded["dedup_structure_bar_direction"] += 1
+                continue
+            seen_structure_direction.add(dedup_key)
             t = pd.to_datetime(h1.iloc[bar_k]["time"], utc=True)
             split = _block_of(t)
             if split == "OUT":
+                excluded["out_of_block"] += 1
+                continue
+            # Purga +48: el timestamp de T+48 debe caer DENTRO del mismo bloque.
+            # Si cruza el limite del bloque, la observacion se EXCLUYE.
+            end48_idx = min(bar_k + 48, len(h1_time) - 1)
+            t48 = pd.to_datetime(h1_time.iloc[end48_idx], utc=True)
+            if t48 > _block_end(split):
+                excluded["purge_48_crosses_boundary"] += 1
                 continue
             # Contexto PIT: navigator solo con barras <= t
             pref = {tf: frames[tf].loc[frames[tf]["time"] <= t].copy().reset_index(drop=True)
                     for tf in frames}
             nav = M.MTFNavigator(pref, M.NavigatorConfig(precompute_sequences=False, sequence_tf="H1"))
             st = nav.navigate(t, exec_tf="H1")
-            bucket = _context_bucket(st)
-            # Rango de la secuencia (ancla estructural) para el label
+            d1 = st.layers.get("D1")
+            h4 = st.layers.get("H4")
+            h1_layer = st.layers.get("H1")
+            d1_bias = _bias_name(d1.structure_bias) if d1 else "UNKNOWN"
+            h4_answer = (h4.answers.get(M.NavQuestion.WHERE_IN_CONTEXT.value) or {}) if h4 else {}
+            h4_loc = h4_answer.get("location", "UNKNOWN") if isinstance(h4_answer, dict) else "UNKNOWN"
+            h1_bias = _bias_name(h1_layer.structure_bias) if h1_layer else "UNKNOWN"
+            h1_align = h1_alignment(dir_val, h1_bias)
+            bucket = context_bucket(dir_val, d1_bias, h4_loc, h1_align)
             bars = [int(n.bar) for n in nodes[:k + 1]]
             rng_lo = float(h1.iloc[bars]["low"].min())
             rng_hi = float(h1.iloc[bars]["high"].max())
             labels = {f"label_end_{h}": _label(h1, bar_k, h, rng_lo, rng_hi) for h in HORIZONS}
-            # features_at_t: solo info <= t
             stage_val = lambda s: s.value if hasattr(s, "value") else str(s)
             feats = {
                 "sequence": [stage_val(n.stage) for n in nodes[:k + 1]],
-                "context_layers": {tf: {"bias": st.layers[tf].structure_bias.value
-                                         if st.layers[tf].structure_bias is not None else None}
-                                   for tf in ("D1", "H4", "H1")},
+                "context_layers": {
+                    "D1": {"bias": d1_bias},
+                    "H4": {"bias": _bias_name(h4.structure_bias) if h4 else "UNKNOWN",
+                           "location": h4_loc},
+                    "H1": {"bias": h1_bias, "alignment": h1_align},
+                },
+                "context_inputs": {
+                    "sequence_direction": int(dir_val),
+                    "d1_bias": d1_bias,
+                    "h4_location": h4_loc,
+                    "h1_alignment": h1_align,
+                },
                 "constraints": {"allow_long": st.constraints.allow_long if st.constraints else None,
                                 "allow_short": st.constraints.allow_short if st.constraints else None,
-                                "direction_hint": st.constraints.direction_hint.value
+                                "direction_hint": _bias_name(st.constraints.direction_hint)
                                 if st.constraints and st.constraints.direction_hint else None},
             }
-            dir_val = node.direction.value if hasattr(node.direction, "value") else int(node.direction)
             row = {
                 "dataset_id": f"SEQ_CTX_01_{mode.upper()}",
                 "contract_version": CONTRACT_VERSION,
-                "symbol": "EURUSD", "timeframe": "H1",
+                "symbol": SYMBOL, "timeframe": TIMEFRAME,
                 "event_time": t.isoformat(),
                 "direction": int(dir_val),
                 "structure_mode": mode,
                 "sequence_depth": k + 1,
                 "context_bucket": bucket,
-                "chain_id": str(getattr(ch, "chain_id", "")),
+                "chain_id": chain_id,
                 "features_at_t": feats,
                 "split": split,
                 "can_trade": False,
                 **labels,
             }
             rows.append(row)
-    return rows
+    return rows, excluded
+
+
+def _event_id(did: str, symbol: str, tf: str, event_time: str, mode: str,
+              chain_id: str, depth: int) -> str:
+    """Alineado con CONTRATO_DATASET_SEQ_CTX_01.md §1 (incluye symbol/timeframe)."""
+    basis = f"{did}|{symbol}|{tf}|{event_time}|{mode}|{chain_id}|{depth}"
+    return hashlib.sha256(basis.encode()).hexdigest()
 
 
 def _finalize(rows_all: list[dict], commit: str) -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    per_split = {}
-    per_mode = {}
+    by_dataset: dict[str, list[dict]] = {}
+    per_mode: dict[str, dict] = {}
+    per_split: dict[str, int] = {}
+    source_hashes = _source_hashes()
     for r in rows_all:
         did = r["dataset_id"]
         sp = r["split"]
+        by_dataset.setdefault(did, []).append(r)
         per_mode.setdefault(did, {}).setdefault(sp, 0)
         per_mode[did][sp] += 1
         per_split[sp] = per_split.get(sp, 0) + 1
-    # Escribir JSONL por dataset_id
-    by_dataset: dict[str, list[dict]] = {}
-    for r in rows_all:
-        by_dataset.setdefault(r["dataset_id"], []).append(r)
+
     hashes = {}
     for did, rs in by_dataset.items():
-        # calcular dataset_sha256 deterministicamente
-        payload = json.dumps(rs, sort_keys=True, default=str).encode()
-        ds_hash = hashlib.sha256(payload).hexdigest()
+        out = OUT_DIR / f"{did}.jsonl"
+        # Preparar identidad y metadata sin escribir estados intermedios ni
+        # placeholders. El hash omite únicamente su propio campo.
+        for r in rs:
+            r["dataset_sha256"] = ""
+            r["generator_commit"] = commit
+            r["event_id"] = _event_id(did, r["symbol"], r["timeframe"], r["event_time"],
+                                       r["structure_mode"], r.get("chain_id", ""), r["sequence_depth"])
+        ds_hash = _canonical_rows_hash(rs)
+        hashes[did] = ds_hash
         for r in rs:
             r["dataset_sha256"] = ds_hash
-            r["generator_commit"] = commit
-            r["event_id"] = hashlib.sha256(
-                f"{did}|{r['event_time']}|{r['structure_mode']}|{r['sequence_depth']}|{r['context_bucket']}|{r.get('chain_id','')}".encode()
-            ).hexdigest()[:16]
-        out = OUT_DIR / f"{did}.jsonl"
-        with open(out, "w", encoding="utf-8") as f:
-            for r in rs:
-                f.write(json.dumps(r, default=str) + "\n")
-        hashes[did] = ds_hash
-    # Manifest
+        lines = [json.dumps(r, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str)
+                 for r in rs]
+        out.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+
+    counts = {
+        did: {
+            split: {bucket: sum(1 for r in rs if r["split"] == split and r["context_bucket"] == bucket)
+                    for bucket in ("ALIGNED", "NEUTRAL", "AGAINST")}
+            for split in ("DESIGN", "VALIDATION", "HOLDOUT")
+        }
+        for did, rs in by_dataset.items()
+    }
+    holdout_cells = {
+        f"{did}:{bucket}": counts[did]["HOLDOUT"][bucket]
+        for did in by_dataset for bucket in ("ALIGNED", "NEUTRAL", "AGAINST")
+    }
+    sufficient = all(n >= 30 for n in holdout_cells.values())
+
     manifest = {
         "dataset_id": "SEQ_CTX_01",
         "contract_version": CONTRACT_VERSION,
         "generator_commit": commit,
-        "symbol": "EURUSD", "timeframe": "H1",
+        "generator_worktree": "DIRTY" if _worktree_dirty() else "CLEAN",
+        "generator_source_hashes": source_hashes,
+        "symbol": SYMBOL, "timeframe": TIMEFRAME,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "can_trade": False,
         "blocks": {n: {"start": a, "end": b} for n, a, b in BLOCKS},
         "horizons": HORIZONS,
         "datasets": {did: {"rows": len(rs), "sha256": hashes[did],
-                           "by_split": per_mode[did]} for did, rs in by_dataset.items()},
+                           "by_split": per_mode[did], "by_bucket_split": counts[did]}
+                     for did, rs in by_dataset.items()},
         "total_rows": len(rows_all),
+        "event_unit": "SequentialChain node k; dedup=(structure_bar, direction) within variant",
+        "oos_sufficiency": {
+            "criterion": "n >= 30 per (variant, context_bucket, HOLDOUT)",
+            "holdout_cells": holdout_cells,
+            "status": "SUFFICIENT" if sufficient else "SUBPOWERED",
+        },
         "gate_causal": "PASS", "gate_tna": "PASS",
         "policy": "OFFLINE_RESEARCH_ONLY; can_trade=false",
-        "status": "WAITING_FOR_OOS_EVIDENCE" if any(
-            per_mode[d].get("HOLDOUT", 0) < 30 for d in by_dataset) else "READY",
+        "status": "OOS_SUFFICIENT" if sufficient else "WAITING_FOR_OOS_EVIDENCE",
     }
     MANIFEST.write_text(json.dumps(manifest, indent=2, default=str))
     print(f"[FACTORY] escrito manifest: {MANIFEST}", flush=True)
@@ -259,7 +438,7 @@ def _finalize(rows_all: list[dict], commit: str) -> int:
 
 
 def main() -> int:
-    print("[FACTORY] inicio EXP-SEQ-CTX-01 dataset offline", flush=True)
+    print("[FACTORY] inicio EXP-SEQ-CTX-01 dataset offline (V2 integridad)", flush=True)
     rc = _check_gates()
     if rc:
         return rc
@@ -269,16 +448,24 @@ def main() -> int:
     frames = _load_frames()
     h1 = frames["H1"]
     rows_all = []
+    exclusions = {}
     for mode in MODES:
-        rows_all.extend(_gen_mode(mode, frames, h1))
+        rs, exc = _gen_mode(mode, frames, h1)
+        rows_all.extend(rs)
+        exclusions[mode] = exc
+        print(f"[FACTORY]   modo={mode}: aceptadas={len(rs)} exclusiones={exc}", flush=True)
     if not rows_all:
         return _fail("0 observaciones generadas (sin split temporal?)")
-    # Guarda anti-leakage: features_at_t no debe contener claves label_*
+    # Guardas anti-leakage
     for r in rows_all:
         if any(k.startswith("label_") for k in r["features_at_t"]):
             return _fail("leakage: label_ en features_at_t")
         if r["can_trade"] is not False:
             return _fail("can_trade != false")
+    # Reporte de exclusiones
+    excl_path = OUT_DIR / "exclusions_report.json"
+    excl_path.write_text(json.dumps(exclusions, indent=2))
+    print(f"[FACTORY] reporte exclusiones: {excl_path}", flush=True)
     return _finalize(rows_all, commit)
 
 

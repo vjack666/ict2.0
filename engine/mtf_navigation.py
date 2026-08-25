@@ -564,19 +564,45 @@ class MTFNavigator:
         return ok
 
     def _answer_h4(self, snap: LayerSnapshot, d1: LayerSnapshot | None, path: NavigationPath) -> str:
+        # --- Corrección de procedencia (Objetivo 1 / 7) ---
+        # El `location` normativo se calcula SOBRE EL DEALING RANGE DEL PROPIO TF
+        # (H4), con EQ = 50% del rango y banda ambigua ±12% (dealing_range_eq),
+        # NO sobre el rango D1 ni con tercios 0.33/0.67.
         price = snap.last_close
-        loc = "OUTSIDE"
-        if d1 and d1.range_low is not None and d1.range_high is not None:
-            if d1.range_low <= price <= d1.range_high:
-                # position in D1 dealing range
-                span = d1.range_high - d1.range_low
-                pos = (price - d1.range_low) / span if span > 0 else 0.5
-                if pos < 0.33:
-                    loc = "DISCOUNT"
-                elif pos > 0.67:
-                    loc = "PREMIUM"
+        rh = snap.range_high
+        rl = snap.range_low
+        # Dealing range H4 (propio TF)
+        h4_range = {"high": rh, "low": rl, "eq": None}
+        if rh is not None and rl is not None and rh > rl:
+            eq_h4 = 0.5 * (rh + rl)
+            h4_range["eq"] = eq_h4
+            band = (rh - rl) * 0.12
+            if abs(price - eq_h4) <= band:
+                loc = "EQUILIBRIUM"
+            elif price < eq_h4:
+                loc = "DISCOUNT"
+            else:
+                loc = "PREMIUM"
+        else:
+            loc = "OUTSIDE"
+        # Contexto D1 (solo para trazabilidad; NO redefine `location`)
+        d1_range = {"high": None, "low": None, "eq": None, "location_vs_d1": None}
+        if d1 and d1.range_high is not None and d1.range_low is not None:
+            d1_high, d1_low = d1.range_high, d1.range_low
+            d1_range["high"], d1_range["low"] = d1_high, d1_low
+            if d1_high > d1_low:
+                eq_d1 = 0.5 * (d1_high + d1_low)
+                d1_range["eq"] = eq_d1
+                if d1_low <= price <= d1_high:
+                    band = (d1_high - d1_low) * 0.12
+                    if abs(price - eq_d1) <= band:
+                        d1_range["location_vs_d1"] = "EQUILIBRIUM"
+                    elif price < eq_d1:
+                        d1_range["location_vs_d1"] = "DISCOUNT"
+                    else:
+                        d1_range["location_vs_d1"] = "PREMIUM"
                 else:
-                    loc = "EQUILIBRIUM"
+                    d1_range["location_vs_d1"] = "OUTSIDE"
         # near D1 liquidity?
         near = []
         if d1:
@@ -589,12 +615,16 @@ class MTFNavigator:
             "location": loc,
             "near_d1_zones": near,
             "h4_bias": snap.structure_bias.value,
+            "h4_dealing_range": h4_range,
+            "d1_dealing_range": d1_range,
         }
         path.add(
             TimeframeLayer.H4,
             NavQuestion.WHERE_IN_CONTEXT,
             loc,
-            detail=f"near={near}, h4_bias={snap.structure_bias.value}",
+            detail=f"near={near}, h4_bias={snap.structure_bias.value}, "
+                   f"h4_eq={h4_range['eq']}, d1_eq={d1_range['eq']}, "
+                   f"loc_vs_d1={d1_range['location_vs_d1']}",
         )
         return loc
 

@@ -20,7 +20,9 @@ Salida:
 
 from __future__ import annotations
 import argparse
+import json
 import os
+import subprocess
 import sys
 import time
 import datetime as dt
@@ -33,13 +35,28 @@ ROOT = str(Path(__file__).resolve().parents[2])  # scripts/daily -> raíz del re
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
+ROOT_PATH = Path(ROOT)
+SYSTEM_PY = Path(r"C:\Python314\python.exe")
+MT5_UPDATER = ROOT_PATH / "scripts" / "daily" / "update_mt5_ict.py"
+MT5_REFRESH_TIMEOUT_S = 150
+READ_TFS = ("D1", "H4", "H1", "M15", "M5", "M1")
+
 SYMS_DEFAULT = ["EURUSD", "GBPUSD", "XAUUSD", "USDJPY"]
 # Para el brief solo necesitamos la cola reciente: el M15 completo (114k barras)
 # tarda ~56s en build_features; con 4000 barras (~42 dias) basta y corre en <3s.
 M15_TAIL = 4000
+M5_TAIL = 4000
+M1_TAIL = 8000
 # Para sesgo HTF solo usamos la ultima barra de cada TF; una cola larga basta
 # y build_features corre rapido. H1 de EURUSD (138k barras) era el cuello de botella.
-TAIL = {"D1": 2000, "H4": 5000, "H1": 5000, "M15": M15_TAIL}
+TAIL = {
+    "D1": 2000,
+    "H4": 5000,
+    "H1": 5000,
+    "M15": M15_TAIL,
+    "M5": M5_TAIL,
+    "M1": M1_TAIL,
+}
 GENERATED = dt.datetime.now(dt.timezone.utc)
 
 
@@ -80,28 +97,143 @@ KILLZONES = [
 ]
 
 
-def load_raw(sym, tf, tail=None):
-    p = os.path.join(ROOT, "data", "raw", sym, f"{sym}_{tf}.parquet")
+def closed_bar_cutoff(asof_time, tf):
+    """Return the last fully closed MT5 bar at ``asof_time``.
+
+    MT5 timestamps identify the opening time of a bar. The live/open bar is
+    deliberately excluded from the daily decision so a query cannot consume
+    an incomplete candle.
+    """
+    now = pd.Timestamp(asof_time)
+    if now.tzinfo is None:
+        now = now.tz_localize("UTC")
+    else:
+        now = now.tz_convert("UTC")
+    tf = str(tf).upper()
+    frequencies = {
+        "M1": "1min",
+        "M5": "5min",
+        "M15": "15min",
+        "H1": "1h",
+        "H4": "4h",
+        "D1": "1D",
+    }
+    if tf not in frequencies:
+        raise ValueError(f"Timeframe no soportado para lectura cerrada: {tf}")
+    return now.floor(frequencies[tf]) - pd.Timedelta(frequencies[tf])
+
+
+def _latest_raw_time(sym, tf):
+    path = ROOT_PATH / "data" / "raw" / sym / f"{sym}_{tf}.parquet"
+    if not path.exists():
+        return None
+    try:
+        values = pd.read_parquet(path, columns=["time"])["time"]
+        values = pd.to_datetime(values, utc=True, errors="coerce").dropna()
+        return values.max() if not values.empty else None
+    except (FileNotFoundError, OSError, ValueError, TypeError, KeyError):
+        return None
+
+
+def check_mt5_freshness(symbols, tfs, asof_time):
+    """Verify that MT5 wrote every requested feed through the last closed bar."""
+    errors = []
+    observed = {}
+    for sym in symbols:
+        for tf in tfs:
+            latest = _latest_raw_time(sym, tf)
+            cutoff = closed_bar_cutoff(asof_time, tf)
+            key = f"{sym}_{tf}"
+            observed[key] = {
+                "latest": latest.isoformat() if latest is not None else None,
+                "required_closed": cutoff.isoformat(),
+            }
+            if latest is None:
+                errors.append(f"{key}: falta parquet o columna time")
+            elif latest < cutoff:
+                errors.append(
+                    f"{key}: última={latest.isoformat()} < cierre requerido={cutoff.isoformat()}"
+                )
+    return observed, errors
+
+
+def refresh_mt5_or_fail(symbols, tfs=READ_TFS, asof_time=None):
+    """Refresh MT5 before every brief; never fall back silently to stale data."""
+    if asof_time is None:
+        asof_time = pd.Timestamp.now(tz="UTC")
+    if not SYSTEM_PY.is_file():
+        raise RuntimeError(f"No existe el Python del sistema con MetaTrader5: {SYSTEM_PY}")
+    if not MT5_UPDATER.is_file():
+        raise RuntimeError(f"No existe el actualizador MT5: {MT5_UPDATER}")
+
+    cmd = [
+        str(SYSTEM_PY), str(MT5_UPDATER),
+        "--symbols", " ".join(symbols),
+        "--tfs", " ".join(tfs),
+    ]
+    print(f"[*] Refresh MT5 obligatorio: {' '.join(cmd)}", flush=True)
+    try:
+        result = subprocess.run(
+            cmd,
+            cwd=str(ROOT_PATH),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=MT5_REFRESH_TIMEOUT_S,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(
+            f"MT5 no respondió dentro de {MT5_REFRESH_TIMEOUT_S}s; lectura bloqueada"
+        ) from exc
+
+    if result.stdout:
+        print(result.stdout.rstrip())
+    if result.returncode != 0:
+        detail = (result.stderr or "").strip()
+        raise RuntimeError(
+            f"Refresh MT5 falló (rc={result.returncode}); lectura bloqueada"
+            + (f": {detail}" if detail else "")
+        )
+
+    observed, errors = check_mt5_freshness(symbols, tfs, asof_time)
+    if errors:
+        raise RuntimeError("Feed MT5 no está fresco; lectura bloqueada: " + " | ".join(errors))
+    print(f"[OK] MT5 fresco hasta barras cerradas: {json.dumps(observed, ensure_ascii=False)}")
+    return observed
+
+
+def load_raw(sym, tf, tail=None, asof_time=None, data_dir=None):
+    base = Path(data_dir) if data_dir is not None else ROOT_PATH / "data" / "raw"
+    p = base / sym / f"{sym}_{tf}.parquet"
     if not os.path.exists(p):
         return None, None
     df = pd.read_parquet(p)
     tcol = [c for c in df.columns if c.lower() in ("time", "timestamp", "datetime", "date")][0]
     if tcol != "time":
         df = df.rename(columns={tcol: "time"})
-    mx = pd.to_datetime(df["time"]).max()
+    df["time"] = pd.to_datetime(df["time"], utc=True, errors="coerce")
+    df = df.dropna(subset=["time"]).sort_values("time")
+    if asof_time is not None:
+        df = df[df["time"] <= closed_bar_cutoff(asof_time, tf)]
+    mx = df["time"].max() if not df.empty else None
     if tail:
         df = df.tail(tail).reset_index(drop=True)
     return df, mx
 
 
-def compute(sym):
+def compute(sym, asof_time=None):
     """Construye features UNA vez por símbolo para todos los TF necesarios."""
+    if asof_time is None:
+        asof_time = pd.Timestamp.now(tz="UTC")
     out = {}
     dates = {}
     t0 = time.time()
     from engine.market_features import build_features
-    for tf, tail in [("D1", TAIL["D1"]), ("H4", TAIL["H4"]), ("H1", TAIL["H1"]), ("M15", TAIL["M15"])]:
-        df, mx = load_raw(sym, tf, tail)
+    for tf in READ_TFS:
+        tail = TAIL[tf]
+        df, mx = load_raw(sym, tf, tail, asof_time=asof_time)
         if df is None or len(df) < 50:
             out[tf] = None
             dates[tf] = mx
@@ -196,8 +328,10 @@ def htf_bias(f_d1, f_h4, f_h1):
 
 def build_symbol_section(sym, feats, last_dates):
     lines = [f"\n## {sym}\n"]
-    f_d1, f_h4, f_h1, f_m15 = (feats.get(t) for t in ["D1", "H4", "H1", "M15"])
-    if all(v is None for v in (f_d1, f_h4, f_h1, f_m15)):
+    f_d1, f_h4, f_h1, f_m15, f_m5, f_m1 = (
+        feats.get(t) for t in ["D1", "H4", "H1", "M15", "M5", "M1"]
+    )
+    if all(v is None for v in (f_d1, f_h4, f_h1, f_m15, f_m5, f_m1)):
         lines.append("\n  **SIN DATOS para este símbolo** — se omite.\n")
         return "\n".join(lines)
 
@@ -216,7 +350,10 @@ def build_symbol_section(sym, feats, last_dates):
                          f"(hace ~{dias:.0f} días). El brief es contexto, no espejo del lunes en vivo.")
             lines.append("")
     lines.append(f"- **Precio actual (M15 cierre):** `{price:.5f}`" if ok(price) else "- precio n/a")
-    lines.append(f"- **Datos hasta:** D1 {ld['D1']} · H4 {ld['H4']} · H1 {ld['H1']} · M15 {ld['M15']}")
+    lines.append(
+        f"- **Datos hasta:** D1 {ld['D1']} · H4 {ld['H4']} · H1 {ld['H1']} · "
+        f"M15 {ld['M15']} · M5 {ld['M5']} · M1 {ld['M1']}"
+    )
     lines.append("")
 
     # Un único Context State closed-only para la cadena D1→H4→H1→M15.
@@ -229,10 +366,15 @@ def build_symbol_section(sym, feats, last_dates):
     from engine.Wyckoff import build_wyckoff_snapshot
     decision_time = last_dates.get("M15")
     nav_frames = {tf: frame for tf, frame in feats.items() if frame is not None}
+    mtf_frames = {
+        tf: nav_frames[tf]
+        for tf in ("D1", "H4", "H1", "M15")
+        if tf in nav_frames
+    }
     market_state = None
-    if decision_time is not None and nav_frames:
+    if decision_time is not None and mtf_frames:
         market_state = MTFNavigator(
-            nav_frames,
+            mtf_frames,
             NavigatorConfig(precompute_sequences=False, sequence_tf="H1"),
         ).navigate(decision_time=decision_time, exec_tf="M15")
     canonical_feed = build_ltf_canonical_feed(
@@ -306,6 +448,36 @@ def build_symbol_section(sym, feats, last_dates):
         f"retest=`{ltf.get('legacy_retest_marker', False)}`"
     )
     lines.append("- Política: `OBSERVE_ONLY_NO_ORDER` — no es entry ni autorización de operación.")
+    lines.append("")
+
+    # M5/M1 son confirmación microestructural cerrada; nunca reescriben D1/H4/H1.
+    from engine.plan import build_context_stack, ltf_confirms, ltf_structure_at
+    micro_tfs = ("D1", "H4", "H1", "M15", "M5", "M1")
+    micro_stack = (
+        build_context_stack(nav_frames, decision_time, tfs=micro_tfs)
+        if decision_time is not None else {}
+    )
+    micro_direction = int(ltf_read.get("direction", 0) or 0)
+    micro_confirmation = ltf_confirms(micro_stack, micro_direction)
+    lines.append("### LTF microestructura MT5 (M5/M1 — solo confirmación)")
+    for tf in ("M5", "M1"):
+        micro = (
+            ltf_structure_at(nav_frames, tf, decision_time)
+            if decision_time is not None else {"available": False}
+        )
+        lines.append(
+            f"- `{tf}`: disponible=`{micro.get('available', False)}` · "
+            f"asof=`{micro.get('time', '—')}` · trend=`{micro.get('trend', 'RANGING')}` · "
+            f"BOS=`{micro.get('bos_dir', 0)}` · momentum=`{micro.get('momentum', 0)}`"
+        )
+    lines.append(
+        f"- Confirmación M5/M1 para dirección `{ltf_read.get('direction_label', 'RANGING')}`: "
+        f"available=`{micro_confirmation.get('available', False)}` · "
+        f"confirmed=`{micro_confirmation.get('confirmed', False)}` · "
+        f"score=`{micro_confirmation.get('score', 0)}` · "
+        f"detalle=`{micro_confirmation.get('detail', {})}`"
+    )
+    lines.append("- Regla: M5/M1 confirman o esperan; no cambian el Context State ni autorizan órdenes.")
     lines.append("")
 
     # Dealing range (H4)
@@ -398,13 +570,16 @@ def build_symbol_section(sym, feats, last_dates):
     return "\n".join(lines)
 
 
-def last_date_of(sym, tf):
+def last_date_of(sym, tf, asof_time=None):
     p = os.path.join(ROOT, "data", "raw", sym, f"{sym}_{tf}.parquet")
     if not os.path.exists(p):
         return None
     try:
         df = pd.read_parquet(p, columns=["time"])
-        return pd.to_datetime(df["time"]).max()
+        values = pd.to_datetime(df["time"], utc=True, errors="coerce").dropna()
+        if asof_time is not None:
+            values = values[values <= closed_bar_cutoff(asof_time, tf)]
+        return values.max() if not values.empty else None
     except (FileNotFoundError, OSError, ValueError, TypeError, KeyError):
         return None
 
@@ -419,12 +594,24 @@ def main():
     from runtime.engine_registry import assert_daily_engine_safe
     active_engine = assert_daily_engine_safe()
 
-    _TFS = ["D1", "H4", "H1", "M15"]
+    # Governance/readiness is local and must pass before market access.
+    from scripts.opening_readiness import run as run_opening_readiness
+    readiness_code, readiness = run_opening_readiness()
+    if readiness_code != 0:
+        raise SystemExit(f"[BLOCK] Opening readiness falló: {json.dumps(readiness, ensure_ascii=False)}")
+
+    asof_time = pd.Timestamp.now(tz="UTC")
+    try:
+        refresh_mt5_or_fail(args.symbols, READ_TFS, asof_time=asof_time)
+    except RuntimeError as exc:
+        raise SystemExit(f"[BLOCK] {exc}") from exc
+
+    _TFS = list(READ_TFS)
     # corte dinamico: ultima fecha real entre todos los simbolos/TFs
     cut_dates = []
     for sym in args.symbols:
         for tf in _TFS:
-            d = last_date_of(sym, tf)
+            d = last_date_of(sym, tf, asof_time=asof_time)
             if d is not None:
                 cut_dates.append(d)
     cut_str = max(cut_dates).strftime("%Y-%m-%d") if cut_dates else "desconocida"
@@ -444,7 +631,7 @@ def main():
     sections = []
     last_dates_all = {}
     for sym in args.symbols:
-        feats, dates, _ = compute(sym)
+        feats, dates, _ = compute(sym, asof_time=asof_time)
         last_dates_all.update(dates)
         sections.append(build_symbol_section(sym, feats, dates))
     body = "\n".join(sections)

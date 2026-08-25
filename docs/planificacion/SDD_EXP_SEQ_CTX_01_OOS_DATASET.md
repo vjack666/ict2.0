@@ -81,7 +81,7 @@ Cada fila contiene **únicamente** información disponible en T (point-in-time):
 | `t` (ancla) | barra del nodo k de la cadena | — |
 | `symbol`, `tf` | fijo (EURUSD H1) | — |
 | `secuencia` | stages visibles hasta k (`direction + stages_present_hasta_k`) | solo barras ≤ t |
-| `contexto_mtf` | `MTFNavigator.navigate(t)` → D1 bias × H4 location × H1 alignment → ALIGNED/NEUTRAL/AGAINST | solo barras ≤ t |
+| `contexto_mtf` | `MTFNavigator.navigate(t)` → D1 bias × H4 location × H1 alignment relativo a la dirección de la secuencia → ALIGNED/NEUTRAL/AGAINST | solo barras ≤ t |
 | `label_T+6 / T+12 / T+24 / T+48` | continuation/reversal/failure a N barras futuras | **solo barras > t** |
 | `depth` | k (dimensión extra, no identidad) | — |
 
@@ -94,6 +94,15 @@ Cada fila contiene **únicamente** información disponible en T (point-in-time):
 - Ruptura de outcome = rango de la secuencia (no `high[bar_k]` aislado) para
   evitar el artefacto 94% continuation de LIQUIDITY_POOL.
 
+### 3.3 Regla congelada del bucket
+
+`context_bucket` no se deriva de `allow_long`, `allow_short` ni del
+`direction_hint` del navegador. La fábrica debe guardar y usar explícitamente
+`sequence_direction`, `d1_bias`, `h4_location` y `h1_alignment`. La puntuación
+normativa es la del contrato de datos: D1 y H4 se puntúan relativos a la
+dirección de la secuencia, H1 aporta `+1/0/-1`, y los umbrales son `>=2`
+ALIGNED, `<=-2` AGAINST y NEUTRAL en otro caso.
+
 ### 3.3 Congelamiento
 Este esquema es el **contrato de datos**: una vez escrito, no se añaden columnas
 posteriores al label ni se re-etiqueta según resultados.
@@ -105,15 +114,20 @@ posteriores al label ni se re-etiqueta según resultados.
 ### 4.1 Generación
 - Script: `scripts/lab/experiments/exp_seq_ctx_01_dataset.py` (nuevo, siguiendo
   el patrón de `b2_dataset_factory.py`: hash + manifest).
-- Salida: `data/learning/seq_ctx_01/<split>/examples.jsonl` con manifest
-  `data/learning/seq_ctx_01/manifest.json`:
+- Salida implementada: `data/learning/seq_ctx_01/` con dos JSONL separados y
+  `manifest.json`:
+  `SEQ_CTX_01_CANONICAL_BOS.jsonl`, `SEQ_CTX_01_LITE.jsonl` y
+  `exclusions_report.json`.
+  El manifest registra:
   `{dataset_id, symbol, tf, period, generator_commit, schema_version,
     feature_schema, label_schema, rows_by_split, sha256_per_split,
-    structure_mode, canonical_gate_status}`.
-- Cada split se hashea (sha256) para trazabilidad inmutable.
+    structure_mode, canonical_gate_status`, junto con hashes canónicos del
+  payload, hashes de fuentes relevantes y estado del worktree.
+- Cada dataset se hashea con la definición canónica del contrato; el campo
+  `dataset_sha256` se excluye del propio payload para evitar circularidad.
 
 ### 4.2 Splits temporales
-- TRAIN / VAL / TEST por corte temporal (§2.3), nunca aleatorio.
+- DESIGN / VALIDATION / HOLDOUT por corte temporal (§2.3), nunca aleatorio.
 - Manifest registra los bordes de cada split.
 
 ### 4.3 No operativo
@@ -148,3 +162,67 @@ posteriores al label ni se re-etiqueta según resultados.
 - Generador: `scripts/lab/experiments/exp_seq_ctx_01_dataset.py` (nuevo)
 - Reusa: `b2_dataset_factory.py` (patrón hash/manifest), `b3_walkforward.py`
   (roll-forward), `CONTRATO_CONTEXT_STATE.md`, `CONTRATO_SEQUENTIAL_EVENTS.md`
+
+## 8. Estado de implementación posterior (2026-08-24)
+
+- Dataset V3 regenerado y validado: 292 filas; Gate OOS `SUBPOWERED`.
+- Snapshot certificado materializado para ambos modos como artefacto de
+  infraestructura; no equivale a suficiencia OOS ni a entrenamiento.
+- `TrainingPipeline` ejecutado únicamente como skeleton contractual:
+  `model_training.executed=false`, sin pesos aprendidos.
+- Registry/checkpoints y Shadow Mode se mantienen con `can_trade=false`, sin
+  promoción ni operación.
+- La bitácora `2026-08-24_MISION_REGEN_OOS_GATE.md` es la fuente de detalle de
+  la comparación V2/V3 y de las decisiones pendientes del cliente.
+
+---
+
+## 9. Reconciliación de ampliación OOS multi-símbolo (2026-08-24, fecha de cierre)
+
+**HECHO VERIFICADO — ejecución de ampliación pre-registrada:**
+Se ejecutó `scripts/lab/experiments/exp_seq_ctx_01_oos_expansion.py` (pre-registro en
+`docs/planificacion/OOS_EXPANSION_PREREGISTRATION.md`) sobre el universo de 8 símbolos
+× {canonical_bos, lite} × HOLDOUT 2021–2025 (+ EURUSD DESIGN/VALIDATION). El universo
+pre-registrado se **agotó** (los 8 símbolos procesados).
+
+**Conteos HOLDOUT agregados (evidencia en `data/learning/seq_ctx_01/OOS_EXPANSION/`):**
+- `canonical_bos`: ALIGNED=19, NEUTRAL=110, AGAINST=23
+- `lite`: ALIGNED=24, NEUTRAL=177, AGAINST=44
+- Total ampliación = 625 filas (236 canonical + 389 lite); HOLDOUT = 397 filas.
+
+**VEREDICTO (estadístico independiente, FASE 6):**
+`OOS_EXPANSION_EXHAUSTED_NO_SUFFICIENT_EVIDENCE` — 3 de 6 celdas (canonical ALIGNED,
+canonical AGAINST, lite ALIGNED) quedaron < 30 pese a agotar el universo. NO se rebajó
+el umbral `n>=30`. NO se combinaron celdas.
+
+**Red Team (FASE 10):** `PASS_READY_FOR_CERTIFIED_SNAPSHOT` **SOBRE LA INTEGRIDAD**
+(no leakage, no mezcla canonical/lite, buckets reconstruibles 100%, `can_trade=false`).
+Esto NO equivale a suficiencia OOS.
+
+**Snapshot (FASE 9):** NO creado — `exp_seq_ctx_01_oos_snapshot.py` requiere OOS_SUFFICIENT
+y permanece bloqueado por diseño. `can_trade=false` preservado.
+
+**Estado de EXP-SEQ-CTX-01 (expresión canónica):**
+`OOS_EXPANSION_EXHAUSTED_NO_SUFFICIENT_EVIDENCE` — 625 filas totales, 397 HOLDOUT,
+canonical_bos 19/110/23, lite 24/177/44, 3/6 celdas < n>=30, sin snapshot elegible,
+sin entrenamiento, sin edge, sin promoción, `can_trade=false`.
+
+**DEUDA DOCUMENTAL / PROVENANCE detectada en esta reconciliación:**
+1. Este SDD §8 y el addendum (§7) describen solo V3 (EURUSD, SUBPOWERED). No mencionan
+   la ampliación multi-símbolo ni el veredicto EXHAUSTED. Se añade esta sección para
+   cerrar la brecha; el addendum debe actualizarse aparte por el PMO.
+2. `data/learning/seq_ctx_01/OOS_EXPANSION/manifest.json` carece del campo `total_rows`
+   (sí lo tiene `OOS_EXPANSION_COUNTS.json`, que suma 625). El validador oficial
+   `validate_seq_ctx_dataset.py` no se aplica a este manifest de ampliación (usa claves
+   distintas); la integridad se verificó vía red team, no vía ese validador.
+3. `gate_causal.json` NO registra `generator_commit` ni hashes de fuente; su
+   `motor_lineage` es solo textual. No es reproducible verificar contra qué código exacto
+   se corrió (aunque los hashes actuales de `engine/mtf_navigation.py` /
+   `engine/sequential_events.py` coinciden con los del manifest V3/OOS).
+4. El worktree está `DIRTY` (datasets `data/raw/EURUSD/EURUSD_M1.parquet` y
+   `EURUSD_M5.parquet` modificados sin commit, entre otros). El dataset NO es
+   reproducible desde un checkout limpio hoy; requiere commit autorizado del cliente.
+
+**Autoridad:** la evidencia en disco (`OOS_EXPANSION/manifest.json`,
+`OOS_SUFFICIENCY_VERDICT.json`, `OOS_REDTEAM_VERDICT.json`) manda sobre cualquier
+texto de planificación desactualizado.

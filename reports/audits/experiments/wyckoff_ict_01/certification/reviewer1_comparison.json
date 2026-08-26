@@ -1,0 +1,12 @@
+{
+  "reviewer": "REVIEWER_1_INDEPENDENT_REPRODUCTION",
+  "regen_generator_commit": "e9c9be9ec753e52b95a0407309775518350a288d",
+  "audit_generator_commit": "e9c9be9ec753e52b95a0407309775518350a288d",
+  "regen_worktree_state": "CLEAN",
+  "counts_identical": true,
+  "n_differing_fields": 0,
+  "diffs": {},
+  "H1_total_regen": 515,
+  "H1_total_audit": 515,
+  "verdict": "CERTIFIED_FEASIBILITY_FAIL_INSUFFICIENT_N"
+}

@@ -1,0 +1,37 @@
+{
+  "R3.1": {
+    "alpha": 0.05,
+    "power": 0.8,
+    "p1": 0.5,
+    "p2": 0.6,
+    "mde_pp": 10,
+    "z_alpha_2": 1.96,
+    "z_beta": 0.8416,
+    "n_per_group_computed": 384.6,
+    "n_per_group_with_cc": 394.6,
+    "n_required_in_json": 389,
+    "match": true,
+    "note": "389 del prerregistro es congruente con MDE 10pp / potencia 0.80 / alfa 0.05 (sin cc ~385; con cc ~395)."
+  },
+  "R3.2": {
+    "H1_total": 515,
+    "H4_total": 144,
+    "D1_total": 18,
+    "n_required_per_group": 389,
+    "min_total_for_one_2group_design": 778,
+    "H1_lt_778": true,
+    "note": "H1 TOTAL=515 < 778; ningun TF alcanza el total minimo para un par de grupos a 389."
+  },
+  "R3.3": {
+    "total_h1": 515,
+    "n_required": 389,
+    "two_group_minimum_total": 778,
+    "can_fill_two_groups_at_389": false,
+    "max_single_cell_if_all_concentrated": 515,
+    "max_individual_primary_cell_observed": 361,
+    "every_cell_below_389": true,
+    "invariant_to_redistribution": true,
+    "note": "Con total=515<778 es imposible llenar dos celdas a 389 cada una, cualquiera sea la distribucion. Ademas la celda primaria maxima observada es 361 << 389. El fallo es estructural, no un artefacto de distribucion."
+  },
+  "overall": "PASS"
+}

@@ -20,3 +20,24 @@
 ## AVANCE
 - B0 completo. En curso: B1 (label audit).
 - Worklog: `.hermes-worklog/2026-08-20_1410_PIPELINE_B0_REGRESION.md`
+
+---
+
+## CERTIFICACIÓN INDEPENDIENTE (2026-08-26) — `CERTIFIED_FEASIBILITY_FAIL_INSUFFICIENT_N`
+
+EXP-WYCKOFF-ICT-01 certificado independientemente como `CERTIFIED_FEASIBILITY_FAIL_INSUFFICIENT_N`.
+3 revisores: R1 reprodujo H1 TOTAL=515 desde worktree limpio `e9c9be9` (0 diffs vs `cdf45f1`);
+R2 metodología 6/6 PASS; R3 estadística 3/3 PASS (n calculado 384.6≅389; H1 515<778;
+fallo invariante a redistribución, máx celda 361<<389).
+
+Evidencia preservada (sin temporales borrados):
+`reports/audits/experiments/wyckoff_ict_01/certification/`
+(reviewer1_compare.py+json, reviewer1_reproduction.log, reproduction_feasibility_counts_v2.json,
+reviewer2_methodology_audit.py+json, reviewer3_statistical_audit.py+json, CERTIFICATION_VERDICT.md).
+
+Esta fusión es QUIRÚRGICA: solo evidencia de certificación + docs científicos + índice/blockers/worklog.
+NO incluye motor (`engine/`), datos (`data/`, `datasets/`), gráficos (`reports/charts/`) ni briefs.
+Fuera de alcance: bug pandas 3.0 (rama separada). No se ejecutó EXP-WYCKOFF-ICT-01.
+
+Siguiente acción (pendiente autorización CEO): borrador preregistro `EXP-004B-01 — Generalización
+temporal` (`docs/experimentos/EXP_004B_01_TEMPORAL_GENERALIZATION_PREREGISTRATION.md`). NO ejecutar.

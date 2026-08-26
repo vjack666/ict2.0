@@ -44,7 +44,13 @@ mission-state authority.
 
 ## Safety policy
 
-- Context7 is a documentation lookup service only.
+- Context7 is a documentation lookup service only. It may verify external
+  APIs and libraries against the versions installed in the environment
+  (including Databento, pandas, PyArrow/Parquet, SciPy/statsmodels, pytest,
+  Hypothesis, Pydantic and GitHub Actions), but it is never an authority for
+  Wyckoff theory, scientific methodology, experimental results or trading
+  decisions. It cannot replace licensed CME data, human labeling, the SDD,
+  PIT/OOS gates or promotion approval.
 - Engram is memory, not mission state and not a permission authority.
 - Hermes built-in `MEMORY.md`/`USER.md` memory is disabled; those files are
   retained as historical data and are not authoritative.

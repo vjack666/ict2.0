@@ -25,6 +25,7 @@ Cada bloque produce **RESULT -> GATE -> PASS / FAIL / INCONCLUSIVE**. Ningún bl
 8. Separar estrictamente **PRODUCTION ENGINE**, **EXPERIMENTAL LAB** y **REPORTS / EVIDENCE**.
 9. Un experimento debe poder terminar como `SUPPORTED`, `FALSIFIED`, `INCONCLUSIVE`, `INVALID_PIT` o `INVALID_DATA`.
 10. Cuando `n` sea insuficiente, el resultado es **INCONCLUSIVE**, nunca "edge".
+11. **Context7 se utilizará únicamente para verificar APIs y librerías externas según su versión instalada. No será autoridad sobre teoría Wyckoff, metodología científica, resultados ni decisiones de trading.**
 
 ---
 

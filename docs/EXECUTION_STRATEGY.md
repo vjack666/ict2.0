@@ -16,6 +16,22 @@ C:\Users\v_jac\Desktop\ICT SYSTEM
 El repositorio remoto queda limitado a código, historial, revisión y publicación
 autorizada. No se usa ningún servicio remoto como host de ejecución.
 
+GitHub Actions está desactivado para `vjack666/ict2.0` (`enabled=false`). GitHub
+se usa como almacenamiento, ramas, commits y PR; no como ejecutor de tests,
+funnels, auditorías o experimentos. La verificación vigente es la API de
+permisos del repositorio, no la ausencia de archivos workflow.
+
+Los worktrees temporales nuevos deben crearse dentro de:
+
+```text
+C:\Users\v_jac\Desktop\ICT SYSTEM\.hermes-worktrees\
+```
+
+Después de completar y verificar un trabajo, su worktree temporal debe
+eliminarse mediante una operación explícita y con la ruta exacta validada. Los
+worktrees históricos o administrados por Codex no se mueven ni eliminan como
+parte de esta política sin una auditoría y autorización separadas.
+
 ## 2. Procedimiento local obligatorio
 
 Antes de ejecutar:
@@ -29,6 +45,9 @@ Antes de ejecutar:
 6. autoauditar el resultado y corregir faltantes antes del cierre;
 7. actualizar bitácora, Engram y Graphify;
 8. crear commit local selectivo; no hacer push sin auditoría independiente.
+
+No compartir URLs de correos o ejecuciones que contengan tokens: al redactar
+un enlace, eliminar todo lo que aparezca después del primer `?`.
 
 ## 3. Comandos locales de referencia
 

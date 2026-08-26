@@ -35,7 +35,7 @@ cuáles faltan, y quién las ejecuta localmente. Fuente de verdad: `reports/audi
 | --- | --- | --- |
 | **A0-07** Ruta raw vs loader | OPEN | Edición de código, liviano |
 | **A0-08** OTE residual | OPEN | grep + parche, liviano (OTE prohibido) |
-| **AUDIT-CI-01** Automatización remota | RETIRADO | No existe; validar localmente |
+| **AUDIT-CI-01** Automatización remota | DESACTIVADO | GitHub Actions `enabled=false`; validar localmente |
 
 ---
 

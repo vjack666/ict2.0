@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT))
 
 from scripts.lab.experiments.exp_seq_ctx_01_dataset import (
     _check_gates, _event_id, _canonical_rows_hash, context_bucket, h1_alignment,
-    CONTRACT_VERSION,
+    _as_utc_timestamp, CONTRACT_VERSION,
 )
 from scripts.lab.experiments.exp_seq_ctx_01_oos_expansion import (
     SYMS, MODES, BLOCKS, _block_of, _block_end,
@@ -57,9 +57,7 @@ def _future_feature_timestamps(value, event_time, path="features_at_t"):
             child_path = f"{path}.{key}"
             if str(key).lower() in FEATURE_TIME_KEYS and isinstance(child, str):
                 try:
-                    ts = pd.Timestamp(child)
-                    if ts.tzinfo is None:
-                        ts = ts.tz_localize("UTC")
+                    ts = _as_utc_timestamp(child)
                     if ts > event_time:
                         violations.append((child_path, ts.isoformat()))
                 except (TypeError, ValueError):
@@ -98,9 +96,7 @@ def main() -> int:
         # verificar hash contra lo que el factory escribió por dataset
         # (el factory no guarda by_dataset en este manifest mínimo; recalculamos y comparamos con dataset_sha256 de filas)
         for i, r in enumerate(rows):
-            event_time = pd.Timestamp(r["event_time"])
-            if event_time.tzinfo is None:
-                event_time = event_time.tz_localize("UTC")
+            event_time = _as_utc_timestamp(r["event_time"])
             if _block_of(event_time) != r["split"]:
                 errs += _err(f"{did} fila {i}: event_time fuera de split")
             if event_time + pd.Timedelta(hours=48) > _block_end(r["split"]):

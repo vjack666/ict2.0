@@ -35,7 +35,7 @@ from audits.codigo.mtf_seq_funnel import _load_tf
 from scripts.lab.experiments.exp_seq_ctx_01_dataset import (
     _check_gates, _commit, _source_hashes, _canonical_rows_hash,
     _worktree_dirty, _bias_name, _direction_sign, h1_alignment, context_bucket,
-    CONTRACT_VERSION, GATE_CAUSAL, GATE_TNA,
+    _as_utc_timestamp, CONTRACT_VERSION, GATE_CAUSAL, GATE_TNA,
 )
 
 # --- Universo pre-registrado (congelado) ---
@@ -67,8 +67,9 @@ PROVENANCE_FILES = (
 
 
 def _block_of(t: pd.Timestamp) -> str:
+    t = _as_utc_timestamp(t)
     for name, a, b in BLOCKS:
-        if pd.Timestamp(a, tz="UTC") <= t <= pd.Timestamp(b, tz="UTC"):
+        if _as_utc_timestamp(a) <= t <= _as_utc_timestamp(b):
             return name
     return "OUT"
 
@@ -76,7 +77,7 @@ def _block_of(t: pd.Timestamp) -> str:
 def _block_end(name: str) -> pd.Timestamp:
     for n, a, b in BLOCKS:
         if n == name:
-            return pd.Timestamp(b, tz="UTC")
+            return _as_utc_timestamp(b)
     raise KeyError(name)
 
 
@@ -92,7 +93,7 @@ def _load_frames(symbol: str) -> dict[str, pd.DataFrame]:
         # PIT necesita D1/H4 desde 2020-01-02. Recortar H1 a >=2020-01-01 es
         # seguro: barras anteriores a 2021 nunca son HOLDOUT y no se navegan.
         if symbol not in SYMS_WITH_FULL_CONTEXT and tf == "H1":
-            df = df[df["time"] >= pd.Timestamp("2020-01-01", tz="UTC")].reset_index(drop=True)
+            df = df[df["time"] >= _as_utc_timestamp("2020-01-01")].reset_index(drop=True)
         frames[tf] = df
     return frames
 

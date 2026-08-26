@@ -16,7 +16,7 @@ import pandas as pd
 import pytest
 
 from scripts.lab.experiments.exp_seq_ctx_01_dataset import (
-    context_bucket, h1_alignment, _block_of, _block_end,
+    context_bucket, h1_alignment, _as_utc_timestamp, _block_of, _block_end,
 )
 from scripts.lab.experiments import exp_seq_ctx_01_oos_expansion as OOS
 from scripts.lab.experiments.validate_oos_expansion import _future_feature_timestamps
@@ -116,3 +116,16 @@ def test_past_feature_timestamp_allowed():
     event_time = pd.Timestamp("2023-01-02", tz="UTC")
     features = {"context": {"confirmation_time": "2023-01-01T00:00:00+00:00"}}
     assert _future_feature_timestamps(features, event_time) == []
+
+
+# --- 7. Compatibilidad pandas 3.x / timestamps con y sin zona ---
+def test_timestamp_normalizer_accepts_naive_and_aware_values():
+    naive = _as_utc_timestamp("2025-01-01 00:00:00")
+    aware = _as_utc_timestamp("2024-12-31 19:00:00-05:00")
+    assert naive == aware
+    assert str(naive.tz) == "UTC"
+
+
+def test_block_boundaries_accept_aware_timestamp():
+    event_time = pd.Timestamp("2025-12-30 19:00:00", tz="America/New_York")
+    assert _block_of(event_time) == "HOLDOUT"

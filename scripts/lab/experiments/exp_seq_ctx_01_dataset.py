@@ -79,6 +79,18 @@ PROVENANCE_FILES = (
 )
 
 
+def _as_utc_timestamp(value) -> pd.Timestamp:
+    """Normaliza valores naive o tz-aware a un Timestamp UTC.
+
+    Se evita ``pd.Timestamp(value, tz="UTC")`` porque pandas 3.x rechaza
+    explícitamente combinar ``tz=`` con valores que ya incluyen zona horaria.
+    """
+    stamp = pd.Timestamp(value)
+    if stamp.tzinfo is None:
+        return stamp.tz_localize("UTC")
+    return stamp.tz_convert("UTC")
+
+
 def _commit() -> str:
     try:
         return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT,
@@ -243,8 +255,9 @@ def _label(h1, bar_k, horizon, rng_lo, rng_hi) -> str:
 
 
 def _block_of(t: pd.Timestamp) -> str:
+    t = _as_utc_timestamp(t)
     for name, a, b in BLOCKS:
-        if pd.Timestamp(a, tz="UTC") <= t <= pd.Timestamp(b, tz="UTC"):
+        if _as_utc_timestamp(a) <= t <= _as_utc_timestamp(b):
             return name
     return "OUT"
 
@@ -252,7 +265,7 @@ def _block_of(t: pd.Timestamp) -> str:
 def _block_end(name: str) -> pd.Timestamp:
     for n, a, b in BLOCKS:
         if n == name:
-            return pd.Timestamp(b, tz="UTC")
+            return _as_utc_timestamp(b)
     raise KeyError(name)
 
 

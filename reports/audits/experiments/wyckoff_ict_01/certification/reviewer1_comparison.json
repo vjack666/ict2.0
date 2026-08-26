@@ -3,10 +3,19 @@
   "regen_generator_commit": "e9c9be9ec753e52b95a0407309775518350a288d",
   "audit_generator_commit": "e9c9be9ec753e52b95a0407309775518350a288d",
   "regen_worktree_state": "CLEAN",
+  "audit_worktree_state": "DIRTY",
   "counts_identical": true,
+  "metadata_identical": false,
+  "metadata_diffs": {
+    "generator_worktree": {
+      "regen": "CLEAN",
+      "audit": "DIRTY"
+    }
+  },
+  "provenance_ok": false,
   "n_differing_fields": 0,
   "diffs": {},
   "H1_total_regen": 515,
   "H1_total_audit": 515,
-  "verdict": "CERTIFIED_FEASIBILITY_FAIL_INSUFFICIENT_N"
+  "verdict": "COUNTS_REPRODUCED_PROVENANCE_MISMATCH"
 }

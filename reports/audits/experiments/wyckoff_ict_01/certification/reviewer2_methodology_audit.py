@@ -1,4 +1,4 @@
-"""REVIEWSER 2 — Auditoria de METODOLOGIA (independiente).
+"""REVIEWER 2 — Auditoria de METODOLOGIA (independiente).
 
 Verifica 6 puntos exigidos en la ORDEN CEO sobre el generador commiteado en e9c9be9
 (scripts/lab/experiments/wyckoff_feasibility_counts.py) y las funciones reusadas de
@@ -8,15 +8,16 @@ commiteado en cdf45f1 (reports/audits/experiments/wyckoff_ict_01/feasibility_cou
 No corre backtests ni el pipeline pesado. Relee el codigo y valida contra el contrato
 y el prerregistro. Emite VEREDICTO por punto.
 
-Salida: .hermes-cert/reviewer2_methodology_audit.json
+Salida: reviewer2_methodology_audit.json junto a este script.
 """
 from __future__ import annotations
-import json, sys
+import json, sys, subprocess
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]  # raiz del repo (.. desde .hermes-cert)
-PY = sys.executable
-import subprocess
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO = Path(subprocess.check_output(
+    ["git", "rev-parse", "--show-toplevel"], cwd=SCRIPT_DIR, text=True
+).strip())
 
 # Ejecuta el generador en un worktree limpio para INSPECCIONAR el fuente, no para re-correr.
 GEN_COMMIT = "e9c9be9"
@@ -100,7 +101,7 @@ report = {
     "verdicts": verdicts,
     "overall": overall,
 }
-out = REPO / ".hermes-cert" / "reviewer2_methodology_audit.json"
+out = SCRIPT_DIR / "reviewer2_methodology_audit.json"
 out.write_text(json.dumps(report, indent=2, ensure_ascii=False))
 print(json.dumps(report, indent=2, ensure_ascii=False))
 print(f"\nREVIEWER 2 OVERALL: {overall}")

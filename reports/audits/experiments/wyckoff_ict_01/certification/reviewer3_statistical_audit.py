@@ -1,4 +1,4 @@
-"""REVIEWSER 3 — Auditoria ESTADISTICA (independiente).
+"""REVIEWER 3 — Auditoria ESTADISTICA (independiente).
 
 Confirma 3 puntos de la ORDEN CEO sobre el JSON auditable en cdf45f1
 (reports/audits/experiments/wyckoff_ict_01/feasibility_counts_v2.json):
@@ -12,14 +12,17 @@ Confirma 3 puntos de la ORDEN CEO sobre el JSON auditable en cdf45f1
        celdas a 389 cada una, cualquiera sea la redistribucion. Ademas, cada
        celda primaria individual ya esta muy por debajo de 389.
 
-Salida: .hermes-cert/reviewer3_statistical_audit.json
+Salida: reviewer3_statistical_audit.json junto a este script.
 """
 from __future__ import annotations
-import json, math, sys
+import json, math, subprocess, sys
 from pathlib import Path
 from scipy.stats import norm
 
-REPO = Path(__file__).resolve().parents[1]
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO = Path(subprocess.check_output(
+    ["git", "rev-parse", "--show-toplevel"], cwd=SCRIPT_DIR, text=True
+).strip())
 AUDITED_JSON = REPO / "reports" / "audits" / "experiments" / "wyckoff_ict_01" / "feasibility_counts_v2.json"
 
 j = json.loads(AUDITED_JSON.read_text(encoding="utf-8"))
@@ -96,7 +99,7 @@ r["R3.3"] = {
 overall = "PASS" if (r["R3.1"]["match"] and r["R3.2"]["H1_lt_778"] and r["R3.3"]["invariant_to_redistribution"]) else "FAIL"
 r["overall"] = overall
 
-out = REPO / ".hermes-cert" / "reviewer3_statistical_audit.json"
+out = SCRIPT_DIR / "reviewer3_statistical_audit.json"
 out.write_text(json.dumps(r, indent=2, ensure_ascii=False))
 print(json.dumps(r, indent=2, ensure_ascii=False))
 print(f"\nREVIEWER 3 OVERALL: {overall}")

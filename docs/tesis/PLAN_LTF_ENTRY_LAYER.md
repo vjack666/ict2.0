@@ -441,3 +441,39 @@ no demuestra edge, PnL, rentabilidad, entrenamiento, ejecución ni promoción.
 3. Auditar FULL/PREFIX, timestamps, invalidaciones, volumen/OI e independencia.
 4. Emitir `PASS`, `REVIEW` o `BLOCKED` con `evidence_refs`.
 5. Mantener experimento y entrenamiento pendientes de autorización y gates separados.
+
+## 13. Siguiente fase — integración ICT/Wyckoff sobre el motor existente
+
+La siguiente fase no crea un motor Wyckoff independiente. Completa el módulo
+`engine/Wyckoff` existente y parte de los contratos ICT/AHF ya construidos.
+
+```text
+AHF / Context State (autoridad única)
+        ↓
+Swing → BOS/CHOCH → Liquidez → FVG/OB → Sequence → lineage
+        ↓
+engine/Wyckoff (evaluador especializado de rango/fase/eventos)
+        ↓
+WyckoffEvidence integrada en el snapshot ICT
+```
+
+El evaluador Wyckoff consume snapshots y referencias de los módulos ICT; no
+recalcula ni reemplaza Swing, BOS/CHOCH, liquidez, FVG/OB, Sequence o AHF.
+Devuelve evidencia separada —fase, eventos, rango, volumen/OI y alineación—
+sin modificar `direction_hint`, estados AHF, zonas canónicas ni autorización
+de entrada.
+
+Orden de trabajo:
+
+1. Congelar las interfaces ICT/AHF existentes e inventariar sus referencias.
+2. Completar el contrato de entrada read-only del evaluador Wyckoff.
+3. Añadir eventos y transiciones faltantes dentro de `engine/Wyckoff`.
+4. Unir evidencia ICT/Wyckoff mediante `source_ref`, `evidence_refs` y
+   timestamps PIT, sin duplicar autoridad.
+5. Ejecutar fixtures sintéticos de rango, secuencia, solapamiento y
+   `FULL/PREFIX` antes de cualquier experimento.
+6. Auditar la integración de forma independiente.
+
+La falta de CME `6E`/OI mantiene bloqueados la certificación de datos y
+`EXP-WYCKOFF-CANONICAL-02`; la implementación técnica no autoriza por sí sola
+entrenamiento, backtest, promoción ni órdenes.

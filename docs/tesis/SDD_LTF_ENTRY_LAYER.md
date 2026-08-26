@@ -602,3 +602,42 @@ manifest, evaluador, eventos y hashes.
 Este PASS certifica documentación, trazabilidad y reproducibilidad del
 artefacto; no demuestra edge, PnL, rentabilidad, entrenamiento, ejecución ni
 promoción.
+
+## 21. Integración con módulos ICT existentes — siguiente fase
+
+La implementación parte del motor ICT/AHF y del módulo `engine/Wyckoff` ya
+existentes. No se crea otro motor, otra AHF ni otra autoridad de decisión.
+
+```text
+AHF / Context State
+   ↓
+Swing → BOS/CHOCH → liquidez → FVG/OB → Sequence → lineage
+   ↓
+engine/Wyckoff: evaluador especializado de rango, fase y eventos
+   ↓
+WyckoffEvidence dentro del snapshot ICT
+```
+
+El evaluador recibe referencias read-only a `Context State`, navegación MTF,
+POI/MarketObject, Sequence, lineage y prefijos OHLC. Puede usar esas
+referencias para contextualizar `Spring`, `Test`, `SOS`, `UTAD`, `SOW`, `LPS`
+y `LPSY`, pero no vuelve a detectar ni sustituye los conceptos ICT. La salida
+debe conservar referencias ICT y Wyckoff separadas, con sus propios tiempos,
+y limitarse a evidencia:
+
+```text
+WyckoffEvidence = phase + events + range + volume/OI + ict_alignment + refs
+```
+
+No permitido en la integración:
+
+- crear una segunda FSM jerárquica o duplicar AHF;
+- cambiar `direction_hint`, Context State, POI, Sequence o zonas canónicas;
+- transformar confluencia Wyckoff/ICT en `entry_authorized=True`;
+- leer futuro o rellenar evidencia ausente;
+- ejecutar experimentos para decidir la arquitectura.
+
+El gate de integración exige interfaces congeladas, fixtures sintéticos de
+rangos/secuencias/solapamientos, lineage resoluble, `snapshot_at(FULL,t) ==
+snapshot_at(PREFIX,t)` y auditoría independiente. CME `6E`/OI sigue siendo un
+requisito de datos separado y no reemplaza ningún módulo ICT.

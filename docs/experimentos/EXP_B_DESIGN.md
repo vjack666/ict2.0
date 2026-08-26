@@ -1,8 +1,10 @@
 # EXP_B_DESIGN.md — Pre-registro del grupo B (incrementalidad HTF) y lote D
 
 **Fecha de pre-registro:** 2026-08-21 19:46 UTC (congelado ANTES de cualquier ejecución de B)
-**Estado:** PRE-REGISTRADO / NO EJECUTADO
+**Estado:** EJECUTADO (B1–B5 corrieron bajo `reconcile/tna-canonical-sci`); ver cierres en `.hermes-index.md` y worklogs 2026-08-21/2026-08-22
 **Autor del registro:** ox-alpha (reconstrucción autorizada por Ruben tras verificar que el diseño original nunca fue persistido a disco)
+
+> **Nota de reconciliación 2026-08-25 (preflight EXP-WYCKOFF-ICT-01):** los experimentos B1–B5 del grupo B **ya fueron ejecutados**. En particular **B2 (Valor incremental del filtro HTF) = `FAIL_INCREMENTAL`** — el Context State HTF no aportó incremento significativo sobre el baseline incondicional bajo los gates mecánicos. Por taxonomía, este `B2` es distinto de `EXP-WYCKOFF-ICT-01`; el experimento Wyckoff **nunca** debe denominarse "B2".
 
 ---
 

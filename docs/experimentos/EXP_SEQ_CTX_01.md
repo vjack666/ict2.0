@@ -1,7 +1,8 @@
 # EXP-SEQ-CTX-01 — SEQUENCE × CONTEXT STATE (H1 20Y)
 
 **Fecha:** 2026-08-23
-**Estado:** EN EJECUCIÓN (gate causal previo a matriz)
+**Estado:** CERRADO — CIERRE CIENTÍFICO NEGATIVO (`OOS_EXPANSION_EXHAUSTED_NO_SUFFICIENT_EVIDENCE`)
+**Cierre:** 2026-08-25 (ver worklog `2026-08-25_CIERRE_EXP_SEQ_CTX_01_Y_PREREG_WYCKOFF_ICT.md`)
 **Motor:** `engine-seq-v2-causal` (PIT `_build_eq_pools`) ya mergeado en `feature/a5-audit-datos`
 **Autoría:** Ruben (objetivo) → Hermes (ejecución) bajo `AGENTS.md` / `autonomy_policy.md`
 **Línea de comando (100% local, Python sistema, sin servicio remoto):**

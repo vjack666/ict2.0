@@ -102,3 +102,12 @@ Una tarea autorizada no se cierra solo con una respuesta textual. Después de ve
 >
 > Quien propone (Investigador) ≠ quien construye (Ingeniero) ≠ quien audita (Auditor)
 > ≠ quien archiva (Memoria) ≠ quien aprueba (Director). El protocolo garantiza el orden.
+
+## Regla de ejecución vigente
+
+`LOCAL_ONLY` es el único modo de ejecución autorizado. Tests, auditorías,
+funnels, experimentos, backtests, descargas y entrenamiento se ejecutan desde
+el checkout operativo local. No existe destino externo de ejecución y no se
+usa `workflow run`, `workflow_dispatch`, runner, CI o cloud. Las referencias a
+esas rutas en bitácoras antiguas son únicamente evidencia histórica y no
+autorizan repetición.

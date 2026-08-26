@@ -6,6 +6,10 @@ cuáles faltan, y quién las ejecuta localmente. Fuente de verdad: `reports/audi
 
 **Actualizado:** 2026-08-19
 
+**Clasificación vigente:** este documento conserva resultados anteriores. Toda
+referencia a ejecuciones fuera del checkout es `EVIDENCIA HISTÓRICA — NO
+OPERATIVA`; desde 2026-08-26 el único modo válido es `LOCAL_ONLY`.
+
 ---
 
 ## 1. YA CORRIDAS Y VERSIONADAS (no repetir)
@@ -35,7 +39,7 @@ cuáles faltan, y quién las ejecuta localmente. Fuente de verdad: `reports/audi
 | --- | --- | --- |
 | **A0-07** Ruta raw vs loader | OPEN | Edición de código, liviano |
 | **A0-08** OTE residual | OPEN | grep + parche, liviano (OTE prohibido) |
-| **AUDIT-CI-01** Automatización remota | DESACTIVADO | GitHub Actions `enabled=false`; validar localmente |
+| **AUDIT-CI-01** Automatización externa histórica | RETIRADA | GitHub Actions `enabled=false`; validar exclusivamente en el checkout local |
 
 ---
 
@@ -52,7 +56,7 @@ cuáles faltan, y quién las ejecuta localmente. Fuente de verdad: `reports/audi
 ## 4. División de ejecución (vigente)
 
 - **Local (Hermes/Codex):** A0-07, A0-08, gates, smoke tests, auditorías, commits y trabajos autorizados.
-- **Sin host remoto:** si el PC no puede completar una tarea, el estado es `WAITING/BLOCKED`; no se migra automáticamente.
+- **Sin destino externo:** si el PC no puede completar una tarea, el estado es `WAITING/BLOCKED`; no se migra automáticamente.
 - Ver `docs/EXECUTION_STRATEGY.md` para el procedimiento local.
 
 ---
@@ -61,6 +65,6 @@ cuáles faltan, y quién las ejecuta localmente. Fuente de verdad: `reports/audi
 
 - El benchmark hoy probó que el AHF (`run_timeline`) es **single-threaded por barra**
   → la carga se ejecuta en el equipo local; si no termina, queda `WAITING/BLOCKED`.
-- Los hosts remotos de ejecución están retirados.
+- Los destinos externos de ejecución están retirados; `workflow run`, `workflow_dispatch`, runner y cloud no forman parte del modelo vigente.
 - Orden de cuellos: BOS PIT (HECHO) → TNA 20Y local → validar navegación →
   Funnel 20Y local → SEQUENCE×CONTEXT → BACKTEST local autorizado.

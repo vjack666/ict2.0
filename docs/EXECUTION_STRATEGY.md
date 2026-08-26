@@ -1,7 +1,7 @@
 # Estrategia de ejecución — ICT 2.0
 
 **Decisión:** 2026-08-25
-**Estado:** VIGENTE — LOCAL ONLY
+**Estado:** VIGENTE — LOCAL ONLY / SIN DESTINO EXTERNO
 **Responsable:** Hermes/Codex desde el checkout operativo
 
 ## 1. Regla general
@@ -13,13 +13,19 @@ jobs de laboratorio y scripts de terminal se ejecutan exclusivamente desde:
 C:\Users\v_jac\Desktop\ICT SYSTEM
 ```
 
-El repositorio remoto queda limitado a código, historial, revisión y publicación
-autorizada. No se usa ningún servicio remoto como host de ejecución.
+GitHub queda limitado a almacenamiento de código, historial, revisión y
+publicación autorizada. No existe un destino externo de ejecución dentro del
+modelo operativo vigente.
 
-GitHub Actions está desactivado para `vjack666/ict2.0` (`enabled=false`). GitHub
-se usa como almacenamiento, ramas, commits y PR; no como ejecutor de tests,
-funnels, auditorías o experimentos. La verificación vigente es la API de
-permisos del repositorio, no la ausencia de archivos workflow.
+GitHub Actions está desactivado para `vjack666/ict2.0` (`enabled=false`). No se
+usa `workflow run`, `workflow_dispatch`, runner ni servicio de CI para tests,
+funnels, auditorías o experimentos. La existencia histórica de workflows no
+constituye una ruta de ejecución vigente.
+
+**Regla terminológica:** `LOCAL_ONLY` es el único modo operativo válido.
+`REMOTE_EXECUTION`, `CLOUD_EXECUTION`, `WORKFLOW_RUN` y `EXTERNAL_RUNNER` no
+son estados, destinos ni acciones permitidas. Esas expresiones solo pueden
+aparecer en documentos históricos para describir hechos pasados.
 
 Los worktrees temporales nuevos deben crearse dentro de:
 
@@ -80,6 +86,6 @@ esperar una decisión del usuario.
 
 ## 6. Historial
 
-Los reportes que mencionan hosts remotos documentan ejecuciones pasadas. No son
-procedimientos vigentes, no autorizan repetir esas corridas y no deben usarse como
-destino de ejecución.
+Los reportes que mencionan ejecuciones fuera del checkout documentan hechos
+pasados. No son procedimientos vigentes, no autorizan repetir esas corridas y
+no deben usarse como destino de ejecución.

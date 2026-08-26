@@ -4,7 +4,7 @@
 **Agente:** Codex, CEO operativo
 **Departamento:** CTO / ingeniería + CRO / assurance
 **Tarea:** Robustecer la fábrica y validadores OOS frente a timestamps naive y tz-aware bajo pandas 3.x.
-**Status:** `COMPLETED` — commit local selectivo; push no realizado.
+**Status:** `COMPLETED` — commit local selectivo y push realizado a rama de revisión.
 
 ## Objetivo y alcance
 
@@ -40,10 +40,10 @@ fixture y se repitió toda la validación con resultado 23/23.
   desbloquea `FEASIBILITY_FAIL_INSUFFICIENT_N`.
 - La fábrica y la ampliación OOS deben regenerarse solo bajo autorización
   científica posterior; este cierre no certifica nuevos conteos.
-- Push bloqueado hasta auditoría independiente e instrucción explícita.
+- Push ejecutado tras la autorización explícita del usuario; la rama aún requiere revisión antes de cualquier promoción.
 
 ## Siguiente acción
 
-Auditar el commit selectivo. Si se aprueba, publicar únicamente esta rama de
-revisión; después decidir por separado el siguiente experimento y su permiso de
-ejecución.
+Auditar la rama publicada `codex/pandas3-exp-seq-ctx-20260826`. No mezclarla
+con `main`; después decidir por separado el siguiente experimento y su permiso
+de ejecución.

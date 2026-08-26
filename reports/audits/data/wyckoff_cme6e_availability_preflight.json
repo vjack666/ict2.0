@@ -1,0 +1,343 @@
+{
+  "schema_version": "1.0",
+  "preflight": "WYCKOFF-8",
+  "mode": "AUDIT_ONLY",
+  "status": "BLOCKED",
+  "generated_at": "2026-08-26T17:49:59.074180+00:00",
+  "checks": {
+    "CME_6E_LOCAL_SOURCE": {
+      "status": "BLOCKED",
+      "found": [],
+      "candidates": [
+        {
+          "path": "data/raw/CME/6E",
+          "exists": false
+        },
+        {
+          "path": "data/raw/CME/6E.csv",
+          "exists": false
+        },
+        {
+          "path": "data/raw/CME/6E.parquet",
+          "exists": false
+        },
+        {
+          "path": "data/raw/6E",
+          "exists": false
+        },
+        {
+          "path": "data/raw/6E.csv",
+          "exists": false
+        },
+        {
+          "path": "datasets/cme_6e",
+          "exists": false
+        },
+        {
+          "path": "datasets/cme_6e.csv",
+          "exists": false
+        },
+        {
+          "path": "datasets/6E.parquet",
+          "exists": false
+        }
+      ],
+      "reason": "No local CME 6E source; no substitution inferred."
+    },
+    "OPEN_INTEREST_LOCAL_SOURCE": {
+      "status": "BLOCKED",
+      "found": [],
+      "reason": "No local open-interest source."
+    },
+    "EURUSD_LOCAL_SOURCE": {
+      "status": "PASS",
+      "found": [
+        "data/learning/bos/EURUSD_M5_2006-01.jsonl",
+        "data/learning/bos/EURUSD_M5_2020-01.jsonl",
+        "data/learning/bos/EURUSD_M5_2022-01.jsonl",
+        "data/learning/bos/EURUSD_M5_2022-04.jsonl",
+        "data/learning/bos/EURUSD_M5_2022-07.jsonl",
+        "data/learning/bos/EURUSD_M5_2022-10.jsonl",
+        "data/learning/bos/EURUSD_M5_2023-01.jsonl",
+        "data/learning/bos/EURUSD_M5_2023-06.jsonl",
+        "data/learning/bos/EURUSD_M5_2023-07.jsonl",
+        "data/learning/bos/EURUSD_M5_2023-09.jsonl",
+        "data/learning/bos/EURUSD_M5_2024-01.jsonl",
+        "data/learning/bos/EURUSD_M5_2024-04.jsonl",
+        "data/learning/bos/EURUSD_M5_2024-07.jsonl",
+        "data/learning/bos/EURUSD_M5_2024-10.jsonl",
+        "data/learning/bos/EURUSD_M5_2024-12.jsonl",
+        "data/learning/bos/EURUSD_M5_2025-01.jsonl",
+        "data/learning/bos/EURUSD_M5_2025-05.jsonl",
+        "data/learning/bos/EURUSD_M5_2025-08.jsonl",
+        "data/learning/bos/EURUSD_M5_2025-11.jsonl",
+        "data/learning/bos/EURUSD_M5_2026-02.jsonl",
+        "data/learning/bos/EURUSD_M5_2026-06.jsonl",
+        "data/learning/bos/EURUSD_M5_2026-07.jsonl",
+        "data/learning/bos/EURUSD_M5_2026-08.jsonl",
+        "data/learning/choch/EURUSD/D1/features.jsonl",
+        "data/learning/choch/EURUSD/H1/features.jsonl",
+        "data/learning/choch/EURUSD/H4/features.jsonl",
+        "data/learning/choch/EURUSD/M5/features.jsonl",
+        "data/learning/choch/EURUSD_M5_2006-01.jsonl",
+        "data/learning/choch/EURUSD_M5_2020-01.jsonl",
+        "data/learning/choch/EURUSD_M5_2022-01.jsonl",
+        "data/learning/choch/EURUSD_M5_2022-04.jsonl",
+        "data/learning/choch/EURUSD_M5_2022-07.jsonl",
+        "data/learning/choch/EURUSD_M5_2022-10.jsonl",
+        "data/learning/choch/EURUSD_M5_2023-01.jsonl",
+        "data/learning/choch/EURUSD_M5_2023-06.jsonl",
+        "data/learning/choch/EURUSD_M5_2023-07.jsonl",
+        "data/learning/choch/EURUSD_M5_2023-09.jsonl",
+        "data/learning/choch/EURUSD_M5_2024-01.jsonl",
+        "data/learning/choch/EURUSD_M5_2024-04.jsonl",
+        "data/learning/choch/EURUSD_M5_2024-07.jsonl",
+        "data/learning/choch/EURUSD_M5_2024-10.jsonl",
+        "data/learning/choch/EURUSD_M5_2025-01.jsonl",
+        "data/learning/choch/EURUSD_M5_2025-05.jsonl",
+        "data/learning/choch/EURUSD_M5_2025-08.jsonl",
+        "data/learning/choch/EURUSD_M5_2025-11.jsonl",
+        "data/learning/choch/EURUSD_M5_2026-02.jsonl",
+        "data/learning/choch/EURUSD_M5_2026-06.jsonl",
+        "data/learning/choch/EURUSD_M5_2026-07.jsonl",
+        "data/learning/choch/EURUSD_M5_2026-08.jsonl",
+        "data/learning/swing/EURUSD_D1_2020-01.jsonl",
+        "data/learning/swing/EURUSD_D1_2023-07.jsonl",
+        "data/learning/swing/EURUSD_D1_2026-08.jsonl",
+        "data/learning/swing/EURUSD_H1_2006-01.jsonl",
+        "data/learning/swing/EURUSD_H1_2026-06.jsonl",
+        "data/learning/swing/EURUSD_H1_2026-08.jsonl",
+        "data/learning/swing/EURUSD_H4_2020-01.jsonl",
+        "data/learning/swing/EURUSD_H4_2026-02.jsonl",
+        "data/learning/swing/EURUSD_H4_2026-08.jsonl",
+        "data/learning/swing/EURUSD_M5_2020-01.jsonl",
+        "data/learning/swing/EURUSD_M5_2022-01.jsonl",
+        "data/learning/swing/EURUSD_M5_2022-04.jsonl",
+        "data/learning/swing/EURUSD_M5_2022-07.jsonl",
+        "data/learning/swing/EURUSD_M5_2022-10.jsonl",
+        "data/learning/swing/EURUSD_M5_2023-01.jsonl",
+        "data/learning/swing/EURUSD_M5_2023-06.jsonl",
+        "data/learning/swing/EURUSD_M5_2023-07.jsonl",
+        "data/learning/swing/EURUSD_M5_2023-09.jsonl",
+        "data/learning/swing/EURUSD_M5_2024-01.jsonl",
+        "data/learning/swing/EURUSD_M5_2024-04.jsonl",
+        "data/learning/swing/EURUSD_M5_2024-07.jsonl",
+        "data/learning/swing/EURUSD_M5_2024-10.jsonl",
+        "data/learning/swing/EURUSD_M5_2024-12.jsonl",
+        "data/learning/swing/EURUSD_M5_2025-01.jsonl",
+        "data/learning/swing/EURUSD_M5_2025-05.jsonl",
+        "data/learning/swing/EURUSD_M5_2025-08.jsonl",
+        "data/learning/swing/EURUSD_M5_2025-11.jsonl",
+        "data/learning/swing/EURUSD_M5_2026-02.jsonl",
+        "data/learning/swing/EURUSD_M5_2026-06.jsonl",
+        "data/learning/swing/EURUSD_M5_2026-07.jsonl",
+        "data/learning/swing/EURUSD_M5_2026-08.jsonl",
+        "data/learning/swing/EURUSD_swing_summary_2026-08.json",
+        "data/ml/v2_EURUSD.parquet",
+        "data/ml/v3_EURUSD.parquet",
+        "data/ml/v4_EURUSD.parquet",
+        "data/ml/v4_EURUSD_2023_2024.parquet",
+        "data/raw/EURUSD/EURUSD_D1.parquet",
+        "data/raw/EURUSD/EURUSD_H1.parquet",
+        "data/raw/EURUSD/EURUSD_H4.parquet",
+        "data/raw/EURUSD/EURUSD_M1.parquet",
+        "data/raw/EURUSD/EURUSD_M15.parquet",
+        "data/raw/EURUSD/EURUSD_M3.parquet",
+        "data/raw/EURUSD/EURUSD_M5.parquet",
+        "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+        "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+        "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+        "datasets/eurusd_dukascopy_20y/metadata.json",
+        "datasets/eurusd_dukascopy_20y/README.md",
+        "datasets/eurusd_dukascopy_20y/SHA256SUMS"
+      ]
+    },
+    "EURUSD_SCHEMAS": {
+      "status": "PASS",
+      "items": [
+        {
+          "path": "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+          "status": "PASS",
+          "columns": [
+            "time",
+            "open",
+            "high",
+            "low",
+            "close"
+          ],
+          "fields": {
+            "timestamp": true,
+            "open": true,
+            "high": true,
+            "low": true,
+            "close": true,
+            "volume": false,
+            "open_interest": false
+          }
+        },
+        {
+          "path": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+          "status": "PASS",
+          "columns": [
+            "time",
+            "open",
+            "high",
+            "low",
+            "close"
+          ],
+          "fields": {
+            "timestamp": true,
+            "open": true,
+            "high": true,
+            "low": true,
+            "close": true,
+            "volume": false,
+            "open_interest": false
+          }
+        },
+        {
+          "path": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+          "status": "PASS",
+          "columns": [
+            "time",
+            "open",
+            "high",
+            "low",
+            "close"
+          ],
+          "fields": {
+            "timestamp": true,
+            "open": true,
+            "high": true,
+            "low": true,
+            "close": true,
+            "volume": false,
+            "open_interest": false
+          }
+        }
+      ]
+    },
+    "DUKASCOPY_HASHES": {
+      "status": "REVIEW",
+      "reason": "Dukascopy evidence is incomplete or inconsistent.",
+      "files": [
+        {
+          "path": "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+          "sha256_actual": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+          "sha256_manifest": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+          "sha256_match": false,
+          "metadata_present": true
+        },
+        {
+          "path": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+          "sha256_actual": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+          "sha256_manifest": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+          "sha256_match": false,
+          "metadata_present": true
+        },
+        {
+          "path": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+          "sha256_actual": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+          "sha256_manifest": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+          "sha256_match": false,
+          "metadata_present": true
+        }
+      ],
+      "scope_note": "EURUSD spot bid OHLC is not a CME 6E/OI substitute."
+    },
+    "MARKET_DATA_CONTRACT": {
+      "status": "PASS",
+      "rules": {
+        "timezone": true,
+        "sessions": true,
+        "rollover": true,
+        "join_pit": true,
+        "volume_oi": true
+      },
+      "paths": [
+        "docs/tesis/SDD_LTF_ENTRY_LAYER.md",
+        "docs/tesis/PLAN_LTF_ENTRY_LAYER.md",
+        ".codex/skills/market-data-provenance/SKILL.md"
+      ]
+    },
+    "WORKTREE_STATE": {
+      "status": "BLOCKED",
+      "branch": "codex/audit-hermes-cert-20260826",
+      "commit": "ecfb1941cf7f046302812570c618f58c5d62c704",
+      "changed_paths": [
+        "hermes-index.md",
+        "data/raw/EURUSD/EURUSD_M1.parquet",
+        "data/raw/EURUSD/EURUSD_M5.parquet",
+        "docs/tesis/PLAN_LTF_ENTRY_LAYER.md",
+        "docs/tesis/SDD_LTF_ENTRY_LAYER.md",
+        "reports/charts/EURUSD_D1_tradingview.png",
+        "reports/charts/EURUSD_H1_tradingview.png",
+        "reports/charts/EURUSD_H4_tradingview.png",
+        "reports/charts/EURUSD_M15_tradingview.png",
+        ".codex/hooks.json",
+        ".codex/skills/graphify/.graphify_version",
+        ".codex/skills/graphify/SKILL.md",
+        ".codex/skills/graphify/references/add-watch.md",
+        ".codex/skills/graphify/references/exports.md",
+        ".codex/skills/graphify/references/extraction-spec.md",
+        ".codex/skills/graphify/references/github-and-merge.md",
+        ".codex/skills/graphify/references/hooks.md",
+        ".codex/skills/graphify/references/query.md",
+        ".codex/skills/graphify/references/transcribe.md",
+        ".codex/skills/graphify/references/update.md",
+        ".hermes-worklog/2026-08-26_WYCKOFF_7_8_PREFLIGHT.md",
+        "docs/briefs/brief_2026-08-25.md",
+        "docs/briefs/brief_2026-08-25.txt",
+        "docs/briefs/brief_2026-08-26.md",
+        "docs/briefs/brief_2026-08-26.txt",
+        "reports/audits/data/wyckoff_cme6e_availability_preflight.json",
+        "reports/audits/experiments/wyckoff_ict_01/r3_statistical_audit.json",
+        "scripts/audit/wyckoff_cme6e_availability_preflight.py"
+      ],
+      "unexpected_paths": [
+        ".codex/hooks.json",
+        ".codex/skills/graphify/.graphify_version",
+        ".codex/skills/graphify/SKILL.md",
+        ".codex/skills/graphify/references/add-watch.md",
+        ".codex/skills/graphify/references/exports.md",
+        ".codex/skills/graphify/references/extraction-spec.md",
+        ".codex/skills/graphify/references/github-and-merge.md",
+        ".codex/skills/graphify/references/hooks.md",
+        ".codex/skills/graphify/references/query.md",
+        ".codex/skills/graphify/references/transcribe.md",
+        ".codex/skills/graphify/references/update.md",
+        ".hermes-worklog/2026-08-26_WYCKOFF_7_8_PREFLIGHT.md",
+        "data/raw/EURUSD/EURUSD_M1.parquet",
+        "data/raw/EURUSD/EURUSD_M5.parquet",
+        "docs/briefs/brief_2026-08-25.md",
+        "docs/briefs/brief_2026-08-25.txt",
+        "docs/briefs/brief_2026-08-26.md",
+        "docs/briefs/brief_2026-08-26.txt",
+        "docs/tesis/PLAN_LTF_ENTRY_LAYER.md",
+        "docs/tesis/SDD_LTF_ENTRY_LAYER.md",
+        "hermes-index.md",
+        "reports/audits/experiments/wyckoff_ict_01/r3_statistical_audit.json",
+        "reports/charts/EURUSD_D1_tradingview.png",
+        "reports/charts/EURUSD_H1_tradingview.png",
+        "reports/charts/EURUSD_H4_tradingview.png",
+        "reports/charts/EURUSD_M15_tradingview.png"
+      ],
+      "allowlist": [
+        "reports/audits/data/wyckoff_cme6e_availability_preflight.json",
+        "scripts/audit/wyckoff_cme6e_availability_preflight.py"
+      ]
+    }
+  },
+  "blocking_checks": [
+    "CME_6E_LOCAL_SOURCE",
+    "OPEN_INTEREST_LOCAL_SOURCE",
+    "WORKTREE_STATE"
+  ],
+  "not_run": [
+    "download_or_network_access",
+    "paid_api",
+    "experiment_backtest_training",
+    "data_mutation"
+  ],
+  "next_action": "Register CME 6E OHLCV/OI with source, license, contract, roll, session and PIT join metadata; then rerun."
+}

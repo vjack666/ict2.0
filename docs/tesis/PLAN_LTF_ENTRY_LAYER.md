@@ -320,3 +320,124 @@ WAIT_* / OBSERVABLE_SETUP
 ```
 
 **PASS técnico no significa edge, entry ni rentabilidad.**
+
+## 11. WYCKOFF-7 — CANONICAL PHASES + CME 6E
+
+Esta extensión fija el contrato de fases y eventos sin crear un segundo motor.
+Su estado inicial es `DRAFT — REVIEW PENDING`; no autoriza implementación,
+descarga de datos ni experimentos.
+
+Secuencias canónicas:
+
+```text
+Acumulación: PS → SC → AR → ST → FASE_B → SPRING → TEST → SOS → LPS → MARKUP
+Distribución: PSY → BC → AR → ST → FASE_B → UTAD → TEST → SOW → LPSY → MARKDOWN
+```
+
+La representación canónica Wyckoff será un evaluador de transiciones por
+`range_id`, causal y subordinado a AHF/Context State; AHF continúa siendo la
+única FSM jerárquica de orquestación. No puede crear estados AHF, cambiar
+`direction_hint`, autorizar una entrada ni convertirse en un segundo sistema
+de señales.
+
+Los tokens se clasifican antes de programar: `PS/SC/AR/ST/PSY/BC/SPRING/TEST/
+UTAD/SOS/SOW/LPS/LPSY` son eventos; `FASE_B` es estado de causa;
+`MARKUP/MARKDOWN` son estados de régimen. Cada transición debe estar vinculada
+al rulebook; la falta de evidencia se registra, no se rellena con un salto de
+secuencia.
+
+Cada transición conserva `range_id`, `episode_id`, `from_state`,
+`event_type`, `to_state`, `appeared_at`, `confirmed_at`,
+`invalidated_at` (opcional), `source_ref`, `evidence_refs` y `reason`.
+`appeared_at` es el primer instante observable con el prefijo disponible;
+`confirmed_at` solo puede publicarse cuando la regla causal se cumple.
+Saltos incompatibles, eventos sin rango o confirmaciones posteriores a
+`decision_time` son inválidos. Las invalidaciones se registran y no se borran.
+
+La unidad inferencial primaria futura será `range_id`, con un solo outcome por
+rango y sin rangos solapados. Para validarlo se ordena por
+`(symbol, venue, timeframe, range_start)` y se rechaza si
+`next.range_start < previous.range_end_exclusive`, usando intervalos
+`[range_start, range_end_exclusive)` y deduplicando antes los mismos
+`range_id`. Rangos de distintos timeframes se agrupan y no son independientes.
+`episode_id` será un subidentificador causal para lineage, no una forma de
+multiplicar la muestra. El ancla del rango es
+el primer PS/PSY observable y su cierre es la invalidación terminal o la
+confirmación de MARKUP/MARKDOWN. Velas del mismo rango, marcos correlacionados,
+duplicados y confirmaciones derivadas no son observaciones independientes.
+Todo rango debe conservar límites, periodo, definición de frontera y
+`dataset_snapshot_hash`.
+
+Los fixtures mínimos deben demostrar rangos adyacentes aceptados, solapados
+rechazados, duplicados deduplicados y rangos abiertos censurados/no inferibles.
+
+Para CME `6E`, cada evento debe identificar símbolo/contrato, venue, mes,
+timestamp y zona horaria, política de rollover, OHLCV, volumen, open interest,
+sesión, `range_id` y `episode_id`. Los modos normativos son:
+
+```text
+CME_CENTRALIZED   volumen centralizado con procedencia verificable
+TICK_VOLUME_PROXY conteo relativo, nunca presentado como volumen CME
+UNAVAILABLE       ausencia o procedencia no verificable
+```
+
+`open_interest` ausente se representa como `null` con
+`open_interest_status=UNAVAILABLE`; nunca se imputa ni se sustituye por
+ticks. Deben conservarse `published_at`/`available_at` del OI. La unión
+`6E ↔ EURUSD` requiere `join_id`, UTC, tolerancia temporal explícita, estado
+de match y lineage de ambos lados. `RELATIVE_ONLY` es alias de entrada para
+`TICK_VOLUME_PROXY`; `AVAILABLE` solo mapea a `CME_CENTRALIZED` con
+procedencia CME verificable.
+
+**Gate WYCKOFF-7:** `PASS` solo con evaluador Wyckoff único subordinado a la
+FSM jerárquica AHF, secuencias, timestamps, invalidaciones, rango, volumen/OI,
+lineage ICT separado y pruebas causales.
+Falta documental acotada produce `REVIEW`; una autoridad duplicada,
+procedencia insuficiente o look-ahead produce `BLOCKED`.
+
+## 12. WYCKOFF-8 — CERTIFICATION / PREFLIGHT
+
+WYCKOFF-8 es un preflight documental/PIT previo a cualquier ejecución futura.
+En esta fase no se descargan datos, no se entrena IA y no se ejecuta
+`EXP-WYCKOFF-CANONICAL-02`.
+
+El manifest mínimo debe contener versión, `dataset_snapshot_id` y hash,
+archivos con tamaño/SHA-256/esquema/cobertura/filas, símbolo/venue/contrato,
+timeframes, timezone/sesiones/roll, `volume_mode`, fuente de OI,
+`config_canonical_hash`, `code_commit`, `generator_commit`, comando
+generador, `worktree_path`, rama/identificador, procedencia, rangos,
+episodios, fecha de producción y `evidence_refs`. Los commits deben ser
+resolubles; `HEAD` ambiguo, rutas sin hash o datos fuera del manifest bloquean.
+
+La certificación compara la serie completa y el prefijo cerrado:
+
+```text
+FULL   = serie completa del snapshot certificado
+PREFIX = prefijo disponible en decision_time
+wyckoff(PREFIX, decision_time) == wyckoff(FULL, decision_time)
+```
+
+La comparación debe usar la proyección histórica
+`snapshot_at(FULL,t) == snapshot_at(PREFIX,t)` y considerar solo
+invalidaciones visibles hasta `t`; una invalidación posterior no puede
+retroescribir el pasado. La igualdad cubre fase/estado, rangos, episodios,
+timestamps, invalidaciones visibles y referencias, no solo la etiqueta final.
+El mismo dataset, configuración, dependencias y commit en checkout limpio debe
+producir el mismo manifest, evaluador, eventos y hashes.
+
+| Gate | Criterio |
+|---|---|
+| `PASS` | manifest completo, hashes/commits resolubles, PIT/FULL-PREFIX causal, determinismo clean e independencia declarada |
+| `REVIEW` | ambigüedad documental acotada, sin afirmar certificación |
+| `BLOCKED` | falta de datos/procedencia, hash/ref inconsistente, look-ahead, no determinismo o rango/episodio irresoluble |
+
+El PASS de WYCKOFF-8 certifica el artefacto y su reproducibilidad documental;
+no demuestra edge, PnL, rentabilidad, entrenamiento, ejecución ni promoción.
+
+### Secuencia de preflight read-only
+
+1. Leer SDD, plan, rulebook y contratos.
+2. Resolver commit, worktree, snapshot, hashes, rangos, episodios y refs sin descargar ni generar datos.
+3. Auditar FULL/PREFIX, timestamps, invalidaciones, volumen/OI e independencia.
+4. Emitir `PASS`, `REVIEW` o `BLOCKED` con `evidence_refs`.
+5. Mantener experimento y entrenamiento pendientes de autorización y gates separados.

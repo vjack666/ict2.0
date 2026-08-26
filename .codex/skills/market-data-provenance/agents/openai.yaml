@@ -1,0 +1,4 @@
+interface:
+  display_name: "Market Data Provenance"
+  short_description: "Audit market-data lineage and reproducibility"
+  default_prompt: "Use $market-data-provenance to audit this dataset's source, temporal joins, hashes, and reproducibility gates."

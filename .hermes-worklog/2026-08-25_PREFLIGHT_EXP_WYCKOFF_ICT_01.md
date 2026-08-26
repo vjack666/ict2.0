@@ -81,31 +81,39 @@
   universo tras ver conteos.
 - Umbral de potencia: **~389 obs/grupo** (MDE 10pp, potencia 0.80, §5 prerregistro).
 
-## 8. Decisión automática — RESULTADO: `FEASIBILITY_FAIL_INSUFFICIENT_N`
+## 8. Decisión automática — RESULTADO: `FEASIBILITY_FAIL_INSUFFICIENT_N` (v2 corregido)
 
-Conteos completos (exit 0, 1950s, `feasibility_counts.json`). Evaluación por celda
-primaria de la matriz ICT×Wyckoff, desagregada por bloque (protocolo exige bloques
-independientes, sin contaminación):
+### Invalidación de v1 (auditoría externa)
+El commit `da7fb43` (preflight v1) fue invalidado por auditoría externa
+(`PREFLIGHT_INVALIDATED_CONTRACT_MISMATCH`). Fallos metodológicos de v1:
+1. Ancla en `created_bar` (LIQUIDITY_POOL) en vez de nodo k.
+2. Sin deduplicación por `(structure_bar, direction)`.
+3. `context_bucket` como `BULLISH→ALIGNED` (no relativo a `sequence_direction`).
+4. Sin flag `CONFLICT`; contaba fases Wyckoff en vez de la celda primaria
+   `ICT × CONFLICT/NON_CONFLICT`.
+5. `generator_commit` declaraba `a20c66a` pero los scripts no existían ahí.
 
-- **H1** (TF con más datos) — celdas de contraste ALIGNED/AGAINST vs umbral 389:
-  - DESIGN: 6/8 celdas ≥389 (AL×NEU=222, AG×NEU=177 fallan).
-  - VALIDATION: solo 2/8 ≥389 (AL×PRO=561, AG×PRO=531).
-  - HOLDOUT: solo 2/8 ≥389 (AL×PRO=584, AG×PRO=599).
-- **H4**: máximo ~307/celda → todas <389 en todos los bloques.
-- **D1**: máximo ~54/celda → todas <389 en todos los bloques.
+### v2 corregido (commit `e9c9be9` + `feasibility_counts_v2.json`)
+Replica EXACTA de la lógica autoritativa del contrato
+(`exp_seq_ctx_01_dataset.context_bucket` relativo a dirección, dedup
+`(bar_k, direction)`, ancla nodo k, flag `CONFLICT` del `WyckoffSnapshot`).
+Validado por réplica independiente del generator: **TOTAL H1 = 515** (idéntico).
 
-Incluso sumando el universo 20Y completo, solo las 8 celdas de contraste
-ALIGNED/AGAINST superan 389 (mínimo 402 en AG×NEU); pero el protocolo mantiene
-bloques DESIGN/VALIDATION/HOLDOUT separados y en VALIDATION/HOLDOUT la mayoría de
-celdas de contraste <389. H4/D1 están muy por debajo en todos los bloques.
+Conteos v2 (H1, celdas primarias ICT × CONFLICT/NON_CONFLICT):
+- ALIGNED total = 46 → CONFLICT 17 / NON_CONFLICT 29
+- AGAINST total = 108 → CONFLICT 23 / NON_CONFLICT 85
+- NEUTRAL total = 361 (control)
+- H4: ALIGNED=3, AGAINST=27. D1: ALIGNED=1, AGAINST=2.
 
-El universo está FIJADO (EURUSD 20Y; prohibido ampliar años, símbolos o TF). Para
-alcanzar la potencia prerregistrada (n=389/grupo, MDE 10pp, potencia 0.80) se
-requeriría ampliar el universo, lo cual está vedado.
+**Toda celda primaria de contraste está ORDENES DE MAGNITUD por debajo de
+n=389** (máx H1 AGAINST×NON_CONFLICT=85, ~4.6× por debajo; ALIGNED peor).
+El universo está FIJADO (EURUSD 20Y; prohibido ampliar). Para 389/grupo se
+requeriría ampliar años/símbolos/TF → vedado.
 
 **Decisión automática alcanzada: `FEASIBILITY_FAIL_INSUFFICIENT_N`.**
-No se ejecuta el experimento, no se amplía el universo, no se solicita entrenamiento.
-Se detiene aquí y se espera instrucción de Rubén.
+Se mantiene y ahora es metodológicamente correcta (no el artefacto inflado de v1).
+No se ejecuta el experimento, no se amplía el universo, no se entrena.
+Se detiene aquí y se espera instrucción de Rubén. Nunca llamar "B2".
 
 ## Prohibiciones respetadas
 

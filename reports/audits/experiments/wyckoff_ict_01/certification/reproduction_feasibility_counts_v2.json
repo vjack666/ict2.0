@@ -1,0 +1,218 @@
+{
+  "experiment": "EXP-WYCKOFF-ICT-01_FEASIBILITY_COUNTS_V2",
+  "version": "corregido-post-auditoria",
+  "generated_at": "2026-08-26T14:07:32.686262+00:00",
+  "symbol": "EURUSD",
+  "dataset": "datasets/eurusd_dukascopy_20y",
+  "structure_mode": "canonical_bos",
+  "anchor": "node k bar (nodes[k].bar), k>=MIN_DEPTH(4)",
+  "dedup_key": "(bar_k, direction)",
+  "context_bucket": "relativo a sequence_direction (exp_seq_ctx_01_dataset.context_bucket)",
+  "n_required_per_group": 389,
+  "blocks": [
+    "DESIGN",
+    "VALIDATION",
+    "HOLDOUT"
+  ],
+  "timeframes": [
+    "H1",
+    "H4",
+    "D1"
+  ],
+  "observational_unit": "SequentialChain node k (k>=4), dedup (bar_k,direction)",
+  "counts": {
+    "H1": {
+      "n_observations_after_dedup": 515,
+      "cells_primary": {
+        "NEUTRAL": {
+          "NON_CONFLICT": 205,
+          "CONFLICT": 156
+        },
+        "NEUTRAL|NEUTRAL": {
+          "NON_CONFLICT": 78
+        },
+        "NEUTRAL|TRANSITION": {
+          "CONFLICT": 70,
+          "NON_CONFLICT": 1
+        },
+        "AGAINST": {
+          "NON_CONFLICT": 85,
+          "CONFLICT": 23
+        },
+        "AGAINST|PRO_TREND": {
+          "NON_CONFLICT": 68
+        },
+        "NEUTRAL|PRO_TREND": {
+          "NON_CONFLICT": 126
+        },
+        "NEUTRAL|COUNTERTREND": {
+          "CONFLICT": 86
+        },
+        "AGAINST|TRANSITION": {
+          "CONFLICT": 14
+        },
+        "ALIGNED": {
+          "NON_CONFLICT": 29,
+          "CONFLICT": 17
+        },
+        "ALIGNED|NEUTRAL": {
+          "NON_CONFLICT": 13
+        },
+        "AGAINST|NEUTRAL": {
+          "NON_CONFLICT": 17
+        },
+        "ALIGNED|COUNTERTREND": {
+          "CONFLICT": 6
+        },
+        "ALIGNED|PRO_TREND": {
+          "NON_CONFLICT": 16
+        },
+        "ALIGNED|TRANSITION": {
+          "CONFLICT": 11
+        },
+        "AGAINST|COUNTERTREND": {
+          "CONFLICT": 9
+        }
+      },
+      "matrix_ict_x_wyckoff_phase": {
+        "NEUTRAL": {
+          "NEUTRAL": 78,
+          "TRANSITION": 71,
+          "PRO_TREND": 126,
+          "COUNTERTREND": 86
+        },
+        "AGAINST": {
+          "PRO_TREND": 68,
+          "TRANSITION": 14,
+          "NEUTRAL": 17,
+          "COUNTERTREND": 9
+        },
+        "ALIGNED": {
+          "NEUTRAL": 13,
+          "COUNTERTREND": 6,
+          "PRO_TREND": 16,
+          "TRANSITION": 11
+        }
+      }
+    },
+    "H4": {
+      "n_observations_after_dedup": 144,
+      "cells_primary": {
+        "NEUTRAL": {
+          "CONFLICT": 55,
+          "NON_CONFLICT": 59
+        },
+        "NEUTRAL|COUNTERTREND": {
+          "CONFLICT": 28
+        },
+        "AGAINST": {
+          "CONFLICT": 6,
+          "NON_CONFLICT": 21
+        },
+        "AGAINST|TRANSITION": {
+          "CONFLICT": 4
+        },
+        "NEUTRAL|PRO_TREND": {
+          "NON_CONFLICT": 36
+        },
+        "NEUTRAL|TRANSITION": {
+          "CONFLICT": 27
+        },
+        "AGAINST|PRO_TREND": {
+          "NON_CONFLICT": 18
+        },
+        "NEUTRAL|NEUTRAL": {
+          "NON_CONFLICT": 23
+        },
+        "ALIGNED": {
+          "NON_CONFLICT": 2,
+          "CONFLICT": 1
+        },
+        "ALIGNED|PRO_TREND": {
+          "NON_CONFLICT": 1
+        },
+        "AGAINST|NEUTRAL": {
+          "NON_CONFLICT": 3
+        },
+        "ALIGNED|NEUTRAL": {
+          "NON_CONFLICT": 1
+        },
+        "ALIGNED|COUNTERTREND": {
+          "CONFLICT": 1
+        },
+        "AGAINST|COUNTERTREND": {
+          "CONFLICT": 2
+        }
+      },
+      "matrix_ict_x_wyckoff_phase": {
+        "NEUTRAL": {
+          "COUNTERTREND": 28,
+          "PRO_TREND": 36,
+          "TRANSITION": 27,
+          "NEUTRAL": 23
+        },
+        "AGAINST": {
+          "TRANSITION": 4,
+          "PRO_TREND": 18,
+          "NEUTRAL": 3,
+          "COUNTERTREND": 2
+        },
+        "ALIGNED": {
+          "PRO_TREND": 1,
+          "NEUTRAL": 1,
+          "COUNTERTREND": 1
+        }
+      }
+    },
+    "D1": {
+      "n_observations_after_dedup": 18,
+      "cells_primary": {
+        "NEUTRAL": {
+          "NON_CONFLICT": 11,
+          "CONFLICT": 5
+        },
+        "NEUTRAL|PRO_TREND": {
+          "NON_CONFLICT": 7
+        },
+        "NEUTRAL|NEUTRAL": {
+          "NON_CONFLICT": 4
+        },
+        "NEUTRAL|COUNTERTREND": {
+          "CONFLICT": 1
+        },
+        "NEUTRAL|TRANSITION": {
+          "CONFLICT": 4
+        },
+        "ALIGNED": {
+          "NON_CONFLICT": 1
+        },
+        "ALIGNED|PRO_TREND": {
+          "NON_CONFLICT": 1
+        },
+        "AGAINST": {
+          "CONFLICT": 1
+        },
+        "AGAINST|TRANSITION": {
+          "CONFLICT": 1
+        }
+      },
+      "matrix_ict_x_wyckoff_phase": {
+        "NEUTRAL": {
+          "PRO_TREND": 7,
+          "NEUTRAL": 4,
+          "COUNTERTREND": 1,
+          "TRANSITION": 4
+        },
+        "ALIGNED": {
+          "PRO_TREND": 1
+        },
+        "AGAINST": {
+          "TRANSITION": 1
+        }
+      }
+    }
+  },
+  "generator_commit": "e9c9be9ec753e52b95a0407309775518350a288d",
+  "generator_worktree": "CLEAN",
+  "elapsed_s": 166.1
+}

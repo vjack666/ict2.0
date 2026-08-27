@@ -1,7 +1,7 @@
 {
   "experiment": "EXP-WYCKOFF-ICT-01_FEASIBILITY_COUNTS_V2",
   "version": "corregido-post-auditoria",
-  "generated_at": "2026-08-26T00:43:21.616054+00:00",
+  "generated_at": "2026-08-27T23:38:02.849704+00:00",
   "symbol": "EURUSD",
   "dataset": "datasets/eurusd_dukascopy_20y",
   "structure_mode": "canonical_bos",
@@ -212,7 +212,7 @@
       }
     }
   },
-  "generator_commit": "e9c9be9ec753e52b95a0407309775518350a288d",
-  "generator_worktree": "DIRTY",
-  "elapsed_s": 318.7
+  "generator_commit": "a7ccd75ad49a85bc2cefc479c81c12f86b083914",
+  "generator_worktree": "CLEAN",
+  "elapsed_s": 198.0
 }

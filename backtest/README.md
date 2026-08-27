@@ -1,41 +1,56 @@
-# Nuevo exportador visual de backtest
+# Replay visual causal ICT + Wyckoff v1.1
 
-Esta carpeta es un consumidor nuevo del motor canónico de ICT SYSTEM. Su única
-responsabilidad es reproducir un replay cerrado y serializarlo para ICT
-Structure Lab; no contiene detectores ni reglas de estrategia.
+`backtest/` es un consumidor de solo lectura del motor canónico. Normaliza la
+disponibilidad temporal, conserva warmup, llama a `engine/` y produce un run
+reproducible para el visor; no contiene reglas de estrategia ni importa
+`ict_backtest`.
 
-La cadena es:
+```text
+Parquet locales (OPEN_TIME o CLOSE_TIME explícito)
+  -> prefijos de velas cerradas + warmup
+  -> engine.market_features / bos / MTFNavigator / sequence / outcome
+  -> engine.Wyckoff.build_wyckoff_snapshot
+  -> backtest/runs/<run_id>/{visual_backtest.json,manifest.json}
+  -> backtest/viewer (React/Vite, solo lectura)
+```
 
-    data/raw/<SYMBOL>/*.parquet
-            ↓
-    engine.market_features
-            ↓
-    engine.bos.structure
-            ↓
-    engine.sequence.run_sequence
-            ↓
-    engine.sequential_outcome
-            ↓
-    backtest/visual_backtest.json
+## Exportar un run real
 
-El entrypoint es scripts/export_visual_backtest.py. El artifact incluye velas
-OHLC, Swing, BOS, CHOCH, parent_id, confirmed_index y las operaciones emitidas
-por el motor con entrada, SL, TP, salida y resultado cuando existe.
+```powershell
+python scripts/export_visual_backtest.py `
+  --symbol EURUSD `
+  --timeframe M15 `
+  --tfs D1 H4 H1 M15 M5 M1 `
+  --data-dir "C:\ruta\a\data\raw" `
+  --start 2026-08-17 `
+  --end 2026-08-21 `
+  --warmup-bars 200 `
+  --timestamp-semantics open `
+  --wyckoff `
+  --wyckoff-authority-tf H1 `
+  --wyckoff-layers D1 H4 H1 M15 `
+  --multitf-context
+```
 
-Reglas de frontera:
+La fecha de `--end` incluye ese día completo. La semántica temporal nunca se
+infiere: MT5 usa apertura de barra y el motor recibe una copia con
+`time=bar_close_time`. M5/M1 quedan como evidencia observacional y no cambian
+la autoridad H1.
 
-- No se importa ict_backtest ni se ejecutan runners históricos.
-- No se recalculan Swing/BOS/CHOCH en esta carpeta.
-- Los eventos se publican en la vela causal (confirmed_index); no se exportan
-  etiquetas retrospectivas de calidad/estado que dependan de velas futuras.
-- La resolución de un resultado solo escanea velas posteriores a la entrada y
-  queda marcada en result_confirmed_index.
-- El artifact es observación para el visor. promotion_authorized permanece
-  false y no habilita órdenes ni promoción científica.
+## Abrir el visor
 
-Ejemplo:
+```powershell
+npm ci --prefix backtest/viewer
+npm run build --prefix backtest/viewer
+python scripts/serve_visual_backtest.py --run-dir backtest/runs/<run_id>
+```
 
-    python scripts/export_visual_backtest.py --symbol EURUSD --timeframe H1 --tfs H1 --output backtest/visual_backtest.json
+Abrir `http://127.0.0.1:4173/`. El servidor solo permite lectura del build y
+del run seleccionado.
 
-La ejecución completa sobre datos reales no forma parte de las pruebas unitarias
-de este componente; primero deben cumplirse los gates de backtest del proyecto.
+## Límites
+
+Todos los artefactos validan `diagnostic_only=true`, `entry_authorized=false`,
+`can_trade=false`, `can_train=false` y `promotion_authorized=false`. El runtime
+Wyckoff vigente es básico (`RUNTIME_BASIC_NOT_WYCKOFF_7`): este visor no prueba
+edge, no completa WYCKOFF-7 y no autoriza trading o promoción.

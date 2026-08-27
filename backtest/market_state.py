@@ -22,7 +22,7 @@ import pandas as pd
 from engine.detectors.fvg import detect_fvg
 from engine.detectors.ob import detect_order_blocks
 from engine.market_object import MarketObject, ObjectState
-from backtest.schema import json_safe
+from backtest.schema import json_safe, stable_sha256
 
 
 def _detect_regions(frames: Mapping[str, pd.DataFrame], symbol: str) -> dict[str, list[MarketObject]]:
@@ -48,17 +48,44 @@ def _collect_sequence_objects(signals: list[dict[str, Any]]) -> dict[str, Market
     signal instant). We keep the first occurrence per id (creation state); the
     objects are immutable after creation for the sequence phase.
     """
-    collected: dict[str, MarketObject] = {}
+    raw_objects: dict[str, dict[str, Any]] = {}
     for signal in signals:
         for obj_id, obj_dict in (signal.get("event_objects") or {}).items():
-            if obj_id in collected:
+            if obj_id in raw_objects:
                 continue
-            try:
-                collected[obj_id] = MarketObject.from_dict(obj_dict)
-            except (KeyError, TypeError, ValueError):
-                # Skip malformed objects defensively; the canonical engine always
-                # emits well-formed ones, but a projection must not crash the replay.
-                continue
+            if isinstance(obj_dict, dict):
+                raw_objects[obj_id] = dict(obj_dict)
+
+    # The canonical sequence engine historically uses UUIDs for event objects.
+    # UUIDs are valid runtime identities but make two causal replays of the same
+    # prefix differ, which breaks deterministic artifact hashes and FULL/PREFIX
+    # comparison. Normalize only this read-only projection; the engine objects
+    # and their causal relationships remain untouched.
+    id_map: dict[str, str] = {}
+    for raw_id, obj_dict in raw_objects.items():
+        identity = {
+            key: obj_dict.get(key)
+            for key in (
+                "type", "origin_tf", "role", "direction", "creation_time",
+                "candidate_time", "confirmation_time", "tradable_time",
+                "bar_index", "bar_time", "zone_high", "zone_low", "meta",
+            )
+        }
+        id_map[raw_id] = f"SEQ_{str(obj_dict.get('type', 'OBJECT'))}_{stable_sha256(identity)[:16]}"
+
+    collected: dict[str, MarketObject] = {}
+    for raw_id, original in raw_objects.items():
+        obj_dict = dict(original)
+        obj_dict["id"] = id_map[raw_id]
+        if obj_dict.get("parent_object") in id_map:
+            obj_dict["parent_object"] = id_map[obj_dict["parent_object"]]
+        obj_dict["related_objects"] = [id_map.get(item, item) for item in obj_dict.get("related_objects", [])]
+        try:
+            collected[obj_dict["id"]] = MarketObject.from_dict(obj_dict)
+        except (KeyError, TypeError, ValueError):
+            # Skip malformed objects defensively; the canonical engine always
+            # emits well-formed ones, but a projection must not crash the replay.
+            continue
     return collected
 
 

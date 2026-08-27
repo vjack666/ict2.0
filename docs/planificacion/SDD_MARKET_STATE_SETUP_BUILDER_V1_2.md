@@ -254,6 +254,25 @@ cualquier lógica propia de transición (el `_derive_setup` previo se removió).
 test `test_setup_state_does_not_recompute_ahf` compara `SetupState(T)` contra
 `AHFSnapshot(T)` punto a punto y falla si difieren.
 
+### 6.3 Identidad determinista y FULL/PREFIX (decisión contractual — FASE 4.1)
+
+El motor secuencial puede crear UUID de runtime para sus `MarketObject`. La
+proyección read-only del replay los normaliza a una identidad estable derivada
+de los campos causales del objeto, preservando `parent_object` y
+`related_objects`. No se modifica la identidad interna del motor. Esto es
+obligatorio para que el hash del artifact y la comparación FULL/PREFIX no
+dependan de aleatoriedad de ejecución.
+
+El gate `FULL == PREFIX` requiere dos artifacts generados con el mismo inicio,
+configuración, datos y código, pero con un final PREFIX más corto. Se comparan
+literalmente los snapshots `market_state` y `setups` en toda la intersección,
+incluyendo `decision_time`, entidades vivas, historia terminal, delta y estado
+AHF. Un único artifact o una prueba de ausencia de timestamps futuros no es
+suficiente.
+
+Si falla la ejecución del AHF canónico o falta un `AHFSnapshot`, el replay falla
+cerrado y no fabrica un `Setup State` de fallback.
+
 ## 7. `backtest/schema.py` (cambios)
 
 - `SCHEMA_VERSION` → **"1.2"**.

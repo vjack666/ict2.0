@@ -14,6 +14,7 @@ import pytest
 from backtest.replay import ReplayConfig, run_visual_replay
 from backtest.schema import validate_visual_backtest
 from backtest.setup_builder import SETUP_STATES, build_setup_state
+from engine.ahf import AHFEvent, AHFSnapshot, AHFState, AHFTransition
 
 
 def _fixture(rows: int = 60, freq: str = "h") -> pd.DataFrame:
@@ -96,3 +97,42 @@ def test_setup_state_does_not_recompute_ahf():
 def test_artifact_with_setups_validates():
     payload = _artifact(32).to_dict()
     validate_visual_backtest(payload)
+
+
+def test_setup_projection_preserves_invalidation_from_canonical_history():
+    snapshot = AHFSnapshot(
+        decision_time="2024-01-01T01:00:00+00:00",
+        state=AHFState.WAIT_H1,
+        active_tf="H1",
+        confirmed_context={"D1": {"layer": "D1"}},
+        constraints=None,
+        history=[AHFTransition(
+            state=AHFState.WAIT_H1.value,
+            active_tf="H1",
+            transition_event=AHFEvent.H1_INVALIDATED.value,
+            transition_time="2024-01-01T01:00:00+00:00",
+            parent_state=AHFState.SETUP_READY.value,
+            invalidation_reason="H1 BOS down vs D1 bull lock",
+        )],
+        last_event=AHFEvent.H1_INVALIDATED,
+    )
+    timeline = [{"index": 0, "decision_time": snapshot.decision_time}]
+    config = ReplayConfig(
+        symbol="TEST", timeframe="H1", timeframes=("H1",), authority_tf="H1",
+        warmup_bars=0, wyckoff_enabled=False, git_commit="fixture-commit",
+    )
+    setup = build_setup_state(timeline, config, ahf_snapshots=[snapshot])[0]
+    assert setup["estado"] == AHFState.WAIT_H1.value
+    assert setup["invalidacion"] == ["H1 BOS down vs D1 bull lock"]
+
+
+def test_replay_fails_closed_when_canonical_ahf_fails(monkeypatch):
+    import backtest.replay as replay_module
+
+    class BrokenAHF:
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("fixture AHF failure")
+
+    monkeypatch.setattr(replay_module, "AdaptiveHierarchicalFunnel", BrokenAHF)
+    with pytest.raises(RuntimeError, match="canonical AHF projection failed"):
+        _artifact(20)

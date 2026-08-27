@@ -47,13 +47,23 @@ def _translate_snapshot(snap: Any, point: Mapping[str, Any], authority_tf: str) 
     We only rename/flatten fields for the viewer; we do NOT recompute logic.
     ``snap`` may be an AHFSnapshot dataclass or its .to_dict() mapping.
     """
+    history = getattr(snap, "history", None)
     if hasattr(snap, "to_dict"):
         snap = snap.to_dict()
+    if history is None and isinstance(snap, Mapping):
+        history = snap.get("history") or []
     state = str(snap.get("state") or "WAIT_D1")
     active_tf = str(snap.get("active_tf") or "H1")
     confirmed = snap.get("confirmed_context") or {}
     last_event = str(snap.get("last_event") or "NOOP")
     invalidation_reason = snap.get("invalidation_reason")
+    if not invalidation_reason and history:
+        last = history[-1]
+        invalidation_reason = (
+            getattr(last, "invalidation_reason", None)
+            if not isinstance(last, Mapping)
+            else last.get("invalidation_reason")
+        )
 
     # Present/ missing layers: which HTF context layers the AHF has locked.
     presentes = [tf for tf in ("D1", "H4", "H1") if tf in confirmed]
@@ -107,31 +117,17 @@ def build_setup_state(
             ]
         )
 
-    # Legacy fallback: context not populated by the funnel (e.g. tests that mock
-    # the replay). Translate whatever AHFSnapshot the timeline carries, else empty.
+    # Schema 1.2 requires the canonical snapshot. A fallback state would be a
+    # fabricated setup signal and would hide a broken AHF projection.
     out: list[dict[str, Any]] = []
     for point in timeline:
         ctx = point.get("ict", {}).get("context") or {}
         snap = ctx.get("ahf_snapshot") or ctx.get("snapshot")
-        if snap:
-            out.append(_translate_snapshot(snap, point, authority_tf))
-            continue
-        out.append(
-            {
-                "id": f"SETUP_{int(point['index'])}",
-                "decision_time": point["decision_time"],
-                "authority_tf": authority_tf,
-                "direction": None,
-                "cadena_htf_ltf": [authority_tf],
-                "estado": "WAIT_D1",
-                "active_tf": authority_tf,
-                "condiciones_presentes": [],
-                "condiciones_faltantes": ["D1", "H4", "H1"],
-                "invalidacion": [],
-                "evidence_refs": [],
-                "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
-            }
-        )
+        if not snap:
+            raise ValueError(
+                "canonical AHFSnapshot missing from timeline; refusing to fabricate Setup State"
+            )
+        out.append(_translate_snapshot(snap, point, authority_tf))
     return json_safe(out)
 
 

@@ -554,7 +554,7 @@ def validate_visual_backtest(payload: dict[str, Any]) -> None:
             raise ValueError(f"setup decision_time mismatch at index {position}")
         if setup["estado"] not in {
             "WAIT_D1", "D1_LOCKED", "WAIT_H4", "H4_LOCKED", "WAIT_H1",
-            "WAIT_LTF", "SETUP_READY",
+            "WAIT_LTF", "SETUP_READY", "OUTCOME",
         }:
             raise ValueError(f"setup invalid estado at index {position}")
         if setup["policy"] != "CONTEXT_STATE_NOT_ENTRY_SIGNAL":

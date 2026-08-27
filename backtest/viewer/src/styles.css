@@ -153,12 +153,18 @@ code, .ohlc-grid strong { font-variant-numeric: tabular-nums; }
 .setup-card.is-ready { border-color: #1b4738; background: #0f1a17; }
 .setup-card > strong { color: #dce6f3; font-size: 10px; }
 .setup-card p { color: var(--muted); font-size: 9px; line-height: 1.45; margin: 0; }
+.causal-caption { color: var(--muted); font-size: 9px; line-height: 1.45; margin: 0; }
+.causal-caption strong { color: #dce6f3; }
+.causal-grid { display: grid; grid-template-columns: 1fr auto; gap: 5px 10px; font-size: 8px; }
+.causal-grid span, .setup-chain span { color: var(--muted); text-transform: uppercase; font-size: 7px; }
+.causal-grid code, .setup-chain code { color: #b7c5d6; overflow-wrap: anywhere; text-align: right; }
 .setup-conditions { display: grid; gap: 6px; }
 .setup-conditions > div { display: grid; gap: 3px; }
 .setup-conditions span, .setup-policy span { color: var(--muted); font-size: 7px; text-transform: uppercase; }
 .setup-conditions code, .setup-policy code { color: #b7c5d6; font-size: 8px; overflow-wrap: anywhere; }
 .setup-policy { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 7px; }
 .setup-policy code { color: #e2d66f; }
+.setup-chain { display: grid; gap: 3px; border-top: 1px solid var(--line); padding-top: 7px; }
 .market-delta { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 8px; }
 .market-delta span { color: var(--muted); }
 .market-delta code { color: #9fc3ff; text-align: right; }
@@ -168,6 +174,13 @@ code, .ohlc-grid strong { font-variant-numeric: tabular-nums; }
 .market-entities article strong { color: #aacaff; font-size: 9px; overflow-wrap: anywhere; }
 .market-entities article span { color: #c3cfdd; font-size: 8px; }
 .market-entities article code { color: var(--muted); font-size: 7px; overflow-wrap: anywhere; }
+.entity-delta-list { display: grid; gap: 4px; border-block: 1px solid var(--line); padding-block: 6px; }
+.entity-delta-list div { display: grid; gap: 2px; }
+.entity-delta-list strong { color: #f6b94d; font-size: 7px; }
+.entity-delta-list code { color: #b7c5d6; font-size: 7px; overflow-wrap: anywhere; }
+.empty-note { color: var(--muted); font-size: 8px; margin: 0; }
+.terminal-label { margin-top: 4px; color: #9c7f83; }
+.market-entities article.is-terminal { opacity: 0.72; }
 .event-list { display: grid; gap: 6px; }
 .event-list article { display: grid; gap: 3px; padding-top: 6px; border-top: 1px solid var(--line); }
 .event-list article strong { color: #aacaff; font-size: 9px; overflow-wrap: anywhere; }

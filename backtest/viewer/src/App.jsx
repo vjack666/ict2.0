@@ -361,6 +361,8 @@ export function App() {
 
   const snapshot = replay.point.wyckoff;
   const delta = replay.point.delta;
+  const marketDelta = replay.marketState?.delta || {};
+  const ahfSnapshot = replay.ahfSnapshot;
   const currentStructure = replay.structureEvents.filter((event) => event.confirmed_index === cursor);
   const currentWyckoff = replay.wyckoffEvents.filter((event) => event.first_seen_index === cursor);
   const phaseTone = PHASE_TONES[snapshot.phase] || "neutral";
@@ -448,36 +450,54 @@ export function App() {
               <div className={`setup-card ${replay.setup.estado === "SETUP_READY" ? "is-ready" : ""}`}>
                 <div className="phase-title"><Flask size={17} /><span>Setup State · Context State / AHF</span></div>
                 <strong>{replay.setup.estado} · {replay.setup.active_tf}</strong>
-                <p>Proyección descriptiva del Context State canónico. No es señal de entrada.</p>
+                <p>Proyección descriptiva del AHF canónico en este instante. No es señal de entrada.</p>
+                <div className="causal-grid">
+                  <span>navegación</span><code>{replay.setup.estado}</code>
+                  <span>active_tf</span><code>{replay.setup.active_tf}</code>
+                  <span>último evento AHF</span><code>{ahfSnapshot?.last_event || "NO SERIALIZADO"}</code>
+                  <span>invalidación</span><code>{ahfSnapshot?.invalidation_reason || "NINGUNA"}</code>
+                </div>
                 <div className="setup-conditions">
                   <div><span>Presentes</span>{replay.setup.condiciones_presentes?.length ? replay.setup.condiciones_presentes.map((condition) => <code key={condition}>{condition}</code>) : <code>NINGUNA</code>}</div>
                   <div><span>Faltantes</span>{replay.setup.condiciones_faltantes?.length ? replay.setup.condiciones_faltantes.map((condition) => <code key={condition}>{condition}</code>) : <code>NINGUNA</code>}</div>
                 </div>
+                <div className="setup-chain"><span>cadena HTF → LTF</span><code>{replay.setup.cadena_htf_ltf?.join(" → ") || "NO DISPONIBLE"}</code></div>
                 <div className="setup-policy"><span>policy</span><code>{replay.setup.policy}</code></div>
               </div>
             )}
             {layers.MARKET && replay.marketState && (
               <div className="market-card">
                 <div className="phase-title"><GitBranch size={17} /><span>Market State persistente</span></div>
+                <p className="causal-caption">Viendo <strong>{artifact.timeframe}</strong>: cada entidad conserva su origen, rol y lifecycle. La zona no nace de nuevo en cada vela.</p>
                 <div className="market-delta">
-                  <span>creadas</span><code>{replay.marketState.delta?.created?.length ?? 0}</code>
-                  <span>transiciones</span><code>{replay.marketState.delta?.transitioned?.length ?? 0}</code>
-                  <span>terminales</span><code>{replay.marketState.delta?.terminal?.length ?? 0}</code>
+                  <span>creadas ahora</span><code>{marketDelta.created?.length ?? 0}</code>
+                  <span>transiciones ahora</span><code>{marketDelta.transitioned?.length ?? 0}</code>
+                  <span>terminales ahora</span><code>{marketDelta.terminal?.length ?? 0}</code>
                 </div>
+                {(marketDelta.created?.length || marketDelta.transitioned?.length || marketDelta.terminal?.length) ? <div className="entity-delta-list">
+                  {marketDelta.created?.map((id) => <div key={`created-${id}`}><strong>ENTITY CREATED</strong><code>{id}</code></div>)}
+                  {marketDelta.transitioned?.map((change) => <div key={`transition-${change.id}`}><strong>ENTITY {change.to}</strong><code>{change.id} · {change.from} → {change.to}</code></div>)}
+                  {marketDelta.terminal?.map((id) => <div key={`terminal-${id}`}><strong>ENTITY TERMINAL</strong><code>{id}</code></div>)}
+                </div> : <p className="empty-note">Sin cambio de entidades desde T-1.</p>}
                 <div className="market-entities">
                   <div className="section-label">Entidades vivas ({replay.marketState.entities?.length ?? 0})</div>
                   {replay.marketState.entities?.length ? replay.marketState.entities.map((entity) => (
                     <article key={entity.id}>
-                      <strong>{entity.type} · {entity.origin_tf}</strong>
-                      <span>{entity.state} · {entity.role}</span>
+                      <strong>{entity.type} · {entity.id}</strong>
+                      <span>ORIGEN: {entity.origin_tf} · VIENDO: {artifact.timeframe}</span>
+                      <span>ROL: {entity.role} · ESTADO: {entity.state}</span>
                       <code>{entity.id}</code>
                     </article>
                   )) : <p>NINGUNA</p>}
+                  {!!replay.marketState.terminal_entities?.length && <>
+                    <div className="section-label terminal-label">Historia terminal (no activa)</div>
+                    {replay.marketState.terminal_entities.slice(-8).map((entity) => <article className="is-terminal" key={`history-${entity.id}`}><strong>{entity.type} · {entity.id}</strong><span>ORIGEN: {entity.origin_tf} · ESTADO: {entity.state}</span><code>conservada como historia; no se dibuja activa</code></article>)}
+                  </>}
                 </div>
               </div>
             )}
             <div className="event-list"><div className="section-label">Entidades nuevas ahora</div>{[...currentStructure, ...currentWyckoff].length === 0 && <p>NINGUNA</p>}{[...currentStructure, ...currentWyckoff].map((event) => <article key={event.id}><strong>{event.id}</strong><span>{event.kind || event.event_type} · {event.tf || artifact.timeframe}</span><code>{event.parent_id || event.source_ref || "sin padre/ref"}</code></article>)}</div>
-            <details className="evidence-panel" id="evidence" open><summary className="section-label">Evidencia exacta</summary><div className="evidence-line"><span>decision_time</span><code>{replay.point.decision_time}</code></div><div className="evidence-line"><span>barra</span><code>{replay.candle.bar_open_time} → {replay.candle.bar_close_time}</code></div>{Object.entries(replay.point.asof_by_tf).map(([tf, asof]) => <div className="evidence-line" key={tf}><span>asof {tf}</span><code>{asof || "NO DISPONIBLE"}</code></div>)}<div className="evidence-line"><span>volume source · {artifact.authority_tf}</span><code>{authorityManifest?.volume_source || "NO DISPONIBLE"}</code></div><div className="evidence-line"><span>run/config</span><code>{artifact.run_metadata.run_id} · {config.timeframes.join("/")} · warmup {config.warmup_bars} · {config.timestamp_semantics.toUpperCase()}_TIME</code></div><div className="evidence-line"><span>git lineage</span><code>{artifact.run_metadata.git_branch} · clean={String(artifact.run_metadata.generator_worktree_clean_before_run)} · py {artifact.run_metadata.python_version} · node {artifact.run_metadata.node_version}</code></div><div className="evidence-line"><span>config_sha256</span><code>{artifact.run_metadata.config_sha256}</code></div><div className="evidence-refs"><span>evidence_refs</span>{(snapshot.evidence_refs || []).length ? snapshot.evidence_refs.map((ref) => <code key={ref}>{ref}</code>) : <code>NINGUNA</code>}</div><div className="hash-line"><CheckCircle size={15} /><code>{artifact.run_metadata.artifact_content_sha256}</code></div></details>
+            <details className="evidence-panel" id="evidence" open><summary className="section-label">Evidencia exacta</summary><div className="evidence-line"><span>decision_time</span><code>{replay.point.decision_time}</code></div><div className="evidence-line"><span>barra</span><code>{replay.candle.bar_open_time} → {replay.candle.bar_close_time}</code></div><div className="evidence-line"><span>futuro utilizado</span><code>NO · solo información disponible hasta decision_time</code></div>{Object.entries(replay.point.asof_by_tf).map(([tf, asof]) => <div className="evidence-line" key={tf}><span>asof {tf}</span><code>{asof || "NO DISPONIBLE"}</code></div>)}<div className="evidence-line"><span>volume source · {artifact.authority_tf}</span><code>{authorityManifest?.volume_source || "NO DISPONIBLE"}</code></div><div className="evidence-line"><span>run/config</span><code>{artifact.run_metadata.run_id} · {config.timeframes.join("/")} · warmup {config.warmup_bars} · {config.timestamp_semantics.toUpperCase()}_TIME</code></div><div className="evidence-line"><span>git lineage</span><code>{artifact.run_metadata.git_branch} · clean={String(artifact.run_metadata.generator_worktree_clean_before_run)} · py {artifact.run_metadata.python_version} · node {artifact.run_metadata.node_version}</code></div><div className="evidence-line"><span>config_sha256</span><code>{artifact.run_metadata.config_sha256}</code></div><div className="evidence-refs"><span>evidence_refs</span>{(snapshot.evidence_refs || []).length ? snapshot.evidence_refs.map((ref) => <code key={ref}>{ref}</code>) : <code>NINGUNA</code>}</div><div className="hash-line"><CheckCircle size={15} /><code>{artifact.run_metadata.artifact_content_sha256}</code></div></details>
             <div className="scientific-lock"><span>PIT Wyckoff</span><code>{scientific.pit_temporal_consistency.points_checked}/80 · {scientific.pit_temporal_consistency.status}</code><span>Factibilidad H1</span><code>{scientific.h1_feasibility.observations}/{scientific.h1_feasibility.required} · INSUFICIENTE</code><span>FSM</span><code>RUNTIME BASIC</code><span>Edge</span><code>NO PROBADO</code></div>
             <div className="trade-lock"><span>diagnostic_only</span><code>true</code><span>entry_authorized</span><code>false</code><span>can_trade</span><code>false</code><span>can_train</span><code>false</code><span>promotion_authorized</span><code>false</code></div>
           </aside>

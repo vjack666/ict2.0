@@ -841,12 +841,10 @@ def run_visual_replay(
                 "layers": snap.confirmed_context,
                 "constraints": snap.constraints.to_dict() if snap.constraints else None,
             }
-    except Exception as exc:  # pragma: no cover - defensive: never break replay
-        ahf_snapshots = None
-        for point in timeline:
-            point.setdefault("ict", {}).setdefault(
-                "context", {"status": "AHF_UNAVAILABLE", "error": str(exc)}
-            )
+    except Exception as exc:  # pragma: no cover - fail closed on canonical failure
+        raise RuntimeError(
+            "canonical AHF projection failed; refusing to emit an incomplete causal replay"
+        ) from exc
 
     setups = build_setup_state(timeline, config, ahf_snapshots=ahf_snapshots)
     return VisualBacktest(

@@ -79,6 +79,7 @@ export function visibleReplay(artifact, cursor, layers = LAYER_DEFAULTS) {
       ));
   const marketState = artifact.market_state?.[bounded] ?? null;
   const setup = artifact.setups?.[bounded] ?? null;
+  const ahfSnapshot = artifact.timeline[bounded]?.ict?.context?.ahf_snapshot ?? null;
   return {
     cursor: bounded,
     candle: artifact.candles[bounded],
@@ -89,6 +90,7 @@ export function visibleReplay(artifact, cursor, layers = LAYER_DEFAULTS) {
     trades,
     marketState,
     setup,
+    ahfSnapshot,
   };
 }
 

@@ -3,7 +3,7 @@
 - **Agente:** Codex
 - **Departamento:** D5 Assurance / D7 Delivery
 - **Fecha:** 2026-08-27
-- **Base de código:** `codex/visual-replay-wyckoff-v1-1-20260826` @ `5623a7b`
+- **Base de código:** `codex/visual-replay-wyckoff-v1-1-20260826` @ `d9d2df3`
 
 ## Objetivo
 
@@ -29,12 +29,12 @@ edge.
 
 - Suite Python relevante: **36 passed, 1 skipped**, una advertencia de pandas.
 - Suite del visor: **5 passed**; `npm run build`: **PASS**.
-- FULL: `backtest/runs/9449567103ffee7f9907518d/visual_backtest.json`.
-- PREFIX: `backtest/runs/55d6bf4d23665c557eea2c15/visual_backtest.json`.
+- FULL: `backtest/runs/eaade0989790b9390b8e872e/visual_backtest.json`.
+- PREFIX: `backtest/runs/c510fbcb5badf5111ea69437/visual_backtest.json`.
 - Seis capas presentes: `D1/H4/H1/M15/M5/M1`.
 - `FULL_PREFIX_SNAPSHOTS=96`; snapshots `market_state` y `setups` idénticos en
   toda la intersección; **8/8 PASS**.
-- El visor local sirve el FULL corregido en
+- El visor local sirve el FULL corregido post-commit en
   `http://127.0.0.1:4173/`.
 
 ## Limitaciones honestas

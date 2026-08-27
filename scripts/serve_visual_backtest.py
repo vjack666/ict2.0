@@ -9,6 +9,7 @@ import mimetypes
 from pathlib import Path, PurePosixPath
 import sys
 from urllib.parse import unquote, urlsplit
+import webbrowser
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +21,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--viewer-dir", type=Path, default=ROOT / "backtest" / "viewer" / "dist")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=4173)
+    parser.add_argument("--open", action="store_true", help="open the viewer in the default browser on start")
     return parser
 
 
@@ -109,6 +111,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"viewer=http://{host}:{port}/")
     print(f"run={run_dir.name}")
     print("mode=READ_ONLY_LOCAL; Ctrl+C to stop")
+    if args.open:
+        webbrowser.open(f"http://{host}:{port}/")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

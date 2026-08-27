@@ -323,8 +323,8 @@ export function App() {
           });
       const validated = validateArtifact(data);
       setArtifact(validated);
-      setCursor(Math.min(96, validated.candles.length - 1));
-      setPlaying(false);
+      setCursor(0);
+      setPlaying(true);
       setError("");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : String(reason));

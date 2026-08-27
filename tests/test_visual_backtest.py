@@ -53,7 +53,7 @@ def _artifact(rows: int = 32):
 def test_v11_schema_is_valid_safe_and_has_no_old_backtest_imports():
     payload = _artifact().to_dict()
     validate_visual_backtest(payload)
-    assert payload["schema_version"] == "1.1"
+    assert payload["schema_version"] == "1.2"
     assert payload["run_metadata"]["legacy_backtest"] is False
     assert payload["run_metadata"]["git_branch"] == "UNKNOWN"
     assert payload["run_metadata"]["generator_worktree_clean_before_run"] is False
@@ -68,6 +68,8 @@ def test_v11_schema_is_valid_safe_and_has_no_old_backtest_imports():
         "promotion_authorized": False,
     }
     assert payload["scientific_status"]["edge_claimed"] is False
+    assert len(payload["market_state"]) == len(payload["candles"])
+    assert len(payload["setups"]) == len(payload["candles"])
 
     for path in ("backtest/__init__.py", "backtest/replay.py", "backtest/schema.py"):
         tree = ast.parse(open(path, encoding="utf-8").read())

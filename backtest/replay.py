@@ -19,10 +19,12 @@ import pandas as pd
 
 from backtest.schema import REQUIRED_POLICY, VisualBacktest, json_safe, stable_sha256
 from backtest.wyckoff_timeline import build_wyckoff_timeline
+from backtest.market_state import build_market_state
+from backtest.setup_builder import build_setup_state
 from engine.bos.structure import StructureConfig, detect_market_structure
 from engine.market_features import build_features
 from engine.multitf_context import build_multitf_context
-from engine.sequence import SequenceConfig, run_sequence
+from engine.sequence import SequenceConfig, run_sequence_traced
 from engine.sequential_outcome import OutcomeConfig, TradeLevels, resolve_outcome
 
 
@@ -697,11 +699,30 @@ def run_visual_replay(
         "htf": htf,
         "exec_frames": {tf: featured[tf] for tf in ("M5", "M1") if tf in featured},
     }
-    est_htf_fn = htf_at
     if config.use_multitf_context:
         replay_kwargs["est_htf_ctx_fn"] = context_at
-        est_htf_fn = None
-    signals, phase_seen = run_sequence(main, est_htf_fn, config.sequence, **replay_kwargs)
+    else:
+        # run_sequence_traced routes through SequenceRunner, which only accepts
+        # est_htf_ctx_fn. Wrap the legacy single-HTF reader into a minimal
+        # context so extract_htf_layer yields the identical HTF dict (trend,
+        # sweep_up, sweep_down, pd_zones) and behaviour is unchanged.
+        def legacy_context_at(index: int) -> dict[str, Any]:
+            layer = htf_at(index)
+            return {
+                htf: {
+                    "tf": htf,
+                    "available": True,
+                    "trend": layer["trend"],
+                    "sweep_up": layer["sweep_up"],
+                    "sweep_down": layer["sweep_down"],
+                    "pd_zones": layer["pd_zones"],
+                }
+            }
+
+        replay_kwargs["est_htf_ctx_fn"] = legacy_context_at
+    signals, phase_seen, expedientes, sequence_state = run_sequence_traced(
+        main, None, config.sequence, **replay_kwargs
+    )
 
     structure_events = _visible_structure_events(
         extract_structure_events(main_raw, structure=config.structure), visible_start, visible_end
@@ -758,7 +779,7 @@ def run_visual_replay(
             "structure": "engine.bos.structure.detect_market_structure",
             "features": "engine.market_features.build_features",
             "navigation": "engine.mtf_navigation.MTFNavigator",
-            "replay": "engine.sequence.run_sequence",
+            "replay": "engine.sequence.run_sequence_traced",
             "outcome": "engine.sequential_outcome.resolve_outcome",
             "wyckoff": "engine.Wyckoff.build_wyckoff_snapshot",
         },
@@ -790,6 +811,10 @@ def run_visual_replay(
         },
         "edge": "NOT_PROVEN_BY_THIS_VIEWER",
     }
+    market_state = build_market_state(
+        frames, signals, config, visible_start, visible_end
+    )
+    setups = build_setup_state(timeline, config)
     return VisualBacktest(
         symbol=config.symbol,
         timeframe=main_tf,
@@ -804,6 +829,8 @@ def run_visual_replay(
         data_manifest=manifest,
         run_metadata=run_metadata,
         scientific_status=scientific_status,
+        market_state=market_state,
+        setups=setups,
     )
 
 

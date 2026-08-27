@@ -70,6 +70,23 @@ function formatPrice(value) {
   return Number.isFinite(Number(value)) ? Number(value).toFixed(5) : "—";
 }
 
+// Persistent-region types that carry a price zone (FVG/OB/Breaker/BPR).
+const REGION_TYPES = new Set(["FVG", "ORDER_BLOCK", "BREAKER", "BPR"]);
+
+// Map an entity's activation time to the visible candle index whose close is at
+// or before it (0 if before the visible window). The engine contract keeps
+// entity bar indices in full-frame coordinates, so the viewer positions regions
+// by time to stay robust to the visible window.
+function visibleIndexForTime(candles, isoTime) {
+  if (!isoTime) return 0;
+  const target = new Date(isoTime).getTime();
+  let found = 0;
+  candles.forEach((candle, index) => {
+    if (new Date(candle.bar_close_time).getTime() <= target) found = index;
+  });
+  return found;
+}
+
 function ReplayChart({ replay, layers }) {
   const containerRef = useRef(null);
   const tooltipRef = useRef(null);
@@ -189,6 +206,30 @@ function ReplayChart({ replay, layers }) {
           { time: chartCandles.at(-1).time, value: Number(range[key]) },
         ]);
         auxiliarySeriesRef.current.push(line);
+      });
+    }
+
+    // Persistent Market State regions (FVG/OB/Breaker/BPR) with lifecycle.
+    // The viewer only REPRESENTS the artifact; it does not compute rules.
+    if (layers.MARKET && replay.marketState) {
+      replay.marketState.entities.forEach((entity) => {
+        if (!REGION_TYPES.has(entity.type)) return;
+        if (!Number.isFinite(Number(entity.zone_high)) || !Number.isFinite(Number(entity.zone_low))) return;
+        const startIndex = visibleIndexForTime(replay.candles, entity.tradable_time || entity.confirmation_time);
+        const startTime = chartCandles[startIndex]?.time ?? chartCandles[0].time;
+        const endTime = chartCandles.at(-1).time;
+        const color = entity.state === "PARTIALLY_MITIGATED" ? "#f6b94d" : "#23b8aa";
+        ["zone_high", "zone_low"].forEach((key) => {
+          const line = chart.addSeries(LineSeries, {
+            color, lineWidth: 1, lineStyle: 0,
+            crosshairMarkerVisible: false, lastValueVisible: false, priceLineVisible: false,
+          });
+          line.setData([
+            { time: startTime, value: Number(entity[key]) },
+            { time: endTime, value: Number(entity[key]) },
+          ]);
+          auxiliarySeriesRef.current.push(line);
+        });
       });
     }
 
@@ -349,6 +390,8 @@ export function App() {
           <LayerToggle label="CHOCH" code="CHOCH" active={layers.CHOCH} count={counts.CHOCH} onToggle={toggleLayer} />
           <LayerToggle label="Wyckoff" code="WYCKOFF" active={layers.WYCKOFF} count={replay.wyckoffEvents.length} onToggle={toggleLayer} />
           <LayerToggle label="Rango" code="RANGE" active={layers.RANGE} count={snapshot.range_ref?.available ? 1 : 0} onToggle={toggleLayer} />
+          <LayerToggle label="Market State" code="MARKET" active={layers.MARKET} count={replay.marketState?.entities?.length ?? 0} onToggle={toggleLayer} />
+          <LayerToggle label="Setup State" code="SETUP" active={layers.SETUP} count={replay.setup?.estado ? 1 : 0} onToggle={toggleLayer} />
           <LayerToggle label="Operaciones" code="TRADES" active={layers.TRADES} count={replay.trades.length} onToggle={toggleLayer} />
         </details>
         <details className="side-section mtf-section" open>
@@ -401,6 +444,38 @@ export function App() {
             <div className="ohlc-grid">{[["Apertura", replay.candle.open], ["Máximo", replay.candle.high], ["Mínimo", replay.candle.low], ["Cierre", replay.candle.close]].map(([label, value]) => <div key={label}><span>{label}</span><strong>{formatPrice(value)}</strong></div>)}</div>
             <div className="delta-card">{!delta.changed && <p>Sin cambio de fase, rango, alineación, conflicto, volumen ni evento.</p>}{Object.entries(delta.fields || {}).map(([field, change]) => <div className="delta-row" key={field}><strong>{field}</strong><span>{typeof change.from === "object" ? JSON.stringify(change.from) : String(change.from ?? "—")}</span><CaretRight size={12} /><span>{typeof change.to === "object" ? JSON.stringify(change.to) : String(change.to ?? "—")}</span></div>)}{(delta.new_wyckoff_event_ids || []).map((id) => <div className="delta-event" key={id}>Nuevo evento · {id}</div>)}</div>
             <div className={`phase-card phase-${phaseTone}`}><div className="phase-title"><Clock size={17} /><span>Snapshot Wyckoff real</span></div><strong>{snapshot.phase} · {snapshot.phase_state}</strong><p>{snapshot.explanation || "Sin explicación emitida."}</p><dl><div><dt>Rango alto</dt><dd>{formatPrice(snapshot.range_ref?.high)}</dd></div><div><dt>Rango medio</dt><dd>{formatPrice(snapshot.range_ref?.mid)}</dd></div><div><dt>Rango bajo</dt><dd>{formatPrice(snapshot.range_ref?.low)}</dd></div></dl></div>
+            {layers.SETUP && replay.setup && (
+              <div className={`setup-card ${replay.setup.estado === "SETUP_READY" ? "is-ready" : ""}`}>
+                <div className="phase-title"><Flask size={17} /><span>Setup State · Context State / AHF</span></div>
+                <strong>{replay.setup.estado} · {replay.setup.active_tf}</strong>
+                <p>Proyección descriptiva del Context State canónico. No es señal de entrada.</p>
+                <div className="setup-conditions">
+                  <div><span>Presentes</span>{replay.setup.condiciones_presentes?.length ? replay.setup.condiciones_presentes.map((condition) => <code key={condition}>{condition}</code>) : <code>NINGUNA</code>}</div>
+                  <div><span>Faltantes</span>{replay.setup.condiciones_faltantes?.length ? replay.setup.condiciones_faltantes.map((condition) => <code key={condition}>{condition}</code>) : <code>NINGUNA</code>}</div>
+                </div>
+                <div className="setup-policy"><span>policy</span><code>{replay.setup.policy}</code></div>
+              </div>
+            )}
+            {layers.MARKET && replay.marketState && (
+              <div className="market-card">
+                <div className="phase-title"><GitBranch size={17} /><span>Market State persistente</span></div>
+                <div className="market-delta">
+                  <span>creadas</span><code>{replay.marketState.delta?.created?.length ?? 0}</code>
+                  <span>transiciones</span><code>{replay.marketState.delta?.transitioned?.length ?? 0}</code>
+                  <span>terminales</span><code>{replay.marketState.delta?.terminal?.length ?? 0}</code>
+                </div>
+                <div className="market-entities">
+                  <div className="section-label">Entidades vivas ({replay.marketState.entities?.length ?? 0})</div>
+                  {replay.marketState.entities?.length ? replay.marketState.entities.map((entity) => (
+                    <article key={entity.id}>
+                      <strong>{entity.type} · {entity.origin_tf}</strong>
+                      <span>{entity.state} · {entity.role}</span>
+                      <code>{entity.id}</code>
+                    </article>
+                  )) : <p>NINGUNA</p>}
+                </div>
+              </div>
+            )}
             <div className="event-list"><div className="section-label">Entidades nuevas ahora</div>{[...currentStructure, ...currentWyckoff].length === 0 && <p>NINGUNA</p>}{[...currentStructure, ...currentWyckoff].map((event) => <article key={event.id}><strong>{event.id}</strong><span>{event.kind || event.event_type} · {event.tf || artifact.timeframe}</span><code>{event.parent_id || event.source_ref || "sin padre/ref"}</code></article>)}</div>
             <details className="evidence-panel" id="evidence" open><summary className="section-label">Evidencia exacta</summary><div className="evidence-line"><span>decision_time</span><code>{replay.point.decision_time}</code></div><div className="evidence-line"><span>barra</span><code>{replay.candle.bar_open_time} → {replay.candle.bar_close_time}</code></div>{Object.entries(replay.point.asof_by_tf).map(([tf, asof]) => <div className="evidence-line" key={tf}><span>asof {tf}</span><code>{asof || "NO DISPONIBLE"}</code></div>)}<div className="evidence-line"><span>volume source · {artifact.authority_tf}</span><code>{authorityManifest?.volume_source || "NO DISPONIBLE"}</code></div><div className="evidence-line"><span>run/config</span><code>{artifact.run_metadata.run_id} · {config.timeframes.join("/")} · warmup {config.warmup_bars} · {config.timestamp_semantics.toUpperCase()}_TIME</code></div><div className="evidence-line"><span>git lineage</span><code>{artifact.run_metadata.git_branch} · clean={String(artifact.run_metadata.generator_worktree_clean_before_run)} · py {artifact.run_metadata.python_version} · node {artifact.run_metadata.node_version}</code></div><div className="evidence-line"><span>config_sha256</span><code>{artifact.run_metadata.config_sha256}</code></div><div className="evidence-refs"><span>evidence_refs</span>{(snapshot.evidence_refs || []).length ? snapshot.evidence_refs.map((ref) => <code key={ref}>{ref}</code>) : <code>NINGUNA</code>}</div><div className="hash-line"><CheckCircle size={15} /><code>{artifact.run_metadata.artifact_content_sha256}</code></div></details>
             <div className="scientific-lock"><span>PIT Wyckoff</span><code>{scientific.pit_temporal_consistency.points_checked}/80 · {scientific.pit_temporal_consistency.status}</code><span>Factibilidad H1</span><code>{scientific.h1_feasibility.observations}/{scientific.h1_feasibility.required} · INSUFICIENTE</code><span>FSM</span><code>RUNTIME BASIC</code><span>Edge</span><code>NO PROBADO</code></div>

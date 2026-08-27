@@ -149,6 +149,25 @@ code, .ohlc-grid strong { font-variant-numeric: tabular-nums; }
 .phase-card dl div { display: flex; justify-content: space-between; font-size: 8px; }
 .phase-card dt { color: var(--muted); }
 .phase-card dd { margin: 0; color: #dce6f3; }
+.setup-card, .market-card { border: 1px solid var(--line); background: var(--surface); border-radius: 9px; padding: 10px; display: grid; gap: 8px; }
+.setup-card.is-ready { border-color: #1b4738; background: #0f1a17; }
+.setup-card > strong { color: #dce6f3; font-size: 10px; }
+.setup-card p { color: var(--muted); font-size: 9px; line-height: 1.45; margin: 0; }
+.setup-conditions { display: grid; gap: 6px; }
+.setup-conditions > div { display: grid; gap: 3px; }
+.setup-conditions span, .setup-policy span { color: var(--muted); font-size: 7px; text-transform: uppercase; }
+.setup-conditions code, .setup-policy code { color: #b7c5d6; font-size: 8px; overflow-wrap: anywhere; }
+.setup-policy { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 7px; }
+.setup-policy code { color: #e2d66f; }
+.market-delta { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 8px; }
+.market-delta span { color: var(--muted); }
+.market-delta code { color: #9fc3ff; text-align: right; }
+.market-entities { display: grid; gap: 6px; }
+.market-entities p { color: var(--muted); font-size: 9px; margin: 0; }
+.market-entities article { display: grid; gap: 3px; padding-top: 6px; border-top: 1px solid var(--line); }
+.market-entities article strong { color: #aacaff; font-size: 9px; overflow-wrap: anywhere; }
+.market-entities article span { color: #c3cfdd; font-size: 8px; }
+.market-entities article code { color: var(--muted); font-size: 7px; overflow-wrap: anywhere; }
 .event-list { display: grid; gap: 6px; }
 .event-list article { display: grid; gap: 3px; padding-top: 6px; border-top: 1px solid var(--line); }
 .event-list article strong { color: #aacaff; font-size: 9px; overflow-wrap: anywhere; }

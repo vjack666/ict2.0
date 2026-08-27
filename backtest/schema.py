@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 
-SCHEMA_VERSION = "1.1"
+SCHEMA_VERSION = "1.2"
 REQUIRED_POLICY = {
     "diagnostic_only": True,
     "entry_authorized": False,
@@ -113,6 +113,8 @@ class VisualBacktest:
     data_manifest: dict[str, Any]
     run_metadata: dict[str, Any]
     scientific_status: dict[str, Any]
+    market_state: list[dict[str, Any]] = field(default_factory=list)
+    setups: list[dict[str, Any]] = field(default_factory=list)
     schema_version: str = field(default=SCHEMA_VERSION, init=False)
 
     @property
@@ -144,6 +146,8 @@ class VisualBacktest:
                 "data_manifest": self.data_manifest,
                 "run_metadata": self.run_metadata,
                 "scientific_status": self.scientific_status,
+                "market_state": self.market_state,
+                "setups": self.setups,
             }
         )
 
@@ -187,6 +191,7 @@ def validate_visual_backtest(payload: dict[str, Any]) -> None:
         "schema_version", "symbol", "timeframe", "authority_tf", "visible_window",
         "policy", "candles", "structure_events", "trades", "timeline",
         "wyckoff_events", "data_manifest", "run_metadata", "scientific_status",
+        "market_state", "setups",
     }
     missing = required - set(payload)
     if missing:
@@ -489,6 +494,72 @@ def validate_visual_backtest(payload: dict[str, Any]) -> None:
     )[:24]
     if metadata["run_id"] != expected_run_id:
         raise ValueError("run_id does not match commit, config and data slices")
+
+    # --- FASE 4 (SDD v1.2): Market State + Setup State validation ---
+    # Validated before the content hash so malformed projections fail closed
+    # regardless of hash consistency.
+    market_state = payload.get("market_state")
+    setups = payload.get("setups")
+    if not isinstance(market_state, list) or len(market_state) != len(candles):
+        raise ValueError("market_state must contain exactly one snapshot per visible candle")
+    if not isinstance(setups, list) or len(setups) != len(candles):
+        raise ValueError("setups must contain exactly one entry per visible candle")
+
+    _MARKET_ENTITY_FIELDS = {
+        "id", "type", "origin_tf", "role", "direction", "zone_high", "zone_low",
+        "state", "parent_object", "related_objects", "candidate_bar",
+        "confirmation_bar", "tradable_bar", "first_touch_bar", "invalidated_bar",
+        "mitigation_level", "age_bars",
+    }
+    for position, (snapshot, point) in enumerate(zip(market_state, timeline, strict=True)):
+        snapshot = _require_fields(
+            snapshot,
+            {"decision_time", "authority_tf", "entities", "terminal_entities", "delta"},
+            scope=f"market_state[{position}]",
+        )
+        if _timestamp(snapshot["decision_time"], field_name="market_state.decision_time") != _timestamp(
+            point["decision_time"], field_name="timeline.decision_time"
+        ):
+            raise ValueError(f"market_state decision_time mismatch at index {position}")
+        if snapshot["authority_tf"] != payload["authority_tf"]:
+            raise ValueError(f"market_state authority mismatch at index {position}")
+        for entity in snapshot["entities"]:
+            entity = _require_fields(entity, _MARKET_ENTITY_FIELDS, scope=f"market_state[{position}].entities")
+            if entity["origin_tf"] not in timeframe_manifest:
+                raise ValueError(f"market_state entity origin_tf not in manifest at index {position}")
+            if entity["state"] not in {
+                "CREATED", "ACTIVE", "PARTIALLY_MITIGATED", "MITIGATED",
+                "INVALIDATED", "EXPIRED", "CONSUMED",
+            }:
+                raise ValueError(f"market_state entity invalid state at index {position}")
+        delta = _require_fields(
+            snapshot["delta"], {"created", "transitioned", "terminal"}, scope=f"market_state[{position}].delta"
+        )
+        if not isinstance(delta["created"], list) or not isinstance(delta["terminal"], list):
+            raise ValueError(f"market_state delta lists invalid at index {position}")
+
+    for position, (setup, point) in enumerate(zip(setups, timeline, strict=True)):
+        setup = _require_fields(
+            setup,
+            {
+                "id", "decision_time", "authority_tf", "direction", "cadena_htf_ltf",
+                "estado", "active_tf", "condiciones_presentes", "condiciones_faltantes",
+                "invalidacion", "evidence_refs", "policy",
+            },
+            scope=f"setups[{position}]",
+        )
+        if _timestamp(setup["decision_time"], field_name="setup.decision_time") != _timestamp(
+            point["decision_time"], field_name="timeline.decision_time"
+        ):
+            raise ValueError(f"setup decision_time mismatch at index {position}")
+        if setup["estado"] not in {
+            "WAIT_D1", "D1_LOCKED", "WAIT_H4", "H4_LOCKED", "WAIT_H1",
+            "WAIT_LTF", "SETUP_READY",
+        }:
+            raise ValueError(f"setup invalid estado at index {position}")
+        if setup["policy"] != "CONTEXT_STATE_NOT_ENTRY_SIGNAL":
+            raise ValueError(f"setup must disclose context-only policy at index {position}")
+
     expected_hash = artifact_content_sha256(payload)
     if metadata.get("artifact_content_sha256") != expected_hash:
         raise ValueError("artifact_content_sha256 does not match payload")

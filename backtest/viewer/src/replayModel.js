@@ -5,18 +5,30 @@ export const LAYER_DEFAULTS = Object.freeze({
   WYCKOFF: true,
   RANGE: true,
   TRADES: true,
+  MARKET: true,
+  SETUP: true,
 });
+
+const SUPPORTED_SCHEMAS = new Set(["1.1", "1.2"]);
 
 export function validateArtifact(value) {
   if (!value || typeof value !== "object") throw new Error("El archivo no contiene un objeto JSON.");
-  if (value.schema_version !== "1.1") {
-    throw new Error(`Schema no compatible: ${value.schema_version ?? "ausente"}; se requiere 1.1.`);
+  if (!SUPPORTED_SCHEMAS.has(value.schema_version)) {
+    throw new Error(`Schema no compatible: ${value.schema_version ?? "ausente"}; se requiere 1.1 o 1.2.`);
   }
   for (const key of ["candles", "timeline", "structure_events", "wyckoff_events", "trades"]) {
     if (!Array.isArray(value[key])) throw new Error(`Falta la colección ${key}.`);
   }
   if (!value.candles.length || value.timeline.length !== value.candles.length) {
     throw new Error("Candles y timeline deben tener igual longitud no vacía.");
+  }
+  if (value.schema_version === "1.2") {
+    for (const key of ["market_state", "setups"]) {
+      if (!Array.isArray(value[key])) throw new Error(`Falta la colección ${key}.`);
+      if (value[key].length !== value.candles.length) {
+        throw new Error(`${key} debe tener una entrada por vela visible.`);
+      }
+    }
   }
   if (
     value.policy?.diagnostic_only !== true
@@ -65,6 +77,8 @@ export function visibleReplay(artifact, cursor, layers = LAYER_DEFAULTS) {
               result_confirmed_index: null,
             }
       ));
+  const marketState = artifact.market_state?.[bounded] ?? null;
+  const setup = artifact.setups?.[bounded] ?? null;
   return {
     cursor: bounded,
     candle: artifact.candles[bounded],
@@ -73,6 +87,8 @@ export function visibleReplay(artifact, cursor, layers = LAYER_DEFAULTS) {
     structureEvents,
     wyckoffEvents,
     trades,
+    marketState,
+    setup,
   };
 }
 

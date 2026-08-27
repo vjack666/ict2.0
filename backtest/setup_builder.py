@@ -1,24 +1,33 @@
 """Projection of the canonical Context State / AHF into a Setup State per candle.
 
-This module is an ADAPTER / PROJECTION / EXPLANATION (FASE 4, SDD v1.2 §5). It is
-NOT a second setup FSM and it does NOT recompute AHF rules. The project already
-owns the setup machine inside Context State / AHF:
+FASE 4.1 (corrección de fidelidad al grafo): este módulo es un ADAPTER /
+PROJECTION / EXPLANATION del estado AHF canónico. NO re-deriva la FSM de setup.
 
-    WAIT_D1 -> D1_LOCKED -> WAIT_H4 -> H4_LOCKED -> WAIT_H1 -> WAIT_LTF -> SETUP_READY
+Camino correcto (grafo como mapa):
 
-This module only EXPOSES and EXPLAINS that canonical state by reading the fields
-already present in ``timeline[i]["ict"]["context"]`` (the serialized
-``engine.mtf_navigation.MarketState``). It never derives new decision logic.
+    AdaptiveHierarchicalFunnel.step(T)   # engine/ahf.py — AUTORIDAD
+              ↓
+         AHFSnapshot
+              ↓
+    setup_builder.py  SOLO ADAPTA
+              ↓
+        JSON / VISOR
+
+El replay (backtest/replay.py) instancia el funnel una vez por run y serializa
+cada AHFSnapshot en timeline[i]["ict"]["context"]; también pasa la lista de
+ahf_snapshots a build_setup_state. Este módulo traduce AHFSnapshot -> Setup State
+y nunca recalcula reglas AHF (no hay transiciones propias, no hay invalidacion=[]
+por defecto).
 """
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from backtest.schema import json_safe
 
 
-# The canonical setup machine states (descriptive projection, not a new FSM).
+# The canonical setup machine states (descriptive projection of AHFSnapshot.state).
 SETUP_STATES = (
     "WAIT_D1",
     "D1_LOCKED",
@@ -27,114 +36,103 @@ SETUP_STATES = (
     "WAIT_H1",
     "WAIT_LTF",
     "SETUP_READY",
+    "OUTCOME",
 )
 
 
-def _bias(layer: Mapping[str, Any] | None) -> str:
-    if not layer:
-        return "UNKNOWN"
-    return str(layer.get("structure_bias") or "UNKNOWN")
+def _translate_snapshot(snap: Any, point: Mapping[str, Any], authority_tf: str) -> dict[str, Any]:
+    """Translate a canonical AHFSnapshot into a Setup State projection.
 
-
-def _has_zones(layer: Mapping[str, Any] | None) -> bool:
-    if not layer:
-        return False
-    return bool(layer.get("zones"))
-
-
-def _derive_setup(context: Mapping[str, Any]) -> dict[str, Any]:
-    """Derive the setup machine state from the canonical context (read-only).
-
-    This is a descriptive projection: it reads ``structure_bias`` and ``zones``
-    already computed by the canonical Context State / AHF engine. It does not
-    recompute any AHF rule.
+    The AHF funnel is the single source of truth for state/active_tf/invalidation.
+    We only rename/flatten fields for the viewer; we do NOT recompute logic.
+    ``snap`` may be an AHFSnapshot dataclass or its .to_dict() mapping.
     """
-    layers = context.get("layers") or {}
-    d1 = layers.get("D1")
-    h4 = layers.get("H4")
-    h1 = layers.get("H1")
-    exec_tf = str(context.get("exec_tf") or "")
+    if hasattr(snap, "to_dict"):
+        snap = snap.to_dict()
+    state = str(snap.get("state") or "WAIT_D1")
+    active_tf = str(snap.get("active_tf") or "H1")
+    confirmed = snap.get("confirmed_context") or {}
+    last_event = str(snap.get("last_event") or "NOOP")
+    invalidation_reason = snap.get("invalidation_reason")
 
-    d1_bias = _bias(d1)
-    h4_bias = _bias(h4)
-    h1_bias = _bias(h1)
+    # Present/ missing layers: which HTF context layers the AHF has locked.
+    presentes = [tf for tf in ("D1", "H4", "H1") if tf in confirmed]
+    faltantes = [tf for tf in ("D1", "H4", "H1") if tf not in confirmed]
 
-    presentes: list[str] = []
-    faltantes: list[str] = []
+    cadena = [tf for tf in ("D1", "H4", "H1", active_tf) if tf]
+    # de-duplicate preserving order
+    seen = set()
+    cadena = [tf for tf in cadena if not (tf in seen or seen.add(tf))]
 
-    if d1_bias != "UNKNOWN":
-        presentes.append("D1 context")
-        state = "D1_LOCKED"
-    else:
-        faltantes.append("D1 context")
-        state = "WAIT_D1"
+    invalidacion = [invalidation_reason] if invalidation_reason else []
 
-    if state == "D1_LOCKED":
-        if h4_bias != "UNKNOWN":
-            presentes.append("H4 POI")
-            state = "H4_LOCKED"
-        else:
-            faltantes.append("H4 POI")
-            state = "WAIT_H4"
-
-    if state == "H4_LOCKED":
-        if h1_bias != "UNKNOWN":
-            presentes.append("H1 process confirmation")
-            state = "WAIT_LTF"
-        else:
-            faltantes.append("H1 process confirmation")
-            state = "WAIT_H1"
-
-    if state == "WAIT_LTF":
-        # LTF confirmation is the execution layer (exec_tf) having actionable zones.
-        exec_layer = layers.get(exec_tf)
-        if _has_zones(exec_layer):
-            presentes.append(f"{exec_tf} LTF confirmation")
-            state = "SETUP_READY"
-        else:
-            faltantes.append(f"{exec_tf} LTF confirmation")
-
-    active_tf = exec_tf or "M15"
     return {
+        "id": f"SETUP_{int(point['index'])}",
+        "decision_time": point["decision_time"],
+        "authority_tf": authority_tf,
+        "direction": None,
+        "cadena_htf_ltf": cadena,
         "estado": state,
         "active_tf": active_tf,
-        "presentes": presentes,
-        "faltantes": faltantes,
-        "invalidacion": [],
+        "condiciones_presentes": presentes,
+        "condiciones_faltantes": faltantes,
+        "invalidacion": invalidacion,
+        "evidence_refs": [],
+        "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
     }
 
 
 def build_setup_state(
     timeline: list[dict[str, Any]],
     config: Any,
+    ahf_snapshots: Sequence[Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Build a Setup State projection per visible candle.
 
-    Returns a list of setups (one per timeline point), each exposing the canonical
-    Context State / AHF machine state without recomputing AHF rules.
+    FASE 4.1: the Setup State is a pure translation of the canonical AHFSnapshot
+    (produced by engine.ahf.AdaptiveHierarchicalFunnel). When ``ahf_snapshots`` is
+    supplied (by the replay), we translate it directly. We never re-derive the FSM.
+
+    If ``ahf_snapshots`` is absent, we fall back to whatever the timeline already
+    carries under ``ict.context`` (status NOT_REQUESTED -> empty projection) and we
+    DO NOT invent states.
     """
     authority_tf = config.authority_tf.upper()
-    setups: list[dict[str, Any]] = []
+
+    if ahf_snapshots is not None and len(ahf_snapshots) == len(timeline):
+        return json_safe(
+            [
+                _translate_snapshot(snap, point, authority_tf)
+                for snap, point in zip(ahf_snapshots, timeline)
+            ]
+        )
+
+    # Legacy fallback: context not populated by the funnel (e.g. tests that mock
+    # the replay). Translate whatever AHFSnapshot the timeline carries, else empty.
+    out: list[dict[str, Any]] = []
     for point in timeline:
-        context = point.get("ict", {}).get("context") or {}
-        derived = _derive_setup(context)
-        setups.append(
+        ctx = point.get("ict", {}).get("context") or {}
+        snap = ctx.get("ahf_snapshot") or ctx.get("snapshot")
+        if snap:
+            out.append(_translate_snapshot(snap, point, authority_tf))
+            continue
+        out.append(
             {
                 "id": f"SETUP_{int(point['index'])}",
                 "decision_time": point["decision_time"],
                 "authority_tf": authority_tf,
                 "direction": None,
-                "cadena_htf_ltf": ["D1", "H4", "H1", derived["active_tf"]],
-                "estado": derived["estado"],
-                "active_tf": derived["active_tf"],
-                "condiciones_presentes": derived["presentes"],
-                "condiciones_faltantes": derived["faltantes"],
-                "invalidacion": derived["invalidacion"],
+                "cadena_htf_ltf": [authority_tf],
+                "estado": "WAIT_D1",
+                "active_tf": authority_tf,
+                "condiciones_presentes": [],
+                "condiciones_faltantes": ["D1", "H4", "H1"],
+                "invalidacion": [],
                 "evidence_refs": [],
                 "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
             }
         )
-    return json_safe(setups)
+    return json_safe(out)
 
 
 __all__ = ["SETUP_STATES", "build_setup_state"]

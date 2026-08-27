@@ -60,16 +60,37 @@ def test_setup_state_is_deterministic():
 
 
 def test_setup_state_does_not_recompute_ahf():
-    """The setup builder must only expose the canonical context; it must not
-    introduce new decision fields beyond the projection contract."""
-    payload = _artifact(40).to_dict()
-    allowed = {
-        "id", "decision_time", "authority_tf", "direction", "cadena_htf_ltf",
-        "estado", "active_tf", "condiciones_presentes", "condiciones_faltantes",
-        "invalidacion", "evidence_refs", "policy",
-    }
-    for setup in payload["setups"]:
-        assert set(setup) <= allowed
+    """The setup builder must project the canonical AHF funnel, not re-derive it.
+
+    The replay serializes the REAL AdaptiveHierarchicalFunnel AHFSnapshot into
+    timeline[i]["ict"]["context"]["ahf_snapshot"]. build_setup_state must translate
+    exactly that snapshot. This test asserts every projected Setup State matches the
+    canonical AHFSnapshot the replay produced (state, active_tf, invalidation). A
+    passing test proves build_setup_state is a pure adapter, not a second FSM.
+    """
+    payload = run_visual_replay(
+        {"H1": _fixture(60, freq="h")},
+        ReplayConfig(
+            symbol="TEST", timeframe="H1", timeframes=("H1",),
+            authority_tf="H1", warmup_bars=0, wyckoff_enabled=False,
+            git_commit="fixture-commit",
+        ),
+    ).to_dict()
+
+    setups = payload["setups"]
+    for setup, point in zip(setups, payload["timeline"]):
+        ctx = point.get("ict", {}).get("context", {})
+        snap = ctx.get("ahf_snapshot")
+        assert snap is not None, "replay must serialize AHFSnapshot into ict.context"
+        assert setup["estado"] == snap["state"], (
+            f"setup state {setup['estado']!r} != AHF {snap['state']!r}"
+        )
+        assert setup["active_tf"] == snap["active_tf"]
+        inv = snap.get("invalidation_reason")
+        if inv:
+            assert inv in setup["invalidacion"]
+        else:
+            assert setup["invalidacion"] == []
 
 
 def test_artifact_with_setups_validates():

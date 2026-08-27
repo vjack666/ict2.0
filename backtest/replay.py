@@ -26,6 +26,7 @@ from engine.market_features import build_features
 from engine.multitf_context import build_multitf_context
 from engine.sequence import SequenceConfig, run_sequence_traced
 from engine.sequential_outcome import OutcomeConfig, TradeLevels, resolve_outcome
+from engine.ahf import AdaptiveHierarchicalFunnel, AHFConfig
 
 
 REQUIRED_OHLC = ("time", "open", "high", "low", "close")
@@ -814,7 +815,40 @@ def run_visual_replay(
     market_state = build_market_state(
         frames, signals, config, visible_start, visible_end
     )
-    setups = build_setup_state(timeline, config)
+
+    # FASE 4.1: instanciar el funnel AHF canónico (engine/ahf.py) UNA vez por run
+    # y serializar cada AHFSnapshot en timeline[i]["ict"]["context"]. setup_builder
+    # luego SOLO TRADUCE ese snapshot; no re-deriva la FSM.
+    # Nota de memoria: serializamos un dict PLANO (sin el history completo del
+    # funnel, que crece O(n^2) por vela) para no inflar el artifact.
+    decision_times = [point["decision_time"] for point in timeline]
+    try:
+        ahf = AdaptiveHierarchicalFunnel(frames, AHFConfig())
+        ahf_snapshots = ahf.run_timeline(decision_times, exec_tf=main_tf)
+        for point, snap in zip(timeline, ahf_snapshots):
+            last_inv = None
+            if snap.history:
+                last_inv = snap.history[-1].invalidation_reason
+            point.setdefault("ict", {})["context"] = {
+                "status": "AHF_LOCKED",
+                "ahf_snapshot": {
+                    "state": snap.state.value,
+                    "active_tf": snap.active_tf,
+                    "confirmed_context": snap.confirmed_context,
+                    "last_event": snap.last_event.value,
+                    "invalidation_reason": last_inv,
+                },
+                "layers": snap.confirmed_context,
+                "constraints": snap.constraints.to_dict() if snap.constraints else None,
+            }
+    except Exception as exc:  # pragma: no cover - defensive: never break replay
+        ahf_snapshots = None
+        for point in timeline:
+            point.setdefault("ict", {}).setdefault(
+                "context", {"status": "AHF_UNAVAILABLE", "error": str(exc)}
+            )
+
+    setups = build_setup_state(timeline, config, ahf_snapshots=ahf_snapshots)
     return VisualBacktest(
         symbol=config.symbol,
         timeframe=main_tf,

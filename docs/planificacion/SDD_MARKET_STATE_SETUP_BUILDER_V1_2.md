@@ -226,6 +226,34 @@ Responsabilidad:
 Reutiliza: `engine/market_object.py` (ObjectState, _ALLOWED_TRANSITIONS,
 to_dict/from_dict), `engine/sequence.py` (MarketObjects ya creados).
 
+### 6.1 Semántica de lifecycle HTF/LTF (decisión contractual — FASE 4.1)
+
+El replay v1.1 navega por la vela del `main_tf` (timeframe de ejecución). Una
+zona FVG/OB con `origin_tf` D1/H4/H1/M15/M5/M1 puede cambiar su lifecycle
+(ACTIVE → PARTIALLY_MITIGATED) por **contacto observado en la vela del `main_tf`**,
+no requiere una vela de su propio `origin_tf`. Esta es la semántica intencional:
+el `main_tf` es la lente de observación puntual; el `origin_tf` es el sello de
+capa (dónde nació la zona), no una restricción de dónde se observa su mitigación.
+
+Las transiciones terminales `MITIGATED / INVALIDATED / EXPIRED / CONSUMED` las
+emite el **motor canónico** (`engine.detectors` / `engine.sequence`) dentro de
+`ObjectState`; `market_state.py` las respeta y mueve el objeto a `terminal_entities`
+(history). `market_state.py` NO inventa esas transiciones: es proyección pura. Por
+tanto el lifecycle COMPLETO se observa en el artifact cuando los datos canónicos
+lo producen; en muestras donde el motor solo alcanza PARTIALLY_MITIGATED, el
+artifact refleja exactamente eso (dos estados), sin fabricar terminales.
+
+### 6.2 Setup State = traducción de AHFSnapshot (decisión contractual — FASE 4.1)
+
+`setup_builder.build_setup_state` es un **adaptador puro** del estado AHF canónico.
+El replay instancia `engine.ahf.AdaptiveHierarchicalFunnel` una vez por run y
+serializa cada `AHFSnapshot` en `timeline[i]["ict"]["context"]["ahf_snapshot"]`.
+`setup_builder` traduce `AHFSnapshot.state / active_tf / confirmed_context /
+history[-1].invalidation_reason` a Setup State. **No re-deriva la FSM**: elimina
+cualquier lógica propia de transición (el `_derive_setup` previo se removió). El
+test `test_setup_state_does_not_recompute_ahf` compara `SetupState(T)` contra
+`AHFSnapshot(T)` punto a punto y falla si difieren.
+
 ## 7. `backtest/schema.py` (cambios)
 
 - `SCHEMA_VERSION` → **"1.2"**.

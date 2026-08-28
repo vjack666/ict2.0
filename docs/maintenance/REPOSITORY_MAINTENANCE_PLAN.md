@@ -1,8 +1,8 @@
 # Plan empresarial de limpieza y mantenimiento — ICT SYSTEM
 
-**Fecha:** 2026-08-28  
-**Responsable operativo:** Codex / Repository Steward  
-**Autoridad:** usuario/cliente; aprobación independiente para gates y promoción  
+**Fecha:** 2026-08-28
+**Responsable operativo:** Codex / Repository Steward
+**Autoridad:** usuario/cliente; aprobación independiente para gates y promoción
 **Modo:** `LOCAL_ONLY`
 
 ## Objetivo

@@ -339,3 +339,63 @@ def test_full_vs_save_restore_continue_identical():
     assert obj_cont.touch_count == obj_full.touch_count
     assert obj_cont.first_touch_bar == obj_full.first_touch_bar
     assert obj_cont.invalidated_bar == obj_full.invalidated_bar
+
+
+# === Corrección temporal LTF/HTF (Codex H4) — frontera PIT por timestamp =====
+
+def test_evaluate_requires_tf_present_fail_closed():
+    # Falta tf en la barra => ValueError (no se asume M15 por defecto).
+    obj = _fvg_bull(10, 1.0995, 1.1005)
+    bad = {"__index__": 11, "time": _ts(11), "open": 1.1002, "high": 1.1010,
+           "low": 1.1000, "close": 1.1008}  # sin clave "tf"
+    with pytest.raises(ValueError):
+        evaluate(obj, bad, authority_tf="M15")
+    assert obj.state == ObjectState.ACTIVE
+    assert obj.first_touch_bar is None
+
+
+def test_observe_lower_tf_rejects_wrong_tf_h4_disguised_as_m15():
+    # H4 disfrazado de M15 en observe_lower_tf => ValueError.
+    # Un objeto H4 no puede registrarse como observación M15.
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    h4_bar = _bar(11, 1.0996, 1.0998, 1.0990, 1.0994, tf="H4")
+    with pytest.raises(ValueError):
+        observe_lower_tf(ob_h4, h4_bar, observed_tf="M15")
+    assert "M15" not in ob_h4.meta.get("observations", {})
+    assert ob_h4.state == ObjectState.ACTIVE
+
+
+def test_observe_rejects_missing_tf_fail_closed():
+    # Falta tf en la barra observada => ValueError.
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    bad = {"__index__": 11, "time": _ts(11), "open": 1.0996, "high": 1.0998,
+           "low": 1.0990, "close": 1.0994}  # sin clave "tf"
+    with pytest.raises(ValueError):
+        observe_lower_tf(ob_h4, bad, observed_tf="M15")
+    assert "M15" not in ob_h4.meta.get("observations", {})
+
+
+def test_m15_later_by_timestamp_smaller_index_not_before_tradable():
+    # M15 posterior por timestamp PERO con índice menor que el objeto H4
+    # (índice H4 = 10) debe observarse correctamente (NO BEFORE_TRADABLE).
+    # Esto cierra el defecto cross-TF: la frontera PIT se decide por timestamp.
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")  # tradable_bar=10, tradable_time=_ts(10)
+    m15_bar = {"__index__": 5, "time": _ts(20), "tf": "M15",
+               "open": 1.0996, "high": 1.0998, "low": 1.0990, "close": 1.0994}
+    dec = observe_lower_tf(ob_h4, m15_bar, observed_tf="M15")
+    assert dec.reason != "BEFORE_TRADABLE"
+    assert dec.changed is False  # observación no muta estado oficial
+    obs = ob_h4.meta["observations"]["M15"]
+    assert len(obs) == 1
+    assert obs[0]["bar"] == 5  # índice M15 preservado, no descartado
+
+
+def test_double_observation_same_bar_idempotent():
+    # Doble observación de la misma vela => sin duplicación.
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    b = _bar(11, 1.0996, 1.0998, 1.0990, 1.0994, tf="M15")
+    d1 = observe_lower_tf(ob_h4, b, observed_tf="M15")
+    d2 = observe_lower_tf(ob_h4, b, observed_tf="M15")
+    assert d1.changed is False and d2.changed is False
+    assert len(ob_h4.meta["observations"]["M15"]) == 1
+    assert len(ob_h4.meta.get("_seen_events", set())) >= 1

@@ -72,6 +72,13 @@ ejecutiva y las reglas de delegación están en
 | `docs/planificacion/SDD_HERMES_MISSION_CONTROLLER.md` | Contrato normativo del motor de misiones autónomas, persistencia, delegación, recuperación y terminación. | Diseño autorizado; implementación pendiente |
 | `.hermes/plans/2026-08-20_HERMES_MISSION_CONTROLLER.md` | Plan MC-0..MC-8 con gates obligatorios. | Autorizado para ejecución por fases |
 
+### Capa de composición del motor
+
+| Archivo | Rol | Estado |
+| --- | --- | --- |
+| `engine/setup_builder.py` | Capa de composición (Lifecycle → Market State → Setup Builder): ensambla `Setup` ICT/SMC completos desde `MarketState` histórico (`context_htf → poi → refinement → confirmation → trigger`). | **PROMOVIDO CON REVISIÓN 2026-08-28 (H1–H4 cerrados; sin CERTIFIED)** |
+| `docs/planificacion/SDD_FVG_OB_ENGINE.md` §13 | Contrato de diseño de Setup Builder (modelo, separación `object_state` vs `setup_eligibility`, snapshot histórico sin look-ahead). | PROMOVIDO CON REVISIÓN 2026-08-28 (H1–H4 cerrados; sin CERTIFIED) |
+
 ### Contratos con ruta canónica
 
 | Concepto | Ruta canónica | Ruta de compatibilidad |

@@ -16,8 +16,8 @@ def _ts(n):
     return datetime(2024, 3, 15, tzinfo=timezone.utc) + timedelta(minutes=n)
 
 
-def _row(i, o, h, l, c):
-    return {"__index__": i, "time": _ts(i), "open": o, "high": h, "low": l, "close": c}
+def _row(i, o, h, l, c, tf="M15"):
+    return {"__index__": i, "tf": tf, "time": _ts(i), "open": o, "high": h, "low": l, "close": c}
 
 
 # Velas M15: FVG bull nace en bar 10 (gap entre first.high y third.low).

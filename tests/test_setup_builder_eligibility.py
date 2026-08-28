@@ -201,5 +201,64 @@ def test_classifier_does_not_mutate_market_objects():
     assert poi2.state is ObjectState.INVALIDATED
 
 
+# --- Tests OBLIGATORIOS del brief (H2+H3) via classify_eligibility ---------- #
+def _make_complete_setup(direction: int, *, with_confirmation: bool = True,
+                         with_trigger: bool = True) -> Setup:
+    """Setup COMPLETO con POI/refinement/confirmation/trigger de la misma direccion."""
+    poi = _make_mo(Role.POI, origin_tf="H4", direction=direction, state=ObjectState.ACTIVE)
+    ref = _make_mo(Role.REFINEMENT, origin_tf="H1", direction=direction, state=ObjectState.ACTIVE)
+    conf = (
+        _make_mo(Role.CONFIRMATION, origin_tf="H4", direction=direction,
+                 state=ObjectState.ACTIVE, mo_type=ObjectType.BOS)
+        if with_confirmation else None
+    )
+    trig = (
+        _make_mo(Role.TRIGGER, origin_tf="M15", direction=direction,
+                 state=ObjectState.ACTIVE, mo_type=ObjectType.DISPLACEMENT)
+        if with_trigger else None
+    )
+    return Setup(symbol="EURUSD", direction=direction, poi=poi, refinement=ref,
+                 confirmation=conf, trigger=trig)
+
+
+def test_complete_setup_eligible_when_bias_aligned():
+    """Setup completo (confirmation+trigger) bajo sesgo coincidente => ELIGIBLE."""
+    s = _make_complete_setup(direction=1)
+    result = classify_eligibility(s, {"htf_bias": "bullish"}, require_complete=True)
+    assert result is SetupEligibility.ELIGIBLE
+    assert s.eligibility is SetupEligibility.ELIGIBLE
+
+
+def test_bearish_setup_blocked_under_bullish_bias():
+    """H3: setup bearish bajo sesgo bullish => BLOCKED (direction vs htf_bias)."""
+    s = _make_complete_setup(direction=-1)
+    result = classify_eligibility(s, {"htf_bias": "bullish"}, require_complete=True)
+    assert result is SetupEligibility.BLOCKED
+    assert "not bullish" in s.reason
+
+
+def test_setup_blocked_when_confirmation_missing():
+    """H2: falta confirmation (BOS) => BLOCKED bajo require_complete."""
+    s = _make_complete_setup(direction=1, with_confirmation=False)
+    result = classify_eligibility(s, {"htf_bias": "bullish"}, require_complete=True)
+    assert result is SetupEligibility.BLOCKED
+    assert "confirmation" in s.reason
+
+
+def test_setup_blocked_when_trigger_missing():
+    """H2: falta trigger (DISPLACEMENT) => BLOCKED bajo require_complete."""
+    s = _make_complete_setup(direction=1, with_trigger=False)
+    result = classify_eligibility(s, {"htf_bias": "bullish"}, require_complete=True)
+    assert result is SetupEligibility.BLOCKED
+    assert "trigger" in s.reason
+
+
+def test_complete_check_skipped_when_not_required():
+    """Sin require_complete, un setup sin confirmation/trigger NO se bloquea por eso."""
+    s = _make_complete_setup(direction=1, with_confirmation=False, with_trigger=False)
+    result = classify_eligibility(s, {"htf_bias": "bullish"})
+    assert result is SetupEligibility.ELIGIBLE
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q"]))

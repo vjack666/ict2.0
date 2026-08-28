@@ -76,3 +76,33 @@ Fusion manual en `wt_integrate` / `feature/sb-integrate` (modelo + `build_setup`
 
 ### Siguiente paso
 Capa de Episodes / funnel (siguiente eslabón del orden congelado). Setup Builder ya entrega SETUPs deterministas y elegibles; el funnel selecciona y agrupa en episodios para el dataset.
+
+## [REVISIÓN CODEX H1-H5]
+
+Revisión de gobernanza sobre la capa de composición (Setup Builder) tras la
+integración `feature/sb-*` y el merge H1+H2+H3+H4. Documenta los 5 hallazgos
+del auditor, la corrección aplicada y la evidencia reproducible. **No se
+declara CERTIFIED**: la promoción formal queda supeditada al GO del auditor
+(gates de reproducibilidad/riesgo), conforme a `AGENTS.md`.
+
+### Hallazgos y correcciones
+
+| # | Hallazgo (Codex) | Corrección aplicada | Estado |
+| --- | --- | --- | --- |
+| H1 | Historial causal real en `MarketState` (transiciones por objeto + replay sin look-ahead) no estaba garantizado para el compositor. | `build_setups_at` consume `ms.projection_at(T)` (snapshot congelado), no `ms.active()`. | Cerrado — verificado por tests. |
+| H2 | Setup incompleto: el compositor no buscaba ni asignaba `confirmation` (BOS) ni `trigger` (DISPLACEMENT). | `_find_confirmation` / `_find_trigger` en el snapshot; `classify_eligibility(require_complete=True)` marca BLOCKED si faltan. `Role.CONFIRMATION`/`TRIGGER` añadidos a `market_object.py`. | Cerrado — verificado por tests. |
+| H3 | Elegibilidad no comparaba `direction` del setup con el sesgo HTF (bearish bajo bullish quedaba ELIGIBLE). | `_htf_aligned` centralizado en `classify_eligibility`; BLOCKED si no alineado. Elegibilidad SEPARADA de `object_state`. | Cerrado — verificado por tests. |
+| H4 | Frontera temporal LTF/HTF en `lifecycle` permitía invalidación cruzada de temporalidades. | `authority_tf == origin_tf` garantizado en `MarketObject.__post_init__` (un objeto H4 no se invalida por vela M15). | Cerrado — verificado por tests. |
+| H5 | Desfase de documentación: la §13 del SDD y la entrada "Capa de composición" del Índice de Autoridad NO persistieron en los archivos vigentes. | **Esta reconciliación (Codex H5):** se añade §13 a `SDD_FVG_OB_ENGINE.md` y la entrada "Capa de composición (Lifecycle → Market State → Setup Builder)" a `INDICE_AUTORIDAD.md`, ambas como PROMOVIDO CON REVISIÓN (sin CERTIFIED). | Cerrado — documentación reconciliada. |
+
+### Evidencia
+
+- **313 passed** en `pytest tests/` (post-auditoría H1–H4; el cierre de integración previo reportó 290 passed, el auditor añadió cobertura).
+- **5 pruebas negativas del auditor** (casos que deben quedar BLOCKED / no ELIGIBLE): POI INVALIDATED → SUPERSEDED; ctx None → OUT_OF_CONTEXT; dirección no alineada con sesgo HTF → BLOCKED (H3); setup incompleto sin confirmation/trigger → BLOCKED (H2); mutación de `object_state` por el builder → rechazada (0 mutaciones).
+- Sin warnings ni mutaciones de `object_state` imputables al builder (invariante de solo lectura verificado).
+
+### Decisión de promoción
+
+- **PROMOVIDO CON REVISIÓN 2026-08-28**: H1–H4 cerrados por evidencia de tests; H5 (documentación) cerrado por esta edición.
+- **NO CERTIFIED**: la certificación formal requiere el GO explícito del auditor sobre los gates de reproducibilidad/riesgo. Un diagnóstico/revisión no equivale a promoción autónoma (`AGENTS.md`).
+- `git push` NO ejecutado (regla repo: prohibido en cierre normal; solo tras auditoría independiente + instrucción de publicación).

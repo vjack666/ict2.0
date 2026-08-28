@@ -33,6 +33,12 @@ class Role(str, Enum):
     REFINEMENT = "REFINEMENT"
     EXECUTION = "EXECUTION"
     CONTEXT = "CONTEXT"
+    # H2 (Setup completo): confirmation=BOS y trigger=DISPLACEMENT son
+    # componentes canónicos del setup (ver engine.setup_builder). Se añaden
+    # como roles para que el snapshot histórico (projection_at) conserve la
+    # intención de cada objeto sin inventar ontología (Codex H2+H3).
+    CONFIRMATION = "CONFIRMATION"
+    TRIGGER = "TRIGGER"
 
 
 class ObjectState(str, Enum):

@@ -106,6 +106,11 @@ class MarketState:
         self._objects: dict[str, MarketObject] = {}
         # Línea temporal causal e inmutable por objeto (append-only).
         self._history: dict[str, list[StateTransition]] = {}
+        # OE-03 / H7: registro del último instante procesado por reloj de TF.
+        # Si llega una vela con time/bar_index MENOR al ya visto en esa TF,
+        # se rechaza fail-closed (no se reorganiza el pasado silenciosamente).
+        self._last_seen: dict[str, tuple[Optional[datetime], Optional[int]]] = {}
+        self._out_of_order_events: list[dict[str, Any]] = []
 
     # --- Ingesta (nacimiento) ------------------------------------------------
     def _add_object(self, obj: MarketObject) -> MarketObject:
@@ -175,6 +180,27 @@ class MarketState:
         obj = self._objects.get(obj_id)
         if obj is None:
             return
+        # OE-03 / H7: guarda fail-closed contra datos fuera de orden.
+        # El reloj que rige es el de la TF que decide/observa, no el origin_tf.
+        tf = observed_tf if observed_tf is not None else obj.authority_tf
+        bar_time = _as_utc(bar.get("time"))
+        bar_idx = bar.get("__index__", bar.get("index"))
+        bar_idx = int(bar_idx) if isinstance(bar_idx, (int, float)) else None
+        if self._is_out_of_order(tf, bar_time, bar_idx):
+            self._out_of_order_events.append(
+                {
+                    "obj_id": obj_id,
+                    "tf": tf,
+                    "bar_time": str(bar_time) if bar_time is not None else None,
+                    "bar_index": bar_idx,
+                    "reason": "OUT_OF_ORDER",
+                }
+            )
+            raise ValueError(
+                f"advance_bar rechazado (OUT_OF_ORDER): tf={tf} recibió barra "
+                f"time={bar_time} index={bar_idx} anterior al último instante "
+                f"procesado en esa TF; no se reescribe el pasado (contrato H7 fail-closed)."
+            )
         prev = obj.state
         if observed_tf is not None:
             observe_lower_tf(obj, bar, observed_tf=observed_tf)
@@ -184,8 +210,9 @@ class MarketState:
         if new != prev:
             ts = bar.get("time")
             bi = bar.get("__index__", bar.get("index"))
-            tf = observed_tf if observed_tf is not None else obj.authority_tf
             self._record_transition(obj_id, ts, bi, tf, prev, new)
+        # Avanza el reloj de la TF sólo si la barra fue aceptada.
+        self._update_last_seen(tf, bar_time, bar_idx)
 
     def observe(self, obj_id: str, bar: Mapping[str, Any], *, observed_tf: str) -> None:
         obj = self._objects.get(obj_id)
@@ -193,6 +220,51 @@ class MarketState:
             return
         observe_lower_tf(obj, bar, observed_tf=observed_tf)
         # La observación LTF no cambia el estado oficial => no hay transición.
+
+    # --- OE-03 / H7: reloj de TF y guarda fail-closed ------------------------
+    def _is_out_of_order(
+        self, tf: str, bar_time: Optional[datetime], bar_idx: Optional[int]
+    ) -> bool:
+        """True si la barra llega antes del último instante visto en `tf`.
+
+        El reloj de cada TF es independiente: una vela M15 atrasada no
+        invalida la historia H4, pero sí debe rechazarse dentro de su propio
+        reloj. Si falta timestamp Y bar_index no podemos ordenar => no
+        rechazamos (no inventamos causalidad por omisión).
+        """
+        if bar_time is None and bar_idx is None:
+            return False
+        last_time, last_idx = self._last_seen.get(tf, (None, None))
+        if last_time is None and last_idx is None:
+            return False
+        if bar_time is not None and last_time is not None:
+            if bar_time < last_time:
+                return True
+            if bar_time == last_time:
+                # mismo instante: desempata por bar_index si existe
+                if bar_idx is not None and last_idx is not None and bar_idx < last_idx:
+                    return True
+                return False
+            return False
+        # solo bar_index disponible en ambos
+        if bar_idx is not None and last_idx is not None and bar_idx < last_idx:
+            return True
+        return False
+
+    def _update_last_seen(
+        self, tf: str, bar_time: Optional[datetime], bar_idx: Optional[int]
+    ) -> None:
+        """Avanza el reloj de `tf` al instante más reciente visto (no retrocede)."""
+        last_time, last_idx = self._last_seen.get(tf, (None, None))
+        if bar_time is not None and (last_time is None or bar_time > last_time):
+            last_time = bar_time
+        if bar_idx is not None and (last_idx is None or bar_idx > last_idx):
+            last_idx = bar_idx
+        self._last_seen[tf] = (last_time, last_idx)
+
+    def out_of_order_events(self) -> list[dict[str, Any]]:
+        """Registro evidence de eventos fuera de orden rechazados (OE-03)."""
+        return list(self._out_of_order_events)
 
     # --- Replay causal (state-at / projection) ------------------------------
     def state_at(self, obj_id: str, t: Any) -> Optional[ObjectState]:

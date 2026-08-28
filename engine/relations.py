@@ -20,7 +20,8 @@ ablation / comparison only.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from datetime import datetime, timezone
+from typing import Any, Iterable, Optional, Sequence
 
 from engine.lineage import CausalLink, validate_links
 from engine.market_object import MarketObject, ObjectType
@@ -72,6 +73,42 @@ def _confirm_bar(obj: MarketObject) -> int:
     return int(obj.bar_index)
 
 
+def _as_time(ts: Any) -> Optional[datetime]:
+    """Normaliza candidate/confirmation/bar time a datetime UTC (o None)."""
+    if ts is None:
+        return None
+    if isinstance(ts, datetime):
+        return ts if ts.tzinfo is not None else ts.replace(tzinfo=timezone.utc)
+    try:
+        from pandas import to_datetime
+
+        dt = to_datetime(ts, utc=True, errors="coerce")
+        return dt if dt is not None else None
+    except Exception:
+        return None
+
+
+def _causal_precedes(parent: MarketObject, child: MarketObject) -> bool:
+    """OE-07 / H6: orden causal cross-TF por TIMESTAMP, no por bar_index de relojes distintos.
+
+    Regla: el ``parent`` (antecedente: OB footprint / confirm) debe ser
+    estrictamente anterior al ``child`` (FVG confirmation) en el tiempo real.
+    Cuando ambos comparten ``origin_tf`` podemos usar ``bar_index`` (mismo
+    reloj); en cross-TF comparamos ``candidate_time``/``confirmation_time``.
+    Devuelve True si el parent precede causalmente (relación posible).
+    """
+    same_tf = parent.origin_tf == child.origin_tf
+    if same_tf:
+        p = _anchor_bar(parent)
+        c = _confirm_bar(child)
+        return p < c  # mismo reloj => bar_index comparable
+    p_time = _as_time(parent.candidate_time) or _as_time(parent.creation_time)
+    c_time = _as_time(child.confirmation_time) or _as_time(child.creation_time)
+    if p_time is None or c_time is None:
+        return False  # falta tiempo en cross-TF => no inventar causalidad
+    return p_time < c_time
+
+
 def relate_fvg_ob(
     fvgs: Sequence[MarketObject],
     obs: Sequence[MarketObject],
@@ -113,22 +150,21 @@ def relate_fvg_ob(
                 continue
 
             if causal_mode == "strict":
-                # ICT: OB footprint/confirm must not be after FVG confirmation.
-                # Prefer footprint (candidate) before FVG confirm; confirm may
-                # equal FVG's earlier bars but never sit after FVG confirm.
-                if ob_anchor > fvg_confirm:
+                # OE-07 / H6: el orden causal se valida por reloj correcto.
+                # Misma TF => bar_index comparable; cross-TF => timestamps.
+                if not _causal_precedes(ob, fvg):
                     continue
-                if ob_confirm > fvg_confirm:
-                    continue
-                # Lag measured from OB footprint to FVG confirmation.
-                lag = fvg_confirm - ob_anchor
-                if lag < 0 or lag > max_bars_apart:
-                    continue
-                # Reject degenerate same-bar noise unless OB candidate is
-                # strictly earlier than FVG confirm (true 3-candle FVG needs
-                # at least the middle bar after the footprint in typical cases).
-                if ob_anchor >= fvg_confirm:
-                    continue
+                # Lag en strict mode solo es significativo dentro del MISMO reloj.
+                if ob.origin_tf == fvg.origin_tf:
+                    lag = fvg_confirm - ob_anchor
+                    if lag < 0 or lag > max_bars_apart:
+                        continue
+                    if ob_anchor >= fvg_confirm:
+                        continue
+                else:
+                    # Cross-TF: la distancia en bars es basura; no la usamos
+                    # como filtro de ventana (el tiempo ya garantiza el orden).
+                    lag = 0
 
                 result.append(
                     FVGOBRelation(

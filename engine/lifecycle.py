@@ -43,6 +43,31 @@ from typing import Any, Mapping, Optional
 
 import pandas as pd
 
+
+# Jerarquía de temporalidades (alto contexto -> ejecución). Usada para la
+# regla OE-04 / H8: una TF solo puede OBSERVAR a otra ESTRICTAMENTE inferior.
+_TF_RANK = {
+    "D1": 6,
+    "H4": 5,
+    "H1": 4,
+    "M15": 3,
+    "M5": 2,
+    "M1": 1,
+}
+
+
+def _tf_rank(tf: str) -> int:
+    """Rango numérico de la TF (mayor = más contexto). -1 si desconocida."""
+    return _TF_RANK.get(tf, -1)
+
+
+def _is_strictly_lower_tf(observed_tf: str, reference_tf: str) -> bool:
+    """OE-04 / H8: observed_tf es ESTRICTAMENTE subordinada a reference_tf."""
+    o, r = _tf_rank(observed_tf), _tf_rank(reference_tf)
+    if o < 0 or r < 0:
+        return False
+    return o < r
+
 from engine.market_object import MarketObject, ObjectState, ObjectType
 
 
@@ -324,6 +349,17 @@ def observe_lower_tf(
             f"observe_lower_tf() rechazado: la vela cerrada requiere tf={observed_tf} "
             f"explícito (recibido tf={bar_tf}); un objeto de otra temporalidad no puede "
             f"registrarse como observación {observed_tf} (contrato MTF fail-closed)."
+        )
+
+    # OE-04 / H8: solo una TF ESTRICTAMENTE subordinada puede observar. Ni la
+    # propia TF (H4 observando H4) ni una superior (D1 observando H4) entran.
+    # Observar != gobernar: la autoridad de transición queda en obj.authority_tf.
+    if not _is_strictly_lower_tf(observed_tf, obj.origin_tf):
+        raise ValueError(
+            f"observe_lower_tf() rechazado: observed_tf={observed_tf} no es "
+            f"estrictamente subordinada a origin_tf={obj.origin_tf} "
+            f"(jerarquía D1>H4>H1>M15>M5>M1); una TF no se observa a sí misma ni "
+            f"una superior observa a una inferior (contrato MTF fail-closed)."
         )
 
     # IDENTIDAD FAIL-CLOSED: observación sin identidad temporal confiable se

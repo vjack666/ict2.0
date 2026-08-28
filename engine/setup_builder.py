@@ -483,14 +483,21 @@ def _ctx_direction(ctx) -> int:
 
 
 def _ctx_aligned(ctx) -> bool:
-    """True si el contexto HTF declara alineacion interna MTF."""
+    """True si el contexto HTF declara alineacion interna MTF.
+
+    OE-05 / H9: solo ``aligned=False`` EXPLICITO bloquea. Si la clave esta
+    ausente se asume alineado (comportamiento previo al endurecimiento), para
+    no romper el contrato de contextos que solo declaran sesgo por cadena.
+    """
     if ctx is None:
         return False
     if isinstance(ctx, dict):
         a = ctx.get("aligned", None)
     else:
         a = getattr(ctx, "aligned", None)
-    return bool(a) if a is not None else True
+    if a is None:
+        return True  # ausente => se asume alineado (no es aligned=False explicito)
+    return bool(a)
 
 
 def _htf_aligned(ctx, direction: int) -> bool:
@@ -504,9 +511,13 @@ def _htf_aligned(ctx, direction: int) -> bool:
     """
     if direction == 0:
         return False
+    # OE-05 / H9: si el contexto declara explicitamente aligned=False, NUNCA
+    # alinea (fail-closed). El flag es autoritativo sobre el sesgo por cadena.
+    if not _ctx_aligned(ctx):
+        return False
     # 1) metodo numerico (direction del contexto HTF)
     ctx_dir = _ctx_direction(ctx)
-    if ctx_dir != 0 and ctx_dir == direction and _ctx_aligned(ctx):
+    if ctx_dir != 0 and ctx_dir == direction:
         return True
     # 2) metodo de sesgo (cadena: bullish/bearish)
     bias = _normalize_bias(ctx)
@@ -520,6 +531,22 @@ def _htf_aligned(ctx, direction: int) -> bool:
 def _is_active(mo) -> bool:
     """True si el MarketObject existe y esta en estado ACTIVE."""
     return mo is not None and getattr(mo, "state", None) == ObjectState.ACTIVE
+
+
+def _obj_time(mo) -> Optional[Any]:
+    """OE-02 / H6: tiempo de referencia de un objeto para orden causal.
+
+    Usa confirmation_time (o tradable_time, o candidate_time, o creation_time)
+    como marca del instante en que el objeto es operativo. Comparable entre
+    distintas TF porque son datos temporales reales.
+    """
+    if mo is None:
+        return None
+    for attr in ("confirmation_time", "tradable_time", "candidate_time", "creation_time"):
+        t = getattr(mo, attr, None)
+        if t is not None:
+            return t
+    return None
 
 
 def classify_eligibility(setup: "Setup", ctx, *, require_complete: bool = False) -> SetupEligibility:
@@ -576,6 +603,23 @@ def classify_eligibility(setup: "Setup", ctx, *, require_complete: bool = False)
             setup.eligibility = SetupEligibility.BLOCKED
             setup.reason = (
                 f"setup incompleto: faltan componentes requeridos {missing}"
+            )
+            return SetupEligibility.BLOCKED
+
+    # OE-02 / H6: orden causal estricto POI <= refinement <= confirmation.
+    # Si la confirmation (BOS) existe y es temporalmente ANTERIOR al POI, el
+    # setup es causalmente imposible => BLOCKED (no se inventa causalidad hacia
+    # atras). Nota: el trigger (DISPLACEMENT) es el impulso que CREA la
+    # estructura, por lo que puede preceder al POI en tiempo real (no se chequea
+    # aqui). Se compara por confirmation_time (tiempo operativo), no bar_index.
+    if setup.poi is not None and setup.confirmation is not None:
+        poi_t = _obj_time(setup.poi)
+        conf_t = _obj_time(setup.confirmation)
+        if poi_t is not None and conf_t is not None and conf_t < poi_t:
+            setup.eligibility = SetupEligibility.BLOCKED
+            setup.reason = (
+                f"orden causal violado (H6): confirmation ocurre antes que el POI "
+                f"({conf_t} < {poi_t}); el setup nunca pudo existir en tiempo real"
             )
             return SetupEligibility.BLOCKED
 

@@ -89,6 +89,10 @@ class MarketObject:
     symbol: str = ""
     type: ObjectType = ObjectType.FVG
     origin_tf: str = ""
+    authority_tf: str = ""   # quién puede decidir transición terminal (v1 = origin_tf)
+    lifecycle_tf: str = ""   # escala de evaluación del lifecycle (v1 = origin_tf)
+    observation_tf: str = "" # TF subordinado que solo observa (no mata)
+    execution_tf: str = ""   # TF de trigger/ejecución
     role: Role = Role.REFINEMENT
     direction: int = 0
     zone_high: float = 0.0
@@ -120,6 +124,14 @@ class MarketObject:
             raise TypeError("origin_tf es obligatorio (sello de capa)")
         if self.role == Role.POI and self.origin_tf not in _POI_TFS:
             raise ValueError(f"POI solo en HTF ({sorted(_POI_TFS)}); recibido {self.origin_tf}")
+        # Convención v1 (2026-08-28): authority_tf = lifecycle_tf = origin_tf por defecto.
+        # El motor exige que la autoridad de transición terminal coincida con origin_tf,
+        # salvo que el caller firme un contrato explícito de autoridad (ver engine.lifecycle).
+        if not self.authority_tf:
+            self.authority_tf = self.origin_tf
+        if not self.lifecycle_tf:
+            self.lifecycle_tf = self.origin_tf
+        self._validate_authority_invariants()
         self._validate_foundational_invariants()
         self._validate_temporal_contract()
         self._validate_lineage_contract()
@@ -137,6 +149,21 @@ class MarketObject:
             raise ValueError("first_touch_bar requiere touch_count >= 1")
         if self.quality_score is not None and not 0.0 <= self.quality_score <= 1.0:
             raise ValueError("quality_score debe estar entre 0 y 1")
+
+    def _validate_authority_invariants(self) -> None:
+        # GARANTÍA DE MOTOR (no solo convención del caller): la autoridad de
+        # transición terminal debe ser la temporalidad de origen, salvo contrato
+        # explícito. Un objeto H4 no puede ser invalidado por una vela M15.
+        if self.authority_tf and self.authority_tf != self.origin_tf:
+            raise ValueError(
+                f"authority_tf={self.authority_tf} != origin_tf={self.origin_tf}; "
+                f"en v1 la autoridad debe coincidir con el origen (contrato MTF explícito requerido)"
+            )
+        if self.lifecycle_tf and self.lifecycle_tf != self.origin_tf:
+            raise ValueError(
+                f"lifecycle_tf={self.lifecycle_tf} != origin_tf={self.origin_tf}; "
+                f"en v1 el lifecycle debe evaluarse en el origen"
+            )
 
     def _validate_temporal_contract(self) -> None:
         bars = [b for b in (self.candidate_bar, self.confirmation_bar, self.tradable_bar) if b is not None]

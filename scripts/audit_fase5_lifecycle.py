@@ -1,21 +1,18 @@
-"""FASE 5 — AUDITORIA DE LIFECYCLE (MEDIR, no programar).
+"""FASE 5 — AUDITORIA DE LIFECYCLE (MEDIR, no programar).  [HISTÓRICO]
 
-Objetivo (CEO 2026-08-27): antes de cualquier regla nueva, MEDIR si el sistema
-acumula objetos ICT sin resolver (el "cementerio de lineas"). Cuantifica:
+ESTADO: HISTÓRICO. Esta auditoría se escribió antes de que existiera
+``engine.lifecycle`` como autoridad única. El commit original mutaba
+``o.state`` directo y forzaba ``terminal=0`` para medir el "cementerio de
+líneas" (objetos que nunca mueren). Eso CONTRADICE la arquitectura actual
+(lifecycle es la única autoridad de transición). Se conserva como evidencia
+de la fase de diagnóstico, pero NO debe usarse como auditoría vigente.
 
-  - objetos creados por TF/tipo
-  - objetos ACTIVE por vela (p50/p95/max)
-  - edad (barras) de cada objeto al cierre de ventana
-  - % que llega a estado terminal (MITIGATED/INVALIDATED/EXPIRED/CONSUMED)
-  - % ACTIVE -> PARTIALLY_MITIGATED
-  - zonas solapadas (misma TF, mismo tipo, rango superpuesto)
-  - participacion en Setup AHF (cuantas zonas vivas vs cuantas el AHF usa)
+Para medir el comportamiento REAL del lifecycle, usar ``engine.lifecycle``
+(ver engine/market_state o el runner de auditoría en scripts/audit/).
 
-Reusa engine/detectors/fvg.py y ob.py (canonicos, solo lectura). NO modifica
-engine/. Simula el acumulado vela-a-vela igual que backtest/market_state.py
-(que es la proyeccion bajo audit): activa por tradable_time, touch->PARTIAL,
-sin terminales para FVG/OB. Asi la auditoria refleja el comportamiento REAL del
-replay actual, no una version idealizada.
+Objetivo original (CEO 2026-08-27): antes de cualquier regla nueva, MEDIR si
+el sistema acumula objetos ICT sin resolver. Reusa engine/detectors (canonicos,
+solo lectura). NO modifica engine/.
 
 Salida: JSON + impresion de resumen. can_train=false, can_trade=false.
 """

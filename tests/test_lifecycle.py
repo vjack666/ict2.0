@@ -98,13 +98,16 @@ def test_lower_tf_cannot_invalidate_higher_tf_object():
     ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
     # Una vela M15 que cierra por debajo del far_side del OB H4.
     m15_bar = _bar(11, 1.0996, 1.0998, 1.0990, 1.0990)
-    # El llamador correcto pasa authority_tf=H4 => la vela M15 NO debe invalidarlo
-    # porque la autoridad cierra en H4; aquí simulamos que solo al cerrar H4 se decide.
-    # Usamos observe_lower_tf para el M15: solo observa.
+    # observe_lower_tf solo observa (no transiciona, no toca metadatos oficiales).
     dec = observe_lower_tf(ob_h4, m15_bar, observed_tf="M15")
     assert dec.changed is False
     assert ob_h4.state == ObjectState.ACTIVE
-    assert ob_h4.meta.get("observed_touches") is not None
+    # La observación vive separada en observations["M15"], no en metadatos oficiales.
+    assert ob_h4.meta.get("observations", {}).get("M15") is not None
+    assert ob_h4.first_touch_bar is None  # H4 oficial intacto
+    # Incluso un evaluate() con authority_tf=M15 debe ser RECHAZADO por el motor.
+    with pytest.raises(ValueError):
+        evaluate(ob_h4, m15_bar, authority_tf="M15")
     # Vela H4 que sí cierra allá => autoridad decide.
     h4_bar = _bar(12, 1.0996, 1.0998, 1.0990, 1.0990)
     dec2 = evaluate(ob_h4, h4_bar, authority_tf="H4")
@@ -182,3 +185,67 @@ def test_partial_not_terminal_and_ce_touched_is_evidence():
     assert obj.state == ObjectState.PARTIALLY_MITIGATED
     assert obj.meta.get("CE_TOUCHED") is True
     assert not obj.is_terminal
+
+
+# === Correcciones de la auditoría NEEDS REVISION (Codex 2026-08-28) =========
+
+def test_constructor_rejects_authority_tf_not_equal_origin():
+    with pytest.raises(ValueError):
+        MarketObject(
+            id="OB_H4_45", symbol="EURUSD", type=ObjectType.ORDER_BLOCK, origin_tf="H4",
+            authority_tf="M15", role=Role.POI, direction=1, zone_high=1.1005, zone_low=1.0995,
+            creation_time=_ts(10), state=ObjectState.ACTIVE, bar_index=10, bar_time=_ts(10),
+            candidate_bar=9, candidate_time=_ts(9), confirmation_bar=10, confirmation_time=_ts(10),
+            tradable_bar=10, tradable_time=_ts(10),
+        )
+
+
+def test_evaluate_rejects_lower_tf_authority():
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    assert ob_h4.authority_tf == "H4"
+    m15_bar = _bar(11, 1.0996, 1.0998, 1.0990, 1.0990)
+    with pytest.raises(ValueError):
+        evaluate(ob_h4, m15_bar, authority_tf="M15")
+    assert ob_h4.state == ObjectState.ACTIVE
+    assert ob_h4.first_touch_bar is None
+
+
+def test_observe_lower_tf_does_not_alter_official_decision():
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    observe_lower_tf(ob_h4, _bar(11, 1.0996, 1.0998, 1.0990, 1.0994), observed_tf="M15")
+    observe_lower_tf(ob_h4, _bar(12, 1.0997, 1.0999, 1.0991, 1.0995), observed_tf="M15")
+    assert ob_h4.state == ObjectState.ACTIVE
+    assert ob_h4.first_touch_bar is None
+    assert ob_h4.touch_count == 0
+    obs = ob_h4.meta.get("observations", {}).get("M15", [])
+    assert len(obs) == 2
+    assert all("penetration" in o for o in obs)
+
+
+def test_double_evaluation_idempotent_no_side_effects():
+    obj = _fvg_bull(10, 1.0995, 1.1005)
+    b = _bar(11, 1.1002, 1.1010, 1.1000, 1.1008)
+    d1 = evaluate(obj, b, authority_tf="M15")
+    d2 = evaluate(obj, b, authority_tf="M15")
+    assert obj.state == ObjectState.PARTIALLY_MITIGATED
+    assert d1.changed and not d2.changed
+    assert obj.touch_count == 1
+    assert len(obj.meta.get("_seen_events", set())) == 1
+
+
+def test_different_tf_bar_indices_not_cross_compared():
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    m15_bar = _bar(440, 1.0996, 1.0998, 1.0990, 1.0994)
+    observe_lower_tf(ob_h4, m15_bar, observed_tf="M15")
+    assert ob_h4.first_touch_bar is None
+    assert ob_h4.meta["observations"]["M15"][0]["bar"] == 440
+
+
+def test_observe_then_evaluate_authority_separate_tracking():
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    observe_lower_tf(ob_h4, _bar(11, 1.0996, 1.0998, 1.0990, 1.0994), observed_tf="M15")
+    h4_bar = _bar(12, 1.0996, 1.0998, 1.0990, 1.0990)
+    dec = evaluate(ob_h4, h4_bar, authority_tf="H4")
+    assert ob_h4.state == ObjectState.INVALIDATED
+    assert dec.reason == "INVALIDATED_FAR_SIDE_CLOSE"
+    assert ob_h4.first_touch_bar == 12

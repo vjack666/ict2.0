@@ -106,3 +106,58 @@ antes del push. Resumen ejecutivo de lo entregado y su trazabilidad:
 ### Criterio de DONE para el auditor
 Auditar causalidad PIT, autoridad MTF y que lifecycle sea la ÚNICA mutadora de `state`.
 Si firma, proceder con push tras instrucción explícita de Ruben.
+
+## [REVISIÓN POR AUDITORÍA — Codex NEEDS REVISION 2026-08-28]
+
+Auditor independiente (Codex, D5 Assurance + D2) clasificó el cierre como `NEEDS REVISION`.
+Hallazgos y correcciones aplicadas:
+
+### H1 — Autoridad no protegida por el motor (CRÍTICO)
+- Fallo: `evaluate()` aceptaba `authority_tf` distinto de `origin_tf`; un OB H4
+  podía quedar `INVALIDATED` desde M15.
+- Corrección: `MarketObject` ahora tiene `authority_tf`/`lifecycle_tf` (default = origin_tf)
+  y `_validate_authority_invariants` RECHAZA en `__post_init__` authority/lifecycle != origin.
+  `evaluate()` exige `authority_tf == obj.authority_tf` y lanza `ValueError` si no.
+  Ya no depende del caller.
+
+### H2 — Observación LTF mezclada con estado oficial
+- Fallo: `observe_lower_tf` mutaba `first_touch_bar`/`first_touch_time`/`touch_count` canónicos.
+- Corrección: `observe_lower_tf` ya NO toca metadatos oficiales. La observación se acumula
+  en `obj.meta["observations"][tf]` (separada por temporalidad). touch_count/first_touch
+  pertenecen solo al lifecycle de authority_tf.
+
+### H3 — Idempotencia incompleta (touch_count duplicado)
+- Fallo: doble evaluación de la misma vela incrementaba `touch_count` dos veces.
+- Corrección: dedupe por `event_key = tf | candle_close_time | event_type` en
+  `obj.meta["_seen_events"]`. Reprocesar la misma vela => 0 efectos secundarios.
+
+### H4 — Auditoría histórica obsoleta
+- `scripts/audit_fase5_lifecycle.py` mutaba `o.state` directo y forzaba `terminal=0`,
+  contradiciendo la autoridad única de lifecycle.
+- Corrección: marcado HISTÓRICO en el header; no debe usarse como auditoría vigente.
+  Para medir lifecycle real, usar `engine.lifecycle`. (No se reescribió su lógica interna
+  para no ampliar alcance; el header cumple la recomendación del auditor.)
+
+### H5 — Advertencia pandas (narrative.py:303)
+- `Pandas4Warning: future.no_silent_downcasting`. No bloquea; registrado para mantenimiento
+  (fuera de alcance de lifecycle).
+
+### Tests añadidos (6) cubriendo los 4 puntos del auditor
+- `test_constructor_rejects_authority_tf_not_equal_origin`
+- `test_evaluate_rejects_lower_tf_authority` (H1)
+- `test_observe_lower_tf_does_not_alter_official_decision` (H2)
+- `test_double_evaluation_idempotent_no_side_effects` (H3)
+- `test_different_tf_bar_indices_not_cross_compared` (H2/H3)
+- `test_observe_then_evaluate_authority_separate_tracking` (H1+H2 integración)
+- `test_lower_tf_cannot_invalidate_higher_tf_object` actualizado a la nueva estructura.
+
+### Verificación final de la revisión
+- `pytest tests/` completo → **242 passed, 0 failed** (era 236 antes de la revisión).
+- `scripts/demo_lifecycle_replay.py` → OK (ACTIVE->PARTIAL->INVALIDATED, barras exactas).
+- Sin push (regla repo: auditoría firma + GO de Ruben).
+
+### Estado tras revisión
+Los 4 puntos de `NEEDS REVISION` están corregidos. Lifecycle v1 queda en estado
+CERTIFICABLE pendiente de re-auditoría de Codex. Siguiente paso del orden congelado:
+`engine/market_state.py` (proyección event-sourced por T), usando `authority_tf`/`observations`
+ya separados.

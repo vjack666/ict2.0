@@ -52,6 +52,10 @@ def _touch_state(obj: MarketObject, frame: pd.DataFrame, decision_time: Any) -> 
     # La vela de confirmación crea la zona; no cuenta como retest de la zona.
     hits = frame.loc[(times > tradable) & (times <= tt)].copy()
     hits["__index__"] = hits.index
+    # Garantía C1: la barra debe llevar su sello de temporalidad para que
+    # evaluate() valide closed_bar['tf'] == authority_tf. Sin esto, la
+    # falsificación M15-disfrazado-de-H4 quedaría sin defender en producción.
+    hits["tf"] = obj.origin_tf
     for _, row in hits.iterrows():
         evaluate(obj, row.to_dict(), authority_tf=obj.origin_tf, decision_time=row["time"])
     return obj

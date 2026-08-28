@@ -41,6 +41,7 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
+import warnings
 
 Bias = str  # "BULLISH" | "BEARISH" | "NEUTRAL"
 
@@ -296,11 +297,20 @@ def compute_htf_bias_series(
 def _suppress_future_no_silent_downcasting() -> None:
     """Opt-in temporal para eliminar el FutureWarning de pandas en ffill/fillna.
 
-    pandas 3.x silenciará el downcasting por defecto; mientras tanto evitamos ruido
-    sin tocar tests ni caller.
+    En pandas 3.0+ la opcion ya emite Pandas4Warning al setearse (no FutureWarning)
+    y el comportamiento es el default del motor; no tiene sentido setearla ahi.
+    Solo se aplica en pandas < 3.0, donde silencia el FutureWarning real.
     """
     try:
-        pd.set_option("future.no_silent_downcasting", True)
+        major = int(getattr(pd, "__version__", "0").split(".")[0])
+    except Exception:
+        major = 0
+    if major >= 3:
+        return  # en pandas 3.x el downcasting no-silencioso ya es el default
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", Warning)
+            pd.set_option("future.no_silent_downcasting", True)
     except Exception:
         pass
 

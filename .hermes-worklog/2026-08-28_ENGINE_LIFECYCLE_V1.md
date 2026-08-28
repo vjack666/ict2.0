@@ -212,3 +212,55 @@ Lifecycle V1 se declara CERTIFIED cuando:
 `engine/market_state.py` (proyección event-sourced por T). Los cimientos
 (autoridad MTF protegida, observación separada, idempotencia, round-trip JSON)
 ya están sentados.
+
+## [RONDA AUTÓNOMA — correcciones de producción + Market State 2026-08-28]
+
+Ejecutada tras la ronda de certificación, en modo autónomo (evaluar→corregir→test).
+
+### P1 — Garantía C1 sin efecto en producción (ltf_canonical_feed)
+- Hallazgo: `_touch_state` en `engine/ltf_canonical_feed.py` llamaba
+  `evaluate(obj, row.to_dict(), ...)` con barras de pandas que NO traen la
+  clave `tf`. Mi guarda C1 solo rechaza si `bar_tf is not None`; al faltar
+  `tf`, la falsificación M15-disfrazado-de-H4 quedaba SIN defender en producción.
+- Corrección: `_touch_state` inyecta `hits["tf"] = obj.origin_tf` antes de
+  iterar. Ahora `evaluate()` valida `closed_bar["tf"] == authority_tf` de
+  verdad en el feed. Test de regresión: `test_advance_bar_respects_authority_tf`
+  (vía MarketState.advance_bar).
+
+### P2 — Warning H5 (narrative.py:303) resuelto
+- `pd.set_option("future.no_silent_downcasting", True)` emitía `Pandas4Warning`
+  en pandas 3.0.3 (la opción ya es default en pandas 3.x).
+- Corrección: `_suppress_future_no_silent_downcasting` ahora retorna temprano
+  si `pandas >= 3.0` (no setea la opción) y envuelve el set en
+  `warnings.catch_warnings()` para versiones < 3.0. `pytest tests/` corre sin
+  warnings.
+
+### P3 — engine/market_state.py (siguiente paso del orden congelado)
+Construido como capa event-sourced sobre lifecycle. Responde las 9 queries
+deterministas del auditor:
+  - `objects_existing_at(T)` (append-only por creation_time)
+  - `born_in_tf(tf)`, `active()`, `partially_mitigated()`, `mitigated()`,
+    `dead()`, `by_state(state)`
+  - `authority_of(id)`, `htf_contains_ltf(parent_id)`, `ltf_refines_htf(child_id)`
+  - `snapshot_at(T)` (estado actual + universo existente en T, sin repaint)
+  - `ingest` (nacimiento idempotente), `advance_bar` (delega en lifecycle
+    respetando authority_tf), `observe` (observación LTF)
+  - `to_dict`/`from_dict` (round-trip JSON del universo completo)
+
+Nota de diseño (replay a T exacto): el visor debe alimentar barras en orden
+cronológico y consultar en cada paso; `snapshot_at(T)` reporta el estado actual
+filtrado por nacimiento. La reconstrucción exacta a T se obtiene reprocesando
+desde el ingesta (lifecycle es puro y determinista). No se implementó un
+reprocesador separado para no sobre-diseñar; el visor lo logra alimentando en
+orden (demostrado en `test_snapshot_at_reports_known_world_without_repaint` y
+`test_market_state_round_trip_json`).
+
+### Verificación final de la ronda
+- `pytest tests/` completo → **253 passed, 0 warnings** (era 248 + 1 warning).
+- `scripts/demo_lifecycle_replay.py` → OK.
+- Sin push (regla repo: auditoría firma + GO de Ruben).
+
+### Estado del orden congelado
+1. Lifecycle v1 ✅ (auditado NEEDS REVISION → corregido H1-H5 + C1-C3)
+2. Market State ✅ (queries deterministas + round-trip)
+3. Siguiente: Setup Builder → Episodes/funnel → experimentos → IA.

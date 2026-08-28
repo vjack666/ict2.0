@@ -48,8 +48,8 @@ def _ob_bull(bar: int, zone_low: float, zone_high: float, origin_tf: str = "H4")
     )
 
 
-def _bar(idx: int, o: float, h: float, l: float, c: float) -> dict:
-    return {"__index__": idx, "time": _ts(idx), "open": o, "high": h, "low": l, "close": c}
+def _bar(idx: int, o: float, h: float, l: float, c: float, tf: str = "M15") -> dict:
+    return {"__index__": idx, "time": _ts(idx), "tf": tf, "open": o, "high": h, "low": l, "close": c}
 
 
 # --- Gate 1: PIT / zero-lookahead -----------------------------------------
@@ -109,7 +109,7 @@ def test_lower_tf_cannot_invalidate_higher_tf_object():
     with pytest.raises(ValueError):
         evaluate(ob_h4, m15_bar, authority_tf="M15")
     # Vela H4 que sí cierra allá => autoridad decide.
-    h4_bar = _bar(12, 1.0996, 1.0998, 1.0990, 1.0990)
+    h4_bar = _bar(12, 1.0996, 1.0998, 1.0990, 1.0990, tf="H4")
     dec2 = evaluate(ob_h4, h4_bar, authority_tf="H4")
     assert ob_h4.state == ObjectState.INVALIDATED
     assert dec2.reason == "INVALIDATED_FAR_SIDE_CLOSE"
@@ -244,8 +244,98 @@ def test_different_tf_bar_indices_not_cross_compared():
 def test_observe_then_evaluate_authority_separate_tracking():
     ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
     observe_lower_tf(ob_h4, _bar(11, 1.0996, 1.0998, 1.0990, 1.0994), observed_tf="M15")
-    h4_bar = _bar(12, 1.0996, 1.0998, 1.0990, 1.0990)
+    h4_bar = _bar(12, 1.0996, 1.0998, 1.0990, 1.0990, tf="H4")
     dec = evaluate(ob_h4, h4_bar, authority_tf="H4")
     assert ob_h4.state == ObjectState.INVALIDATED
     assert dec.reason == "INVALIDATED_FAR_SIDE_CLOSE"
     assert ob_h4.first_touch_bar == 12
+
+
+# === Garantías de CERTIFICACIÓN (RUN CONTINUO + anti-falsificación TF) =====
+
+def test_evaluate_rejects_bar_from_wrong_tf_m15_disguised_as_h4():
+    # Auditoría continuación, garantía 1: "M15 disfrazado de H4".
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    assert ob_h4.authority_tf == "H4"
+    m15_bar = _bar(12, 1.0996, 1.0998, 1.0990, 1.0990, tf="M15")
+    with pytest.raises(ValueError):
+        evaluate(ob_h4, m15_bar, authority_tf="H4")
+    assert ob_h4.state == ObjectState.ACTIVE
+
+
+def test_evaluate_requires_identity_fail_closed():
+    obj = _fvg_bull(10, 1.0995, 1.1005)
+    bad = {"__index__": -1, "time": None, "tf": "M15", "open": 1.1002, "high": 1.1008,
+           "low": 1.1000, "close": 1.1006}
+    with pytest.raises(ValueError):
+        evaluate(obj, bad, authority_tf="M15")
+    assert obj.state == ObjectState.ACTIVE
+
+
+def test_observe_requires_identity_fail_closed():
+    ob_h4 = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    bad = {"__index__": -1, "time": None, "tf": "M15", "open": 1.0996, "high": 1.0998,
+           "low": 1.0990, "close": 1.0994}
+    with pytest.raises(ValueError):
+        observe_lower_tf(ob_h4, bad, observed_tf="M15")
+    assert "M15" not in ob_h4.meta.get("observations", {})
+
+
+def test_distinct_bars_with_null_time_not_collapsed():
+    obj = _fvg_bull(10, 1.0995, 1.1005)
+    b1 = {"__index__": 11, "time": None, "tf": "M15", "open": 1, "high": 1, "low": 1, "close": 1}
+    b2 = {"__index__": 12, "time": None, "tf": "M15", "open": 1, "high": 1, "low": 1, "close": 1}
+    for b in (b1, b2):
+        with pytest.raises(ValueError):
+            evaluate(obj, b, authority_tf="M15")
+
+
+def test_round_trip_json_preserves_full_identity_and_lifecycle():
+    import json
+    obj = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    obj.observation_tf = "M15"
+    obj.execution_tf = "M5"
+    observe_lower_tf(obj, _bar(11, 1.0996, 1.0998, 1.0990, 1.0994, tf="M15"), observed_tf="M15")
+    observe_lower_tf(obj, _bar(12, 1.0997, 1.0999, 1.0991, 1.0995, tf="M15"), observed_tf="M15")
+    evaluate(obj, _bar(13, 1.1000, 1.1002, 1.0996, 1.0999, tf="H4"), authority_tf="H4")
+    evaluate(obj, _bar(14, 1.1000, 1.1002, 1.0990, 1.0988, tf="H4"), authority_tf="H4")
+
+    blob = json.dumps(obj.to_dict())
+    obj2 = MarketObject.from_dict(json.loads(blob))
+    assert obj2.authority_tf == "H4"
+    assert obj2.lifecycle_tf == "H4"
+    assert obj2.observation_tf == "M15"
+    assert obj2.execution_tf == "M5"
+    assert obj2.state == ObjectState.INVALIDATED
+    assert obj2.first_touch_bar == 13
+    assert obj2.touch_count == 2
+    assert obj2.meta.get("CE_TOUCHED") is True
+    assert len(obj2.meta["observations"]["M15"]) == 2
+    assert isinstance(obj2.meta.get("_seen_events"), set)
+    dec = evaluate(obj2, _bar(14, 1.1000, 1.1002, 1.0990, 1.0988, tf="H4"), authority_tf="H4")
+    assert not dec.changed
+    assert obj2.touch_count == 2
+
+
+def test_full_vs_save_restore_continue_identical():
+    import json
+    bars_full = [
+        _bar(10, 1.1000, 1.1005, 1.0995, 1.1002, tf="M15"),
+        _bar(11, 1.1002, 1.1010, 1.1000, 1.1008, tf="M15"),
+        _bar(12, 1.1008, 1.1012, 1.0990, 1.0995, tf="M15"),
+        _bar(13, 1.0995, 1.0998, 1.0990, 1.0988, tf="M15"),
+    ]
+    obj_full = _fvg_bull(10, 1.0995, 1.1005)
+    for b in bars_full[1:]:
+        evaluate(obj_full, b, authority_tf="M15")
+
+    obj_split = _fvg_bull(10, 1.0995, 1.1005)
+    for b in bars_full[1:3]:
+        evaluate(obj_split, b, authority_tf="M15")
+    obj_cont = MarketObject.from_dict(json.loads(json.dumps(obj_split.to_dict())))
+    evaluate(obj_cont, bars_full[3], authority_tf="M15")
+
+    assert obj_cont.state == obj_full.state == ObjectState.INVALIDATED
+    assert obj_cont.touch_count == obj_full.touch_count
+    assert obj_cont.first_touch_bar == obj_full.first_touch_bar
+    assert obj_cont.invalidated_bar == obj_full.invalidated_bar

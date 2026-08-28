@@ -104,9 +104,19 @@ def _bar_after_tradable(obj: MarketObject, bar_index: int, bar_time: Any) -> boo
     return bt >= tt
 
 
-def _event_key(tf: str, bar_time: Any, event_type: str) -> str:
-    """Clave de deduplicación idempotente por objeto + tf + vela + tipo."""
-    return f"{tf}|{bar_time}|{event_type}"
+def _event_key(tf: str, bar_time: Any, bar_index: int, event_type: str) -> str:
+    """Clave de deduplicación idempotente por objeto + tf + vela + tipo.
+
+    IDENTIDAD FAIL-CLOSED (auditoría continuación, garantía 3): si no hay una
+    identidad temporal válida (bar_time o bar_index), NO se fabrica una clave
+    que colapse velas distintas. El llamador debe rechazar la vela antes de
+    llegar aquí (ver ``evaluate``), no silenciar el descarte.
+    """
+    if bar_time is None:
+        raise ValueError("event_key requiere bar_time no-None (identidad temporal)")
+    if bar_index is None or bar_index < 0:
+        raise ValueError("event_key requiere bar_index válido (identidad de vela)")
+    return f"{tf}|{bar_time}|{bar_index}|{event_type}"
 
 
 def _already_seen(obj: MarketObject, key: str) -> bool:
@@ -141,7 +151,9 @@ def evaluate(
     obj = market_object
     if authority_tf is None:
         authority_tf = obj.authority_tf
-    # Protección de autoridad: el motor la exige, no confía en el caller.
+    # Protección de autoridad (auditoría NEEDS REVISION, punto 1): el motor la
+    # exige, no confía en el caller. Un objeto H4 no puede ser invalidado por una
+    # vela de otro TF.
     if authority_tf != obj.authority_tf:
         raise ValueError(
             f"evaluate() rechazado: authority_tf={authority_tf} != obj.authority_tf="
@@ -156,6 +168,23 @@ def evaluate(
     low = float(closed_bar["low"])
     high = float(closed_bar["high"])
     close = float(closed_bar["close"])
+
+    # GARANTÍA DE FALSIFICACIÓN TF (auditoría continuación, garantía 1):
+    # la vela cerrada debe pertenecer al authority_tf. Un caller no puede pasar
+    # authority_tf="H4" con una barra M15 y esperar que decida el estado oficial.
+    bar_tf = closed_bar.get("tf")
+    if bar_tf is not None and bar_tf != authority_tf:
+        raise ValueError(
+            f"evaluate() rechazado: vela tf={bar_tf} != authority_tf={authority_tf}. "
+            f"SOLO una vela de {authority_tf} cerrada puede cambiar el estado oficial."
+        )
+    # IDENTIDAD FAIL-CLOSED (garantía 3): si la vela no tiene identidad temporal
+    # confiable, no evaluamos (mejor rechazar que inventar causalidad).
+    if bar_time is None or bar_index < 0:
+        raise ValueError(
+            f"evaluate() rechazado: vela sin identidad temporal (time={bar_time}, "
+            f"index={bar_index}); no se puede procesar de forma causal."
+        )
 
     prev = obj.state
     mid = _mid(obj)
@@ -172,7 +201,7 @@ def evaluate(
         )
 
     # Idempotencia: esta vela ya fue procesada por la autoridad.
-    ev_key = _event_key(authority_tf, bar_time, "EVALUATE")
+    ev_key = _event_key(authority_tf, bar_time, bar_index, "EVALUATE")
     if _already_seen(obj, ev_key):
         return LifecycleDecision(
             previous_state=prev.value, new_state=prev.value, reason="ALREADY_PROCESSED",
@@ -273,6 +302,14 @@ def observe_lower_tf(
     low = float(closed_bar["low"])
     high = float(closed_bar["high"])
 
+    # IDENTIDAD FAIL-CLOSED: observación sin identidad temporal confiable se
+    # rechaza (no se descarta silenciosamente, no se fabrica clave colapsada).
+    if bar_time is None or bar_index < 0:
+        raise ValueError(
+            f"observe_lower_tf() rechazado: vela sin identidad temporal (time={bar_time}, "
+            f"index={bar_index}); no se puede observar de forma causal."
+        )
+
     if not _bar_after_tradable(obj, bar_index, bar_time):
         return LifecycleDecision(
             previous_state=obj.state.value, new_state=obj.state.value, reason="BEFORE_TRADABLE",
@@ -282,7 +319,7 @@ def observe_lower_tf(
         )
 
     # Idempotencia de observación (separada de la del lifecycle oficial).
-    ev_key = _event_key(observed_tf, bar_time, "OBSERVE")
+    ev_key = _event_key(observed_tf, bar_time, bar_index, "OBSERVE")
     if _already_seen(obj, ev_key):
         return LifecycleDecision(
             previous_state=obj.state.value, new_state=obj.state.value, reason="OBSERVED_ONLY",

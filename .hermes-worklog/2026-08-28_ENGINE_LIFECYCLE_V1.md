@@ -161,3 +161,54 @@ Los 4 puntos de `NEEDS REVISION` están corregidos. Lifecycle v1 queda en estado
 CERTIFICABLE pendiente de re-auditoría de Codex. Siguiente paso del orden congelado:
 `engine/market_state.py` (proyección event-sourced por T), usando `authority_tf`/`observations`
 ya separados.
+
+## [REVISIÓN DE CERTIFICACIÓN — RUN CONTINUO + anti-falsificación TF 2026-08-28]
+
+La segunda lectura de la auditoría (`NEEDS REVISION`) señaló defectos de
+**integración y persistencia** que bloquean la certificación. Corregidos:
+
+### C1 — "M15 disfrazado de H4" (falsificación de temporalidad)
+- Fallo: `evaluate()` validaba `authority_tf == obj.authority_tf` pero NO que la
+  *vela* perteneciera a ese TF. Un caller podía pasar `authority_tf="H4"` con una
+  barra M15 y el motor la aceptaba.
+- Corrección: `evaluate()` exige ahora `closed_bar["tf"] == authority_tf ==
+  obj.authority_tf`. Si la vela es de otro TF => `ValueError`. Regla militar:
+  solo una vela de authority_tf cerrada puede cambiar el estado oficial.
+  (Test: `test_evaluate_rejects_bar_from_wrong_tf_m15_disguised_as_h4`.)
+
+### C2 — Persistencia / RUN CONTINUO (round-trip SAVE→LOAD→CONTINUE)
+- Fallo A: `_seen_events` era un `set` de Python → `to_dict()` → `json.dumps` explotaba.
+- Fallo B: `to_dict()` no incluía `authority_tf`/`lifecycle_tf`/`observation_tf`/
+  `execution_tf` → al recargar se perdía la identidad MTF.
+- Corrección: `to_dict()` incluye los 4 campos nuevos y `_normalize_meta` (staticmethod)
+  convierte `set` -> `lista` y dicts anidados a JSON-safe. `from_dict()` reconstruye
+  `_seen_events` como `set` y lee los 4 campos. Round-trip idéntico.
+  (Tests: `test_round_trip_json_preserves_full_identity_and_lifecycle`,
+   `test_full_vs_save_restore_continue_identical`.)
+
+### C3 — Identidad fail-closed (sin colapso de event_key)
+- Fallo: `event_key = TF|timestamp|event_type`; si `timestamp=None` dos velas
+  distintas colapsaban y se descartaban silenciosamente.
+- Corrección: `event_key` ahora es `TF|time|bar_index|event_type` y EXIGE
+  `bar_time` y `bar_index` válidos; si faltan, `evaluate`/`observe_lower_tf`
+  lanzan `ValueError` (rechazo, no descarte). Mejor rechazar que inventar causalidad.
+  (Tests: `test_evaluate_requires_identity_fail_closed`,
+   `test_observe_requires_identity_fail_closed`,
+   `test_distinct_bars_with_null_time_not_collapsed`.)
+
+### Criterio de CERTIFICACIÓN (propuesto al auditor)
+Lifecycle V1 se declara CERTIFIED cuando:
+1. Objeto H4 no puede ser alterado por ninguna vela que no sea H4. ✅ (C1)
+2. Guardar/cargar conserva EXACTAMENTE toda su identidad y lifecycle. ✅ (C2)
+3. FULL vs SAVE→RESTORE→CONTINUE produce EXACTAMENTE el mismo resultado. ✅ (C2)
+4. Observación LTF no reescribe historia oficial. ✅ (H2 previo)
+5. Idempotencia real (misma vela => 0 efectos secundarios). ✅ (H3 + C3)
+
+### Verificación final
+- `pytest tests/` completo → **248 passed, 0 failed** (era 242 antes de esta ronda).
+- Sin push (regla repo: auditoría firma + GO de Ruben).
+
+### Siguiente paso
+`engine/market_state.py` (proyección event-sourced por T). Los cimientos
+(autoridad MTF protegida, observación separada, idempotencia, round-trip JSON)
+ya están sentados.

@@ -210,6 +210,24 @@ class MarketObject:
     def is_terminal(self) -> bool:
         return self.state in _TERMINAL_STATES
 
+    @staticmethod
+    def _normalize_meta(meta: dict) -> dict:
+        """Convierte meta a JSON-safe para garantizar round-trip SAVE->LOAD.
+
+        JSON no soporta ``set``; ``_seen_events`` es un set y debe ir como lista.
+        Cualquier otro valor no serializable se deja a ``json`` (que fallará
+        explícitamente en vez de corromper silenciosamente el estado).
+        """
+        out: dict = {}
+        for k, v in meta.items():
+            if isinstance(v, set):
+                out[k] = sorted(v)
+            elif isinstance(v, dict):
+                out[k] = {kk: (sorted(vv) if isinstance(vv, set) else vv) for kk, vv in v.items()}
+            else:
+                out[k] = v
+        return out
+
     def to_dict(self) -> dict:
         def _f(v):
             try:
@@ -221,6 +239,10 @@ class MarketObject:
             "id": self.id, "symbol": self.symbol,
             "type": self.type.value if isinstance(self.type, ObjectType) else self.type,
             "origin_tf": self.origin_tf,
+            "authority_tf": self.authority_tf,
+            "lifecycle_tf": self.lifecycle_tf,
+            "observation_tf": self.observation_tf,
+            "execution_tf": self.execution_tf,
             "role": self.role.value if isinstance(self.role, Role) else self.role,
             "direction": int(self.direction), "zone_high": _f(self.zone_high), "zone_low": _f(self.zone_low),
             "creation_time": str(self.creation_time) if self.creation_time is not None else None,
@@ -239,17 +261,27 @@ class MarketObject:
             "touch_count": int(self.touch_count), "invalidated_bar": self.invalidated_bar,
             "invalidated_time": str(self.invalidated_time) if self.invalidated_time is not None else None,
             "mitigation_level": _f(self.mitigation_level), "age_bars": int(self.age_bars),
-            "meta": {k: _f(v) for k, v in self.meta.items()},
+            # meta puede contener tipos no serializables (set en _seen_events).
+            # Se normaliza a JSON-safe aquí para garantizar round-trip SAVE->LOAD.
+            "meta": self._normalize_meta(self.meta),
         }
 
     @classmethod
     def from_dict(cls, d: dict) -> "MarketObject":
+        meta = dict(d.get("meta", {}))
+        # _seen_events se serializa como lista (JSON no soporta set); lo reconstruimos.
+        seen = meta.get("_seen_events")
+        if isinstance(seen, list):
+            meta["_seen_events"] = set(seen)
         return cls(
             id=d.get("id", ""), symbol=d.get("symbol", ""), type=ObjectType(d["type"]),
-            origin_tf=d.get("origin_tf", ""), role=Role(d["role"]), direction=int(d.get("direction", 0)),
+            origin_tf=d.get("origin_tf", ""), authority_tf=d.get("authority_tf", ""),
+            lifecycle_tf=d.get("lifecycle_tf", ""), observation_tf=d.get("observation_tf", ""),
+            execution_tf=d.get("execution_tf", ""), role=Role(d["role"]),
+            direction=int(d.get("direction", 0)),
             zone_high=float(d.get("zone_high", 0.0)), zone_low=float(d.get("zone_low", 0.0)),
             creation_time=d.get("creation_time"), state=ObjectState(d.get("state", ObjectState.CREATED)),
-            meta=dict(d.get("meta", {})), parent_object=d.get("parent_object"),
+            meta=meta, parent_object=d.get("parent_object"),
             related_objects=list(d.get("related_objects", [])), quality_score=d.get("quality_score"),
             bar_index=d.get("bar_index"), bar_time=d.get("bar_time"), candidate_bar=d.get("candidate_bar"),
             candidate_time=d.get("candidate_time"), confirmation_bar=d.get("confirmation_bar"),

@@ -21,7 +21,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional
 import uuid
 
-from engine.market_object import MarketObject, ObjectState, ObjectType
+from engine.market_object import MarketObject, ObjectState, ObjectType, Role
 from engine.relations import relate_fvg_ob
 
 if TYPE_CHECKING:  # evita acoplar en runtime con market_state (regla de arquitectura)
@@ -181,9 +181,30 @@ _LTF_TFS = frozenset({"H1", "M15", "M5", "M1"})
 
 
 def _normalize_bias(bias) -> str:
-    """Normaliza un sesgo HTF a uno de {'bullish','bearish','neutral','none'}."""
+    """Normaliza un sesgo HTF a uno de {'bullish','bearish','neutral','none'}.
+
+    Acepta MarketObject, int/float (direccion), str (nombre de sesgo) o dict
+    con claves 'htf_bias'/'bias' (cadena) o 'direction' (entero). Esto permite
+    que ``build_setups_at`` reciba ``ctx={'htf_bias': ...}`` y que
+    ``classify_eligibility`` comparara ``setup.direction`` con el sesgo (H3).
+    """
     if isinstance(bias, MarketObject):
         d = int(bias.direction)
+    elif isinstance(bias, dict):
+        b = bias.get("htf_bias") or bias.get("bias")
+        if isinstance(b, str):
+            s = b.strip().lower()
+            if s in ("bullish", "bearish", "neutral", "none", "na"):
+                return s
+            if s in ("up", "long"):
+                return "bullish"
+            if s in ("down", "short"):
+                return "bearish"
+            return "neutral"
+        d = bias.get("direction")
+        if isinstance(d, (int, float)):
+            return "bullish" if int(d) > 0 else ("bearish" if int(d) < 0 else "neutral")
+        return "neutral"
     elif isinstance(bias, (int, float)):
         d = int(bias)
     elif isinstance(bias, str):
@@ -233,6 +254,56 @@ def _fvg_refines_ob(ms: "MarketState", fvg: MarketObject, ob: MarketObject) -> b
     return False
 
 
+def _is_related(a: MarketObject, other_id: str) -> bool:
+    """¿``a`` referencia a ``other_id`` por parent_object o related_objects?
+
+    Los enlaces de linaje (parent/related) son INMUTABLES (sello de nacimiento),
+    por lo que evaluarlos sobre la proyección histórica o sobre el objeto vivo
+    da el mismo resultado: no hay riesgo de look-ahead al usarlos.
+    """
+    return (a.parent_object == other_id) or (other_id in a.related_objects)
+
+
+def _find_confirmation(existing: list, direction: int, ob: MarketObject,
+                       fvg: MarketObject) -> Optional[MarketObject]:
+    """Busca el BOS de confirmation en el snapshot en T (canónico H2).
+
+    El confirmation es un ``ObjectType.BOS`` de la MISMA dirección del setup y
+    relacionado con el POI (OB) o el refinamiento (FVG). Devuelve la primera
+    proyección que cumpla, o ``None`` si el contrato no puede completarse.
+    """
+    for o in existing:
+        if o.type is not ObjectType.BOS:
+            continue
+        if int(o.direction) != int(direction):
+            continue
+        if (_is_related(o, ob.id) or _is_related(ob, o.id)
+                or _is_related(o, fvg.id) or _is_related(fvg, o.id)):
+            return o
+    return None
+
+
+def _find_trigger(existing: list, direction: int, ob: MarketObject,
+                  fvg: MarketObject) -> Optional[MarketObject]:
+    """Busca el trigger de ejecución en el snapshot en T (canónico H2).
+
+    El trigger es un ``ObjectType.DISPLACEMENT`` (o un FVG de ejecución,
+    ``Role.EXECUTION``) de la MISMA dirección y relacionado con el
+    refinamiento (FVG) o el POI (OB).
+    """
+    for o in existing:
+        is_disp = o.type is ObjectType.DISPLACEMENT
+        is_exec_fvg = (o.type is ObjectType.FVG and o.role is Role.EXECUTION)
+        if not (is_disp or is_exec_fvg):
+            continue
+        if int(o.direction) != int(direction):
+            continue
+        if (_is_related(o, fvg.id) or _is_related(fvg, o.id)
+                or _is_related(o, ob.id) or _is_related(ob, o.id)):
+            return o
+    return None
+
+
 def build_setups_at(
     ms: "MarketState",
     t,
@@ -240,53 +311,58 @@ def build_setups_at(
     *,
     max_bars_apart: int = 240,
 ) -> list["Setup"]:
-    """Compone setups ICT/SMC en T a partir de un MarketState (solo lectura).
+    """Compone setups ICT/SMC COMPLETOS en T a partir de un MarketState (solo lectura).
 
     Ensambla, para cada par ``(OB HTF ACTIVE como POI, FVG LTF ACTIVE que lo
-    refina)`` que además satisface la relación canónica FVG↔OB (``relate_fvg_ob``
-    en modo strict causal), un ``Setup`` con:
+    refina)`` que satisface la relación canónica FVG↔OB, un ``Setup`` COMPLETO
+    con la cadena canónica de componentes:
 
         context_htf  <- contexto HTF provisto en ``ctx`` (D1/H4)
         poi          <- Order Block HTF (POI)
         refinement   <- FVG LTF que refina al POI
+        confirmation <- BOS relacionado (ObjectType.BOS)
+        trigger      <- DISPLACEMENT (o FVG de ejecución) relacionado
         direction    <- dirección del par (1 bullish / -1 bearish)
-        eligibility  <- ELIGIBLE si el contexto HTF es bullish; si no, BLOCKED
 
-    Consume la API canónica del MarketState:
-      * ``objects_existing_at(t)`` — snapshot causal en T (sin repaint).
-      * ``active()`` — filtra a objetos vivos (no terminales).
-      * ``htf_contains_ltf`` / ``ltf_refines_htf`` — contención MTF (refinamiento).
-    Y la relación canónica ``relate_fvg_ob`` (engine.relations) para el
-    emparejamiento geométrico/causal FVG↔OB.
+    Correcciones H2+H3 (Codex):
+      * H2: ahora BUSCA y ASIGNA ``confirmation`` y ``trigger`` en el snapshot.
+        Si el contrato exige setup completo y falta alguno => BLOCKED.
+      * H3: la elegibilidad final compara ``setup.direction`` con el sesgo HTF
+        (bearish bajo bullish => BLOCKED). Toda la lógica de elegibilidad está
+        CENTRALIZADA en ``classify_eligibility``; este compositor NO la duplica.
+      * Causalidad: usa ``ms.projection_at(T)`` (proyecciones históricas
+        congeladas en T) — NUNCA ``ms.active()`` del presente, que miraría el
+        futuro (look-ahead). El filtro ACTIVE se evalúa DENTRO del snapshot.
 
     INVARIANTES (auditoría):
       - NO ejecuta: no llama a lifecycle.evaluate / advance_bar / observe.
       - NO muta object_state ni POI.meta (la linaje la fija el caller).
       - Es determinista y causal: solo lee el mundo conocido hasta T.
     """
-    # 1) Snapshot causal en T y conjunto activo (cumple objects_existing_at + active).
-    existing = ms.objects_existing_at(t)
-    active_ids = {o.id for o in ms.active()}
-    existing = [o for o in existing if o.id in active_ids]
+    # 1) Snapshot causal en T (proyecciones congeladas; sin look-ahead).
+    proj = ms.projection_at(t)
+    existing = list(proj.values())
 
     context_obj, htf_bias = _resolve_htf_context(ctx)
 
-    # 2) Candidatos POI: Order Blocks en HTF, ACTIVE.
+    # 2) Candidatos POI/refinement: ACTIVE DENTRO de la proyección en T.
+    #    (No usamos ms.active() del presente: sería look-ahead.)
     ob_pois = [
         o for o in existing
         if o.type is ObjectType.ORDER_BLOCK
         and o.origin_tf in _POI_TFS
+        and o.state == ObjectState.ACTIVE
     ]
-    # 3) Candidatos refinamiento: FVG en LTF, ACTIVE.
     fvg_ltf = [
         o for o in existing
         if o.type is ObjectType.FVG
         and o.origin_tf in _LTF_TFS
+        and o.state == ObjectState.ACTIVE
     ]
     if not ob_pois or not fvg_ltf:
         return []
 
-    # 4) Relación canónica FVG↔OB (mismo sentido, solapamiento, orden causal).
+    # 3) Relación canónica FVG↔OB (mismo sentido, solapamiento, orden causal).
     relations = relate_fvg_ob(
         fvg_ltf, ob_pois,
         max_bars_apart=max_bars_apart,
@@ -294,8 +370,7 @@ def build_setups_at(
         causal_mode="strict",
     )
 
-    # 5) Ensamblar setups: la relación geométrica debe confirmarse con la
-    #    contención MTF (el FVG LTF refina al OB HTF).
+    # 4) Ensamblar setups completos y delegar la elegibilidad a classify_eligibility.
     by_id = {o.id: o for o in existing}
     setups: list[Setup] = []
     seen: set[tuple[str, str]] = set()
@@ -311,21 +386,18 @@ def build_setups_at(
             continue
         seen.add(key)
 
-        if htf_bias == "bullish":
-            eligibility = SetupEligibility.ELIGIBLE
-            reason = "HTF context bullish; H4 OB POI refined by M15 FVG accepted"
-        else:
-            eligibility = SetupEligibility.BLOCKED
-            reason = f"HTF context not bullish (bias={htf_bias}); setup blocked"
+        # H2: confirmation (BOS) y trigger (DISPLACEMENT) en el snapshot en T.
+        confirmation = _find_confirmation(existing, rel.direction, ob, fvg)
+        trigger = _find_trigger(existing, rel.direction, ob, fvg)
 
-        setups.append(Setup(
+        setup = Setup(
             symbol=(ob.symbol or fvg.symbol or ""),
             direction=int(rel.direction),
             context_htf=context_obj,
             poi=ob,
             refinement=fvg,
-            eligibility=eligibility,
-            reason=reason,
+            confirmation=confirmation,
+            trigger=trigger,
             meta={
                 "relation": rel.relation,
                 "causal_order": rel.causal_order,
@@ -336,7 +408,11 @@ def build_setups_at(
                 "refinement_tf": fvg.origin_tf,
                 "htf_bias": htf_bias,
             },
-        ))
+        )
+        # H3 + H2: la elegibilidad final (direction vs sesgo HTF y presencia de
+        # confirmation/trigger) la CENTRALIZA classify_eligibility.
+        classify_eligibility(setup, ctx, require_complete=True)
+        setups.append(setup)
     return setups
 
 
@@ -418,13 +494,27 @@ def _ctx_aligned(ctx) -> bool:
 
 
 def _htf_aligned(ctx, direction: int) -> bool:
-    """Contexto HTF alineado con la direccion del setup."""
+    """Contexto HTF alineado con la direccion del setup (H3, Codex).
+
+    Acepta dos formas de declarar el sesgo HTF:
+      * numericamente (``ctx.direction`` via SimpleNamespace/MarketObject/dict), o
+      * como cadena de sesgo (dict ``{'htf_bias': ...}`` o ``MarketObject.direction``
+        normalizado por ``_normalize_bias``).
+    Un setup bearish bajo sesgo bullish NO alinea => BLOCKED.
+    """
     if direction == 0:
         return False
+    # 1) metodo numerico (direction del contexto HTF)
     ctx_dir = _ctx_direction(ctx)
-    if ctx_dir == 0 or ctx_dir != direction:
-        return False
-    return _ctx_aligned(ctx)
+    if ctx_dir != 0 and ctx_dir == direction and _ctx_aligned(ctx):
+        return True
+    # 2) metodo de sesgo (cadena: bullish/bearish)
+    bias = _normalize_bias(ctx)
+    if bias == "bullish" and direction > 0:
+        return True
+    if bias == "bearish" and direction < 0:
+        return True
+    return False
 
 
 def _is_active(mo) -> bool:
@@ -432,11 +522,24 @@ def _is_active(mo) -> bool:
     return mo is not None and getattr(mo, "state", None) == ObjectState.ACTIVE
 
 
-def classify_eligibility(setup: "Setup", ctx) -> SetupEligibility:
+def classify_eligibility(setup: "Setup", ctx, *, require_complete: bool = False) -> SetupEligibility:
     """Clasifica la elegibilidad de un setup compuesto (SDD §13.4).
 
-    Precedencia: SUPERSEDED (POI INVALIDATED) > OUT_OF_CONTEXT (ctx None) >
-    BLOCKED (ctx no alineado o poi/refinement no ACTIVE) > ELIGIBLE.
+    Punto UNICO de clasificación: ``build_setups_at`` delega aquí y NO duplica
+    lógica. Precedencia:
+
+        SUPERSEDED (POI INVALIDATED)
+          > OUT_OF_CONTEXT (ctx None)
+          > BLOCKED (ctx no alineado con direction — H3, Codex)
+          > BLOCKED (setup incompleto: falta confirmation/trigger — H2, si
+                   ``require_complete``)
+          > ELIGIBLE (POI/refinement ACTIVE)
+
+    H3: compara ``setup.direction`` con el sesgo HTF (``_htf_aligned``); un
+    setup bearish bajo sesgo bullish queda BLOCKED.
+    H2: si ``require_complete`` y faltan confirmation (BOS) o trigger
+    (DISPLACEMENT), el setup no puede armarse => BLOCKED.
+
     NO muta los MarketObjects referenciados; actualiza setup.eligibility/reason.
     """
     if setup.poi is not None and setup.poi.state == ObjectState.INVALIDATED:
@@ -453,9 +556,28 @@ def classify_eligibility(setup: "Setup", ctx) -> SetupEligibility:
         setup.eligibility = SetupEligibility.BLOCKED
         setup.reason = (
             f"contexto HTF no alineado con direction={setup.direction} "
-            f"(ctx.direction={_ctx_direction(ctx)})"
+            f"(sesgo={_normalize_bias(ctx)}; not bullish)"
         )
         return SetupEligibility.BLOCKED
+
+    # H2 (Setup completo, Codex): si el contrato exige setup completo y faltan
+    # confirmation (BOS) o trigger (DISPLACEMENT), el setup no puede armarse y
+    # queda BLOCKED. Centralizado aqui (build_setups_at NO lo duplica).
+    if require_complete:
+        missing = [
+            name
+            for name, comp in (
+                ("confirmation", setup.confirmation),
+                ("trigger", setup.trigger),
+            )
+            if comp is None
+        ]
+        if missing:
+            setup.eligibility = SetupEligibility.BLOCKED
+            setup.reason = (
+                f"setup incompleto: faltan componentes requeridos {missing}"
+            )
+            return SetupEligibility.BLOCKED
 
     if _is_active(setup.poi) and _is_active(setup.refinement):
         setup.eligibility = SetupEligibility.ELIGIBLE

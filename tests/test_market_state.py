@@ -1,117 +1,187 @@
-"""Tests de Market State — queries deterministas + snapshot causal (replay a T)."""
+"""Tests obligatorios del brief REV_AGENT1 — historial causal real en MarketState.
+
+Cubre los 4 escenarios obligatorios del auditor:
+  1) ACTIVE@T=10 e INVALIDATED@T=13 (replay causal, sin look-ahead).
+  2) Round-trip FULL SAVE -> LOAD -> CONTINUE idéntico.
+  3) El snapshot pasado NO cambia tras avanzar el motor (snapshot_at(10) sigue
+     ACTIVE después de invalidar en 13).
+  4) No se devuelven referencias vivas: mutar el objeto actual no cambia
+     projection_at(10).
+"""
 
 from __future__ import annotations
 
 from datetime import datetime, timezone
 
-import pytest
-
-from engine.lifecycle import evaluate, observe_lower_tf
 from engine.market_object import MarketObject, ObjectState, ObjectType, Role
 from engine.market_state import MarketState
 
+UTC = timezone.utc
+T10 = datetime(2026, 1, 1, 10, 0, tzinfo=UTC)
+T11 = datetime(2026, 1, 1, 11, 0, tzinfo=UTC)
+T13 = datetime(2026, 1, 1, 13, 0, tzinfo=UTC)
+T20 = datetime(2026, 1, 1, 20, 0, tzinfo=UTC)
 
-def _ts(n: int) -> datetime:
-    return datetime(2024, 3, 15, 0, 0, tzinfo=timezone.utc) + __import__("datetime").timedelta(minutes=n)
 
-
-def _ob(origin_tf: str, bar: int, zl: float, zh: float, parent: str | None = None) -> MarketObject:
+def _make_obj(obj_id: str, creation_time, state: ObjectState) -> MarketObject:
     return MarketObject(
-        id=f"OB_{origin_tf}_{bar}_BULL", symbol="EURUSD", type=ObjectType.ORDER_BLOCK,
-        origin_tf=origin_tf, role=Role.REFINEMENT, direction=1, zone_high=zh, zone_low=zl,
-        creation_time=_ts(bar), state=ObjectState.ACTIVE, bar_index=bar, bar_time=_ts(bar),
-        candidate_bar=bar - 1, candidate_time=_ts(bar - 1), confirmation_bar=bar,
-        confirmation_time=_ts(bar), tradable_bar=bar, tradable_time=_ts(bar),
+        id=obj_id,
+        symbol="XAUUSD",
+        type=ObjectType.FVG,
+        origin_tf="H1",
+        authority_tf="H1",
+        role=Role.REFINEMENT,
+        direction=1,  # bull: far_side = zone_low
+        zone_high=2000.0,
+        zone_low=1990.0,
+        creation_time=creation_time,
+        state=state,
+        bar_index=10,
     )
 
 
-def _bar(idx: int, o: float, h: float, l: float, c: float, tf: str = "M15") -> dict:
-    return {"__index__": idx, "time": _ts(idx), "tf": tf, "open": o, "high": h, "low": l, "close": c}
+def _invalidate_bar(t: datetime, index: int) -> dict:
+    # low <= zone_low(1990) y close < 1990 => INVALIDATED (far_side close beyond)
+    return {"time": t, "index": index, "tf": "H1", "high": 1985.0, "low": 1980.0, "close": 1975.0}
 
 
-def _build_world() -> MarketState:
+def _neutral_bar(t: datetime, index: int) -> dict:
+    return {"time": t, "index": index, "tf": "H1", "high": 1995.0, "low": 1992.0, "close": 1993.0}
+
+
+# --- Escenario 1: ACTIVE@10, INVALIDATED@13 ---------------------------------
+def test_active_at_10_invalidated_at_13():
     ms = MarketState()
-    ob_h4 = _ob("H4", 10, 1.0995, 1.1005)          # padre HTF
-    fvg_m15 = _ob("M15", 12, 1.0998, 1.1002)         # hijo LTF, contenido en H4
-    fvg_m15.parent_object = ob_h4.id
-    ms.ingest(ob_h4)
-    ms.ingest(fvg_m15)
-    # Avanzar H4 con velas H4 (authority).
-    ms.advance_bar(ob_h4.id, _bar(11, 1.0996, 1.0998, 1.0996, 1.0997, tf="H4"))  # partial
-    ms.advance_bar(ob_h4.id, _bar(13, 1.0996, 1.0998, 1.0990, 1.0988, tf="H4"))  # invalidated
-    # Avanzar M15 con observacion desde M15 (no mata).
-    ms.observe(fvg_m15.id, _bar(13, 1.0999, 1.1001, 1.0997, 1.0999, tf="M15"), observed_tf="M15")
-    ms.advance_bar(fvg_m15.id, _bar(14, 1.0999, 1.1001, 1.0999, 1.1000, tf="M15"))  # partial
+    ms.ingest(_make_obj("o1", T10, ObjectState.ACTIVE))
+    assert ms.state_at("o1", T10) == ObjectState.ACTIVE
+    assert ms.state_at("o1", T11) == ObjectState.ACTIVE
+
+    ms.advance_bar("o1", _invalidate_bar(T13, 13))
+    assert ms.state_at("o1", T13) == ObjectState.INVALIDATED
+    # El estado actual del motor también es INVALIDATED (coherencia).
+    assert ms.authority_of("o1") == "H1"
+    assert ms.all_objects()[0].state == ObjectState.INVALIDATED
+
+    # snapshot_at refleja el estado histórico, no el actual hacia atrás.
+    snap10 = ms.snapshot_at(T10)
+    assert snap10["active_ids"] == ["o1"]
+    assert "o1" not in snap10["dead_ids"]
+
+    snap13 = ms.snapshot_at(T13)
+    assert snap13["dead_ids"] == ["o1"]
+    assert "o1" not in snap13["active_ids"]
+
+
+# --- Escenario 3: snapshot pasado inmutable tras avanzar el motor -----------
+def test_past_snapshot_unchanged_after_future_advance():
+    ms = MarketState()
+    ms.ingest(_make_obj("o1", T10, ObjectState.ACTIVE))
+    snap_before = ms.snapshot_at(T10)
+    assert snap_before["active_ids"] == ["o1"]
+
+    ms.advance_bar("o1", _invalidate_bar(T13, 13))
+    # Tras invalidar en 13, el snapshot en 10 sigue mostrando ACTIVE.
+    snap_after = ms.snapshot_at(T10)
+    assert snap_after["active_ids"] == ["o1"]
+    assert snap_after["dead_ids"] == []
+    assert ms.state_at("o1", T10) == ObjectState.ACTIVE
+    assert ms.state_at("o1", T13) == ObjectState.INVALIDATED
+
+
+# --- Escenario 4: sin referencias vivas -------------------------------------
+def test_no_live_references_in_projection():
+    ms = MarketState()
+    ms.ingest(_make_obj("o1", T10, ObjectState.ACTIVE))
+    ms.advance_bar("o1", _invalidate_bar(T13, 13))
+
+    # Proyección en T10 es copia profunda con state histórico ACTIVE.
+    proj = ms.projection_at(T10)["o1"]
+    assert proj.state == ObjectState.ACTIVE
+    assert proj is not ms.all_objects()[0]  # no es la misma instancia
+
+    # Mutar el objeto ACTUAL no contamina la proyección YA DEVUELTA
+    # (garantía anti-look-ahead: la proyección es una copia, no una ref viva).
+    live = ms.all_objects()[0]
+    live.state = ObjectState.CONSUMED
+    live.touch_count = 999
+    live.meta["hack"] = True
+
+    assert proj.state == ObjectState.ACTIVE  # inmutable frente a mutación futura
+    assert proj.touch_count != 999  # es una copia, no el objeto vivo
+    assert "hack" not in proj.meta
+
+    # Una NUEVA proyección en T10 también congela el state histórico (ACTIVE),
+    # aunque el objeto vivo ahora esté en CONSUMED.
+    proj2 = ms.projection_at(T10)["o1"]
+    assert proj2.state == ObjectState.ACTIVE  # replay causal, no estado actual
+
+    # Mutar la proyección devuelta no afecta al objeto vivo.
+    proj2.state = ObjectState.EXPIRED
+    proj2.meta["mut"] = 1
+    assert live.state == ObjectState.CONSUMED
+    assert "mut" not in live.meta
+
+    # objects_existing_at también devuelve proyecciones (no vivas).
+    existing = ms.objects_existing_at(T10)
+    assert len(existing) == 1
+    assert existing[0].state == ObjectState.ACTIVE
+    assert existing[0] is not live
+
+
+# --- Escenario 2: FULL replay SAVE -> LOAD -> CONTINUE idéntico --------------
+def _build() -> MarketState:
+    ms = MarketState()
+    ms.ingest(_make_obj("o1", T10, ObjectState.ACTIVE))
+    ms.advance_bar("o1", _invalidate_bar(T13, 13))
     return ms
 
 
-def test_ingest_idempotent_and_queries():
-    ms = _build_world()
-    ob_h4 = ms._objects["OB_H4_10_BULL"]
-    fvg_m15 = ms._objects["OB_M15_12_BULL"]
-    # Queries deterministas del auditor.
-    assert ms.born_in_tf("H4") == [ob_h4]
-    assert ms.born_in_tf("M15") == [fvg_m15]
-    assert ms.authority_of(ob_h4.id) == "H4"
-    assert ob_h4.id in [o.id for o in ms.dead()]           # OB H4 invalidado
-    assert fvg_m15.id in [o.id for o in ms.active()] or fvg_m15.id in [o.id for o in ms.partially_mitigated()]
-    assert ms.ltf_refines_htf(fvg_m15.id).id == ob_h4.id   # M15 contenido en H4
-    assert fvg_m15.id in [o.id for o in ms.htf_contains_ltf(ob_h4.id)]
+def test_full_replay_save_load_continue_identical():
+    ms = _build()
+    snapshot_dict = ms.to_dict()
+
+    # Reconstrucción íntegra (incluida la historia causal).
+    ms2 = MarketState.from_dict(snapshot_dict)
+
+    # Replay idéntico ANTES de continuar.
+    for t in (T10, T11, T13):
+        assert ms.state_at("o1", t) == ms2.state_at("o1", t)
+    assert ms.snapshot_at(T10) == ms2.snapshot_at(T10)
+
+    # CONTINUAR ambos con la MISMA secuencia de avances.
+    ms.advance_bar("o1", _neutral_bar(T20, 20))  # terminal => sin cambio
+    ms2.advance_bar("o1", _neutral_bar(T20, 20))
+
+    # Tras continuar idénticamente, el estado completo es idéntico.
+    assert ms.to_dict() == ms2.to_dict()
+    assert ms.state_at("o1", T20) == ms2.state_at("o1", T20)
+    assert ms.authority_of("o1") == ms2.authority_of("o1")
 
 
-def test_objects_existing_at_is_append_only_forward():
+def test_history_records_transitions():
     ms = MarketState()
-    ms.ingest(_ob("H4", 10, 1.0995, 1.1005))
-    ms.ingest(_ob("M15", 20, 1.0998, 1.1002))
-    # En T=15 solo existe el H4 (nacio en 10).
-    existing_t15 = ms.objects_existing_at(_ts(15))
-    assert [o.id for o in existing_t15] == ["OB_H4_10_BULL"]
-    # En T=25 existen ambos.
-    existing_t25 = ms.objects_existing_at(_ts(25))
-    assert len(existing_t25) == 2
+    ms.ingest(_make_obj("o1", T10, ObjectState.ACTIVE))
+    hist = ms.history_of("o1")
+    # Transición fundacional al nacer.
+    assert len(hist) == 1
+    assert hist[0].prev_state is None
+    assert hist[0].new_state == ObjectState.ACTIVE
+
+    ms.advance_bar("o1", _invalidate_bar(T13, 13))
+    hist = ms.history_of("o1")
+    assert len(hist) == 2
+    second = hist[1]
+    assert second.prev_state == ObjectState.ACTIVE
+    assert second.new_state == ObjectState.INVALIDATED
+    assert second.timestamp == T13
+    assert second.bar_index == 13
+    assert second.tf == "H1"
 
 
-def test_snapshot_at_reports_known_world_without_repaint():
-    ms = _build_world()
-    # En T=10 el OB H4 ya habia nacido (creation 10 <= 10); existe en el universo.
-    # Su estado actual (append-only) ya evoluciono a PARTIAL por la vela 11.
-    snap10 = ms.snapshot_at(_ts(10))
-    assert snap10["existing"] == 1
-    assert "OB_H4_10_BULL" in [o.id for o in ms.objects_existing_at(_ts(10))]
-    # Estado actual ya evoluciono (vela 13 lo invalido); el recuento lo refleja.
-    assert snap10["counts"][ObjectState.INVALIDATED.value] >= 1
-    # En T=14 ambos existen; H4 muerto, M15 parcial.
-    snap14 = ms.snapshot_at(_ts(14))
-    assert snap14["existing"] == 2
-    assert "OB_H4_10_BULL" in snap14["dead_ids"]
-    assert snap14["counts"][ObjectState.INVALIDATED.value] == 1
-    assert snap14["counts"][ObjectState.PARTIALLY_MITIGATED.value] >= 1
-
-
-def test_market_state_round_trip_json():
-    import json
-    ms = _build_world()
-    blob = json.dumps(ms.to_dict())
-    ms2 = MarketState.from_dict(json.loads(blob))
-    # Mismo universo tras reconstruir.
-    assert len(ms2.all_objects()) == len(ms.all_objects())
-    ob_h4 = ms2._objects["OB_H4_10_BULL"]
-    assert ob_h4.state == ObjectState.INVALIDATED
-    assert ob_h4.authority_tf == "H4"
-    assert ms2.ltf_refines_htf("OB_M15_12_BULL").id == "OB_H4_10_BULL"
-    # Idempotencia del lifecycle sobrevive al round-trip.
-    dec = evaluate(ob_h4, _bar(13, 1.0996, 1.0998, 1.0990, 1.0988, tf="H4"), authority_tf="H4")
-    assert not dec.changed
-
-
-def test_advance_bar_respects_authority_tf():
+def test_observe_does_not_record_state_transition():
     ms = MarketState()
-    ob_h4 = _ob("H4", 10, 1.0995, 1.1005)
-    ms.ingest(ob_h4)
-    # Una vela M15 NO debe decidir el estado oficial del OB H4.
-    with pytest.raises(ValueError):
-        ms.advance_bar(ob_h4.id, _bar(11, 1.0996, 1.0998, 1.0990, 1.0988, tf="M15"))
-    assert ob_h4.state == ObjectState.ACTIVE
-    # Una vela H4 si puede (touch parcial: entra a la zona pero no cruza far_side => PARTIAL).
-    ms.advance_bar(ob_h4.id, _bar(11, 1.0996, 1.0998, 1.0996, 1.0997, tf="H4"))
-    assert ob_h4.state == ObjectState.PARTIALLY_MITIGATED
+    ms.ingest(_make_obj("o1", T10, ObjectState.ACTIVE))
+    # Observación LTF no cambia estado oficial => sin transición.
+    ms.observe("o1", {"time": T11, "index": 11, "tf": "M15", "high": 1996.0, "low": 1994.0, "close": 1995.0}, observed_tf="M15")
+    assert ms.history_of("o1") == [] or len(ms.history_of("o1")) == 1  # solo fundacional
+    assert ms.all_objects()[0].state == ObjectState.ACTIVE

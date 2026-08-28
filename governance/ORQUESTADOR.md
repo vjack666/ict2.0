@@ -76,6 +76,26 @@ Antes de enrutar a Ingeniero (implementar), el orquestador debe:
 || Riesgo arquitectónico | Alertas | Cumplimiento |
 || Deuda de orden | Alertas | Ingeniero |
 
+## Bloqueo de deriva de intención
+
+El enrutamiento debe conservar el resultado pedido, no el tema histórico más
+activo del repositorio. La precedencia es:
+
+```text
+objetivo literal del usuario
+    > alcance/autoridad de la misión
+    > contrato y SDD aplicables
+    > plan activo
+    > worklog, memoria y experimentos históricos
+```
+
+`edge` no es un objetivo universal ni un sinónimo de "analizar". Solo se enruta
+al carril científico cuando el usuario solicita edge/backtest/experimento o la
+misión ya contiene un protocolo científico explícito. Configuración,
+documentación, auditoría estructural, lifecycle, datos y arquitectura deben
+cerrar contra su propio criterio de terminación; cualquier posible impacto en
+edge se registra como hallazgo, no se convierte en trabajo adicional.
+
 ## Estados operativos (todo agente reporta uno)
 
 `READY / WORKING / WAITING / BLOCKED / COMPLETED / ESCALATED` (ver `PROTOCOLO_AGENTE.md` §0).

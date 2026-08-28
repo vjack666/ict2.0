@@ -9,6 +9,17 @@
 
 Si recibes la orden **"comienza el plan"**, ejecuta exclusivamente el trabajo definido por este documento y sus documentos normativos. No busques tareas laterales ni amplíes el alcance por iniciativa propia.
 
+### Guardia de intención
+
+La frase **"comienza el plan"** es necesaria para activar este plan. Si el usuario
+entrega otra misión —por ejemplo configuración, arquitectura, datos,
+documentación, auditoría o lifecycle— el objetivo literal de esa misión tiene
+prioridad sobre el plan activo y sobre cualquier experimento pendiente.
+
+`edge`, `backtest`, `experimento`, `hipótesis`, `expectancy`, `PF`, `WR`, `OOS`,
+entrenamiento o rentabilidad son un carril científico explícito. No deben
+introducirse como criterio de éxito en tareas que no los soliciten.
+
 ## 2. ORDEN DE AUTORIDAD
 
 Lee y respeta, en este orden:

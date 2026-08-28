@@ -272,6 +272,10 @@ def _detect_atomics(df: pd.DataFrame, cfg: SeqConfig) -> _Atomic:
                         "level": level,
                         "pool_kind": pool["kind"],
                         "pool_form_bar": form,
+                        "pool_top": float(top),
+                        "pool_bot": float(bot),
+                        "sweep_high": float(high[b]),
+                        "sweep_low": float(low[b]),
                         "detail": f"sweep_{pool['kind']}",
                     }
                 )
@@ -483,7 +487,13 @@ def run_sequential(
                             sw["level"],
                             object_id=f"SWEEP_{i}",
                             detail=sw["detail"],
-                            extra={"pool_form_bar": sw["pool_form_bar"]},
+                            extra={
+                                "pool_form_bar": sw["pool_form_bar"],
+                                "pool_top": sw.get("pool_top"),
+                                "pool_bot": sw.get("pool_bot"),
+                                "sweep_high": sw.get("sweep_high"),
+                                "sweep_low": sw.get("sweep_low"),
+                            },
                         )
                     )
                     ch.last_bar = i

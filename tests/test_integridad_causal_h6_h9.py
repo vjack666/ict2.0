@@ -109,6 +109,73 @@ def test_H6_confirmation_anterior_al_poi_bloquea_setup():
     assert elig.value == "BLOCKED", f"H6 roto: setup con confirmation anterior al POI = {elig.value}"
 
 
+def test_H6_trigger_anterior_al_refinement_bloqueado():
+    """OE-02 (Tesis 1, ley congelada): trigger (DISPLACEMENT) debe ocurrir DESPUÉS
+    de confirmation (BOS), que a su vez es >= refinement. Un trigger previo al
+    refinement (y por tanto al confirmation) es causalmente imposible => BLOCKED."""
+    base = datetime(2026, 1, 1, 0, 0, tzinfo=UTC)
+    ob = _ob(anchor=100, confirm=101, tradable=101)   # POI ~T+100h
+    ob.candidate_time = base + timedelta(hours=100)
+    ob.confirmation_time = base + timedelta(hours=101)
+    fvg = _fvg(anchor=105, confirm=106)               # refinement ~T+105h
+    fvg.candidate_time = base + timedelta(hours=105)
+    fvg.confirmation_time = base + timedelta(hours=106)
+    bos = _bos(bar=107)                               # confirmation T+107h
+    bos.candidate_time = base + timedelta(hours=107)
+    bos.confirmation_time = base + timedelta(hours=107)
+    # trigger en T+10h: ANTES de POI/refinement/confirmation => imposible
+    trig = _bos(bar=10)
+    trig.candidate_time = base + timedelta(hours=10)
+    trig.confirmation_time = base + timedelta(hours=10)
+    setup = Setup(symbol="EURUSD", direction=1, context_htf=None, poi=ob, refinement=fvg, confirmation=bos, trigger=trig)
+    elig = classify_eligibility(setup, _ctx(aligned=True, bias=1), require_complete=True)
+    assert elig.value == "BLOCKED", f"H6 roto: trigger anterior a toda la cadena = {elig.value}"
+
+
+def test_H6_confirmation_anterior_al_refinement_bloqueado():
+    """OE-02 (Tesis 1): confirmation (BOS) debe ser >= refinement (FVG).
+    confirmation previo al refinement es causalmente imposible => BLOCKED."""
+    base = datetime(2026, 1, 1, 0, 0, tzinfo=UTC)
+    ob = _ob(anchor=100, confirm=101, tradable=101)
+    ob.candidate_time = base + timedelta(hours=100)
+    ob.confirmation_time = base + timedelta(hours=101)
+    fvg = _fvg(anchor=105, confirm=106)               # refinement ~T+105h
+    fvg.candidate_time = base + timedelta(hours=105)
+    fvg.confirmation_time = base + timedelta(hours=106)
+    # BOS en T+102h: entre POI(100) y refinement(105) -> confirmation < refinement
+    bos = _bos(bar=102)
+    bos.candidate_time = base + timedelta(hours=102)
+    bos.confirmation_time = base + timedelta(hours=102)
+    trig = _bos(bar=108)                              # trigger T+108h (posterior, ok)
+    trig.candidate_time = base + timedelta(hours=108)
+    trig.confirmation_time = base + timedelta(hours=108)
+    setup = Setup(symbol="EURUSD", direction=1, context_htf=None, poi=ob, refinement=fvg, confirmation=bos, trigger=trig)
+    elig = classify_eligibility(setup, _ctx(aligned=True, bias=1), require_complete=True)
+    assert elig.value == "BLOCKED", f"H6 roto: confirmation anterior al refinement = {elig.value}"
+
+
+def test_H6_trigger_anterior_al_confirmation_bloqueado():
+    """OE-02 (Tesis 1): trigger (DISPLACEMENT) debe ser >= confirmation (BOS).
+    trigger previo al confirmation es causalmente imposible => BLOCKED."""
+    base = datetime(2026, 1, 1, 0, 0, tzinfo=UTC)
+    ob = _ob(anchor=100, confirm=101, tradable=101)
+    ob.candidate_time = base + timedelta(hours=100)
+    ob.confirmation_time = base + timedelta(hours=101)
+    fvg = _fvg(anchor=105, confirm=106)
+    fvg.candidate_time = base + timedelta(hours=105)
+    fvg.confirmation_time = base + timedelta(hours=106)
+    bos = _bos(bar=107)                               # confirmation T+107h
+    bos.candidate_time = base + timedelta(hours=107)
+    bos.confirmation_time = base + timedelta(hours=107)
+    # trigger en T+103h: despues de refinement(105)? no; antes de confirmation(107)
+    trig = _bos(bar=103)
+    trig.candidate_time = base + timedelta(hours=103)
+    trig.confirmation_time = base + timedelta(hours=103)
+    setup = Setup(symbol="EURUSD", direction=1, context_htf=None, poi=ob, refinement=fvg, confirmation=bos, trigger=trig)
+    elig = classify_eligibility(setup, _ctx(aligned=True, bias=1), require_complete=True)
+    assert elig.value == "BLOCKED", f"H6 roto: trigger anterior al confirmation = {elig.value}"
+
+
 def test_H6_relacion_cross_tf_usa_tiempo_no_bar_index():
     """OE-07: OB H4 bar_index 10 pero tiempo T+1 no debe preceder FVG M15 tiempo T."""
     ob = _ob(origin_tf="H4", anchor=10, confirm=11)
@@ -282,3 +349,34 @@ def test_OE10_determinismo_misma_ejecucion_idéntica():
     r2 = build_setups_at(ms, datetime(2026, 1, 5, tzinfo=UTC), ctx=ctx)
     assert [s.eligibility.value for s in r1] == [s.eligibility.value for s in r2]
     assert len(r1) == len(r2)
+
+
+# ===================== OE-05 / OE-11 — Equivalencia de persistencia H7 =====================
+def test_OE11_save_load_conserva_reloj_out_of_order():
+    """OE-05/OE-11 (Tesis 1): tras SAVE -> LOAD el MarketState debe conservar el
+    reloj H7. Una vela fuera de orden rechazada por el ORIGINAL debe ser rechazada
+    por el RESTAURADO (comportamiento equivalente, no solo to_dict igual)."""
+    import json
+    from engine.market_state import MarketState as _MS
+
+    ob = _ob(anchor=10, confirm=10, tradable=10)
+    ms = _MS()
+    ms.ingest(ob)
+    bar1 = {"time": datetime(2026, 1, 1, 1, tzinfo=UTC), "__index__": 10, "tf": "H4",
+            "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
+    bar_late = {"time": datetime(2026, 1, 1, 0, tzinfo=UTC), "__index__": 5, "tf": "H4",
+                "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
+    ms.advance_bar(ob.id, bar1)
+    # original rechaza la vela atrasada
+    with pytest.raises(ValueError):
+        ms.advance_bar(ob.id, bar_late)
+    assert len(ms.out_of_order_events()) == 1
+
+    # SAVE -> LOAD
+    restored = _MS.from_dict(json.loads(json.dumps(ms.to_dict())))
+    # el restaurado debe conocer el último instante H4 visto (reloj conservado)
+    assert restored.out_of_order_events(), "OE-11: el registro H7 no sobrevivió a SAVE/LOAD"
+    # y debe volver a rechazar la misma vela atrasada
+    with pytest.raises(ValueError):
+        restored.advance_bar(ob.id, bar_late)
+    assert len(restored.out_of_order_events()) == 2

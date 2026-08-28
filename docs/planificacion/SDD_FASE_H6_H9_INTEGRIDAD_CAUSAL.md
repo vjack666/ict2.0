@@ -64,6 +64,42 @@ ChatGPT" externo, que mezclaba casos ya cubiertos con casos inexistentes):
 | H6 | `classify_eligibility` no validaba confirmation anterior al POI | guarda `confirmation_time >= poi.confirmation_time` | CERRADO |
 | H8 | `observe_lower_tf` aceptaba `observed_tf == origin_tf` | jerarquía estricta: solo TF inferior observa | CERRADO |
 
+## 4b. Congelación de semántica (OE-01, Tesis 1) y cierre definitivo H6/H7 (R2)
+
+La Tesis 1 congela la ley causal de componentes del setup (Ruben, 2026-08-28):
+
+```text
+t_POI <= t_REFINEMENT <= t_CONFIRMATION <= t_TRIGGER <= t_DECISION
+```
+
+con tipos canónicos:
+
+```text
+POI          = OB        (HTF)
+Refinement   = FVG       (LTF)
+Confirmation  = BOS
+Trigger       = DISPLACEMENT
+```
+
+El DISPLACEMENT "crea la estructura" pero, en el tiempo real, debe ocurrir
+DESPUÉS de la confirmation (BOS). No se permite trigger anterior a confirmation,
+ni confirmation anterior a refinement, ni refinement anterior a POI.
+
+Correcciones R2 (sobre dcce141 + R1):
+- `classify_eligibility` valida ahora las TRES inversiones
+  (POI>refinement, refinement>confirmation, confirmation>trigger) por
+  `confirmation_time`/tiempo operativo, no `bar_index` cross-TF.
+- H7 SAVE/LOAD: `MarketState.to_dict`/`from_dict` ahora persisten `_last_seen`
+  y `_out_of_order_events`; el MarketState restaurado conserva el reloj de TF y
+  rechaza las mismas velas fuera de orden que el original (OE-05/OE-11).
+
+Tests R2 (tests/test_integridad_causal_h6_h9.py): `test_H6_confirmation_anterior_al_refinement_bloqueado`,
+`test_H6_trigger_anterior_al_confirmation_bloqueado`, `test_H6_trigger_anterior_al_refinement_bloqueado`,
+`test_OE11_save_load_conserva_reloj_out_of_order`. Tests de integración actualizados
+a la ley congelada (DISPLACEMENT en `_ts(130)` > BOS `_ts(120)`).
+
+Suite completa tras R2: **338 passed, 0 failed** (sin xfail ocultos).
+
 Casos del "análisis ChatGPT" ya CUBIERTOS antes de esta fase (verificados por
 los tests adversariales, no por afirmación): H6 en `relate_fvg_ob` strict; H8
 en `evaluate`/`observe_lower_tf` tf-check; H9 ya tenía `_htf_aligned` pero con
@@ -73,7 +109,8 @@ el hueco del flag explícito (cerrado aquí).
 
 - `tests/test_integridad_causal_h6_h9.py`: 16 tests adversariales (OE-02,03,04,05,06,07,08,10).
 - `pytest tests/` completo: **334 passed, 0 failed** (era 318 en el texto externo;
-  328 antes de la fase; +16 de la suite nueva, +0 regresiones).
+  318 antes de la fase; +16 de la suite nueva, +0 regresiones). Tras auditoría RED
+  TEAM R1 (OE-02 trigger-order): 336 passed, 0 failed (+2).
 - Graphify actualizado a HEAD (OE-11).
 
 ## 6. Criterio de certificación

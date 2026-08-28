@@ -391,7 +391,7 @@ class MarketState:
         """Proyecciones históricas en T listas para ser consumidas por el builder."""
         return self.objects_existing_at(t)
 
-    # --- Round-trip JSON (preserva authority_tf, observaciones, historia) ----
+    # --- Round-trip JSON (preserva authority_tf, observaciones, historia Y reloj H7) ----
     def to_dict(self) -> dict[str, Any]:
         return {
             "objects": [o.to_dict() for o in self._objects.values()],
@@ -399,6 +399,15 @@ class MarketState:
                 oid: [tr.to_dict() for tr in hist]
                 for oid, hist in self._history.items()
             },
+            # OE-03 / H7 / OE-11: el reloj de TF y el registro de eventos fuera de
+            # orden DEBEN persistirse; si no, el MarketState restaurado olvida hasta
+            # qué instante vivió y aceptaría velas que el original rechazaría
+            # (comportamiento no equivalente tras SAVE/LOAD).
+            "last_seen": {
+                tf: [str(t) if t is not None else None, i]
+                for tf, (t, i) in self._last_seen.items()
+            },
+            "out_of_order_events": list(self._out_of_order_events),
         }
 
     @classmethod
@@ -409,6 +418,12 @@ class MarketState:
             ms._add_object(obj)  # no duplica la transición fundacional
         for oid, trs in d.get("history", {}).items():
             ms._history[oid] = [StateTransition.from_dict(tr) for tr in trs]
+        # OE-03 / H7 / OE-11: restaurar el reloj de TF para equivalencia de
+        # comportamiento (mismo rechazo OUT_OF_ORDER antes y después de SAVE/LOAD).
+        for tf, pair in d.get("last_seen", {}).items():
+            t_raw, i = pair
+            ms._last_seen[tf] = (_as_utc(t_raw) if t_raw is not None else None, int(i) if i is not None else None)
+        ms._out_of_order_events = list(d.get("out_of_order_events", []))
         return ms
 
 

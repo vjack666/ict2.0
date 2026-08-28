@@ -606,22 +606,31 @@ def classify_eligibility(setup: "Setup", ctx, *, require_complete: bool = False)
             )
             return SetupEligibility.BLOCKED
 
-    # OE-02 / H6: orden causal estricto POI <= refinement <= confirmation.
-    # Si la confirmation (BOS) existe y es temporalmente ANTERIOR al POI, el
-    # setup es causalmente imposible => BLOCKED (no se inventa causalidad hacia
-    # atras). Nota: el trigger (DISPLACEMENT) es el impulso que CREA la
-    # estructura, por lo que puede preceder al POI en tiempo real (no se chequea
-    # aqui). Se compara por confirmation_time (tiempo operativo), no bar_index.
-    if setup.poi is not None and setup.confirmation is not None:
-        poi_t = _obj_time(setup.poi)
-        conf_t = _obj_time(setup.confirmation)
-        if poi_t is not None and conf_t is not None and conf_t < poi_t:
-            setup.eligibility = SetupEligibility.BLOCKED
-            setup.reason = (
-                f"orden causal violado (H6): confirmation ocurre antes que el POI "
-                f"({conf_t} < {poi_t}); el setup nunca pudo existir en tiempo real"
-            )
-            return SetupEligibility.BLOCKED
+    # OE-02 / H6 + OE-03 (Tesis 1, ley congelada): orden causal estricto de los
+    # componentes del setup por tiempo operativo (no bar_index cross-TF):
+    #     t_POI <= t_REFINEMENT <= t_CONFIRMATION <= t_TRIGGER <= t_DECISION
+    # POI=OB (HTF), refinement=FVG (LTF), confirmation=BOS, trigger=DISPLACEMENT.
+    # Setup no lleva decision_time => la cota superior del trigger es la propia
+    # cadena (trigger debe ser >= confirmation, que ya es >= refinement >= POI).
+    # Cualquier inversión es causalmente imposible en T => BLOCKED (no se inventa
+    # causalidad hacia atrás). El DISPLACEMENT "crea la estructura" pero AÚN así
+    # debe ocurrir DESPUÉS de la confirmación (BOS) en el tiempo real.
+    _pairs = [
+        ("POI", "refinement", setup.poi, setup.refinement),
+        ("refinement", "confirmation", setup.refinement, setup.confirmation),
+        ("confirmation", "trigger", setup.confirmation, setup.trigger),
+    ]
+    for name_a, name_b, a, b in _pairs:
+        if a is not None and b is not None:
+            ta = _obj_time(a)
+            tb = _obj_time(b)
+            if ta is not None and tb is not None and tb < ta:
+                setup.eligibility = SetupEligibility.BLOCKED
+                setup.reason = (
+                    f"orden causal violado (H6): {name_b} ocurre antes que {name_a} "
+                    f"({tb} < {ta}); el setup nunca pudo existir en tiempo real"
+                )
+                return SetupEligibility.BLOCKED
 
     if _is_active(setup.poi) and _is_active(setup.refinement):
         setup.eligibility = SetupEligibility.ELIGIBLE

@@ -94,13 +94,15 @@ def _bos_h4(refines: str = "OB_H4_1") -> MarketObject:
 def _disp_m15(refines: str = "FVG_M15_1", ob: str = "OB_H4_1") -> MarketObject:
     """DISPLACEMENT (ObjectType.DISPLACEMENT) bullish, trigger canónico del setup.
 
-    Relacionado con el FVG LTF y el OB HTF.
+    Relacionado con el FVG LTF y el OB HTF. Bajo la ley causal congelada de la
+    Tesis 1 (POI <= refinement <= confirmation <= trigger), el DISPLACEMENT debe
+    ocurrir DESPUES de la confirmation (BOS, _ts(120)): se fija en _ts(130).
     """
     return MarketObject(
         id="DISP_M15_1", symbol="EURUSD", type=ObjectType.DISPLACEMENT,
         origin_tf="M15", role=Role.TRIGGER, direction=1,
         zone_low=1.1040, zone_high=1.1080,
-        creation_time=_ts(30), state=ObjectState.ACTIVE,
+        creation_time=_ts(130), state=ObjectState.ACTIVE,
         bar_index=125, bar_time=_ts(125),
         related_objects=[refines, ob],
     )

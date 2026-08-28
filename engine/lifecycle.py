@@ -92,15 +92,27 @@ def _mid(obj: MarketObject) -> float:
 
 
 def _bar_after_tradable(obj: MarketObject, bar_index: int, bar_time: Any) -> bool:
-    """True si la vela evaluada ocurre en o después de tradable_time (PIT)."""
-    if obj.tradable_bar is not None and bar_index < obj.tradable_bar:
+    """True si la vela evaluada ocurre en o después de ``tradable_time`` (PIT).
+
+    CONTRATO POR TIMESTAMP (Corrección temporal LTF/HTF — Codex H4): la frontera
+    PIT se decide EXCLUSIVAMENTE por timestamp. NUNCA se compara ``bar_index``
+    contra ``obj.tradable_bar`` cuando pertenecen a temporalidades distintas:
+    un índice M15 no es comparable con un índice H4 (la vela M15 que sigue por
+    timestamp podría tener un índice menor que el objeto H4 y descartarse como
+    BEFORE_TRADABLE de forma errónea). Como dentro de UNA MISMA tf el orden de
+    índices equivale al orden de timestamps, prescindir de la comparación por
+    índice no pierde información y elimina el riesgo cross-TF. Fail-closed: sin
+    timestamp válido no se asume "después" — el llamador ya rechaza la vela por
+    identidad incompleta antes de llegar aquí.
+    """
+    if bar_time is None:
         return False
-    if obj.tradable_time is None or bar_time is None:
+    if obj.tradable_time is None:
         return True
     tt = pd.to_datetime(obj.tradable_time, utc=True, errors="coerce")
     bt = pd.to_datetime(bar_time, utc=True, errors="coerce")
     if pd.isna(tt) or pd.isna(bt):
-        return True
+        return False
     return bt >= tt
 
 
@@ -169,14 +181,16 @@ def evaluate(
     high = float(closed_bar["high"])
     close = float(closed_bar["close"])
 
-    # GARANTÍA DE FALSIFICACIÓN TF (auditoría continuación, garantía 1):
-    # la vela cerrada debe pertenecer al authority_tf. Un caller no puede pasar
-    # authority_tf="H4" con una barra M15 y esperar que decida el estado oficial.
+    # GARANTÍA DE FALSIFICACIÓN TF (auditoría continuación, garantía 1): la vela
+    # cerrada debe LLEVAR tf explícito y ser EXACTAMENTE authority_tf. Un caller
+    # no puede pasar authority_tf="H4" con una barra M15 (ni omitir tf) y esperar
+    # que decida el estado oficial. Fail-closed: tf ausente => rechazo.
     bar_tf = closed_bar.get("tf")
-    if bar_tf is not None and bar_tf != authority_tf:
+    if bar_tf is None or bar_tf != authority_tf:
         raise ValueError(
-            f"evaluate() rechazado: vela tf={bar_tf} != authority_tf={authority_tf}. "
-            f"SOLO una vela de {authority_tf} cerrada puede cambiar el estado oficial."
+            f"evaluate() rechazado: la vela cerrada requiere tf={authority_tf} explícito "
+            f"(recibido tf={bar_tf}); SOLO una vela de {authority_tf} cerrada puede "
+            f"cambiar el estado oficial (contrato MTF fail-closed)."
         )
     # IDENTIDAD FAIL-CLOSED (garantía 3): si la vela no tiene identidad temporal
     # confiable, no evaluamos (mejor rechazar que inventar causalidad).
@@ -301,6 +315,16 @@ def observe_lower_tf(
     bar_time = closed_bar.get("time")
     low = float(closed_bar["low"])
     high = float(closed_bar["high"])
+
+    # GARANTÍA DE FALSIFICACIÓN TF (Codex H4): la vela observada debe pertenecer
+    # EXACTAMENTE a observed_tf. Un H4 no puede registrarse como observación M15.
+    bar_tf = closed_bar.get("tf")
+    if bar_tf is None or bar_tf != observed_tf:
+        raise ValueError(
+            f"observe_lower_tf() rechazado: la vela cerrada requiere tf={observed_tf} "
+            f"explícito (recibido tf={bar_tf}); un objeto de otra temporalidad no puede "
+            f"registrarse como observación {observed_tf} (contrato MTF fail-closed)."
+        )
 
     # IDENTIDAD FAIL-CLOSED: observación sin identidad temporal confiable se
     # rechaza (no se descarta silenciosamente, no se fabrica clave colapsada).

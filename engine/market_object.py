@@ -46,8 +46,11 @@ class ObjectState(str, Enum):
 
 
 _POI_TFS = {"D1", "H4", "H1"}
+# NOTA v1: MITIGATED NO es terminal. La convención metodológica congelada
+# (2026-08-28) establece precedencia INVALIDATED > MITIGATED: un objeto puede
+# recorrer la zona completa (MITIGATED) y luego cerrar más allá del far_side
+# (INVALIDATED). Solo INVALIDATED/EXPIRED/CONSUMED son terminales.
 _TERMINAL_STATES = {
-    ObjectState.MITIGATED,
     ObjectState.INVALIDATED,
     ObjectState.EXPIRED,
     ObjectState.CONSUMED,
@@ -68,7 +71,12 @@ _ALLOWED_TRANSITIONS = {
         ObjectState.EXPIRED,
         ObjectState.CONSUMED,
     },
-    ObjectState.MITIGATED: set(),
+    ObjectState.MITIGATED: {
+        ObjectState.MITIGATED,
+        ObjectState.INVALIDATED,
+        ObjectState.EXPIRED,
+        ObjectState.CONSUMED,
+    },
     ObjectState.INVALIDATED: set(),
     ObjectState.EXPIRED: set(),
     ObjectState.CONSUMED: set(),

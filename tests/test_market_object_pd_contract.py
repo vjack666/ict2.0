@@ -117,7 +117,12 @@ def test_lifecycle_transition_contract():
     assert obj.can_transition_to(ObjectState.ACTIVE)
     obj.transition_to(ObjectState.ACTIVE)
     obj.transition_to(ObjectState.PARTIALLY_MITIGATED)
+    # v1: MITIGATED NO es terminal; puede aún pasar a INVALIDATED (precedencia).
     obj.transition_to(ObjectState.MITIGATED)
+    assert not obj.is_terminal
+    assert obj.can_transition_to(ObjectState.INVALIDATED)
+    # INVALIDATED sí es terminal y no resucita.
+    obj.transition_to(ObjectState.INVALIDATED)
     assert obj.is_terminal
     assert not obj.can_transition_to(ObjectState.ACTIVE)
     try:

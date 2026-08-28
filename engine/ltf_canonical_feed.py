@@ -19,6 +19,7 @@ import pandas as pd
 
 from engine.detectors.fvg import detect_fvg
 from engine.detectors.ob import detect_order_blocks
+from engine.lifecycle import evaluate
 from engine.market_object import MarketObject, ObjectState
 from engine.relations import relate_fvg_ob
 from engine.sequential_events import SeqConfig, run_sequential
@@ -35,7 +36,12 @@ def _asof_prefix(frame: pd.DataFrame | None, decision_time: Any) -> pd.DataFrame
 
 
 def _touch_state(obj: MarketObject, frame: pd.DataFrame, decision_time: Any) -> MarketObject:
-    """Aplica observación causal de touch sobre una copia lógica del objeto."""
+    """Aplica observación causal de lifecycle sobre el objeto, vela a vela.
+
+    Delega en engine.lifecycle (única autoridad de transición). Antes mutaba
+    estado inline; ahora respeta la arquitectura de autoridad única: el feed
+    solo ENSAMBLA y deja que lifecycle decida ACTIVE -> PARTIAL -> terminal.
+    """
     if frame.empty or obj.tradable_time is None:
         return obj
     tt = pd.to_datetime(decision_time, utc=True, errors="coerce")
@@ -44,16 +50,10 @@ def _touch_state(obj: MarketObject, frame: pd.DataFrame, decision_time: Any) -> 
     if pd.isna(tt) or pd.isna(tradable):
         return obj
     # La vela de confirmación crea la zona; no cuenta como retest de la zona.
-    hits = frame.loc[(times > tradable) & (times <= tt)]
+    hits = frame.loc[(times > tradable) & (times <= tt)].copy()
+    hits["__index__"] = hits.index
     for _, row in hits.iterrows():
-        if float(row["low"]) <= float(obj.zone_high) and float(row["high"]) >= float(obj.zone_low):
-            obj.touch_count += 1
-            if obj.first_touch_time is None:
-                obj.first_touch_time = row["time"]
-                obj.first_touch_bar = int(row.name)
-            if obj.state is ObjectState.ACTIVE:
-                obj.state = ObjectState.PARTIALLY_MITIGATED
-            break
+        evaluate(obj, row.to_dict(), authority_tf=obj.origin_tf, decision_time=row["time"])
     return obj
 
 

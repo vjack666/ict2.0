@@ -1,9 +1,9 @@
 # SDD — Funnel Audit ICT FVG/OB
 
-**Estado:** NORMATIVO — **Funnel 20Y en re-auditoría A7 (dictamen Ruben 2026-08-28/29)**
+**Estado:** NORMATIVO — **GO técnico / certificación total bloqueada (A7, 2026-08-29)**
 **Fase:** Pre-backtest
 **Código canónico:** `audits/codigo/funnel.py` (FunnelAudit A7 completo) y `audits/codigo/mtf_seq_funnel.py` (histórico)
-**Runner A7:** `audits/codigo/mtf_seq_funnel_a7.py` (nuevo, con provenance y validación real; NO sobrescribe histórico)
+**Runner A7:** `audits/codigo/mtf_seq_funnel_a7.py` (provenance mecánica y de fuente separadas; fail-closed; NO sobrescribe histórico)
 **Propósito:** auditar la transformación causal de OHLC a candidatos ICT sin evaluar todavía rentabilidad.
 
 ## 1. Principio
@@ -92,6 +92,20 @@ Mismo dataset + mismo commit + misma configuración → mismo reporte, salvo cam
 
 La corrida histórica que cerró este gate queda como evidencia versionada. Las futuras validaciones se ejecutan desde el checkout operativo local mediante las funciones canónicas; no se usa un destino remoto de ejecución.
 
+### 5.2 Provenance en dos capas
+
+El runner distingue explícitamente:
+
+- `provenance_mechanical_ok`: los bytes de cada CSV coinciden con `SHA256SUMS`;
+- `provenance_source`: metadata de proveedor, licencia, adquisición y ejecución;
+- `provenance_ok`: ambas capas completas;
+- `certification_status`: `PASS` únicamente si auditoría, provenance total y PREFIX pasan.
+
+Un `aggregated_status=PASS` describe la auditoría de records del Funnel; no autoriza
+por sí solo certificación de datos, backtest, promoción ni trading. Si la metadata de
+fuente está `BLOCKED`, el runner debe emitir `certification_status=BLOCKED` aunque los
+hashes y la causalidad sean correctos.
+
 ### 5.2 Truncation invariance
 
 Para cualquier prefijo hasta `t`, ningún evento confirmado antes de `t` puede cambiar por añadir barras posteriores.
@@ -132,7 +146,8 @@ Gate local: el auditor ejecutado desde el checkout operativo valida `status=COMP
 
 ## 7. Estado del pre-backtest
 
-El Funnel 20Y está cerrado. Eso **no** cierra A0-A9 ni TNA completo.
+El Funnel 20Y tiene cierre técnico reproducible, pero la certificación total A7 sigue
+`BLOCKED` por la provenance de fuente pendiente. Eso **no** cierra A0-A9 ni TNA completo.
 
 La habilitación del backtest sigue condicionada a la pila pre-backtest vigente y a una especificación de ejecución congelada.
 

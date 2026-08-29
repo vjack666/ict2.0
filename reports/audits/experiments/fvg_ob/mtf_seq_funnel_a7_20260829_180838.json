@@ -1,0 +1,827 @@
+{
+  "contract_version": "CONTRATO_FUNNEL_AUDIT.md#A7",
+  "gate": "A7",
+  "generated_at": "2026-08-29T23:08:37.122143+00:00",
+  "commit": "131901490c8fac9b91a61cf44d0a327b0b3c9530",
+  "git_status": "CLEAN",
+  "dataset": "dukascopy EURUSD 20Y (canonico)",
+  "provenance": {
+    "EURUSD_H1.csv": {
+      "expected": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+      "actual": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+      "match": true
+    },
+    "EURUSD_H4.csv": {
+      "expected": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+      "actual": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+      "match": true
+    },
+    "EURUSD_D1.csv": {
+      "expected": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+      "actual": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+      "match": true
+    }
+  },
+  "provenance_mechanical_ok": true,
+  "provenance_source": {
+    "metadata_path": "datasets\\eurusd_dukascopy_20y\\metadata.json",
+    "metadata_sha256": "1fb1b4ee6c819b5d8e601f5b5a00ff709d80168837dfed6f00dea7f6bfa68b44",
+    "declared_status": "BLOCKED",
+    "license_and_permitted_use": "UNKNOWN",
+    "acquired_at_utc": "2026-08-18T21:05:00Z",
+    "execution_verified": false,
+    "license_review_status": "REVIEW_BLOCKED",
+    "source_provenance_complete": false
+  },
+  "provenance_ok": false,
+  "config": {
+    "sample_every": 2500,
+    "precompute_sequences": true,
+    "relation_rule": "STRICT FVG_OB_CAUSAL",
+    "causal_mode": "strict",
+    "prefix_ratios": [
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      0.9
+    ]
+  },
+  "symbol": "EURUSD",
+  "policy": "AUDIT_FUNNEL_NO_PNL_NO_ENTRY",
+  "bars_by_tf": {
+    "H1": {
+      "raw_bars": 124377,
+      "valid_bars": 124377
+    },
+    "H4": {
+      "raw_bars": 32133,
+      "valid_bars": 32133
+    },
+    "D1": {
+      "raw_bars": 6258,
+      "valid_bars": 6258
+    }
+  },
+  "funnel_by_tf": {
+    "H1": {
+      "audit_status": "PASS",
+      "input_count": 82085,
+      "accepted_count": 48200,
+      "rejected_count": 33885,
+      "audit_score": 0.719401672921495,
+      "rejection_reason_counts": {
+        "INVALID_DATA": 12087,
+        "NO_OB_CAUSAL": 21798
+      },
+      "timeframe_counts": {
+        "H1": 82085
+      },
+      "extra_stage_counts": {
+        "LIQUIDITY_POOL": 12115,
+        "SWEEP": 7402
+      },
+      "n_findings": 0,
+      "findings": [],
+      "stages": [
+        {
+          "stage": "RAW_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 491,
+          "accepted_count": 491,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 1393,
+          "accepted_count": 1393,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 22506,
+          "accepted_count": 22506,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 2833,
+          "accepted_count": 2833,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 22500,
+          "accepted_count": 702,
+          "rejected_count": 21798,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 702,
+          "accepted_count": 702,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SEQUENCE",
+          "input_count": 12143,
+          "accepted_count": 56,
+          "rejected_count": 12087,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "MTF_NAVIGATION",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        }
+      ]
+    },
+    "H4": {
+      "audit_status": "PASS",
+      "input_count": 23107,
+      "accepted_count": 13584,
+      "rejected_count": 9523,
+      "audit_score": 0.7196055794433377,
+      "rejection_reason_counts": {
+        "INVALID_DATA": 3230,
+        "NO_OB_CAUSAL": 6293
+      },
+      "timeframe_counts": {
+        "H4": 23107
+      },
+      "extra_stage_counts": {
+        "LIQUIDITY_POOL": 3239,
+        "SWEEP": 2056
+      },
+      "n_findings": 0,
+      "findings": [],
+      "stages": [
+        {
+          "stage": "RAW_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 144,
+          "accepted_count": 144,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 337,
+          "accepted_count": 337,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 6506,
+          "accepted_count": 6506,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 872,
+          "accepted_count": 872,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 6499,
+          "accepted_count": 206,
+          "rejected_count": 6293,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 206,
+          "accepted_count": 206,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SEQUENCE",
+          "input_count": 3248,
+          "accepted_count": 18,
+          "rejected_count": 3230,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "MTF_NAVIGATION",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        }
+      ]
+    },
+    "D1": {
+      "audit_status": "PASS",
+      "input_count": 4799,
+      "accepted_count": 2783,
+      "rejected_count": 2016,
+      "audit_score": 0.7207207347865648,
+      "rejection_reason_counts": {
+        "INVALID_DATA": 529,
+        "NO_OB_CAUSAL": 1487
+      },
+      "timeframe_counts": {
+        "D1": 4799
+      },
+      "extra_stage_counts": {
+        "LIQUIDITY_POOL": 531,
+        "SWEEP": 332
+      },
+      "n_findings": 0,
+      "findings": [],
+      "stages": [
+        {
+          "stage": "RAW_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 11,
+          "accepted_count": 11,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 28,
+          "accepted_count": 28,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 1545,
+          "accepted_count": 1545,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 216,
+          "accepted_count": 216,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 1545,
+          "accepted_count": 58,
+          "rejected_count": 1487,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 58,
+          "accepted_count": 58,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SEQUENCE",
+          "input_count": 533,
+          "accepted_count": 4,
+          "rejected_count": 529,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "MTF_NAVIGATION",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        }
+      ]
+    }
+  },
+  "mtf_navigation": {
+    "audit_status": "PASS",
+    "input_count": 50,
+    "accepted_count": 50,
+    "rejected_count": 0,
+    "audit_score": 1.0,
+    "rejection_reason_counts": {},
+    "timeframe_counts": {
+      "H1": 50
+    },
+    "extra_stage_counts": {},
+    "n_findings": 0,
+    "findings": [],
+    "stages": [
+      {
+        "stage": "RAW_BARS",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "VALID_BARS",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "STRUCTURE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "BOS_CHOCH",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "DISPLACEMENT",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "FVG",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "OB",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "CONFLUENCE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "LINEAGE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "SEQUENCE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "MTF_NAVIGATION",
+        "input_count": 50,
+        "accepted_count": 50,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "SETUP",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      }
+    ]
+  },
+  "aggregated_status": "PASS",
+  "aggregated_findings": 0,
+  "prefix_invariance": {
+    "prefix_ratios": [
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      0.9
+    ],
+    "by_timeframe": {
+      "H1": {
+        "cuts": {
+          "0.10": {
+            "cut_index": 12436,
+            "full_events": 69998,
+            "full_in_window": 5663,
+            "prefix_events": 5663,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.25": {
+            "cut_index": 31093,
+            "full_events": 69998,
+            "full_in_window": 15323,
+            "prefix_events": 15323,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.50": {
+            "cut_index": 62187,
+            "full_events": 69998,
+            "full_in_window": 33306,
+            "prefix_events": 33306,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.75": {
+            "cut_index": 93281,
+            "full_events": 69998,
+            "full_in_window": 51399,
+            "prefix_events": 51399,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.90": {
+            "cut_index": 111938,
+            "full_events": 69998,
+            "full_in_window": 62461,
+            "prefix_events": 62461,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          }
+        },
+        "all_cuts_invariant": true
+      },
+      "H4": {
+        "cuts": {
+          "0.10": {
+            "cut_index": 3212,
+            "full_events": 19877,
+            "full_in_window": 1615,
+            "prefix_events": 1615,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.25": {
+            "cut_index": 8032,
+            "full_events": 19877,
+            "full_in_window": 4533,
+            "prefix_events": 4533,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.50": {
+            "cut_index": 16065,
+            "full_events": 19877,
+            "full_in_window": 9612,
+            "prefix_events": 9612,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.75": {
+            "cut_index": 24098,
+            "full_events": 19877,
+            "full_in_window": 14632,
+            "prefix_events": 14632,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.90": {
+            "cut_index": 28918,
+            "full_events": 19877,
+            "full_in_window": 17761,
+            "prefix_events": 17761,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          }
+        },
+        "all_cuts_invariant": true
+      },
+      "D1": {
+        "cuts": {
+          "0.10": {
+            "cut_index": 624,
+            "full_events": 4270,
+            "full_in_window": 392,
+            "prefix_events": 392,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.25": {
+            "cut_index": 1563,
+            "full_events": 4270,
+            "full_in_window": 1026,
+            "prefix_events": 1026,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.50": {
+            "cut_index": 3128,
+            "full_events": 4270,
+            "full_in_window": 2080,
+            "prefix_events": 2080,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.75": {
+            "cut_index": 4692,
+            "full_events": 4270,
+            "full_in_window": 3226,
+            "prefix_events": 3226,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          },
+          "0.90": {
+            "cut_index": 5631,
+            "full_events": 4270,
+            "full_in_window": 3867,
+            "prefix_events": 3867,
+            "missing_in_prefix": 0,
+            "missing_by_stage": {},
+            "extra_in_prefix": 0,
+            "extra_by_stage": {},
+            "prefix_invariant": true
+          }
+        },
+        "all_cuts_invariant": true
+      }
+    },
+    "sequence": {
+      "cuts": {
+        "0.10": {
+          "cut_index": 12436,
+          "full_events": 21520,
+          "full_in_window": 1989,
+          "prefix_events": 1989,
+          "missing_in_prefix": 0,
+          "extra_in_prefix": 0,
+          "prefix_invariant": true
+        },
+        "0.25": {
+          "cut_index": 31093,
+          "full_events": 21520,
+          "full_in_window": 5253,
+          "prefix_events": 5253,
+          "missing_in_prefix": 0,
+          "extra_in_prefix": 0,
+          "prefix_invariant": true
+        },
+        "0.50": {
+          "cut_index": 62187,
+          "full_events": 21520,
+          "full_in_window": 10612,
+          "prefix_events": 10612,
+          "missing_in_prefix": 0,
+          "extra_in_prefix": 0,
+          "prefix_invariant": true
+        },
+        "0.75": {
+          "cut_index": 93281,
+          "full_events": 21520,
+          "full_in_window": 16139,
+          "prefix_events": 16139,
+          "missing_in_prefix": 0,
+          "extra_in_prefix": 0,
+          "prefix_invariant": true
+        },
+        "0.90": {
+          "cut_index": 111938,
+          "full_events": 21520,
+          "full_in_window": 19332,
+          "prefix_events": 19332,
+          "missing_in_prefix": 0,
+          "extra_in_prefix": 0,
+          "prefix_invariant": true
+        }
+      },
+      "all_cuts_invariant": true
+    }
+  },
+  "certification_status": "BLOCKED",
+  "report_checksum_sha256": "d227021c9b212b79ea509768215e6782894178a881a22cb5a10723d656ff747b"
+}

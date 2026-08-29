@@ -507,8 +507,18 @@ certificación total. El runner ahora registra por separado:
 - `certification_status`: `PASS` solo si auditoría, provenance total y PREFIX pasan;
   en el estado actual queda `BLOCKED` por licencia/autorización y log de máquina.
 
-Se verificó el cambio con 45 tests focales; la suite completa debe repetirse después
-del commit del runner. Los reportes anteriores conservan su valor histórico y no se
-reinterpretan como evidencia generada por este runner corregido.
+Se verificó el cambio con 45 tests focales y la suite completa: `373 passed`. Dos
+worktrees limpios desde `1319014` generaron:
+
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel_a7_20260829_180838.json`;
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel_a7_20260829_180845.json`.
+
+Ambos reportan `aggregated_status=PASS`, `findings=0`, `prefix_sequence_invariant=true`,
+`provenance_mechanical_ok=true`, `provenance_ok=false`, `certification_status=BLOCKED`,
+`git_status=CLEAN` y el mismo checksum lógico
+`d227021c9b212b79ea509768215e6782894178a881a22cb5a10723d656ff747b`. El bloqueo es
+intencional y coincide con `metadata.json`: `provenance_source=BLOCKED` por permiso y
+log de ejecución faltantes. Los reportes anteriores conservan su valor histórico y no
+se reinterpretan como evidencia generada por este runner corregido.
 
 

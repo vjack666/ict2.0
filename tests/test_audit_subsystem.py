@@ -265,7 +265,25 @@ def test_a7_aggregate_cannot_hide_external_gate_failures():
 
 
 def test_funnel_accepts_real_sequence_atomic_substages_and_aggregates_them():
-    records = [_valid_event("L", "LIQUIDITY_POOL"), _valid_event("S", "SWEEP")]
+    records = [_valid_event("L", "LIQUIDITY_POOL"), _valid_event("S", "SWEEP"), _valid_event("R", "RETEST")]
     result, _ = FunnelAudit().run(records)
     assert result.status is GateStatus.PASS
-    assert result.metrics["extra_stage_counts"] == {"LIQUIDITY_POOL": 1, "SWEEP": 1}
+    assert result.metrics["extra_stage_counts"] == {"LIQUIDITY_POOL": 1, "RETEST": 1, "SWEEP": 1}
+
+
+def test_funnel_rejects_sequence_complete_without_canonical_times():
+    record = _valid_event("SEQ-1", "SEQUENCE")
+    for field in ("candidate_time", "confirmation_time", "tradable_time"):
+        record.pop(field)
+    result, _ = FunnelAudit().run([record])
+    assert result.status is GateStatus.FAIL
+    assert sum(f.code == "CONTRACT_VIOLATION" and field in f.message for f in result.findings for field in ("candidate_time", "confirmation_time", "tradable_time")) >= 3
+
+
+def test_funnel_rejects_parent_time_after_observation():
+    parent = _valid_event("P", "OB", T1)
+    child = _valid_event("C", "CONFLUENCE", T1)
+    child.update({"requires_parent": True, "parent_id": "P", "lineage_valid": True, "parent_time": T2})
+    result, _ = FunnelAudit().run([parent, child])
+    assert result.status is GateStatus.FAIL
+    assert any(f.code == "TEMPORAL_VIOLATION" and "parent_time" in f.message for f in result.findings)

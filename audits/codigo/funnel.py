@@ -26,7 +26,7 @@ STAGES = (
 # Sequence emits these atomic substages in the real A7 runner. They are
 # contract-valid projections even though the public StageSummary keeps the
 # twelve canonical funnel buckets for backwards-compatible report shape.
-EXTRA_STAGES = ("LIQUIDITY_POOL", "SWEEP")
+EXTRA_STAGES = ("LIQUIDITY_POOL", "SWEEP", "RETEST")
 KNOWN_STAGES = frozenset(STAGES + EXTRA_STAGES)
 
 REJECTION_REASONS = {

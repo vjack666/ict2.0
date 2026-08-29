@@ -160,12 +160,14 @@ class FunnelAudit:
                 elif parent is None and lineage_valid is not True:
                     findings.append(Finding("MISSING_PARENT", "HIGH",
                                              f"candidato aceptado sin padre ni lineage válido: {key}", stage, rid))
+                elif parent is not None and parent not in known_ids:
+                    # Huérfano: el padre declarado no existe en el run (la fuente de
+                    # verdad es el set de ids conocidos, no el flag lineage_valid).
+                    findings.append(Finding("MISSING_PARENT", "HIGH",
+                                             f"padre {parent} no existe en el run (huérfano): {key}", stage, rid))
                 elif parent is not None and lineage_valid is False:
                     findings.append(Finding("INVALID_PARENT", "HIGH",
                                              f"candidato con padre inválido: {key}", stage, rid))
-                elif parent is not None and lineage_valid is not True and parent not in known_ids:
-                    findings.append(Finding("MISSING_PARENT", "HIGH",
-                                             f"padre {parent} no existe en el run (huérfano): {key}", stage, rid))
 
             # --- Dirección ---
             if accepted and record.get("direction", 0) not in (-1, 0, 1):

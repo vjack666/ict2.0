@@ -423,4 +423,18 @@ definidos y no muestra edge, WR ni autorización de trading. La skill de procede
 `BLOCKED` cuando `license_and_permitted_use` o `acquired_at_utc` son desconocidos. Por ello no se
 desbloquea backtest ni promoción hasta documentar esos dos campos y repetir la revisión de datos.
 
+### Corrección posterior — deuda causal de `_causal_swings`
+
+La revisión CTO del 2026-08-29 reprodujo una deuda no cubierta por el PASS anterior:
+`engine/sequential_events._causal_swings` inspeccionaba la ventana futura hasta
+`conf = j + left`, pero publicaba el pivote en `j`. La prueba mínima mostró que
+`run_sequential(FULL)` podía crear `EQH_4` mientras `PREFIX[:5]` aún no podía observar
+la confirmación en la barra 5. `engine/mtf_navigation.py` tenía una segunda helper con
+la semántica correcta, confirmando duplicación de autoridad.
+
+El cierre A7 queda `NO-GO` hasta corregir la helper canónica, reutilizarla desde MTF,
+proteger la proyección `observation_time` y repetir FULL/PREFIX en cortes representativos.
+El PASS histórico y la afirmación de que no quedaba deuda PIT no deben tratarse como
+certificación vigente. La procedencia legal CDO permanece pendiente.
+
 

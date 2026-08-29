@@ -31,12 +31,19 @@ from detectors.bos import BosConfig, detect_bos
 from tools.displacement import DisplacementConfig, detect_displacement
 
 try:
-    from engine.sequential_events import SequentialChain, Stage as SeqStage, run_sequential, SeqConfig
+    from engine.sequential_events import (
+        SequentialChain,
+        Stage as SeqStage,
+        run_sequential,
+        SeqConfig,
+        _causal_swings,
+    )
 except ImportError:  # pragma: no cover
     SequentialChain = None  # type: ignore
     SeqStage = None  # type: ignore
     run_sequential = None  # type: ignore
     SeqConfig = None  # type: ignore
+    _causal_swings = None  # type: ignore
 
 
 # ---------------------------------------------------------------------------
@@ -255,26 +262,6 @@ def _asof_index(df: pd.DataFrame, decision_time: Any) -> int | None:
     return int(np.where(mask)[0][-1])
 
 
-def _causal_swings(high: np.ndarray, low: np.ndarray, left: int = 3) -> tuple[list[tuple[int, float]], list[tuple[int, float]]]:
-    """Return swings at their confirmation bar, never at formation time.
-
-    The pivot at ``j`` needs the right-hand window through ``conf`` to be
-    closed before it is observable.  Publishing it at ``j`` makes a full
-    dataset expose future-confirmed structure to a prefix ending at ``j``.
-    """
-    n = len(high)
-    sh, sl = [], []
-    for conf in range(left * 2, n):
-        j = conf - left
-        if j < left:
-            continue
-        if high[j] >= high[j - left : j + left + 1].max():
-            sh.append((conf, float(high[j])))
-        if low[j] <= low[j - left : j + left + 1].min():
-            sl.append((conf, float(low[j])))
-    return sh, sl
-
-
 def _structure_bias_from_swings(
     sh: list[tuple[int, float]], sl: list[tuple[int, float]], upto: int
 ) -> StructureBias:
@@ -442,7 +429,10 @@ class MTFNavigator:
             low = df["low"].to_numpy(float)
             close = df["close"].to_numpy(float)
             n = len(df)
-            sh, sl = _causal_swings(high, low, self.config.swing_left)
+            if _causal_swings is None:  # pragma: no cover - optional dependency fallback
+                sh, sl = [], []
+            else:
+                sh, sl = _causal_swings(high, low, self.config.swing_left)
             # barras de swings para bisect
             sh_b = [b for b, _ in sh]
             sl_b = [b for b, _ in sl]

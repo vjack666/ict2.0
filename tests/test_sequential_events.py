@@ -10,15 +10,19 @@ from engine.sequential_events import (
     SeqNode,
     SequentialChain,
     Stage,
+    _causal_swings,
     run_sequential,
     summarize_chains,
 )
+from engine.mtf_navigation import _causal_swings as mtf_causal_swings
 from audits.codigo.mtf_seq_funnel_a7 import (
     _atomic_events,
     _prefix_event_delta,
     _run_funnel,
     funnel_fvg_ob,
+    funnel_prefix_invariance,
     funnel_sequence,
+    PREFIX_RATIOS,
 )
 
 
@@ -113,6 +117,61 @@ def test_no_future_pool_in_past_decision():
     for item in a_done:
         # direction match with some chain that shares first stages
         assert any(item[0] == x[0] for x in b_pref) or len(a_done) == 0
+
+
+def test_causal_swings_publish_confirmation_and_share_one_helper():
+    import numpy as np
+
+    high = np.array([10.0, 11.0, 20.0, 13.0, 20.0, 15.0, 16.0])
+    low = np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+
+    expected = ([(3, 20.0), (5, 20.0)], [])
+    assert _causal_swings(high, low, 1) == expected
+    assert mtf_causal_swings(high, low, 1) == expected
+
+
+def test_run_sequential_full_prefix_uses_only_confirmed_pools():
+    high = [10.0, 11.0, 20.0, 13.0, 20.0, 15.0, 16.0]
+    low = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+    mid = [(h + l) / 2 for h, l in zip(high, low)]
+    df = pd.DataFrame({"open": mid, "high": high, "low": low, "close": mid})
+    cfg = SeqConfig(swing_left=1, min_eq_touches=2, max_active_chains=100)
+
+    full = run_sequential(df, cfg, timeframe="H1")
+    prefix = run_sequential(df.iloc[:5].reset_index(drop=True), cfg, timeframe="H1")
+
+    full_before_confirmation = {
+        (node.stage.value, node.bar, node.object_id)
+        for chain in full
+        for node in chain.nodes
+        if node.bar < 5
+    }
+    prefix_atoms = {
+        (node.stage.value, node.bar, node.object_id)
+        for chain in prefix
+        for node in chain.nodes
+    }
+    assert full_before_confirmation == prefix_atoms == set()
+    assert [(node.stage.value, node.bar) for node in full[0].nodes] == [("LIQUIDITY_POOL", 5)]
+
+
+def test_a7_prefix_gate_uses_multiple_fixed_cuts_and_confirmation_time():
+    times = pd.date_range("2026-01-01", periods=11, freq="h", tz="UTC")
+    # With swing_left=3, equal pivots at j=3 and j=7 are confirmed at
+    # bars 6 and 10; the pool is therefore observable only at bar 10.
+    high = [10.0, 11.0, 12.0, 20.0, 13.0, 14.0, 15.0, 20.0, 13.0, 14.0, 15.0]
+    low = list(map(float, range(11)))
+    mid = [(h + l) / 2 for h, l in zip(high, low)]
+    df = pd.DataFrame({"bar": times, "time": times, "open": mid, "high": high, "low": low, "close": mid})
+
+    records = funnel_sequence(df, "H1")
+    pool = next(record for record in records if record["sequence_stage"] == "LIQUIDITY_POOL")
+    assert pool["observation_time"] == times[10].isoformat()
+
+    result = funnel_prefix_invariance({"H1": df, "H4": df, "D1": df})
+    assert result["prefix_ratios"] == list(PREFIX_RATIOS)
+    assert len(result["sequence"]["cuts"]) == len(PREFIX_RATIOS)
+    assert result["sequence"]["all_cuts_invariant"] is True
 
 
 def test_sequence_nodes_are_exactly_full_prefix_stable_by_atomic_identity():

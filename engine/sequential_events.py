@@ -144,11 +144,18 @@ def _avg_range(high: np.ndarray, low: np.ndarray, i: int, period: int = 14) -> f
 def _causal_swings(
     high: np.ndarray, low: np.ndarray, left: int
 ) -> tuple[list[tuple[int, float]], list[tuple[int, float]]]:
-    """Pivots confirmados solo con velas a la derecha ya cerradas (sin center)."""
+    """Return confirmed swings as ``(confirmation_bar, price)`` pairs.
+
+    The pivot is formed at ``j`` but is not observable until the right-hand
+    window closes at ``conf = j + left``.  Only ``conf`` may be used by the
+    causal engine as the event bar; the formation index is an implementation
+    detail of the window inspection.
+    """
     n = len(high)
     sh: list[tuple[int, float]] = []
     sl: list[tuple[int, float]] = []
-    # Pivot at j confirmed at j+left when j+left is known
+    # Pivot at j is published only at j+left, when the confirmation bar is
+    # closed.  Exposing j here would leak future-confirmed structure.
     for conf in range(left * 2, n):
         j = conf - left
         if j < left:
@@ -156,9 +163,9 @@ def _causal_swings(
         w_h = high[j - left : j + left + 1]
         w_l = low[j - left : j + left + 1]
         if high[j] >= w_h.max():
-            sh.append((j, float(high[j])))
+            sh.append((conf, float(high[j])))
         if low[j] <= w_l.min():
-            sl.append((j, float(low[j])))
+            sl.append((conf, float(low[j])))
     return sh, sl
 
 

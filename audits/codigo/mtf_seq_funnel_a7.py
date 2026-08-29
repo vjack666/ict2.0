@@ -36,7 +36,10 @@ OUT_DIR = ROOT / "reports" / "audits" / "experiments" / "fvg_ob"
 CONTRACT_VERSION = "CONTRATO_FUNNEL_AUDIT.md#A7"
 SAMPLE_EVERY = 2500
 PRECOMPUTE = True
-PREFIX_RATIO = 0.60
+# A single 60% cut cannot certify prefix invariance.  These fixed cuts cover
+# early, middle, late, and near-terminal history without selecting a cut after
+# observing the result.
+PREFIX_RATIOS = (0.10, 0.25, 0.50, 0.75, 0.90)
 
 
 # --------------------------------------------------------------------------
@@ -227,6 +230,8 @@ def funnel_sequence(df: pd.DataFrame, tf: str) -> list[dict]:
     # Estructura semilla (liquidity pools) como etapa STRUCTURE
     for ch in chains:
         for nd in ch.nodes:
+            # ``SeqNode.bar`` is the observable/confirmation bar emitted by
+            # the canonical sequence engine, never the pivot formation bar.
             obs = time_by_index.get(int(nd.bar))
             obs_s = _time_string(obs) if obs is not None else str(int(nd.bar))
             raw_stage_name = nd.stage.value
@@ -333,45 +338,61 @@ def funnel_prefix_invariance(frames: dict[str, pd.DataFrame]) -> dict:
     dataset no debe alterar eventos confirmados antes de t. run_sequential es
     PIT-stable por evento (probe: missing=0 filtrando por bar<=k).
     """
-    result = {"prefix_ratio": PREFIX_RATIO, "by_timeframe": {}, "sequence": {}}
+    result = {"prefix_ratios": list(PREFIX_RATIOS), "by_timeframe": {}, "sequence": {}}
     for tf in ("H1", "H4", "D1"):
         full = funnel_fvg_ob(frames[tf], tf)
         full += funnel_sequence(frames[tf], tf)
-        n = len(frames[tf]); k = int(n * PREFIX_RATIO)
-        cutoff = frames[tf]["time"].iloc[k - 1]
-        prefix = funnel_fvg_ob(frames[tf].iloc[:k], tf)
-        prefix += funnel_sequence(frames[tf].iloc[:k], tf)
-        missing, extra = _prefix_event_delta(full, prefix, cutoff)
-        # Clasificar missing por etapa para diagnóstico
-        by_stage = {}
-        for _, s, _ in missing:
-            by_stage[s] = by_stage.get(s, 0) + 1
-        extra_by_stage = {}
-        for _, s, _ in extra:
-            extra_by_stage[s] = extra_by_stage.get(s, 0) + 1
+        cuts = {}
+        n = len(frames[tf])
+        for ratio in PREFIX_RATIOS:
+            k = max(1, min(n, int(n * ratio)))
+            cutoff = frames[tf]["time"].iloc[k - 1]
+            prefix = funnel_fvg_ob(frames[tf].iloc[:k], tf)
+            prefix += funnel_sequence(frames[tf].iloc[:k], tf)
+            missing, extra = _prefix_event_delta(full, prefix, cutoff)
+            # Clasificar missing por etapa para diagnóstico
+            by_stage = {}
+            for _, s, _ in missing:
+                by_stage[s] = by_stage.get(s, 0) + 1
+            extra_by_stage = {}
+            for _, s, _ in extra:
+                extra_by_stage[s] = extra_by_stage.get(s, 0) + 1
+            cuts[f"{ratio:.2f}"] = {
+                "cut_index": k - 1,
+                "full_events": len(_atomic_events(full)),
+                "full_in_window": len(_atomic_events(full, cutoff)),
+                "prefix_events": len(_atomic_events(prefix)),
+                "missing_in_prefix": len(missing),
+                "missing_by_stage": by_stage,
+                "extra_in_prefix": len(extra),
+                "extra_by_stage": extra_by_stage,
+                "prefix_invariant": not missing and not extra,
+            }
         result["by_timeframe"][tf] = {
-            "full_events": len(_atomic_events(full)),
-            "full_in_window": len(_atomic_events(full, cutoff)),
-            "prefix_events": len(_atomic_events(prefix)),
-            "missing_in_prefix": len(missing),
-            "missing_by_stage": by_stage,
-            "extra_in_prefix": len(extra),
-            "extra_by_stage": extra_by_stage,
-            "prefix_invariant": not missing and not extra,
+            "cuts": cuts,
+            "all_cuts_invariant": all(x["prefix_invariant"] for x in cuts.values()),
         }
     # Sequence (mismo método, por evento atómico)
     full_seq = funnel_sequence(frames["H1"], "H1")
-    n = len(frames["H1"]); k = int(n * PREFIX_RATIO)
-    cutoff = frames["H1"]["time"].iloc[k - 1]
-    pref_seq = funnel_sequence(frames["H1"].iloc[:k], "H1")
-    missing, extra = _prefix_event_delta(full_seq, pref_seq, cutoff)
+    sequence_cuts = {}
+    n = len(frames["H1"])
+    for ratio in PREFIX_RATIOS:
+        k = max(1, min(n, int(n * ratio)))
+        cutoff = frames["H1"]["time"].iloc[k - 1]
+        pref_seq = funnel_sequence(frames["H1"].iloc[:k], "H1")
+        missing, extra = _prefix_event_delta(full_seq, pref_seq, cutoff)
+        sequence_cuts[f"{ratio:.2f}"] = {
+            "cut_index": k - 1,
+            "full_events": len(_atomic_events(full_seq)),
+            "full_in_window": len(_atomic_events(full_seq, cutoff)),
+            "prefix_events": len(_atomic_events(pref_seq)),
+            "missing_in_prefix": len(missing),
+            "extra_in_prefix": len(extra),
+            "prefix_invariant": not missing and not extra,
+        }
     result["sequence"] = {
-        "full_events": len(_atomic_events(full_seq)),
-        "full_in_window": len(_atomic_events(full_seq, cutoff)),
-        "prefix_events": len(_atomic_events(pref_seq)),
-        "missing_in_prefix": len(missing),
-        "extra_in_prefix": len(extra),
-        "prefix_invariant": not missing and not extra,
+        "cuts": sequence_cuts,
+        "all_cuts_invariant": all(x["prefix_invariant"] for x in sequence_cuts.values()),
     }
     return result
 
@@ -433,7 +454,7 @@ def main() -> dict:
         "provenance_ok": all(v["match"] for v in provenance.values()),
         "config": {"sample_every": SAMPLE_EVERY, "precompute_sequences": PRECOMPUTE,
                     "relation_rule": "STRICT FVG_OB_CAUSAL", "causal_mode": "strict",
-                    "prefix_ratio": PREFIX_RATIO},
+                    "prefix_ratios": list(PREFIX_RATIOS)},
         "symbol": "EURUSD",
         "policy": "AUDIT_FUNNEL_NO_PNL_NO_ENTRY",
         "bars_by_tf": bars_by_tf,
@@ -457,7 +478,7 @@ def main() -> dict:
         "commit": report["commit"], "git_status": report["git_status"],
         "provenance_ok": report["provenance_ok"],
         "aggregated_status": report["aggregated_status"],
-        "prefix_sequence_invariant": prefix["sequence"]["prefix_invariant"],
+        "prefix_sequence_invariant": prefix["sequence"]["all_cuts_invariant"],
         "report_checksum": report["report_checksum_sha256"],
     }, indent=2))
     return report

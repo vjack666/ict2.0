@@ -85,7 +85,7 @@
     },
     "hash_verification_status": "PASS",
     "provenance_status": "BLOCKED",
-    "blocking_reason": "license_and_permitted_use and acquired_at_utc remain UNKNOWN; the inspected A7 report records git_status=DIRTY and contains pre-policy CRLF hashes. This metadata does not certify the dataset or Funnel A7.",
-    "required_follow_up": "Obtain source/license and clean-generator evidence, then repeat the independent A7 audit without changing CSV values."
+    "blocking_reason": "license_and_permitted_use and acquired_at_utc remain UNKNOWN. Mechanical bytes, hashes, EOL policy, and clean-generator A7 evidence are now verified, but this metadata does not certify legal source permission or Funnel A7.",
+    "required_follow_up": "Obtain and record the source/license and acquisition evidence; retain the clean A7 reports and repeat independent review if the provenance contract requires legal/source certification."
   }
 }

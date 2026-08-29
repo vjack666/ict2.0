@@ -394,4 +394,33 @@ MTF navigation `PASS` sin findings, y FULL/PREFIX sin missing ni extra en H1/H4/
 OE-A7.1–OE-A7.11 quedan respaldados por artefacto; OE-A7.12 requiere el dictamen final de un
 auditor independiente.
 
+## [AUDITORÍA INDEPENDIENTE CODEX — CIERRE TÉCNICO, 2026-08-29]
+
+Se realizó una revisión independiente de solo lectura después de integrar las correcciones de
+CTO/CRO. La comparación de los reportes `154844` y `154829` confirmó igualdad completa salvo
+`generated_at`, checksum idéntico, mismo commit generador `279354d`, `CLEAN`, `provenance_ok=true`,
+`aggregated_status=PASS` y `aggregated_findings=0`.
+
+| Objetivo | Dictamen | Evidencia principal |
+|---|---|---|
+| OE-A7.1 Integridad temporal | PASS técnico | 0 findings; tiempos completos y pruebas negativas |
+| OE-A7.2 FULL/PREFIX | PASS | H1/H4/D1/SEQUENCE: missing=0, extra=0 |
+| OE-A7.3 Identidad estable | PASS | checksum idéntico; duplicate_count=0 |
+| OE-A7.4 Lineage causal | PASS | orphan/temporal findings=0; pruebas de huérfanos y ciclos |
+| OE-A7.5 Relaciones | PASS | CONFLUENCE/LINEAGE sin violaciones; reglas strict causales |
+| OE-A7.6 Funnel explicable | PASS | rejection_reason_counts serializados por TF |
+| OE-A7.7 Coherencia MTF | PASS técnico | H1/H4/D1 exclusivos por sección; MTF navigation 50/50 |
+| OE-A7.8 Determinismo/idempotencia | PASS | JSON equivalente y checksum igual en dos ejecuciones |
+| OE-A7.9 Provenance reproducible | PASS mecánico / BLOCKED legal | hashes y bytes pasan; licencia/adquisición UNKNOWN |
+| OE-A7.10 Auditoría negativa | PASS | 370 tests totales; casos futuros, duplicados, ciclos y razones inválidas |
+| OE-A7.11 Entorno limpio | PASS | dos worktrees locales `CLEAN` generaron los reportes |
+| OE-A7.12 Cierre independiente | PASS técnico / REVIEW legal | auditoría Codex posterior a correcciones; provenance legal pendiente |
+
+### Dictamen final
+
+`TECHNICAL_GO — PROVENANCE LEGAL BLOCKED`. El Funnel A7 cumple técnicamente los 12 objetivos
+definidos y no muestra edge, WR ni autorización de trading. La skill de procedencia exige marcar
+`BLOCKED` cuando `license_and_permitted_use` o `acquired_at_utc` son desconocidos. Por ello no se
+desbloquea backtest ni promoción hasta documentar esos dos campos y repetir la revisión de datos.
+
 

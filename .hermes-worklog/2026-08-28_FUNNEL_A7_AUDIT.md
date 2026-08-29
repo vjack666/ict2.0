@@ -332,4 +332,44 @@ es regenerar el reporte A7 con el HEAD actual, comprobar su checksum/determinism
 auditoría independiente. La procedencia de bytes tiene PASS; la procedencia global puede seguir
 BLOCKED si licencia/adquisición de la fuente permanecen `UNKNOWN`.
 
+## [EVIDENCIA FINAL — DOS CHECKOUTS LIMPIOS, 2026-08-29]
+
+Tras integrar `729f50b` y `f5a8cc2`, se regeneró el Funnel A7 completo dos veces en worktrees
+locales limpios, sin reutilizar la salida de la primera ejecución:
+
+| Ejecución | Commit | Worktree | Estado | Findings | Checksum del reporte |
+|---|---|---|---|---:|---|
+| 1 | `f5a8cc298669ef972b27144602f752e4e09351fa` | CLEAN | PASS | 0 | `a2d39d8674f300d069f6da75dd449cb7033134fe8f65f2d5ebe347a708696041` |
+| 2 | `f5a8cc298669ef972b27144602f752e4e09351fa` | CLEAN | PASS | 0 | `a2d39d8674f300d069f6da75dd449cb7033134fe8f65f2d5ebe347a708696041` |
+
+Ambas ejecuciones coinciden en commit, provenance, estado agregado, conteos, hallazgos y
+FULL/PREFIX; la comparación se realizó sobre los JSON y el checksum excluye únicamente
+`generated_at` según el contrato A7.
+
+Resultados de causalidad FULL/PREFIX:
+
+- H1: `full_in_window=40419`, `prefix_events=40419`, missing=0, extra=0.
+- H4: `full_in_window=11514`, `prefix_events=11514`, missing=0, extra=0.
+- D1: `full_in_window=2519`, `prefix_events=2519`, missing=0, extra=0.
+- SEQUENCE: `full_in_window=12829`, `prefix_events=12829`, missing=0, extra=0.
+- MTF navigation: `PASS`, 50/50 observaciones aceptadas, 0 findings.
+
+Los reportes quedaron versionables en:
+
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel_a7_20260829_150136.json`
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel_a7_20260829_151857.json`
+
+### Matriz de objetivos A7
+
+OE-A7.1 a OE-A7.10: **PASS técnico**, respaldado por FunnelAudit, runner y pruebas negativas.
+OE-A7.11: **PASS**, dos ejecuciones desde worktrees limpios con checksum idéntico.
+OE-A7.12: **PENDIENTE**, falta auditor independiente que revise el paquete completo y emita GO.
+
+### Estado de cierre
+
+`READY_FOR_INDEPENDENT_AUDIT — NO CERTIFICADO`. El resultado PASS del runner no es todavía una
+certificación de A7 ni una afirmación de edge. La auditoría independiente debe comprobar los 12
+objetivos, la identidad de los archivos versionados y los bloqueos de licencia/adquisición antes
+de cualquier desbloqueo de backtest o promoción.
+
 

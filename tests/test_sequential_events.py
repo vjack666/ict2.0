@@ -16,6 +16,7 @@ from engine.sequential_events import (
 from audits.codigo.mtf_seq_funnel_a7 import (
     _atomic_events,
     _prefix_event_delta,
+    _run_funnel,
     funnel_fvg_ob,
     funnel_sequence,
 )
@@ -235,3 +236,34 @@ def test_confluence_parent_time_is_not_after_child_observation():
     assert confluence["candidate_time"] <= confluence["confirmation_time"]
     assert confluence["confirmation_time"] <= confluence["tradable_time"]
     assert confluence["tradable_time"] <= confluence["observation_time"]
+
+
+def test_runner_serializes_audit_distribution_metrics():
+    from types import SimpleNamespace
+
+    fake_result = SimpleNamespace(
+        status=SimpleNamespace(value="FAIL"), input_count=3,
+        accepted_count=1, rejected_count=2,
+        metrics={
+            "audit_score": 0.5,
+            "rejection_reason_counts": {"INVALID_DATA": 2},
+            "timeframe_counts": {"H1": 3},
+            "extra_stage_counts": {"LIQUIDITY_POOL": 1},
+        }, findings=[],
+    )
+    fake_summary = SimpleNamespace(
+        stage="SEQUENCE", input_count=3, accepted_count=1,
+        rejected_count=2, duplicate_count=0, orphan_count=0,
+        temporal_violation_count=0,
+    )
+
+    with patch(
+        "audits.codigo.mtf_seq_funnel_a7.FunnelAudit.run",
+        return_value=(fake_result, (fake_summary,)),
+    ):
+        section = _run_funnel([{"stage": "SEQUENCE", "id": "x"}])
+
+    assert section["audit_status"] == "FAIL"
+    assert section["rejection_reason_counts"] == {"INVALID_DATA": 2}
+    assert section["timeframe_counts"] == {"H1": 3}
+    assert section["extra_stage_counts"] == {"LIQUIDITY_POOL": 1}

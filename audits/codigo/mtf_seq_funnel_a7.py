@@ -381,12 +381,18 @@ def funnel_prefix_invariance(frames: dict[str, pd.DataFrame]) -> dict:
 # --------------------------------------------------------------------------
 def _run_funnel(records: list[dict]) -> dict:
     result, summaries = FunnelAudit(audit_id="A7_FUNNEL").run(records)
+    metrics = result.metrics
     return {
         "audit_status": result.status.value,
         "input_count": result.input_count,
         "accepted_count": result.accepted_count,
         "rejected_count": result.rejected_count,
-        "audit_score": result.metrics.get("audit_score"),
+        "audit_score": metrics.get("audit_score"),
+        # OE-A7.6/A7.7: conservar en cada sección las distribuciones que
+        # calcula FunnelAudit, sin recalcularlas ni ocultar findings.
+        "rejection_reason_counts": dict(metrics.get("rejection_reason_counts") or {}),
+        "timeframe_counts": dict(metrics.get("timeframe_counts") or {}),
+        "extra_stage_counts": dict(metrics.get("extra_stage_counts") or {}),
         "n_findings": len(result.findings),
         "findings": [{"code": f.code, "severity": f.severity, "message": f.message,
                      "stage": f.stage, "record_id": f.record_id} for f in result.findings],

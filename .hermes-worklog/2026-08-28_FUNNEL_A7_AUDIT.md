@@ -412,7 +412,7 @@ CTO/CRO. La comparación de los reportes `154844` y `154829` confirmó igualdad 
 | OE-A7.7 Coherencia MTF | PASS técnico | H1/H4/D1 exclusivos por sección; MTF navigation 50/50 |
 | OE-A7.8 Determinismo/idempotencia | PASS | JSON equivalente y checksum igual en dos ejecuciones |
 | OE-A7.9 Provenance reproducible | PASS mecánico / BLOCKED legal | hashes y bytes pasan; licencia/adquisición UNKNOWN |
-| OE-A7.10 Auditoría negativa | PASS | 370 tests totales; casos futuros, duplicados, ciclos y razones inválidas |
+| OE-A7.10 Auditoría negativa | PASS | 373 tests totales; casos futuros, duplicados, ciclos y razones inválidas |
 | OE-A7.11 Entorno limpio | PASS | dos worktrees locales `CLEAN` generaron los reportes |
 | OE-A7.12 Cierre independiente | PASS técnico / REVIEW legal | auditoría Codex posterior a correcciones; provenance legal pendiente |
 
@@ -469,5 +469,24 @@ local de `core.autocrlf`; no se usa como evidencia del clean run. La procedencia
 continúa bloqueada porque `license_and_permitted_use=UNKNOWN`, `acquired_at_utc=null`
 y `request_parameters.execution_verified=false`. No se habilita backtest, promoción,
 edge ni trading.
+
+### Revisión de procedencia externa — 2026-08-29
+
+Se revisaron las páginas oficiales de Dukascopy sobre exportación histórica y términos
+de uso, además del aviso legal del paquete `dukascopy-node`. La documentación confirma
+la identidad de la fuente y la disponibilidad de cotizaciones históricas, pero no
+prueba que este repositorio tenga autorización escrita para adquisición automatizada
+ni que su uso previsto cumpla todas las restricciones aplicables. Tampoco existe un
+registro verificable de la fecha/hora exacta de adquisición del snapshot.
+
+La conclusión se registra como `REVIEW_BLOCKED`, no como PASS: los campos
+`license_and_permitted_use`, `acquired_at_utc` y `request_parameters.execution_verified`
+continúan sin evidencia suficiente. Las URLs y el estado quedan registrados en
+`datasets/eurusd_dukascopy_20y/metadata.json`; esto no sustituye una autorización del
+proveedor ni asesoría legal.
+
+Después de la revisión, los tres CSV del checkout operativo fueron materializados en
+LF mediante una normalización mecánica validada contra los hashes canónicos:
+H1 `c83e6086...`, H4 `91b98565...`, D1 `9738c970...`. No cambiaron valores OHLC.
 
 

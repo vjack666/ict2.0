@@ -42,6 +42,26 @@
     "source_documentation_refs": [
       "datasets/eurusd_dukascopy_20y/README.md"
     ],
+    "source_license_refs": [
+      "https://www.dukascopy.com/swiss/sk/legal-pages/terms-of-use/",
+      "https://www.dukascopy.com/plugins/cont.php?ref_id=1273"
+    ],
+    "license_review": {
+      "reviewed_at_utc": "2026-08-29T22:19:19Z",
+      "status": "REVIEW_BLOCKED",
+      "finding": "Official Dukascopy terms describe personal/non-commercial website use and restrictions on automated access; they do not establish written permission for this repository's dukascopy-node acquisition or intended research/distribution scope.",
+      "automated_access_consent": "NOT_FOUND",
+      "project_use_permission": "NOT_ESTABLISHED"
+    },
+    "acquisition_evidence": {
+      "status": "MISSING",
+      "acquired_at_utc": null,
+      "execution_verified": false,
+      "evidence_refs": [
+        "datasets/eurusd_dukascopy_20y/README.md",
+        "datasets/eurusd_dukascopy_20y/metadata.json"
+      ]
+    },
     "request_parameters": {
       "documented_command": "npx dukascopy-node -i eurusd -from 2006-01-01 -to 2026-01-01 -t {h1|h4|d1} -f csv",
       "execution_verified": false
@@ -85,7 +105,7 @@
     },
     "hash_verification_status": "PASS",
     "provenance_status": "BLOCKED",
-    "blocking_reason": "license_and_permitted_use and acquired_at_utc remain UNKNOWN. Mechanical bytes, hashes, EOL policy, and clean-generator A7 evidence are now verified, but this metadata does not certify legal source permission or Funnel A7.",
+    "blocking_reason": "Official terms were reviewed but do not establish written permission for this automated acquisition or this project's use scope; license_and_permitted_use remains UNKNOWN, acquired_at_utc is null, and execution_verified is false. Mechanical bytes, hashes, EOL policy, and clean-generator A7 evidence are verified, but this metadata does not certify legal source permission or Funnel A7.",
     "required_follow_up": "Obtain and record the source/license and acquisition evidence; retain the clean A7 reports and repeat independent review if the provenance contract requires legal/source certification."
   }
 }

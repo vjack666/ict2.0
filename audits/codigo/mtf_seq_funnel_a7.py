@@ -118,17 +118,11 @@ def _obs_time(mo, time_by_index: dict | None = None) -> tuple[str | None, str | 
 # --------------------------------------------------------------------------
 # Etapas del funnel
 # --------------------------------------------------------------------------
-def funnel_raw_valid(df: pd.DataFrame) -> list[dict]:
+def funnel_raw_valid(df: pd.DataFrame) -> dict:
+    """Conteos RAW/VALID_BARS por TF (meta-conteos, no eventos temporales auditados)."""
     n = len(df)
     valid = int(((df["high"] >= df["low"]) & df[["open", "high", "low", "close"]].notna().all(axis=1)).sum())
-    return [
-        {"stage": "RAW_BARS", "id": "RAW_BARS", "accepted": True, "direction": 0,
-         "observation_time": None, "candidate_time": None, "confirmation_time": None,
-         "tradable_time": None, "requires_parent": False, "count": n},
-        {"stage": "VALID_BARS", "id": "VALID_BARS", "accepted": True, "direction": 0,
-         "observation_time": None, "candidate_time": None, "confirmation_time": None,
-         "tradable_time": None, "requires_parent": False, "count": valid},
-    ]
+    return {"raw_bars": n, "valid_bars": valid}
 
 
 def funnel_fvg_ob(df: pd.DataFrame, tf: str) -> list[dict]:
@@ -199,16 +193,17 @@ def funnel_sequence(df: pd.DataFrame, tf: str) -> list[dict]:
             obs = time_by_index.get(int(nd.bar))
             obs_s = obs.isoformat() if obs is not None else str(int(nd.bar))
             stage_name = nd.stage.value
-            rec = {"stage": stage_name, "id": f"{stage_name}_{int(nd.bar)}_{ch.direction}",
+            # ID estable y unico: chain_id + stage (chain_id es unico por cadena).
+            rec = {"stage": stage_name, "id": f"{ch.chain_id}_{stage_name}",
                    "accepted": True, "direction": ch.direction, "timeframe": tf,
                    "observation_time": obs_s,
                    "candidate_time": obs_s, "confirmation_time": obs_s, "tradable_time": obs_s,
                    "requires_parent": False}
             records.append(rec)
-        # Cadena como etapa SEQUENCE (agregación; id estable por (created_bar,direction))
+        # Cadena como etapa SEQUENCE (agregación; id estable por created_bar+dir ya esta en chain_id)
         chain_obs = time_by_index.get(ch.last_bar)
         chain_obs_s = chain_obs.isoformat() if chain_obs is not None else str(ch.last_bar)
-        records.append({"stage": "SEQUENCE", "id": f"SEQ_{int(ch.created_bar)}_{ch.direction}",
+        records.append({"stage": "SEQUENCE", "id": ch.chain_id,
                          "accepted": ch.status == "COMPLETE",
                          "rejection_reason": None if ch.status == "COMPLETE" else "INVALID_DATA",
                          "direction": ch.direction, "timeframe": tf,
@@ -324,9 +319,11 @@ def main() -> dict:
     provenance = _verify_provenance()
     all_records: list[dict] = []
     funnel_sections: dict = {}
+    bars_by_tf: dict = {}
 
     for tf in ("H1", "H4", "D1"):
-        recs = funnel_raw_valid(frames[tf]) + funnel_fvg_ob(frames[tf], tf) + funnel_sequence(frames[tf], tf)
+        bars_by_tf[tf] = funnel_raw_valid(frames[tf])
+        recs = funnel_fvg_ob(frames[tf], tf) + funnel_sequence(frames[tf], tf)
         funnel_sections.setdefault("by_tf", {})[tf] = _run_funnel(recs)
         all_records.extend(recs)
     mtf_recs = funnel_mtf_navigation(frames)
@@ -350,6 +347,7 @@ def main() -> dict:
                     "prefix_ratio": PREFIX_RATIO},
         "symbol": "EURUSD",
         "policy": "AUDIT_FUNNEL_NO_PNL_NO_ENTRY",
+        "bars_by_tf": bars_by_tf,
         "funnel_by_tf": funnel_sections.get("by_tf", {}),
         "mtf_navigation": funnel_sections["mtf_navigation"],
         "aggregated_status": overall["audit_status"],

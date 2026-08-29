@@ -4,20 +4,88 @@
     "t_min": "2006-01-01 21:00:00",
     "t_max": "2025-12-31 21:00:00",
     "years": 20.0,
-    "close_last": 1.17455
+    "close_last": 1.17455,
+    "bytes": 6399327,
+    "sha256": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+    "line_ending": "LF"
   },
   "H4": {
     "n": 32133,
     "t_min": "2006-01-01 20:00:00",
     "t_max": "2025-12-31 20:00:00",
     "years": 20.0,
-    "close_last": 1.17455
+    "close_last": 1.17455,
+    "bytes": 1653194,
+    "sha256": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+    "line_ending": "LF"
   },
   "D1": {
     "n": 6258,
     "t_min": "2006-01-01",
     "t_max": "2025-12-31",
     "years": 20.0,
-    "close_last": 1.17455
+    "close_last": 1.17455,
+    "bytes": 265598,
+    "sha256": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+    "line_ending": "LF"
+  },
+  "provenance": {
+    "dataset_id": "eurusd_dukascopy_20y",
+    "provider": "Dukascopy",
+    "instrument": "EURUSD spot bid",
+    "venue": "spot/OTC",
+    "not_cme_6e": true,
+    "volume": "UNAVAILABLE",
+    "open_interest": "UNAVAILABLE",
+    "license_and_permitted_use": "UNKNOWN",
+    "acquired_at_utc": null,
+    "source_documentation_refs": [
+      "datasets/eurusd_dukascopy_20y/README.md"
+    ],
+    "request_parameters": {
+      "documented_command": "npx dukascopy-node -i eurusd -from 2006-01-01 -to 2026-01-01 -t {h1|h4|d1} -f csv",
+      "execution_verified": false
+    },
+    "encoding": "UTF-8",
+    "hash_basis": "raw working-tree bytes consumed by the A7 runner",
+    "eol_policy": "LF",
+    "eol_policy_enforcement": "datasets/eurusd_dukascopy_20y/*.csv text eol=lf",
+    "canonical_checkout": {
+      "platform": "Windows",
+      "core_autocrlf": true,
+      "line_ending": "LF",
+      "files": {
+        "EURUSD_H1.csv": {
+          "bytes": 6399327,
+          "sha256": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+          "sha256_manifest_match": true,
+          "semantic_values_unchanged": true
+        },
+        "EURUSD_H4.csv": {
+          "bytes": 1653194,
+          "sha256": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+          "sha256_manifest_match": true,
+          "semantic_values_unchanged": true
+        },
+        "EURUSD_D1.csv": {
+          "bytes": 265598,
+          "sha256": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+          "sha256_manifest_match": true,
+          "semantic_values_unchanged": true
+        }
+      }
+    },
+    "pre_policy_windows_checkout": {
+      "line_ending": "CRLF",
+      "hashes": {
+        "EURUSD_H1.csv": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+        "EURUSD_H4.csv": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+        "EURUSD_D1.csv": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e"
+      }
+    },
+    "hash_verification_status": "PASS",
+    "provenance_status": "BLOCKED",
+    "blocking_reason": "license_and_permitted_use and acquired_at_utc remain UNKNOWN; the inspected A7 report records git_status=DIRTY and contains pre-policy CRLF hashes. This metadata does not certify the dataset or Funnel A7.",
+    "required_follow_up": "Obtain source/license and clean-generator evidence, then repeat the independent A7 audit without changing CSV values."
   }
 }

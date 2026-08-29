@@ -219,6 +219,78 @@ causal, reproducible y listo para auditoría independiente". Se corrigieron las 
 
 Todos los gates A7 PASS por evidencia. Certificación final = Ruben/Codex.
 
+## [AUDITORÍA CDO — PROVENANCE A7, 2026-08-29]
+
+### Dictamen: BLOCKED (no certificación)
+
+El contrato A7 no nombra literalmente LF/CRLF, pero exige dataset identificado
+por hash, determinismo y reproducción idéntica. Por tanto, el hash debe ser
+estable entre el checkout Windows que ejecuta el runner y un checkout limpio.
+
+Evidencia reproducible en el checkout aislado sobre `0937841`:
+
+- `git ls-files --eol datasets/eurusd_dukascopy_20y` reporta `i/lf w/crlf`
+  para CSV, `SHA256SUMS` y `metadata.json`; no existe atributo de EOL para la
+  ruta y la configuración efectiva es `core.autocrlf=true` desde Git global.
+- Bytes CRLF que consume el runner en Windows: H1 `6,523,705` bytes,
+  `2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022`; H4
+  `1,685,328`, `46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde`;
+  D1 `271,857`, `ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e`.
+  Los tres coinciden con `SHA256SUMS` y con `provenance_ok=true` del reporte
+  `mtf_seq_funnel_a7_20260829_115117.json`.
+- Los mismos archivos normalizados a LF producen H1
+  `c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139`, H4
+  `91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b` y D1
+  `9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2`.
+  Luego, el hash no es estable entre CRLF y LF.
+
+La corrección mínima es fijar una regla dataset-específica en `.gitattributes`
+(recomendación: LF para que coincida con el blob Git), regenerar
+`SHA256SUMS` con los bytes LF y ejecutar el runner desde un checkout limpio.
+Eso toca fuera del write set autorizado; no se realizó. Se actualizaron solo
+`metadata.json`, esta documentación y este worklog para conservar la
+evidencia, con `eol_policy=BLOCKED_UNPINNED` y `reproducibility_status=BLOCKED`.
+Los CSV, runner, tests y reportes A7 existentes no se tocaron.
+
+El commit local queda en el checkout aislado detached porque la rama solicitada
+`codex/audit-hermes-cert-20260826` está checkoutada por
+`C:\Users\v_jac\Desktop\ICT SYSTEM`; Git no permite moverla a este worktree.
+
+## [RE-AUDITORÍA CDO — EOL Y HASH ESTABLE, 2026-08-29]
+
+La autorización ampliada permitió la corrección mínima de procedencia. El
+contrato A7 no menciona literalmente LF/CRLF, pero sus requisitos de dataset
+identificado por hash, determinismo y reproducción idéntica exigen que el hash
+sea estable entre Windows y un checkout limpio.
+
+- Antes: `git ls-files --eol` reportaba `i/lf w/crlf` y no había regla para el
+  snapshot; con `core.autocrlf=true`, los hashes Windows eran H1
+  `2dbb5757…`, H4 `46a950e0…`, D1 `ff119f55…`, distintos de los hashes LF.
+- Corrección: `.gitattributes` fija `text eol=lf` para los CSV canónicos y los
+  artefactos textuales de provenance del snapshot. Los CSV se normalizaron solo
+  en finales de línea; no cambió ningún valor, fila ni fecha.
+- Manifiesto: `SHA256SUMS` fue regenerado a LF con H1
+  `c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139`, H4
+  `91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b` y D1
+  `9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2`.
+- Metadata registra bytes, hashes, conteos, fechas, fuente Dukascopy spot bid,
+  ausencia de volumen/OI y el antes/después EOL. El hash gate del snapshot es
+  PASS; la provenance global permanece BLOCKED porque licencia/adquisición son
+  UNKNOWN y el reporte A7 inspeccionado registra `git_status=DIRTY`.
+
+La verificación final debe demostrar `i/lf w/lf`, `sha256sum -c` 3/3, conteos
+124377/32133/6258 y rangos temporales H1/H4 2006-01-01→2025-12-31, D1
+2006-01-01→2025-12-31, además de un checkout limpio local. No se ejecuta el
+runner A7 ni se modifica ningún reporte A7 existente en esta misión.
+
+### Verificación ejecutada
+
+Commit local `79163ed` fue comprobado en un worktree temporal limpio, sin rama
+y sin cambios (`git status --porcelain -b` solo mostró `## HEAD (no branch)`).
+Ese checkout reprodujo `i/lf w/lf attr/text eol=lf` en todos los artefactos del
+snapshot, `sha256sum -c SHA256SUMS` OK en H1/H4/D1 y las aserciones de CSV
+indicadas arriba. El worktree temporal fue eliminado después de la prueba.
+
 ## RIESGOS
 1. Cambio de metadata de dataset versionado (SHA256SUMS/metadata regenerados a fuente real).
    Si la versión 124.390 era la canónica, los CSV vigentes podrían estar truncados → decisión de Ruben.

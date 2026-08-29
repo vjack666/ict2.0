@@ -2,8 +2,10 @@
 
 NO sobrescribe el artefacto histórico mtf_seq_funnel.json; escribe un reporte
 nuevo con timestamp y provenance completa: commit, estado git, hashes del
-dataset (validados contra SHA256SUMS), configuración, versión contractual y
-checksum del reporte.
+dataset (validados contra SHA256SUMS), metadata de fuente/licencia, configuración,
+versión contractual y checksum del reporte. ``provenance_mechanical_ok`` valida
+bytes; ``provenance_ok`` y ``certification_status`` no pasan mientras la
+metadata declare una procedencia de fuente incompleta.
 
 Materializa las etapas del contrato A7 con poblaciones REALES del motor:
   RAW_BARS -> VALID_BARS -> FVG -> OB -> CONFLUENCE -> LINEAGE ->
@@ -94,6 +96,55 @@ def _verify_provenance() -> dict:
         actual = hashlib.sha256(p.read_bytes()).hexdigest()
         result[name] = {"expected": expected, "actual": actual, "match": expected == actual}
     return result
+
+
+def _read_source_provenance() -> dict:
+    """Lee la decisión de procedencia declarada junto al snapshot.
+
+    La comprobación de hashes demuestra integridad mecánica, pero no demuestra
+    permiso de adquisición/uso ni que exista un log de ejecución. Mantener
+    ambos planos separados evita que un ``provenance_ok`` mecánico se interprete
+    como certificación total del dataset.
+    """
+    metadata_path = CANON / "metadata.json"
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        provenance = metadata["provenance"]
+        acquisition = provenance.get("acquisition_evidence", {})
+        request = provenance.get("request_parameters", {})
+        license_review = provenance.get("license_review", {})
+        declared_status = str(provenance.get("provenance_status", "UNKNOWN"))
+        license_value = provenance.get("license_and_permitted_use")
+        timestamp = provenance.get("acquired_at_utc")
+        execution_verified = bool(
+            request.get("execution_verified") is True
+            and acquisition.get("execution_verified") is True
+        )
+        source_complete = (
+            declared_status == "PASS"
+            and bool(license_value)
+            and str(license_value).upper() not in {"UNKNOWN", "NOT_ESTABLISHED"}
+            and bool(timestamp)
+            and execution_verified
+            and str(license_review.get("status", "PASS")) == "PASS"
+        )
+        return {
+            "metadata_path": str(metadata_path.relative_to(ROOT)),
+            "metadata_sha256": hashlib.sha256(metadata_path.read_bytes()).hexdigest(),
+            "declared_status": declared_status,
+            "license_and_permitted_use": license_value,
+            "acquired_at_utc": timestamp,
+            "execution_verified": execution_verified,
+            "license_review_status": license_review.get("status", "UNKNOWN"),
+            "source_provenance_complete": source_complete,
+        }
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        return {
+            "metadata_path": str(metadata_path.relative_to(ROOT)),
+            "declared_status": "UNKNOWN",
+            "source_provenance_complete": False,
+            "error": f"metadata provenance unreadable: {exc}",
+        }
 
 
 def _obs_time(mo, time_by_index: dict | None = None) -> tuple[str | None, str | None, str | None, str | None]:
@@ -427,6 +478,12 @@ def _run_funnel(records: list[dict]) -> dict:
 def main() -> dict:
     frames = {tf: _load_tf(tf) for tf in ("H1", "H4", "D1")}
     provenance = _verify_provenance()
+    source_provenance = _read_source_provenance()
+    mechanical_provenance_ok = all(v["match"] for v in provenance.values())
+    total_provenance_ok = (
+        mechanical_provenance_ok
+        and source_provenance["source_provenance_complete"]
+    )
     all_records: list[dict] = []
     funnel_sections: dict = {}
     bars_by_tf: dict = {}
@@ -451,7 +508,9 @@ def main() -> dict:
         "git_status": _git_status(),
         "dataset": "dukascopy EURUSD 20Y (canonico)",
         "provenance": provenance,
-        "provenance_ok": all(v["match"] for v in provenance.values()),
+        "provenance_mechanical_ok": mechanical_provenance_ok,
+        "provenance_source": source_provenance,
+        "provenance_ok": total_provenance_ok,
         "config": {"sample_every": SAMPLE_EVERY, "precompute_sequences": PRECOMPUTE,
                     "relation_rule": "STRICT FVG_OB_CAUSAL", "causal_mode": "strict",
                     "prefix_ratios": list(PREFIX_RATIOS)},
@@ -463,6 +522,14 @@ def main() -> dict:
         "aggregated_status": overall["audit_status"],
         "aggregated_findings": overall["n_findings"],
         "prefix_invariance": prefix,
+        "certification_status": (
+            "PASS"
+            if overall["audit_status"] == "PASS"
+            and total_provenance_ok
+            and prefix["sequence"]["all_cuts_invariant"]
+            and all(v["all_cuts_invariant"] for v in prefix["by_timeframe"].values())
+            else "BLOCKED"
+        ),
     }
     # Checksum determinista: excluye generated_at (campo no determinista por contrato A7 §5.1).
     report_for_checksum = {k: v for k, v in report.items() if k != "generated_at"}
@@ -476,8 +543,10 @@ def main() -> dict:
     print(json.dumps({
         "out": str(out_path),
         "commit": report["commit"], "git_status": report["git_status"],
+        "provenance_mechanical_ok": report["provenance_mechanical_ok"],
         "provenance_ok": report["provenance_ok"],
         "aggregated_status": report["aggregated_status"],
+        "certification_status": report["certification_status"],
         "prefix_sequence_invariant": prefix["sequence"]["all_cuts_invariant"],
         "report_checksum": report["report_checksum_sha256"],
     }, indent=2))

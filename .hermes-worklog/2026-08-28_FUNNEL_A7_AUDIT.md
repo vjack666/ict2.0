@@ -494,4 +494,21 @@ Después de la revisión, los tres CSV del checkout operativo fueron materializa
 LF mediante una normalización mecánica validada contra los hashes canónicos:
 H1 `c83e6086...`, H4 `91b98565...`, D1 `9738c970...`. No cambiaron valores OHLC.
 
+### Corrección del runner — separación de provenance — 2026-08-29
+
+La auditoría del runner encontró que `provenance_ok=true` solo representaba el
+match mecánico de los CSV contra `SHA256SUMS`; no leía el estado de fuente/licencia
+de `metadata.json`. Eso era técnicamente interpretable, pero podía confundirse con
+certificación total. El runner ahora registra por separado:
+
+- `provenance_mechanical_ok`: bytes de los CSV contra el manifiesto;
+- `provenance_source`: metadata, hash de metadata, permiso, timestamp y ejecución;
+- `provenance_ok`: ambos gates combinados;
+- `certification_status`: `PASS` solo si auditoría, provenance total y PREFIX pasan;
+  en el estado actual queda `BLOCKED` por licencia/autorización y log de máquina.
+
+Se verificó el cambio con 45 tests focales; la suite completa debe repetirse después
+del commit del runner. Los reportes anteriores conservan su valor histórico y no se
+reinterpretan como evidencia generada por este runner corregido.
+
 

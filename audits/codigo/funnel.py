@@ -29,6 +29,11 @@ STAGES = (
 EXTRA_STAGES = ("LIQUIDITY_POOL", "SWEEP", "RETEST")
 KNOWN_STAGES = frozenset(STAGES + EXTRA_STAGES)
 
+# Serialization boundary for OE-A7.6/OE-A7.7. The A7 runner's ``_run_funnel``
+# must copy these keys from ``AuditResult.metrics`` into its JSON section;
+# calculating them here is not sufficient evidence in the persisted report.
+A7_REQUIRED_REPORT_METRICS = ("rejection_reason_counts", "timeframe_counts")
+
 REJECTION_REASONS = {
     "INVALID_DATA", "DUPLICATE_EVENT", "TEMPORAL_VIOLATION",
     "MISSING_PARENT", "INVALID_PARENT", "CONTRACT_VIOLATION",
@@ -111,6 +116,11 @@ class StageSummary:
 
 def _finding(code: str, severity: str, message: str, stage: Any = "", record_id: Any = None) -> Finding:
     return Finding(code, severity, message, str(stage), None if record_id is None else str(record_id))
+
+
+def missing_a7_report_metrics(metrics: Mapping[str, Any]) -> tuple[str, ...]:
+    """Return required OE-A7 report fields absent from a serialization map."""
+    return tuple(key for key in A7_REQUIRED_REPORT_METRICS if key not in metrics)
 
 
 class FunnelAudit:

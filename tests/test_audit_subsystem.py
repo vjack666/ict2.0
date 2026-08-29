@@ -1,6 +1,11 @@
 from audits.codigo.data_integrity import audit_ohlc
 from audits.codigo.temporal import audit_events
-from audits.codigo.funnel import FunnelAudit, aggregate_a7_status
+from audits.codigo.funnel import (
+    A7_REQUIRED_REPORT_METRICS,
+    FunnelAudit,
+    aggregate_a7_status,
+    missing_a7_report_metrics,
+)
 from audits.codigo.gate import GateStatus
 
 T0 = "2026-01-01T00:00:00+00:00"
@@ -262,6 +267,22 @@ def test_a7_aggregate_cannot_hide_external_gate_failures():
     assert aggregate_a7_status(result, provenance_ok=False) is GateStatus.FAIL
     assert aggregate_a7_status(result, prefix_invariant=False) is GateStatus.FAIL
     assert aggregate_a7_status(result, idempotent=False) is GateStatus.FAIL
+
+
+def test_oe_a76_a77_metrics_are_contractually_required_at_runner_boundary():
+    accepted = _valid_event("F1")
+    accepted["timeframe"] = "H1"
+    rejected = {"stage": "FVG", "id": "F2", "accepted": False,
+                "rejection_reason": "NO_OB_CAUSAL", "observation_time": T1,
+                "timeframe": "H1"}
+    result, _ = FunnelAudit().run([accepted, rejected])
+
+    # This is the executable contract that the runner must serialize. It is
+    # intentionally tested without importing/changing mtf_seq_funnel_a7.py.
+    assert set(A7_REQUIRED_REPORT_METRICS) == {"rejection_reason_counts", "timeframe_counts"}
+    assert missing_a7_report_metrics(result.metrics) == ()
+    assert result.metrics["rejection_reason_counts"] == {"NO_OB_CAUSAL": 1}
+    assert result.metrics["timeframe_counts"] == {"H1": 2}
 
 
 def test_funnel_accepts_real_sequence_atomic_substages_and_aggregates_them():

@@ -13,7 +13,7 @@ def events():
 
 
 def funnel():
-    # Contrato A7: todo evento aceptado lleva observation_time (causalidad real).
+    # Contrato A7: todo evento aceptado lleva la cadena temporal completa.
     base = [
         {"stage": "VALID_BARS", "id": "b1", "accepted": True, "direction": 1},
         {"stage": "STRUCTURE", "id": "s1", "accepted": True, "direction": 1},
@@ -27,7 +27,12 @@ def funnel():
         {"stage": "SETUP", "id": "u2", "accepted": True, "direction": -1},
     ]
     for r in base:
-        r["observation_time"] = "2026-01-01T00:00:00+00:00"
+        r.update({
+            "candidate_time": "2026-01-01T00:00:00+00:00",
+            "confirmation_time": "2026-01-01T01:00:00+00:00",
+            "tradable_time": "2026-01-01T01:00:00+00:00",
+            "observation_time": "2026-01-01T01:00:00+00:00",
+        })
     return base
 
 

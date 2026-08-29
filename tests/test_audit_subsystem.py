@@ -1,6 +1,6 @@
 from audits.codigo.data_integrity import audit_ohlc
 from audits.codigo.temporal import audit_events
-from audits.codigo.funnel import FunnelAudit
+from audits.codigo.funnel import FunnelAudit, aggregate_a7_status
 from audits.codigo.gate import GateStatus
 
 T0 = "2026-01-01T00:00:00+00:00"
@@ -120,9 +120,152 @@ def test_funnel_rejects_unknown_rejection_reason():
 def test_funnel_passes_explained_population():
     # Contrato A7: población explicada pasa.
     records = [
-        {"stage": "FVG", "id": "F1", "accepted": True, "observation_time": T0, "direction": 1},
+        {"stage": "FVG", "id": "F1", "accepted": True, "candidate_time": T0,
+         "confirmation_time": T1, "tradable_time": T1, "observation_time": T1, "direction": 1},
         {"stage": "OB", "id": "O1", "accepted": False, "rejection_reason": "UNCONFIRMED_EVENT"},
     ]
     result, summaries = FunnelAudit().run(records)
     assert result.status is GateStatus.PASS
     assert len(summaries) == 12  # STAGES del contrato A7
+
+
+def _valid_event(event_id="F1", stage="FVG", observation=T1):
+    return {
+        "stage": stage,
+        "id": event_id,
+        "accepted": True,
+        "candidate_time": T0,
+        "confirmation_time": T1,
+        "tradable_time": T1,
+        "observation_time": observation,
+        "direction": 1,
+    }
+
+
+def test_funnel_rejects_each_missing_canonical_time():
+    for field in ("candidate_time", "confirmation_time", "tradable_time", "observation_time"):
+        record = _valid_event()
+        record.pop(field)
+        result, _ = FunnelAudit().run([record])
+        assert result.status is GateStatus.FAIL
+        assert any(f.code == "CONTRACT_VIOLATION" and field in f.message for f in result.findings)
+
+
+def test_funnel_empty_population_is_not_pass():
+    result, _ = FunnelAudit().run([])
+    assert result.status is GateStatus.FAIL
+    assert any("population is empty" in f.message for f in result.findings)
+
+
+def test_funnel_rejects_unparseable_time_and_parent_time():
+    record = _valid_event()
+    record["confirmation_time"] = "not-a-time"
+    record["requires_parent"] = True
+    record["parent_id"] = "P"
+    record["lineage_valid"] = True
+    record["parent_time"] = "also-not-a-time"
+    result, _ = FunnelAudit().run([record])
+    assert result.status is GateStatus.FAIL
+    assert sum(f.code == "CONTRACT_VIOLATION" for f in result.findings) >= 2
+
+
+def test_funnel_rejects_parent_after_child_candidate():
+    parent = _valid_event("P", "OB", T0)
+    child = _valid_event("C", "CONFLUENCE")
+    child.update({"requires_parent": True, "parent_id": "P", "lineage_valid": True, "parent_time": T2})
+    result, _ = FunnelAudit().run([parent, child])
+    assert result.status is GateStatus.FAIL
+    assert any(f.code == "TEMPORAL_VIOLATION" and "parent_time" in f.message for f in result.findings)
+
+
+def test_funnel_rejects_tradable_after_observation():
+    record = _valid_event()
+    record["tradable_time"] = T2
+    result, _ = FunnelAudit().run([record])
+    assert result.status is GateStatus.FAIL
+    assert any(f.code == "TEMPORAL_VIOLATION" and "tradable_time" in f.message for f in result.findings)
+
+
+def test_funnel_derives_parent_time_from_parent_record():
+    parent = _valid_event("P", "OB", T0)
+    parent.update({"candidate_time": T0, "confirmation_time": T0, "tradable_time": T0})
+    child = _valid_event("C", "CONFLUENCE", T1)
+    child.update({"requires_parent": True, "parent_id": "P", "lineage_valid": True})
+    result, _ = FunnelAudit().run([parent, child])
+    assert result.status is GateStatus.PASS
+
+
+def test_funnel_rejects_rejected_parent():
+    parent = _valid_event("P", "OB", T0)
+    parent["accepted"] = False
+    parent.pop("direction")
+    parent["rejection_reason"] = "INVALID_DATA"
+    child = _valid_event("C", "CONFLUENCE")
+    child.update({"requires_parent": True, "parent_id": "P", "lineage_valid": True})
+    result, _ = FunnelAudit().run([parent, child])
+    assert result.status is GateStatus.FAIL
+    assert any(f.code == "INVALID_PARENT" for f in result.findings)
+
+
+def test_funnel_rejects_two_node_lineage_cycle():
+    a = _valid_event("A", "CONFLUENCE")
+    b = _valid_event("B", "LINEAGE")
+    a.update({"requires_parent": True, "parent_id": "B", "lineage_valid": True})
+    b.update({"requires_parent": True, "parent_id": "A", "lineage_valid": True})
+    result, _ = FunnelAudit().run([a, b])
+    assert result.status is GateStatus.FAIL
+    assert any(f.code == "CONTRACT_VIOLATION" and "cycle detected" in f.message for f in result.findings)
+
+
+def test_funnel_rejects_parent_fields_without_parent_requirement():
+    record = _valid_event()
+    record["parent_time"] = T0
+    result, _ = FunnelAudit().run([record])
+    assert result.status is GateStatus.FAIL
+    assert any(f.code == "CONTRACT_VIOLATION" and "lineage fields" in f.message for f in result.findings)
+
+
+def test_funnel_is_order_invariant_and_accepts_generators():
+    records = [_valid_event("F1"), _valid_event("F2", observation=T2)]
+    first = FunnelAudit().run(records)
+    second = FunnelAudit().run(iter(reversed(records)))
+    assert first == second
+
+
+def test_funnel_rejects_identity_stage_and_direction_contract_errors():
+    records = [_valid_event("", "NOT_A_STAGE"), _valid_event("B", "FVG")]
+    records[1]["direction"] = True
+    result, _ = FunnelAudit().run(records)
+    assert result.status is GateStatus.FAIL
+    assert any(f.code == "CONTRACT_VIOLATION" and "stage" in f.message for f in result.findings)
+    assert any(f.code == "INVALID_DIRECTION" for f in result.findings)
+
+
+def test_funnel_expected_stage_manifest_cannot_pass_unverified():
+    result, _ = FunnelAudit().run([_valid_event()], expected_stages=("FVG", "OB"))
+    assert result.status is GateStatus.FAIL
+    assert any(f.stage == "OB" and "not verified" in f.message for f in result.findings)
+
+
+def test_funnel_full_prefix_atomic_check_is_fail_closed():
+    full = [_valid_event("F1", observation=T1), _valid_event("F2", observation=T2)]
+    ok, _ = FunnelAudit().run(full, prefix_records=[full[0]], prefix_time=T1)
+    assert ok.status is GateStatus.PASS
+    bad, _ = FunnelAudit().run(full, prefix_records=[], prefix_time=T1)
+    assert bad.status is GateStatus.FAIL
+    assert any(f.stage == "PREFIX" for f in bad.findings)
+
+
+def test_a7_aggregate_cannot_hide_external_gate_failures():
+    result, _ = FunnelAudit().run([_valid_event()])
+    assert aggregate_a7_status(result) is GateStatus.PASS
+    assert aggregate_a7_status(result, provenance_ok=False) is GateStatus.FAIL
+    assert aggregate_a7_status(result, prefix_invariant=False) is GateStatus.FAIL
+    assert aggregate_a7_status(result, idempotent=False) is GateStatus.FAIL
+
+
+def test_funnel_accepts_real_sequence_atomic_substages_and_aggregates_them():
+    records = [_valid_event("L", "LIQUIDITY_POOL"), _valid_event("S", "SWEEP")]
+    result, _ = FunnelAudit().run(records)
+    assert result.status is GateStatus.PASS
+    assert result.metrics["extra_stage_counts"] == {"LIQUIDITY_POOL": 1, "SWEEP": 1}

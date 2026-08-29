@@ -122,6 +122,21 @@ def _time_string(value) -> str:
     return str(value)
 
 
+def _latest_time(*values) -> str | None:
+    """Devuelve el último tiempo causal disponible, normalizado a UTC."""
+    parsed = []
+    for value in values:
+        timestamp = _as_utc_timestamp(value)
+        if timestamp is not None:
+            parsed.append(timestamp)
+    if parsed:
+        return max(parsed).isoformat()
+    for value in values:
+        if value is not None:
+            return str(value)
+    return None
+
+
 # --------------------------------------------------------------------------
 # Etapas del funnel
 # --------------------------------------------------------------------------
@@ -165,19 +180,34 @@ def funnel_fvg_ob(df: pd.DataFrame, tf: str) -> list[dict]:
                              "accepted": False, "direction": item.direction, "timeframe": tf,
                              "rejection_reason": "NO_OB_CAUSAL",
                              "observation_time": obs, "requires_parent": False})
+    fvg_by_id = {item.id: item for item in fvg}
     for rel in relations:
         rec_ob = ob_dict(ob, rel.ob_id)
-        obs, cand, conf, trad = _obs_time(rec_ob, time_by_index)
+        rec_fvg = fvg_by_id.get(rel.fvg_id)
+        if rec_fvg is None:
+            continue
+        fvg_obs, fvg_cand, fvg_conf, fvg_trad = _obs_time(rec_fvg, time_by_index)
+        ob_obs, ob_cand, ob_conf, ob_trad = _obs_time(rec_ob, time_by_index)
+        parent_time = ob_obs or ob_conf or ob_cand
+        # La relación existe cuando ambos objetos ya son observables. Su
+        # candidate_time no puede preceder a la confirmación del padre OB.
+        cand = _latest_time(fvg_cand, ob_cand, parent_time)
+        conf = _latest_time(fvg_conf, ob_conf, cand)
+        trad = _latest_time(fvg_trad, ob_trad, conf)
+        obs = _latest_time(fvg_obs, ob_obs, trad, conf)
         records.append({"stage": "CONFLUENCE", "id": f"{rel.fvg_id}__{rel.ob_id}",
                          "accepted": True, "direction": rel.direction, "timeframe": tf,
                          "observation_time": obs, "candidate_time": cand,
                          "confirmation_time": conf, "tradable_time": trad,
                          "requires_parent": True, "parent_id": rel.ob_id,
+                         "parent_time": parent_time,
                          "lineage_valid": rel.ob_id in known_ids})
         records.append({"stage": "LINEAGE", "id": f"LINEAGE_{rel.fvg_id}__{rel.ob_id}",
-                         "accepted": True, "direction": rel.direction, "timeframe": tf,
-                         "observation_time": obs, "parent_id": rel.ob_id,
-                         "lineage_valid": rel.ob_id in known_ids, "requires_parent": True})
+                        "accepted": True, "direction": rel.direction, "timeframe": tf,
+                        "observation_time": obs, "candidate_time": cand,
+                        "confirmation_time": conf, "tradable_time": trad,
+                        "parent_id": rel.ob_id, "parent_time": parent_time,
+                        "lineage_valid": rel.ob_id in known_ids, "requires_parent": True})
     return records
 
 
@@ -199,7 +229,10 @@ def funnel_sequence(df: pd.DataFrame, tf: str) -> list[dict]:
         for nd in ch.nodes:
             obs = time_by_index.get(int(nd.bar))
             obs_s = _time_string(obs) if obs is not None else str(int(nd.bar))
-            stage_name = nd.stage.value
+            raw_stage_name = nd.stage.value
+            # RETEST es una subetapa secuencial, pero no una etapa pública de
+            # FunnelAudit. Se proyecta a SEQUENCE sin perder su identidad.
+            stage_name = "SEQUENCE" if raw_stage_name == "RETEST" else raw_stage_name
             # ID atómico estable: la raíz del pool identifica la cadena causal;
             # chain_id conserva compatibilidad, pero no es la identidad lógica.
             root_id = str(ch.nodes[0].object_id) if ch.nodes else str(ch.chain_id)
@@ -207,19 +240,27 @@ def funnel_sequence(df: pd.DataFrame, tf: str) -> list[dict]:
                    "accepted": True, "direction": ch.direction, "timeframe": tf,
                    "observation_time": obs_s,
                    "candidate_time": obs_s, "confirmation_time": obs_s, "tradable_time": obs_s,
-                   "requires_parent": False, "atomic": True}
+                   "requires_parent": False, "atomic": True,
+                   "sequence_stage": raw_stage_name}
             records.append(rec)
         # Una cadena abierta/expirada no es un evento atómico: su estado final
         # cambia si el dataset recibe barras posteriores. Solo la terminación
         # completa tiene identidad y observation_time estables para FULL/PREFIX.
         chain_obs = time_by_index.get(ch.last_bar)
         chain_obs_s = _time_string(chain_obs) if chain_obs is not None else str(ch.last_bar)
-        records.append({"stage": "SEQUENCE", "id": f"{tf}:SEQ:{root_id}:COMPLETE",
-                         "accepted": ch.status == "COMPLETE",
-                         "rejection_reason": None if ch.status == "COMPLETE" else "INVALID_DATA",
-                         "direction": ch.direction, "timeframe": tf,
-                         "observation_time": chain_obs_s, "requires_parent": False,
-                         "atomic": ch.status == "COMPLETE"})
+        aggregate = {"stage": "SEQUENCE", "id": f"{tf}:SEQ:{root_id}:COMPLETE",
+                     "accepted": ch.status == "COMPLETE",
+                     "rejection_reason": None if ch.status == "COMPLETE" else "INVALID_DATA",
+                     "direction": ch.direction, "timeframe": tf,
+                     "observation_time": chain_obs_s, "requires_parent": False,
+                     "atomic": ch.status == "COMPLETE"}
+        if ch.status == "COMPLETE":
+            # El evento terminal se observa en last_bar y debe satisfacer el
+            # contrato temporal completo del stage SEQUENCE.
+            aggregate.update(candidate_time=chain_obs_s,
+                             confirmation_time=chain_obs_s,
+                             tradable_time=chain_obs_s)
+        records.append(aggregate)
     return records
 
 

@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 import pandas as pd
+from unittest.mock import patch
 
 from engine.sequential_events import (
     STAGE_ORDER,
     SeqConfig,
+    SeqNode,
+    SequentialChain,
     Stage,
     run_sequential,
     summarize_chains,
@@ -13,6 +16,7 @@ from engine.sequential_events import (
 from audits.codigo.mtf_seq_funnel_a7 import (
     _atomic_events,
     _prefix_event_delta,
+    funnel_fvg_ob,
     funnel_sequence,
 )
 
@@ -176,3 +180,58 @@ def test_sequence_projection_ids_are_deterministic_and_noncolliding():
     ids = [(record["stage"], record["id"]) for record in first]
     assert len(ids) == len(set(ids))
     assert {record["stage"] for record in first if not record["atomic"]} == {"SEQUENCE"}
+
+
+def test_complete_sequence_and_retest_have_contract_valid_projection():
+    times = pd.date_range("2026-01-01", periods=3, freq="h", tz="UTC")
+    df = pd.DataFrame({"time": times, "open": [1.0, 1.0, 1.0],
+                       "high": [1.1, 1.1, 1.1], "low": [0.9, 0.9, 0.9],
+                       "close": [1.0, 1.0, 1.0]})
+    chain = SequentialChain(
+        chain_id="SEQ_H1_1", direction=1,
+        nodes=[SeqNode(Stage.LIQUIDITY_POOL, 0, 1, object_id="EQL_0"),
+               SeqNode(Stage.RETEST, 2, 1, object_id="RETEST_2")],
+        status="COMPLETE", created_bar=0, last_bar=2,
+    )
+
+    with patch("audits.codigo.mtf_seq_funnel_a7.run_sequential", return_value=[chain]):
+        records = funnel_sequence(df, "H1")
+
+    retest = next(record for record in records if record["sequence_stage"] == "RETEST")
+    complete = next(record for record in records if record["id"].endswith(":COMPLETE"))
+    assert retest["stage"] == "SEQUENCE"
+    assert retest["atomic"] is True
+    assert all(complete[field] == times[2].isoformat()
+               for field in ("observation_time", "candidate_time",
+                             "confirmation_time", "tradable_time"))
+
+
+def test_confluence_parent_time_is_not_after_child_observation():
+    from engine.market_object import MarketObject, ObjectState, ObjectType, Role
+    from types import SimpleNamespace
+
+    t0, t1, t2 = pd.date_range("2026-01-01", periods=3, freq="h", tz="UTC")
+    common = dict(origin_tf="H1", role=Role.REFINEMENT, direction=1,
+                  state=ObjectState.ACTIVE, candidate_bar=0,
+                  candidate_time=t0, confirmation_bar=1,
+                  confirmation_time=t1, tradable_bar=1, tradable_time=t1)
+    fvg = MarketObject(id="FVG_H1_1_BULL", type=ObjectType.FVG,
+                       zone_high=1.0, zone_low=0.9, **common)
+    ob = MarketObject(id="OB_H1_1_BULL", type=ObjectType.ORDER_BLOCK,
+                      zone_high=1.0, zone_low=0.9, **common)
+    relation = SimpleNamespace(fvg_id=fvg.id, ob_id=ob.id, direction=1)
+    df = pd.DataFrame({"time": [t0, t1, t2], "bar": [0, 1, 2], "open": [1, 1, 1],
+                       "high": [1.1, 1.1, 1.1], "low": [0.9, 0.9, 0.9],
+                       "close": [1, 1, 1]})
+
+    with patch("audits.codigo.mtf_seq_funnel_a7.detect_fvg", return_value=[fvg]), \
+         patch("audits.codigo.mtf_seq_funnel_a7.detect_order_blocks", return_value=[ob]), \
+         patch("audits.codigo.mtf_seq_funnel_a7.relate_fvg_ob", return_value=[relation]):
+        records = funnel_fvg_ob(df, "H1")
+
+    confluence = next(record for record in records if record["stage"] == "CONFLUENCE")
+    assert confluence["parent_time"] <= confluence["observation_time"]
+    assert confluence["parent_time"] <= confluence["candidate_time"]
+    assert confluence["candidate_time"] <= confluence["confirmation_time"]
+    assert confluence["confirmation_time"] <= confluence["tradable_time"]
+    assert confluence["tradable_time"] <= confluence["observation_time"]

@@ -354,7 +354,9 @@ def main() -> dict:
         "aggregated_findings": overall["n_findings"],
         "prefix_invariance": prefix,
     }
-    report_str = json.dumps(report, default=str, sort_keys=True)
+    # Checksum determinista: excluye generated_at (campo no determinista por contrato A7 §5.1).
+    report_for_checksum = {k: v for k, v in report.items() if k != "generated_at"}
+    report_str = json.dumps(report_for_checksum, default=str, sort_keys=True)
     report["report_checksum_sha256"] = hashlib.sha256(report_str.encode()).hexdigest()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)

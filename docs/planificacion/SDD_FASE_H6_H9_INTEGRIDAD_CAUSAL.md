@@ -107,10 +107,8 @@ el hueco del flag explícito (cerrado aquí).
 
 ## 5. Evidencia
 
-- `tests/test_integridad_causal_h6_h9.py`: 16 tests adversariales (OE-02,03,04,05,06,07,08,10).
-- `pytest tests/` completo: **334 passed, 0 failed** (era 318 en el texto externo;
-  318 antes de la fase; +16 de la suite nueva, +0 regresiones). Tras auditoría RED
-  TEAM R1 (OE-02 trigger-order): 336 passed, 0 failed (+2).
+- `tests/test_integridad_causal_h6_h9.py`: 20 tests adversariales (OE-02,03,04,05,06,07,08,10). 16 originales + 3 H6 (R2: inversiones POI/refinement/confirmation/trigger) + 1 OE-11 (equivalencia SAVE/LOAD H7).
+- `pytest tests/` completo: **338 passed, 0 failed** (baseline 318 + 16 H6-H9 originales + 2 R1 + 2 R2 = 338; 0 regresiones). Tras auditoría RED TEAM R2 (OE-05/OE-11 SAVE/LOAD H7 + ley causal H6 completa): 338 passed, 0 failed.
 - Graphify actualizado a HEAD (OE-11).
 
 ## 6. Criterio de certificación

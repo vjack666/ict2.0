@@ -13,7 +13,8 @@ def events():
 
 
 def funnel():
-    return [
+    # Contrato A7: todo evento aceptado lleva observation_time (causalidad real).
+    base = [
         {"stage": "VALID_BARS", "id": "b1", "accepted": True, "direction": 1},
         {"stage": "STRUCTURE", "id": "s1", "accepted": True, "direction": 1},
         {"stage": "BOS_CHOCH", "id": "c1", "accepted": True, "direction": 1},
@@ -25,6 +26,9 @@ def funnel():
         {"stage": "SETUP", "id": "u1", "accepted": True, "direction": 1},
         {"stage": "SETUP", "id": "u2", "accepted": True, "direction": -1},
     ]
+    for r in base:
+        r["observation_time"] = "2026-01-01T00:00:00+00:00"
+    return base
 
 
 def test_full_audit_stack_passes_contract_smoke():

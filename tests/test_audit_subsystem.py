@@ -51,8 +51,9 @@ def test_funnel_rejects_unexplained_rejection():
 
 
 def test_funnel_passes_explained_population():
+    # Contrato A7: evento aceptado REQUIERE observation_time (causalidad).
     records = [
-        {"stage": "FVG", "id": "F1", "accepted": True},
+        {"stage": "FVG", "id": "F1", "accepted": True, "observation_time": "2026-01-01T00:00:00+00:00"},
         {"stage": "OB", "id": "O1", "accepted": False, "rejection_reason": "UNCONFIRMED_EVENT"},
     ]
     result, summaries = FunnelAudit().run(records)

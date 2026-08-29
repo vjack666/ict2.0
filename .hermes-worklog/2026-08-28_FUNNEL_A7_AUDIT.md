@@ -372,4 +372,26 @@ certificación de A7 ni una afirmación de edge. La auditoría independiente deb
 objetivos, la identidad de los archivos versionados y los bloqueos de licencia/adquisición antes
 de cualquier desbloqueo de backtest o promoción.
 
+## [EVIDENCIA FINAL REVISADA — MÉTRICAS SERIALIZADAS, 2026-08-29]
+
+La brecha de trazabilidad OE-A7.6/OE-A7.7 fue corregida en `279354d` y formalizada en
+`d812466`. Se repitió el Funnel completo dos veces desde worktrees limpios del mismo HEAD:
+
+| Ejecución | Reporte | Estado | Findings | Worktree | Checksum lógico |
+|---|---|---|---:|---|---|
+| 1 | `mtf_seq_funnel_a7_20260829_154844.json` | PASS | 0 | CLEAN | `41208babc8e8018dbeca7d119e57b67dfa22fcdfc4a2d87a6c43922ddbfbcfcb` |
+| 2 | `mtf_seq_funnel_a7_20260829_154829.json` | PASS | 0 | CLEAN | `41208babc8e8018dbeca7d119e57b67dfa22fcdfc4a2d87a6c43922ddbfbcfcb` |
+
+Los JSON coinciden completamente salvo `generated_at`. Cada sección expone ahora
+`rejection_reason_counts`, `timeframe_counts` y `extra_stage_counts`:
+
+- H1: `NO_OB_CAUSAL=21798`, `INVALID_DATA=12072`, timeframe exclusivamente H1.
+- H4: `NO_OB_CAUSAL=6293`, `INVALID_DATA=3240`, timeframe exclusivamente H4.
+- D1: `NO_OB_CAUSAL=1487`, `INVALID_DATA=532`, timeframe exclusivamente D1.
+
+El agregado mantiene `aggregated_status=PASS`, `aggregated_findings=0`, `provenance_ok=true`,
+MTF navigation `PASS` sin findings, y FULL/PREFIX sin missing ni extra en H1/H4/D1/SEQUENCE.
+OE-A7.1–OE-A7.11 quedan respaldados por artefacto; OE-A7.12 requiere el dictamen final de un
+auditor independiente.
+
 

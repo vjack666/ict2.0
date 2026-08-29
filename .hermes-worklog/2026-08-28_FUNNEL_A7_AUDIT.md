@@ -535,4 +535,22 @@ intencional y coincide con `metadata.json`: `provenance_source=BLOCKED` por perm
 log de ejecución faltantes. Los reportes anteriores conservan su valor histórico y no
 se reinterpretan como evidencia generada por este runner corregido.
 
+### Matriz ejecutable de completitud A7 — 2026-08-29
+
+Se ejecutó `python -B -m audits.codigo.a7_completion_audit` sobre los dos reportes
+anteriores. La suite embebida terminó `373 passed`; el comando devolvió código `2`
+de forma intencional porque la certificación total está bloqueada.
+
+Resultado persistido en `reports/audits/experiments/fvg_ob/a7_completion_audit.json`:
+
+| Objetivos | Estado |
+|---|---|
+| OE-A7.1–OE-A7.8 | PASS |
+| OE-A7.9 | BLOCKED — provenance mecánica PASS; permiso/log de fuente faltantes |
+| OE-A7.10–OE-A7.12 | PASS |
+| Estado global | BLOCKED |
+
+La matriz no convierte el PASS técnico en certificación total y queda como guardia
+reproducible para el siguiente intento de cierre.
+
 

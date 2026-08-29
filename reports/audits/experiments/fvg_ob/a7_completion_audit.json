@@ -1,0 +1,90 @@
+{
+  "gate": "A7",
+  "generated_at": "2026-08-29T23:16:16.664525+00:00",
+  "reports": [
+    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_180838.json",
+    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_180845.json"
+  ],
+  "report_commits": [
+    "131901490c8fac9b91a61cf44d0a327b0b3c9530",
+    "131901490c8fac9b91a61cf44d0a327b0b3c9530"
+  ],
+  "matrix": [
+    {
+      "id": "OE-A7.1",
+      "status": "PASS",
+      "evidence": "A7 sections with zero findings; FunnelAudit temporal contract"
+    },
+    {
+      "id": "OE-A7.2",
+      "status": "PASS",
+      "evidence": "All configured FULL/PREFIX cuts, missing=0 and extra=0"
+    },
+    {
+      "id": "OE-A7.3",
+      "status": "PASS",
+      "evidence": "No duplicate findings and identical logical reports"
+    },
+    {
+      "id": "OE-A7.4",
+      "status": "PASS",
+      "evidence": "No lineage findings in both reports"
+    },
+    {
+      "id": "OE-A7.5",
+      "status": "PASS",
+      "evidence": "STRICT FVG_OB_CAUSAL plus zero audit findings"
+    },
+    {
+      "id": "OE-A7.6",
+      "status": "PASS",
+      "evidence": "Per-section rejection and timeframe metrics serialized"
+    },
+    {
+      "id": "OE-A7.7",
+      "status": "PASS",
+      "evidence": "H1/H4/D1 sections remain isolated by timeframe"
+    },
+    {
+      "id": "OE-A7.8",
+      "status": "PASS",
+      "evidence": "Two independent reports have equal logical payload and checksum"
+    },
+    {
+      "id": "OE-A7.9",
+      "status": "BLOCKED",
+      "evidence": "Mechanical hashes PASS; source provenance is required for total PASS"
+    },
+    {
+      "id": "OE-A7.10",
+      "status": "PASS",
+      "evidence": "373 passed in 8.68s"
+    },
+    {
+      "id": "OE-A7.11",
+      "status": "PASS",
+      "evidence": "Both reports declare CLEAN worktrees"
+    },
+    {
+      "id": "OE-A7.12",
+      "status": "PASS",
+      "evidence": "CRO independent review recorded in worklog"
+    }
+  ],
+  "tests": {
+    "command": "python -B -m pytest -q",
+    "returncode": 0,
+    "summary": "373 passed in 8.68s",
+    "passed": 373,
+    "status": "PASS"
+  },
+  "source_provenance": {
+    "declared_status": "BLOCKED",
+    "license_and_permitted_use": "UNKNOWN",
+    "execution_verified": false,
+    "mechanical_ok": true,
+    "total_ok": false
+  },
+  "overall_status": "BLOCKED",
+  "next_action": "Obtain written source permission and version a machine acquisition log, then rerun provenance review."
+}

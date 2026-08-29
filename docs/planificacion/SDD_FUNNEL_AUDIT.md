@@ -106,6 +106,12 @@ por sí solo certificación de datos, backtest, promoción ni trading. Si la met
 fuente está `BLOCKED`, el runner debe emitir `certification_status=BLOCKED` aunque los
 hashes y la causalidad sean correctos.
 
+El cierre de los doce objetivos se comprueba además con
+`audits/codigo/a7_completion_audit.py`, que consume dos reportes independientes,
+ejecuta la suite y persiste `reports/audits/experiments/fvg_ob/a7_completion_audit.json`.
+Su código de salida es distinto de cero mientras cualquier OE obligatorio no sea
+`PASS`; esto es una guarda de certificación, no una búsqueda de edge.
+
 ### 5.2 Truncation invariance
 
 Para cualquier prefijo hasta `t`, ningún evento confirmado antes de `t` puede cambiar por añadir barras posteriores.

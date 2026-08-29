@@ -487,6 +487,12 @@ ejecución histórica. El resultado negativo confirma que
 `execution_log_status=MISSING` y `request_parameters.execution_verified=false` se
 mantienen correctamente; no se convierte una anotación de worklog en log de máquina.
 
+La revisión del historial Git tampoco aporta un log ejecutado: `3c16701` versiona
+los CSV y la bitácora inicial, mientras `0492944` solo añade el script
+`scripts/acquire_eurusd_20y.sh`. Ninguno conserva stdout/stderr, parámetros realmente
+ejecutados o una autorización del proveedor. Por tanto, esos commits son evidencia
+de versionado y de intención técnica, no evidencia de ejecución ni de permiso.
+
 ### Revisión de procedencia externa — 2026-08-29
 
 Se revisaron las páginas oficiales de Dukascopy sobre exportación histórica y términos

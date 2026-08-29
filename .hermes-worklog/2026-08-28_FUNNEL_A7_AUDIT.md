@@ -493,6 +493,11 @@ los CSV y la bitácora inicial, mientras `0492944` solo añade el script
 ejecutados o una autorización del proveedor. Por tanto, esos commits son evidencia
 de versionado y de intención técnica, no evidencia de ejecución ni de permiso.
 
+La búsqueda final en `AppData/Local/hermes/cache/terminal-output/out-*.log` tampoco
+encontró `dukascopy`, `npx` ni los nombres de los CSV de adquisición. La única
+coincidencia fue una referencia documental al loader de Dukascopy en otro auditor,
+sin comando ni salida de descarga. `execution_verified=false` permanece justificado.
+
 ### Revisión de procedencia externa — 2026-08-29
 
 Se revisaron las páginas oficiales de Dukascopy sobre exportación histórica y términos

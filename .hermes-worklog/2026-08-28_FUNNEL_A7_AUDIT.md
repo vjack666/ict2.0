@@ -302,4 +302,34 @@ indicadas arriba. El worktree temporal fue eliminado después de la prueba.
 Auditoría independiente de Ruben/Codex sobre `mtf_seq_funnel_a7_20260829_113257.json` (+ run 3
 para idempotencia) y `FunnelAudit`. Si emite GO de certificación, desbloquear Tesis 2.
 
+## [COORDINACIÓN CODEX — INTEGRACIÓN MULTIDEPARTAMENTO, 2026-08-29]
+
+Codex activó tres departamentos con write sets disjuntos y los integró selectivamente en el
+checkout operativo `codex/audit-hermes-cert-20260826`:
+
+- CTO / Ingeniería: `b1e66a6` → integrado como `42d8eaf`. Corrige la comparación FULL/PREFIX
+  para usar conjuntos exactos de átomos causalmente observables, normaliza timestamps y excluye
+  agregados parciales inestables. Pruebas focales del departamento: 37 PASS.
+- CRO / Assurance: `0274f98` → integrado como `c357e71`. Refuerza temporalidad, lineage,
+  huérfanos/ciclos, identidad, dirección, razones y métricas de subetapas (`LIQUIDITY_POOL`,
+  `SWEEP`). Pruebas focales del departamento: 35 PASS.
+- CDO / Datos: `f58c92d` → integrado como `fe0aac5`. Fija EOL LF mediante `.gitattributes`,
+  normaliza únicamente finales de línea y deja el snapshot reproducible entre checkout de
+  Windows y checkout limpio. Verificación aislada: `sha256sum -c` 3/3, conteos 124377/32133/6258,
+  fechas y bytes consistentes.
+
+Verificación integrada posterior: `pytest -q` → **364 passed**; `git diff --check` limpio;
+Graphify actualizado (10809 nodos, 17549 relaciones). No se ejecutó el Funnel completo de 20 años
+ni ninguna operación remota. Los archivos sucios preexistentes (parquet, charts, caches y briefs)
+se conservaron fuera de los commits selectivos.
+
+### Dictamen operativo
+
+`WAITING — NO CERTIFICADO`. El código y los contratos están corregidos, pero los reportes A7
+disponibles (`...113257`/`...115117`) fueron generados antes del HEAD integrado `fe0aac5`; por
+tanto, no se pueden presentar como evidencia del código actual. La siguiente misión autorizada
+es regenerar el reporte A7 con el HEAD actual, comprobar su checksum/determinismo y someterlo a
+auditoría independiente. La procedencia de bytes tiene PASS; la procedencia global puede seguir
+BLOCKED si licencia/adquisición de la fuente permanecen `UNKNOWN`.
+
 

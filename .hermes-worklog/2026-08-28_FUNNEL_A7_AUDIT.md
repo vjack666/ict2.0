@@ -437,4 +437,37 @@ proteger la proyección `observation_time` y repetir FULL/PREFIX en cortes repre
 El PASS histórico y la afirmación de que no quedaba deuda PIT no deben tratarse como
 certificación vigente. La procedencia legal CDO permanece pendiente.
 
+### Revalidación posterior — c57f56f — 2026-08-29
+
+El CTO corrigió la deuda causal y dejó el commit local selectivo `c57f56f`:
+
+- `engine/sequential_events._causal_swings` publica el swing en `j + left`, la barra
+  en que la ventana derecha ya está cerrada.
+- `engine/mtf_navigation.py` reutiliza la helper canónica; no mantiene una segunda
+  semántica de publicación.
+- El runner A7 prueba cortes fijos de 10%, 25%, 50%, 75% y 90% en lugar de un único
+  corte del 60%.
+- Regresiones focales: 45 tests pasan en secuencias + auditoría; la cobertura
+  proporcional del CTO suma 35 tests adicionales. `git diff --check` está limpio.
+
+Se ejecutaron dos clean runs locales desde `c57f56f`, con CSV materializados en LF,
+`git_status=CLEAN`, `aggregated_status=PASS`, `aggregated_findings=0`,
+`provenance_ok=true` y `prefix_sequence_invariant=true`:
+
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel_a7_20260829_163450.json`
+- `reports/audits/experiments/fvg_ob/mtf_seq_funnel_a7_20260829_170617.json`
+
+Ambos reportes tienen checksum lógico
+`5f279b354f4ace0f482d0a3de97a89d1d4d450312b61fa73ea83665eea5a2ee4` y son iguales
+salvo `generated_at`. Los cinco cortes no muestran `missing_in_prefix` ni
+`extra_in_prefix` en H1/H4/D1 ni SEQUENCE. Esto deja el Funnel en
+`GO TÉCNICO / PROVENANCE LEGAL BLOCKED`, confirmado por la auditoría independiente
+CRO. No es certificación total de datos ni habilita backtest.
+
+El checkout operativo principal sigue materializando los CSV como CRLF por su estado
+local de `core.autocrlf`; no se usa como evidencia del clean run. La procedencia legal
+continúa bloqueada porque `license_and_permitted_use=UNKNOWN`, `acquired_at_utc=null`
+y `request_parameters.execution_verified=false`. No se habilita backtest, promoción,
+edge ni trading.
+
 

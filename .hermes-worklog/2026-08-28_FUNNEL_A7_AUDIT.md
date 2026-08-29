@@ -498,6 +498,16 @@ encontró `dukascopy`, `npx` ni los nombres de los CSV de adquisición. La únic
 coincidencia fue una referencia documental al loader de Dukascopy en otro auditor,
 sin comando ni salida de descarga. `execution_verified=false` permanece justificado.
 
+### Preparación de desbloqueo externo — 2026-08-29
+
+La revisión oficial localizó el canal de API para desarrolladores de Dukascopy y
+la referencia de términos de JForex. Se preparó la plantilla
+`docs/provenance/DUKASCOPY_PERMISSION_REQUEST.md` con el alcance exacto del
+snapshot, preguntas sobre `dukascopy-node`, retención privada, datos derivados,
+atribución y límites de automatización. La plantilla no se envió y no constituye
+autorización; el estado de metadata permanece `BLOCKED` hasta recibir respuesta
+escrita y verificar que cubra específicamente esta adquisición.
+
 ### Revisión de procedencia externa — 2026-08-29
 
 Se revisaron las páginas oficiales de Dukascopy sobre exportación histórica y términos

@@ -473,6 +473,20 @@ continúa bloqueada porque `license_and_permitted_use=UNKNOWN` y
 worklog, pero no existe log de máquina versionado. No se habilita backtest, promoción,
 edge ni trading.
 
+### Búsqueda complementaria de log de adquisición — 2026-08-29
+
+Se hizo una búsqueda local acotada, sin descargar datos ni ejecutar el comando de
+adquisición:
+
+- historial `ConsoleHost_history.txt` y `Visual Studio Code Host_history.txt` de
+  PowerShell;
+- logs `*.log`, `*.jsonl`, `*.json` y `*.txt` bajo la caché local de Hermes.
+
+No apareció `dukascopy-node` ni un comando equivalente que permita verificar la
+ejecución histórica. El resultado negativo confirma que
+`execution_log_status=MISSING` y `request_parameters.execution_verified=false` se
+mantienen correctamente; no se convierte una anotación de worklog en log de máquina.
+
 ### Revisión de procedencia externa — 2026-08-29
 
 Se revisaron las páginas oficiales de Dukascopy sobre exportación histórica y términos

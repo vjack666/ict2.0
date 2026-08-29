@@ -115,6 +115,13 @@ def _obs_time(mo, time_by_index: dict | None = None) -> tuple[str | None, str | 
            _map(getattr(mo, "tradable_time", None))
 
 
+def _time_string(value) -> str:
+    """Serializa tiempos datetime y tiempos numéricos de fixtures sin perderlos."""
+    if hasattr(value, "isoformat"):
+        return value.isoformat()
+    return str(value)
+
+
 # --------------------------------------------------------------------------
 # Etapas del funnel
 # --------------------------------------------------------------------------
@@ -191,23 +198,28 @@ def funnel_sequence(df: pd.DataFrame, tf: str) -> list[dict]:
     for ch in chains:
         for nd in ch.nodes:
             obs = time_by_index.get(int(nd.bar))
-            obs_s = obs.isoformat() if obs is not None else str(int(nd.bar))
+            obs_s = _time_string(obs) if obs is not None else str(int(nd.bar))
             stage_name = nd.stage.value
-            # ID estable y unico: chain_id + stage (chain_id es unico por cadena).
-            rec = {"stage": stage_name, "id": f"{ch.chain_id}_{stage_name}",
+            # ID atómico estable: la raíz del pool identifica la cadena causal;
+            # chain_id conserva compatibilidad, pero no es la identidad lógica.
+            root_id = str(ch.nodes[0].object_id) if ch.nodes else str(ch.chain_id)
+            rec = {"stage": stage_name, "id": f"{tf}:SEQ:{root_id}:{stage_name}",
                    "accepted": True, "direction": ch.direction, "timeframe": tf,
                    "observation_time": obs_s,
                    "candidate_time": obs_s, "confirmation_time": obs_s, "tradable_time": obs_s,
-                   "requires_parent": False}
+                   "requires_parent": False, "atomic": True}
             records.append(rec)
-        # Cadena como etapa SEQUENCE (agregación; id estable por created_bar+dir ya esta en chain_id)
+        # Una cadena abierta/expirada no es un evento atómico: su estado final
+        # cambia si el dataset recibe barras posteriores. Solo la terminación
+        # completa tiene identidad y observation_time estables para FULL/PREFIX.
         chain_obs = time_by_index.get(ch.last_bar)
-        chain_obs_s = chain_obs.isoformat() if chain_obs is not None else str(ch.last_bar)
-        records.append({"stage": "SEQUENCE", "id": ch.chain_id,
+        chain_obs_s = _time_string(chain_obs) if chain_obs is not None else str(ch.last_bar)
+        records.append({"stage": "SEQUENCE", "id": f"{tf}:SEQ:{root_id}:COMPLETE",
                          "accepted": ch.status == "COMPLETE",
                          "rejection_reason": None if ch.status == "COMPLETE" else "INVALID_DATA",
                          "direction": ch.direction, "timeframe": tf,
-                         "observation_time": chain_obs_s, "requires_parent": False})
+                         "observation_time": chain_obs_s, "requires_parent": False,
+                         "atomic": ch.status == "COMPLETE"})
     return records
 
 
@@ -230,9 +242,46 @@ def funnel_mtf_navigation(frames: dict[str, pd.DataFrame]) -> list[dict]:
 # --------------------------------------------------------------------------
 # PREFIX check (evento atómico, filtrado por tiempo)
 # --------------------------------------------------------------------------
-def _atomic_events(records: list[dict]) -> set[tuple[str, str]]:
-    """Unidad lógica = (stage, id_estable). El id de Secuencia es estable por bar."""
-    return {(r["stage"], str(r["id"])) for r in records}
+def _as_utc_timestamp(value) -> pd.Timestamp | None:
+    """Normaliza timestamps antes de comparar el corte FULL/PREFIX."""
+    if value is None:
+        return None
+    parsed = pd.to_datetime(value, utc=True, errors="coerce")
+    if pd.isna(parsed):
+        return None
+    return pd.Timestamp(parsed)
+
+
+def _atomic_events(
+    records: list[dict], cutoff=None
+) -> set[tuple[str, str, str]]:
+    """Devuelve átomos namespaced por ``timeframe``, etapa e ID estable.
+
+    ``atomic=False`` se reserva para agregados parciales (por ejemplo una cadena
+    que aún puede crecer); incluirlos haría que el mismo ID representara estados
+    distintos entre FULL y PREFIX. El corte usa tiempo normalizado, no texto.
+    """
+    cutoff_ts = _as_utc_timestamp(cutoff)
+    events = set()
+    for record in records:
+        if record.get("atomic", True) is False:
+            continue
+        if cutoff_ts is not None:
+            observation_ts = _as_utc_timestamp(record.get("observation_time"))
+            if observation_ts is None or observation_ts > cutoff_ts:
+                continue
+        events.add((str(record.get("timeframe", "")),
+                    str(record["stage"]), str(record["id"])))
+    return events
+
+
+def _prefix_event_delta(
+    full: list[dict], prefix: list[dict], cutoff
+) -> tuple[set[tuple[str, str, str]], set[tuple[str, str, str]]]:
+    """Compara exactamente los átomos observables: (missing, extra)."""
+    full_events = _atomic_events(full, cutoff)
+    prefix_events = _atomic_events(prefix, cutoff)
+    return full_events - prefix_events, prefix_events - full_events
 
 
 def funnel_prefix_invariance(frames: dict[str, pd.DataFrame]) -> dict:
@@ -248,49 +297,42 @@ def funnel_prefix_invariance(frames: dict[str, pd.DataFrame]) -> dict:
         full = funnel_fvg_ob(frames[tf], tf)
         full += funnel_sequence(frames[tf], tf)
         n = len(frames[tf]); k = int(n * PREFIX_RATIO)
-        t_max_str = str(frames[tf]["time"].iloc[k - 1])
+        cutoff = frames[tf]["time"].iloc[k - 1]
         prefix = funnel_fvg_ob(frames[tf].iloc[:k], tf)
         prefix += funnel_sequence(frames[tf].iloc[:k], tf)
-        full_ev = {(s, i) for (s, i) in _atomic_events(full)
-                   if _le_obs(full, s, i, t_max_str)}
-        pref_ev = _atomic_events(prefix)
-        missing = full_ev - pref_ev
+        missing, extra = _prefix_event_delta(full, prefix, cutoff)
         # Clasificar missing por etapa para diagnóstico
         by_stage = {}
-        for s, i in missing:
+        for _, s, _ in missing:
             by_stage[s] = by_stage.get(s, 0) + 1
+        extra_by_stage = {}
+        for _, s, _ in extra:
+            extra_by_stage[s] = extra_by_stage.get(s, 0) + 1
         result["by_timeframe"][tf] = {
             "full_events": len(_atomic_events(full)),
-            "full_in_window": len(full_ev),
-            "prefix_events": len(pref_ev),
+            "full_in_window": len(_atomic_events(full, cutoff)),
+            "prefix_events": len(_atomic_events(prefix)),
             "missing_in_prefix": len(missing),
             "missing_by_stage": by_stage,
-            "prefix_invariant": len(missing) == 0,
+            "extra_in_prefix": len(extra),
+            "extra_by_stage": extra_by_stage,
+            "prefix_invariant": not missing and not extra,
         }
     # Sequence (mismo método, por evento atómico)
     full_seq = funnel_sequence(frames["H1"], "H1")
     n = len(frames["H1"]); k = int(n * PREFIX_RATIO)
-    t_max_str = str(frames["H1"]["time"].iloc[k - 1])
+    cutoff = frames["H1"]["time"].iloc[k - 1]
     pref_seq = funnel_sequence(frames["H1"].iloc[:k], "H1")
-    full_ev = {(s, i) for (s, i) in _atomic_events(full_seq)
-               if _le_obs(full_seq, s, i, t_max_str)}
-    missing = full_ev - _atomic_events(pref_seq)
+    missing, extra = _prefix_event_delta(full_seq, pref_seq, cutoff)
     result["sequence"] = {
         "full_events": len(_atomic_events(full_seq)),
-        "full_in_window": len(full_ev),
+        "full_in_window": len(_atomic_events(full_seq, cutoff)),
         "prefix_events": len(_atomic_events(pref_seq)),
         "missing_in_prefix": len(missing),
-        "prefix_invariant": len(missing) == 0,
+        "extra_in_prefix": len(extra),
+        "prefix_invariant": not missing and not extra,
     }
     return result
-
-
-def _le_obs(records: list[dict], stage: str, rid: str, t_max_str: str) -> bool:
-    for r in records:
-        if r["stage"] == stage and str(r["id"]) == rid:
-            ot = r.get("observation_time")
-            return ot is not None and str(ot) <= t_max_str
-    return False
 
 
 # --------------------------------------------------------------------------

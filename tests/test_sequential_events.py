@@ -10,6 +10,11 @@ from engine.sequential_events import (
     run_sequential,
     summarize_chains,
 )
+from audits.codigo.mtf_seq_funnel_a7 import (
+    _atomic_events,
+    _prefix_event_delta,
+    funnel_sequence,
+)
 
 
 def _synth_bull_sequence(n: int = 80) -> pd.DataFrame:
@@ -103,3 +108,71 @@ def test_no_future_pool_in_past_decision():
     for item in a_done:
         # direction match with some chain that shares first stages
         assert any(item[0] == x[0] for x in b_pref) or len(a_done) == 0
+
+
+def test_sequence_nodes_are_exactly_full_prefix_stable_by_atomic_identity():
+    df = _synth_bull_sequence(80)
+    cutoff = 50
+    cfg = SeqConfig(structure_mode="canonical_bos", max_active_chains=128)
+    full = run_sequential(df, cfg, timeframe="H1")
+    prefix = run_sequential(df.iloc[:cutoff].reset_index(drop=True), cfg, timeframe="H1")
+
+    def atoms(chains):
+        return {
+            (node.stage.value, node.bar, node.direction, node.object_id)
+            for chain in chains
+            for node in chain.nodes
+            if node.bar < cutoff
+        }
+
+    assert atoms(full) == atoms(prefix)
+
+
+def test_prefix_atoms_use_normalized_time_exactly_and_ignore_partial_aggregates():
+    cutoff = "2026-01-01 09:00:00+00:00"
+    full = [
+        {"timeframe": "H1", "stage": "FVG", "id": "FVG_H1_1_BULL",
+         "observation_time": "2026-01-01T09:00:00+00:00"},
+        {"timeframe": "H1", "stage": "FVG", "id": "FVG_H1_2_BULL",
+         "observation_time": "2026-01-01T10:00:00+00:00"},
+        {"timeframe": "H1", "stage": "SEQUENCE", "id": "partial",
+         "observation_time": cutoff, "atomic": False},
+    ]
+    prefix = [
+        full[0],
+        {"timeframe": "H1", "stage": "SEQUENCE", "id": "partial",
+         "observation_time": cutoff, "atomic": False},
+    ]
+
+    missing, extra = _prefix_event_delta(full, prefix, cutoff)
+
+    assert missing == set()
+    assert extra == set()
+    assert _atomic_events(full, cutoff) == {
+        ("H1", "FVG", "FVG_H1_1_BULL")
+    }
+
+
+def test_prefix_comparison_rejects_extra_observable_prefix_atom():
+    full = [{"timeframe": "H1", "stage": "FVG", "id": "F1",
+             "observation_time": "2026-01-01T10:00:00+00:00"}]
+    prefix = [{"timeframe": "H1", "stage": "FVG", "id": "P1",
+               "observation_time": "2026-01-01T09:00:00+00:00"}]
+
+    missing, extra = _prefix_event_delta(
+        full, prefix, "2026-01-01T09:00:00+00:00"
+    )
+
+    assert missing == set()
+    assert extra == {("H1", "FVG", "P1")}
+
+
+def test_sequence_projection_ids_are_deterministic_and_noncolliding():
+    df = _synth_bull_sequence(80)
+    first = funnel_sequence(df, "H1")
+    second = funnel_sequence(df, "H1")
+
+    assert first == second
+    ids = [(record["stage"], record["id"]) for record in first]
+    assert len(ids) == len(set(ids))
+    assert {record["stage"] for record in first if not record["atomic"]} == {"SEQUENCE"}

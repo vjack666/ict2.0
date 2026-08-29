@@ -411,7 +411,7 @@ CTO/CRO. La comparación de los reportes `154844` y `154829` confirmó igualdad 
 | OE-A7.6 Funnel explicable | PASS | rejection_reason_counts serializados por TF |
 | OE-A7.7 Coherencia MTF | PASS técnico | H1/H4/D1 exclusivos por sección; MTF navigation 50/50 |
 | OE-A7.8 Determinismo/idempotencia | PASS | JSON equivalente y checksum igual en dos ejecuciones |
-| OE-A7.9 Provenance reproducible | PASS mecánico / BLOCKED legal | hashes y bytes pasan; licencia/adquisición UNKNOWN |
+| OE-A7.9 Provenance reproducible | PASS mecánico / BLOCKED legal | hashes y bytes pasan; licencia y autorización de adquisición automatizada UNKNOWN; fecha registrada en worklog |
 | OE-A7.10 Auditoría negativa | PASS | 373 tests totales; casos futuros, duplicados, ciclos y razones inválidas |
 | OE-A7.11 Entorno limpio | PASS | dos worktrees locales `CLEAN` generaron los reportes |
 | OE-A7.12 Cierre independiente | PASS técnico / REVIEW legal | auditoría Codex posterior a correcciones; provenance legal pendiente |
@@ -420,8 +420,10 @@ CTO/CRO. La comparación de los reportes `154844` y `154829` confirmó igualdad 
 
 `TECHNICAL_GO — PROVENANCE LEGAL BLOCKED`. El Funnel A7 cumple técnicamente los 12 objetivos
 definidos y no muestra edge, WR ni autorización de trading. La skill de procedencia exige marcar
-`BLOCKED` cuando `license_and_permitted_use` o `acquired_at_utc` son desconocidos. Por ello no se
-desbloquea backtest ni promoción hasta documentar esos dos campos y repetir la revisión de datos.
+`BLOCKED` cuando `license_and_permitted_use` o la evidencia de ejecución/adquisición exigida por el
+contrato no pueden demostrarse. La fecha de adquisición queda registrada desde la bitácora, pero
+no existe log de máquina versionado ni autorización escrita; por ello no se desbloquea backtest ni
+promoción hasta completar esas evidencias y repetir la revisión de datos.
 
 ### Corrección posterior — deuda causal de `_causal_swings`
 
@@ -466,8 +468,9 @@ CRO. No es certificación total de datos ni habilita backtest.
 
 El checkout operativo principal sigue materializando los CSV como CRLF por su estado
 local de `core.autocrlf`; no se usa como evidencia del clean run. La procedencia legal
-continúa bloqueada porque `license_and_permitted_use=UNKNOWN`, `acquired_at_utc=null`
-y `request_parameters.execution_verified=false`. No se habilita backtest, promoción,
+continúa bloqueada porque `license_and_permitted_use=UNKNOWN` y
+`request_parameters.execution_verified=false`; `acquired_at_utc` está registrado desde el
+worklog, pero no existe log de máquina versionado. No se habilita backtest, promoción,
 edge ni trading.
 
 ### Revisión de procedencia externa — 2026-08-29
@@ -476,12 +479,14 @@ Se revisaron las páginas oficiales de Dukascopy sobre exportación histórica y
 de uso, además del aviso legal del paquete `dukascopy-node`. La documentación confirma
 la identidad de la fuente y la disponibilidad de cotizaciones históricas, pero no
 prueba que este repositorio tenga autorización escrita para adquisición automatizada
-ni que su uso previsto cumpla todas las restricciones aplicables. Tampoco existe un
-registro verificable de la fecha/hora exacta de adquisición del snapshot.
+ni que su uso previsto cumpla todas las restricciones aplicables. La bitácora de
+descarga registra `2026-08-18 16:05 UTC-5` (`2026-08-18T21:05:00Z`), pero no existe
+un log de máquina versionado que confirme la ejecución del comando.
 
 La conclusión se registra como `REVIEW_BLOCKED`, no como PASS: los campos
-`license_and_permitted_use`, `acquired_at_utc` y `request_parameters.execution_verified`
-continúan sin evidencia suficiente. Las URLs y el estado quedan registrados en
+`license_and_permitted_use` y `request_parameters.execution_verified` continúan sin
+evidencia suficiente; `acquired_at_utc` queda registrado desde la bitácora fechada.
+Las URLs y el estado quedan registrados en
 `datasets/eurusd_dukascopy_20y/metadata.json`; esto no sustituye una autorización del
 proveedor ni asesoría legal.
 

@@ -38,7 +38,7 @@
     "volume": "UNAVAILABLE",
     "open_interest": "UNAVAILABLE",
     "license_and_permitted_use": "UNKNOWN",
-    "acquired_at_utc": null,
+    "acquired_at_utc": "2026-08-18T21:05:00Z",
     "source_documentation_refs": [
       "datasets/eurusd_dukascopy_20y/README.md"
     ],
@@ -54,13 +54,17 @@
       "project_use_permission": "NOT_ESTABLISHED"
     },
     "acquisition_evidence": {
-      "status": "MISSING",
-      "acquired_at_utc": null,
+      "status": "PARTIAL",
+      "acquired_at_utc": "2026-08-18T21:05:00Z",
       "execution_verified": false,
       "evidence_refs": [
+        ".hermes-worklog/2026-08-18_1605_AUDITORIA_20Y_A0_A9_FVG_OB.md",
         "datasets/eurusd_dukascopy_20y/README.md",
         "datasets/eurusd_dukascopy_20y/metadata.json"
-      ]
+      ],
+      "timestamp_basis": "Worklog records 2026-08-18 16:05 UTC-5; converted to UTC. No machine execution log is versioned.",
+      "timestamp_status": "RECORDED_FROM_WORKLOG",
+      "execution_log_status": "MISSING"
     },
     "request_parameters": {
       "documented_command": "npx dukascopy-node -i eurusd -from 2006-01-01 -to 2026-01-01 -t {h1|h4|d1} -f csv",
@@ -105,7 +109,7 @@
     },
     "hash_verification_status": "PASS",
     "provenance_status": "BLOCKED",
-    "blocking_reason": "Official terms were reviewed but do not establish written permission for this automated acquisition or this project's use scope; license_and_permitted_use remains UNKNOWN, acquired_at_utc is null, and execution_verified is false. Mechanical bytes, hashes, EOL policy, and clean-generator A7 evidence are verified, but this metadata does not certify legal source permission or Funnel A7.",
-    "required_follow_up": "Obtain and record the source/license and acquisition evidence; retain the clean A7 reports and repeat independent review if the provenance contract requires legal/source certification."
+    "blocking_reason": "Official terms were reviewed but do not establish written permission for this automated acquisition or this project's use scope; license_and_permitted_use remains UNKNOWN and execution_verified is false. The acquisition timestamp is recorded from the dated worklog, but no machine execution log or written automated-access consent is versioned. Mechanical bytes, hashes, EOL policy, and clean-generator A7 evidence are verified, but this metadata does not certify legal source permission or Funnel A7.",
+    "required_follow_up": "Obtain and record written source permission for the automated acquisition and a machine execution log; retain the clean A7 reports and repeat independent review if the provenance contract requires legal/source certification."
   }
 }

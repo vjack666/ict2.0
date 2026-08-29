@@ -1,9 +1,9 @@
 # SDD — Funnel Audit ICT FVG/OB
 
-**Estado:** NORMATIVO — **Funnel 20Y cerrado con evidencia versionada local**
+**Estado:** NORMATIVO — **Funnel 20Y en re-auditoría A7 (dictamen Ruben 2026-08-28/29)**
 **Fase:** Pre-backtest
-**Código canónico:** `audits/codigo/funnel.py` y funciones de `audits/codigo/mtf_seq_funnel.py`
-**Runner versionado:** funciones locales de `audits/codigo/mtf_seq_funnel.py`
+**Código canónico:** `audits/codigo/funnel.py` (FunnelAudit A7 completo) y `audits/codigo/mtf_seq_funnel.py` (histórico)
+**Runner A7:** `audits/codigo/mtf_seq_funnel_a7.py` (nuevo, con provenance y validación real; NO sobrescribe histórico)
 **Propósito:** auditar la transformación causal de OHLC a candidatos ICT sin evaluar todavía rentabilidad.
 
 ## 1. Principio

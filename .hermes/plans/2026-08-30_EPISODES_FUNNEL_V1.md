@@ -79,10 +79,10 @@ presupuesto, seguridad, datos, promoción, push o una acción destructiva.
 - [x] `T4.1` `pytest tests/` completo → **388 passed**.
 - [x] `T4.2` Reporte `reports/audits/episodes/episodes_audit_20260830.json` (status PASS, commit, config, provenance, aggregates, rejections, lineage, checksum).
 - [x] `T4.3` Worklog `2026-08-30_EPISODES_FUNNEL_CIERRE.md` + index + contrato/SDD actualizados por la revisión D5.
-- [ ] `T4.4` Ejecutar `graphify update .` y registrar resultado.
-- [ ] `T4.5` `git diff --check` y revisar write set.
-- [ ] `T4.6` Commit local selectivo; no push.
-- [ ] `T4.7` Entrega final con AGENTE/DEPARTAMENTO/TAREA/STATUS/EVIDENCIA/ARCHIVOS/RIESGOS/SIGUIENTE ACCIÓN.
+- [x] `T4.4` `graphify update .` ejecutado (10962 nodos, 17907 edges, graph.json + GRAPH_REPORT.md actualizados).
+- [x] `T4.5` `git diff --check` limpio (solo warnings CRLF de config de repo; sin errores); write set revisado.
+- [x] `T4.6` Commit local selectivo `f955b31` (10 archivos); **sin push** (política del proyecto).
+- [x] `T4.7` Entrega final con AGENTE/DEPARTAMENTO/TAREA/STATUS/EVIDENCIA/ARCHIVOS/RIESGOS/SIGUIENTE ACCIÓN.
 
 ## Condiciones de cierre
 

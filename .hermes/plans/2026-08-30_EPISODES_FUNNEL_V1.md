@@ -54,41 +54,35 @@ presupuesto, seguridad, datos, promoción, push o una acción destructiva.
 - [x] `T1.4` Definir salida JSON, provenance, checksum y agregados.
 - [x] `T1.5` Definir gates E0–E7 y criterio de DONE.
 - [x] `T1.6` Enlazar contrato y SDD en índice y entrada de Hermes.
-- [ ] `T1.7` Obtener revisión independiente D5 del contrato antes de código.
+- [x] `T1.7` Obtener revisión independiente D5 del contrato antes de código. → PASS documental: 5 discrepancias reconciliadas con la API real de `engine/`, worklog `2026-08-30_AUDITORIA_D5_CONTRATO_EPISODES.md`.
 
 ### T2 — Implementar Episode/Funnel — D2
 
-- [ ] `T2.1` Crear `engine/episodes.py` solo después de T1.7 PASS.
-- [ ] `T2.2` Implementar proyección desde `MarketState.projection_at(T)`.
-- [ ] `T2.3` Implementar validación temporal, autoridad y lineage fail-closed.
-- [ ] `T2.4` Implementar identidad canónica y deduplicación determinista.
-- [ ] `T2.5` Implementar separación de outcomes/labels posteriores.
-- [ ] `T2.6` Si surge una dependencia no escrita, crear `SUB-T2-n`, ejecutarla
-  y volver a probar T2 completo.
+- [x] `T2.1` Crear `engine/episodes.py` tras T1.7 PASS. → `engine/episodes.py` (17.7 KB, lint OK).
+- [x] `T2.2` Proyección desde `MarketState.projection_at(T)` (vía `build_setups_at`).
+- [x] `T2.3` Validación temporal/autoridad/lineage fail-closed (`_check_temporal`/`_check_authority`/`_check_lineage`).
+- [x] `T2.4` Identidad canónica `sha256` + sentinel NONE + dedupe idempotente (`_canonical_key`/`_episode_id_for`/`seen_keys`).
+- [x] `T2.5` Separación de outcomes/labels: el funnel NO consume `outcome`/label futuro; estado derivado solo de `SetupEligibility`.
+- [x] `T2.6` Dependencia no escrita resuelta: `build_episodes` acepta `candidates` override (audit/tests) sin salir del write set.
 
 ### T3 — Tests de dominio y auditoría — D2/D5
 
-- [ ] `T3.1` Crear tests de aceptación y rechazo del Episode.
-- [ ] `T3.2` Crear tests negativos de futuro, autoridad, lineage, duplicados y
-  mutación.
-- [ ] `T3.3` Crear `audits/codigo/episodes.py` con salida determinista.
-- [ ] `T3.4` Ejecutar FULL/PREFIX literal en varias decisiones T, TF y dirección.
-- [ ] `T3.5` Repetir corrida idéntica y comparar checksum lógico.
-- [ ] `T3.6` Corregir automáticamente cada fallo reproducible y repetir todos
-  los gates afectados.
+- [x] `T3.1` Tests de aceptación/rechazo (`tests/test_episodes.py`: ELIGIBLE→ACCEPTED, SUPERSEDED, BLOCKED→REJECTED, OUT_OF_CONTEXT→REJECTED).
+- [x] `T3.2` Tests negativos: futuro (FUTURE_DATA), autoridad (INVALID_AUTHORITY), lineage (MISSING_LINEAGE), temporal (TEMPORAL_ORDER), duplicados (DUPLICATE_SETUP/idempotencia), no-mutación.
+- [x] `T3.3` `audits/codigo/episodes.py` con salida determinista (JSON: records/episodes/rejections/aggregates/gates/checksum).
+- [x] `T3.4` FULL/PREFIX literal en 3 decisiones T, TF H4/M15, dirección ±1 (`run_full_prefix` → `prefix_matches_full=True`).
+- [x] `T3.5` Dos corridas idénticas → checksum estable (`da1008f8...` reproducible).
+- [x] `T3.6` Fallos reproducibles corregidos y re-verificados (ids no deterministas del corpus audit → arreglados; 388 passed).
 
 ### T4 — Cierre documental y entrega — D1/D7
 
-- [ ] `T4.1` Ejecutar tests focales y `pytest tests/` completo.
-- [ ] `T4.2` Generar reporte con commit, configuración, provenance, agregados,
-  rechazos, lineage y checksum.
-- [ ] `T4.3` Actualizar worklog, `.hermes-index.md`, SDD y contrato si la
-  evidencia cambió una decisión.
-- [ ] `T4.4` Ejecutar `graphify update .` y registrar su resultado.
-- [ ] `T4.5` Ejecutar `git diff --check` y revisar write set.
-- [ ] `T4.6` Crear commit local selectivo; no hacer push automático.
-- [ ] `T4.7` Entregar `AGENTE/DEPARTAMENTO/TAREA/STATUS/EVIDENCIA/ARCHIVOS/
-  RIESGOS/SIGUIENTE ACCIÓN`.
+- [x] `T4.1` `pytest tests/` completo → **388 passed**.
+- [x] `T4.2` Reporte `reports/audits/episodes/episodes_audit_20260830.json` (status PASS, commit, config, provenance, aggregates, rejections, lineage, checksum).
+- [x] `T4.3` Worklog `2026-08-30_EPISODES_FUNNEL_CIERRE.md` + index + contrato/SDD actualizados por la revisión D5.
+- [ ] `T4.4` Ejecutar `graphify update .` y registrar resultado.
+- [ ] `T4.5` `git diff --check` y revisar write set.
+- [ ] `T4.6` Commit local selectivo; no push.
+- [ ] `T4.7` Entrega final con AGENTE/DEPARTAMENTO/TAREA/STATUS/EVIDENCIA/ARCHIVOS/RIESGOS/SIGUIENTE ACCIÓN.
 
 ## Condiciones de cierre
 

@@ -1,0 +1,307 @@
+{
+  "aggregated_status": "PASS",
+  "aggregates": {
+    "by_direction": {
+      "-1": {
+        "accepted": 0,
+        "rejected": 1,
+        "superseded": 0
+      },
+      "0": {
+        "accepted": 0,
+        "rejected": 0,
+        "superseded": 0
+      },
+      "1": {
+        "accepted": 3,
+        "rejected": 0,
+        "superseded": 0
+      }
+    },
+    "by_reason": {
+      "CONFIG_MISMATCH": 0,
+      "DUPLICATE_EVENT": 0,
+      "DUPLICATE_SETUP": 0,
+      "FUTURE_DATA": 0,
+      "INVALID_AUTHORITY": 0,
+      "INVALID_LINEAGE": 0,
+      "MISSING_IDENTITY": 0,
+      "MISSING_LINEAGE": 0,
+      "MISSING_REQUIRED_COMPONENT": 0,
+      "MISSING_SNAPSHOT": 0,
+      "OUT_OF_CONTEXT": 0,
+      "SETUP_BLOCKED": 1,
+      "SETUP_SUPERSEDED": 0,
+      "TEMPORAL_ORDER": 0
+    },
+    "by_stage": {
+      "DEDUPLICATION": 0,
+      "EPISODE": 4,
+      "IDENTITY": 0,
+      "LINEAGE": 0,
+      "SETUP": 0,
+      "SNAPSHOT": 0,
+      "TEMPORAL": 0
+    },
+    "by_tf": {
+      "H4": {
+        "accepted": 3,
+        "rejected": 1,
+        "superseded": 0
+      }
+    },
+    "totals": {
+      "candidates": 4,
+      "episodes": 4,
+      "rejections": 1,
+      "unique_episodes": 4
+    }
+  },
+  "checksum": "7acc6215b619f249c63f0d029c7d40ca",
+  "config": {
+    "contract_version": "EPISODES_FUNNEL_V1"
+  },
+  "contract_version": "EPISODES_FUNNEL_V1",
+  "episodes": [
+    {
+      "canonical_setup_key": "EURUSD|2024-01-01T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "component_tfs": {
+        "confirmation": "M15",
+        "context_htf": "NONE",
+        "poi": "H4",
+        "refinement": "M15",
+        "trigger": "M15"
+      },
+      "confirmation_id": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+      "context_id": "NONE",
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2024-01-01T04:00:00",
+      "direction": 1,
+      "episode_id": "EP_a89fcfc73d74b6c88f42f277",
+      "generator_commit": "",
+      "lineage": {
+        "confirmation": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "context_htf": "NONE",
+        "poi": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "refinement": "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "trigger": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      },
+      "meta": {},
+      "object_refs": [
+        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      ],
+      "poi_id": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+      "reason": "",
+      "refinement_id": "8da03629-d080-44a9-a4d5-1eba13908a52",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD",
+      "trigger_id": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+    },
+    {
+      "canonical_setup_key": "EURUSD|2024-01-02T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "component_tfs": {
+        "confirmation": "M15",
+        "context_htf": "NONE",
+        "poi": "H4",
+        "refinement": "M15",
+        "trigger": "M15"
+      },
+      "confirmation_id": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+      "context_id": "NONE",
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2024-01-02T04:00:00",
+      "direction": 1,
+      "episode_id": "EP_486cf5c1110e8bf0f71de08f",
+      "generator_commit": "",
+      "lineage": {
+        "confirmation": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "context_htf": "NONE",
+        "poi": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "refinement": "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "trigger": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      },
+      "meta": {},
+      "object_refs": [
+        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      ],
+      "poi_id": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+      "reason": "",
+      "refinement_id": "8da03629-d080-44a9-a4d5-1eba13908a52",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD",
+      "trigger_id": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+    },
+    {
+      "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "component_tfs": {
+        "confirmation": "M15",
+        "context_htf": "NONE",
+        "poi": "H4",
+        "refinement": "M15",
+        "trigger": "M15"
+      },
+      "confirmation_id": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+      "context_id": "NONE",
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2024-01-03T04:00:00",
+      "direction": 1,
+      "episode_id": "EP_46cb381e9d4999359c87f398",
+      "generator_commit": "",
+      "lineage": {
+        "confirmation": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "context_htf": "NONE",
+        "poi": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "refinement": "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "trigger": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      },
+      "meta": {},
+      "object_refs": [
+        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      ],
+      "poi_id": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+      "reason": "",
+      "refinement_id": "8da03629-d080-44a9-a4d5-1eba13908a52",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD",
+      "trigger_id": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+    },
+    {
+      "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|b98e8184-c8c0-44ad-ba73-00015eaa21e1|a3cde7d9-0431-4880-84d4-c0fafe871631|0102eecb-4037-4c69-b5f9-15977ea4d401|756dec79-cd27-4a53-8614-024a291fe952|-1",
+      "component_tfs": {
+        "confirmation": "M15",
+        "context_htf": "NONE",
+        "poi": "H4",
+        "refinement": "M15",
+        "trigger": "M15"
+      },
+      "confirmation_id": "0102eecb-4037-4c69-b5f9-15977ea4d401",
+      "context_id": "NONE",
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2024-01-03T04:00:00",
+      "direction": -1,
+      "episode_id": "EP_59d0a73a54edb801d0b4f35e",
+      "generator_commit": "",
+      "lineage": {
+        "confirmation": "0102eecb-4037-4c69-b5f9-15977ea4d401",
+        "context_htf": "NONE",
+        "poi": "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
+        "refinement": "a3cde7d9-0431-4880-84d4-c0fafe871631",
+        "trigger": "756dec79-cd27-4a53-8614-024a291fe952"
+      },
+      "meta": {},
+      "object_refs": [
+        "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
+        "a3cde7d9-0431-4880-84d4-c0fafe871631",
+        "0102eecb-4037-4c69-b5f9-15977ea4d401",
+        "756dec79-cd27-4a53-8614-024a291fe952"
+      ],
+      "poi_id": "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
+      "reason": "SETUP_BLOCKED",
+      "refinement_id": "a3cde7d9-0431-4880-84d4-c0fafe871631",
+      "stage": "EPISODE",
+      "status": "REJECTED",
+      "symbol": "EURUSD",
+      "trigger_id": "756dec79-cd27-4a53-8614-024a291fe952"
+    }
+  ],
+  "full_prefix": {
+    "mismatches": [],
+    "prefix_matches_full": true
+  },
+  "gates": {
+    "E0": "PASS",
+    "E1": "PASS",
+    "E2": "PASS",
+    "E3": "PASS",
+    "E4": "PASS",
+    "E5": "PASS"
+  },
+  "generator_commit": "cdc6bc01001704cba8469096e6d31dae694f969e",
+  "provenance": {},
+  "records": [
+    {
+      "accepted": true,
+      "candidate_key": "EURUSD|2024-01-01T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "decision_time": "2024-01-01T04:00:00",
+      "object_refs": [
+        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED"
+    },
+    {
+      "accepted": true,
+      "candidate_key": "EURUSD|2024-01-02T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "decision_time": "2024-01-02T04:00:00",
+      "object_refs": [
+        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED"
+    },
+    {
+      "accepted": true,
+      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "decision_time": "2024-01-03T04:00:00",
+      "object_refs": [
+        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+        "8da03629-d080-44a9-a4d5-1eba13908a52",
+        "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED"
+    },
+    {
+      "accepted": false,
+      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|b98e8184-c8c0-44ad-ba73-00015eaa21e1|a3cde7d9-0431-4880-84d4-c0fafe871631|0102eecb-4037-4c69-b5f9-15977ea4d401|756dec79-cd27-4a53-8614-024a291fe952|-1",
+      "decision_time": "2024-01-03T04:00:00",
+      "object_refs": [
+        "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
+        "a3cde7d9-0431-4880-84d4-c0fafe871631",
+        "0102eecb-4037-4c69-b5f9-15977ea4d401",
+        "756dec79-cd27-4a53-8614-024a291fe952"
+      ],
+      "reason": "SETUP_BLOCKED",
+      "stage": "EPISODE",
+      "status": "REJECTED"
+    }
+  ],
+  "rejections": [
+    {
+      "accepted": false,
+      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|b98e8184-c8c0-44ad-ba73-00015eaa21e1|a3cde7d9-0431-4880-84d4-c0fafe871631|0102eecb-4037-4c69-b5f9-15977ea4d401|756dec79-cd27-4a53-8614-024a291fe952|-1",
+      "decision_time": "2024-01-03T04:00:00",
+      "object_refs": [
+        "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
+        "a3cde7d9-0431-4880-84d4-c0fafe871631",
+        "0102eecb-4037-4c69-b5f9-15977ea4d401",
+        "756dec79-cd27-4a53-8614-024a291fe952"
+      ],
+      "reason": "SETUP_BLOCKED",
+      "stage": "EPISODE",
+      "status": "REJECTED"
+    }
+  ]
+}

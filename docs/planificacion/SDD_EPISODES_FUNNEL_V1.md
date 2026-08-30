@@ -39,19 +39,25 @@ reports/audits/episodes/    ← evidencia reproducible
 `lifecycle.evaluate`, no puede avanzar `MarketState` y no puede recalcular AHF,
 FVG/OB, relaciones ni Setup Builder.
 
+La única fuente de candidatos es `build_setups_at(ms, T, ctx)`, que devuelve
+`Setup` compuestos por `setup_builder`. El funnel no reimplementa la
+composición ni la elegibilidad: deriva el estado del Episode directamente de
+`Setup.eligibility` (`SetupEligibility` → `ACCEPTED`/`REJECTED`/`SUPERSEDED`).
+
 ## 3. Componentes
 
 ### 3.1 `Episode`
 
 Debe contener `episode_id`, `canonical_setup_key`, `symbol`, `decision_time`,
-`direction`, referencias a los cinco componentes del setup, temporalidades,
-estado, razones, lineage, `contract_version` y metadatos de procedencia.
+`direction`, referencias a los cinco componentes del setup (sus `.id`),
+temporalidades, estado (derivado de `SetupEligibility`), razones, lineage,
+`contract_version` y metadatos de procedencia.
 
 ### 3.2 `FunnelRecord`
 
 Debe conservar cada candidato y su etapa (`SNAPSHOT`, `SETUP`, `TEMPORAL`,
 `LINEAGE`, `IDENTITY`, `DEDUPLICATION`, `EPISODE`) con `accepted`, `reason`,
-`observation_time` y referencias de objetos.
+`decision_time` y referencias de objetos.
 
 ### 3.3 Runner de auditoría
 

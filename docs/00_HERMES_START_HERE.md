@@ -29,16 +29,29 @@ Lee y respeta, en este orden:
 3. `docs/PLAN_HERMES_FVG_OB.md` — fases y gates.
 4. `docs/planificacion/SDD_FVG_OB_ARCHITECTURE_MAP.md` — mapa de arquitectura y archivos afectados.
 5. `docs/planificacion/SDD_FVG_OB_ENGINE.md` — diseño técnico.
-6. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
-7. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
-8. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
-9. `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
+6. `docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md` — SDD vigente de la misión post-A7.
+7. `.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md` — plan operativo vigente para Hermes y Codex.
+8. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
+9. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
+10. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
+11. `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
 
 La tesis ICT vigente y sus enmiendas tienen autoridad superior sobre cualquier documento de implementación. **OTE queda fuera del alcance.**
 
 `vjack666/SMC-SYSTEMS` es una fuente comparativa externa, nunca autoridad normativa. `ict_backtest/` no es una dependencia vigente y no debe restaurarse.
 
 Los documentos históricos, cierres de fases anteriores, reportes antiguos y documentos no enumerados arriba son contexto histórico, no instrucciones. No deben generar trabajo nuevo salvo que un documento normativo los cite explícitamente.
+
+## 2.1 Misión post-A7 vigente
+
+Cuando la misión sea la capa posterior al Funnel A7, la referencia obligatoria es
+el SDD de `Lifecycle → MarketState → Setup Builder` y su plan operativo asociado.
+La implementación canónica está en `engine/`. El SDD histórico del visor en otra
+rama no autoriza cambios en `engine/` ni la creación de un segundo motor.
+
+El siguiente objetivo es `Episodes/Funnel`, pero no se implementa hasta congelar
+su contrato, SDD, write set y gates. Si falta evidencia, el estado es `REVIEW` o
+`BLOCKED`, nunca `COMPLETED`.
 
 ## 3. OBJETIVO
 

@@ -79,6 +79,18 @@ ejecutiva y las reglas de delegación están en
 | `engine/setup_builder.py` | Capa de composición (Lifecycle → Market State → Setup Builder): ensambla `Setup` ICT/SMC completos desde `MarketState` histórico (`context_htf → poi → refinement → confirmation → trigger`). | **PROMOVIDO CON REVISIÓN 2026-08-28 (H1–H4 cerrados; sin CERTIFIED)** |
 | `docs/planificacion/SDD_FVG_OB_ENGINE.md` §13 | Contrato de diseño de Setup Builder (modelo, separación `object_state` vs `setup_eligibility`, snapshot histórico sin look-ahead). | PROMOVIDO CON REVISIÓN 2026-08-28 (H1–H4 cerrados; sin CERTIFIED) |
 
+### SDD consolidado post-A7
+
+| Archivo | Rol | Estado |
+|---|---|---|
+| `docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md` | Contrato único de la capa `MarketObject → Lifecycle → MarketState → Setup Builder`, autoridad TF, observación LTF, persistencia y FULL/PREFIX. | **NORMATIVO 2026-08-30** |
+| `.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md` | Plan operativo de reconciliación, verificación y transición a Episodes/Funnel. | **VIGENTE** |
+| `.hermes-worklog/2026-08-30_RECONCILIACION_DOCUMENTAL_POST_A7.md` | Evidencia de la reconciliación y sus límites. | **CERRADO DOCUMENTALMENTE** |
+| `SDD_MARKET_STATE_SETUP_BUILDER_V1_2.md` en `codex/visual-replay-wyckoff-v1-1` | SDD histórico de proyección diagnóstica `backtest/`; no gobierna `engine/`. | **HISTÓRICO / NO AUTORIDAD ACTUAL** |
+
+La siguiente capa es Episodes/Funnel. Debe tener contrato y SDD propios antes de
+crear código; no se deben reimplementar Lifecycle, MarketState ni Setup Builder.
+
 ### Contratos con ruta canónica
 
 | Concepto | Ruta canónica | Ruta de compatibilidad |

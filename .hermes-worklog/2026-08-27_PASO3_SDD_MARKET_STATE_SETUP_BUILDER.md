@@ -38,3 +38,14 @@ Contenido:
 
 Esperar aprobación de Ruben para **PASO 4 (implementación M1-M5)**. NO implementar
 nada hasta la aprobación.
+
+## Addendum de reconciliación — 2026-08-30
+
+Este worklog conserva el estado histórico de la línea `backtest/` y de su SDD
+v1.2 en la rama del visor. Para la rama operativa actual, la autoridad vigente
+es `docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md`
+y el plan `.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md`.
+
+No debe interpretarse este documento como una orden actual de ejecutar PASO 4:
+Lifecycle, MarketState y Setup Builder ya existen en `engine/` y no deben
+duplicarse en `backtest/` ni en un segundo motor.

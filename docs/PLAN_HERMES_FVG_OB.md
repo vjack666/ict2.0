@@ -6,6 +6,13 @@
 **Owner:** Jack / Hermes  
 **Objetivo:** evolucionar el motor ICT existente, que ya dispone de Swing/BOS/CHOCH, para incorporar FVG y Order Blocks como objetos de mercado relacionados causalmente con liquidez, displacement y estructura.
 
+> **Selector vigente para la misión posterior a A7:** si la orden trata de
+> Lifecycle, MarketState, Setup Builder o Episodes/Funnel, leer primero
+> `docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md` y
+> `.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md`. Este plan general
+> no autoriza repetir componentes ya implementados ni usar el SDD histórico del
+> visor como autoridad de `engine/`.
+
 ---
 
 ## 1. Objetivo final

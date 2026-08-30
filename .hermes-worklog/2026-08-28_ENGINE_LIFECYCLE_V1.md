@@ -264,3 +264,12 @@ orden (demostrado en `test_snapshot_at_reports_known_world_without_repaint` y
 1. Lifecycle v1 ✅ (auditado NEEDS REVISION → corregido H1-H5 + C1-C3)
 2. Market State ✅ (queries deterministas + round-trip)
 3. Siguiente: Setup Builder → Episodes/funnel → experimentos → IA.
+
+## Addendum de reconciliación — 2026-08-30
+
+La secuencia anterior ya avanzó: MarketState y Setup Builder fueron
+implementados y revisados en `engine/`. El SDD y plan vigentes para continuar
+son `docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md`
+y `.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md`. El siguiente
+trabajo de código es Episodes/Funnel, pero requiere primero contrato, SDD y
+gates propios.

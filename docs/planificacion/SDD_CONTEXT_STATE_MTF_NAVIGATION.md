@@ -3,7 +3,7 @@
 **Estado:** NORMATIVO — arquitectura vigente; no autoriza entry ni entrenamiento multi-TF de ejecución  
 **Fecha:** 2026-08-20 (sincronización de estado)  
 **Extiende:** `SDD_FVG_OB_ARCHITECTURE_MAP.md`, `PLAN_HERMES_FVG_OB.md`, `SPEC_TESIS_FORMAL.md`  
-**Evidencia reciente:** Funnel MTF+Sequence 20Y cerrado con gate CI; TNA trace estratificado PASS; experimento Sequence×Context State INSUFFICIENT_N.
+**Evidencia reciente:** Funnel MTF+Sequence 20Y cerrado con gate local; TNA trace y evidencia conductual reconciliados según el índice vigente; experimento Sequence×Context State cerrado sin evidencia suficiente de edge.
 
 ---
 
@@ -201,11 +201,13 @@ PASS documental cuando:
 4. entrenamiento multi-TF no arranca sin contrato de capas + anti-look-ahead;
 5. AHF conserva estados, transiciones, snapshots, invalidaciones y lineage.
 
-**Estado actual:** estos requisitos documentales están implementados; los experimentos de comportamiento y el full-span TNA siguen siendo gates empíricos pendientes.
+**Estado actual:** estos requisitos documentales están implementados. La evidencia
+de TNA debe leerse junto con el índice y su artefacto versionado; este SDD no
+convierte una auditoría de integridad en evidencia de edge.
 
 ---
 
-## 9. Siguiente trabajo de ingeniería
+## 9. Siguiente trabajo de ingeniería histórico
 
 1. Mantener/fortalecer `CONTRATO_MULTI_TF_LAYERS.md` para roles `htf / itf / exec_tf`.
 2. Consolidar Context State mínimo (structure + liquidity + EQ50, sin EMA normativa).
@@ -214,3 +216,20 @@ PASS documental cuando:
 5. Solo después de los gates, abrir la especificación de ejecución/backtest.
 
 No queda como tarea “corregir BOS/CHOCH a pivotes 100% causales”: ese blocker fue corregido y la documentación actual debe reflejarlo como resuelto.
+
+## 10. Reconciliación post-A7 (2026-08-30)
+
+La implementación posterior a este SDD ya vive en el motor canónico:
+
+```text
+engine/lifecycle.py → engine/market_state.py → engine/setup_builder.py
+```
+
+La especificación consolidada y el plan operativo vigentes son, respectivamente:
+
+- `SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md`;
+- `.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md`.
+
+Estos documentos extienden la arquitectura de Context State sin sustituirla.
+El siguiente objetivo es Episodes/Funnel sobre setups históricos causales; no se
+debe crear una segunda FSM ni trasladar autoridad desde `engine/` a `backtest/`.

@@ -106,3 +106,14 @@ declara CERTIFIED**: la promoción formal queda supeditada al GO del auditor
 - **PROMOVIDO CON REVISIÓN 2026-08-28**: H1–H4 cerrados por evidencia de tests; H5 (documentación) cerrado por esta edición.
 - **NO CERTIFIED**: la certificación formal requiere el GO explícito del auditor sobre los gates de reproducibilidad/riesgo. Un diagnóstico/revisión no equivale a promoción autónoma (`AGENTS.md`).
 - `git push` NO ejecutado (regla repo: prohibido en cierre normal; solo tras auditoría independiente + instrucción de publicación).
+
+## Addendum de reconciliación — 2026-08-30
+
+Este plan queda como evidencia de la implementación y revisión del Setup Builder.
+La referencia normativa consolidada para Hermes y Codex es
+`docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md` y
+la transición vigente está definida en
+`.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md`.
+
+El siguiente eslabón sigue siendo Episodes/Funnel. No se debe reinterpretar la
+sección inicial de este worklog como que `engine/setup_builder.py` siga pendiente.

@@ -1,6 +1,6 @@
 # Plan ejecutable Hermes — Episodes / Funnel v1
 
-**Estado:** READY_FOR_EXECUTION
+**Estado:** READY_FOR_INDEPENDENT_AUDIT (revisión de certificación: 7 fallas del dictamen corregidas y reverificadas; 392 tests; commit local sin push)
 **Owner:** Hermes, director de D2; Codex conserva auditoría independiente y autoridad final
 **Modo:** LOCAL_ONLY
 **SDD:** `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md`

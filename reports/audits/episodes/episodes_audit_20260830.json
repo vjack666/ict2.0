@@ -57,14 +57,14 @@
       "unique_episodes": 4
     }
   },
-  "checksum": "7acc6215b619f249c63f0d029c7d40ca",
+  "checksum": "8feab9ec5b74f757c7aa89bc7023f7b0",
   "config": {
     "contract_version": "EPISODES_FUNNEL_V1"
   },
   "contract_version": "EPISODES_FUNNEL_V1",
   "episodes": [
     {
-      "canonical_setup_key": "EURUSD|2024-01-01T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "canonical_setup_key": "EURUSD|2024-01-01T04:00:00|NONE|POI_H4_1_2024-01-01 00:00:00|REFINEMENT_M15_1_2024-01-01 01:00:00|CONFIRMATION_M15_1_2024-01-01 02:00:00|EXECUTION_M15_1_2024-01-01 03:00:00|1",
       "component_tfs": {
         "confirmation": "M15",
         "context_htf": "NONE",
@@ -72,37 +72,37 @@
         "refinement": "M15",
         "trigger": "M15"
       },
-      "confirmation_id": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+      "confirmation_id": "CONFIRMATION_M15_1_2024-01-01 02:00:00",
       "context_id": "NONE",
       "contract_version": "EPISODES_FUNNEL_V1",
       "decision_time": "2024-01-01T04:00:00",
       "direction": 1,
-      "episode_id": "EP_a89fcfc73d74b6c88f42f277",
+      "episode_id": "EP_3d862f3f53e85325b00e251f",
       "generator_commit": "",
       "lineage": {
-        "confirmation": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "confirmation": "CONFIRMATION_M15_1_2024-01-01 02:00:00",
         "context_htf": "NONE",
-        "poi": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "refinement": "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "trigger": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+        "poi": "POI_H4_1_2024-01-01 00:00:00",
+        "refinement": "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "trigger": "EXECUTION_M15_1_2024-01-01 03:00:00"
       },
       "meta": {},
       "object_refs": [
-        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "26b744b1-f016-48a3-8fd7-76f0da130afd",
-        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+        "POI_H4_1_2024-01-01 00:00:00",
+        "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+        "EXECUTION_M15_1_2024-01-01 03:00:00"
       ],
-      "poi_id": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+      "poi_id": "POI_H4_1_2024-01-01 00:00:00",
       "reason": "",
-      "refinement_id": "8da03629-d080-44a9-a4d5-1eba13908a52",
+      "refinement_id": "REFINEMENT_M15_1_2024-01-01 01:00:00",
       "stage": "EPISODE",
       "status": "ACCEPTED",
       "symbol": "EURUSD",
-      "trigger_id": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      "trigger_id": "EXECUTION_M15_1_2024-01-01 03:00:00"
     },
     {
-      "canonical_setup_key": "EURUSD|2024-01-02T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "canonical_setup_key": "EURUSD|2024-01-02T04:00:00|NONE|POI_H4_1_2024-01-01 00:00:00|REFINEMENT_M15_1_2024-01-01 01:00:00|CONFIRMATION_M15_1_2024-01-01 02:00:00|EXECUTION_M15_1_2024-01-01 03:00:00|1",
       "component_tfs": {
         "confirmation": "M15",
         "context_htf": "NONE",
@@ -110,37 +110,37 @@
         "refinement": "M15",
         "trigger": "M15"
       },
-      "confirmation_id": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+      "confirmation_id": "CONFIRMATION_M15_1_2024-01-01 02:00:00",
       "context_id": "NONE",
       "contract_version": "EPISODES_FUNNEL_V1",
       "decision_time": "2024-01-02T04:00:00",
       "direction": 1,
-      "episode_id": "EP_486cf5c1110e8bf0f71de08f",
+      "episode_id": "EP_e80166860b3e93144066ee20",
       "generator_commit": "",
       "lineage": {
-        "confirmation": "26b744b1-f016-48a3-8fd7-76f0da130afd",
+        "confirmation": "CONFIRMATION_M15_1_2024-01-01 02:00:00",
         "context_htf": "NONE",
-        "poi": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "refinement": "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "trigger": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+        "poi": "POI_H4_1_2024-01-01 00:00:00",
+        "refinement": "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "trigger": "EXECUTION_M15_1_2024-01-01 03:00:00"
       },
       "meta": {},
       "object_refs": [
-        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "26b744b1-f016-48a3-8fd7-76f0da130afd",
-        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+        "POI_H4_1_2024-01-01 00:00:00",
+        "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+        "EXECUTION_M15_1_2024-01-01 03:00:00"
       ],
-      "poi_id": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
+      "poi_id": "POI_H4_1_2024-01-01 00:00:00",
       "reason": "",
-      "refinement_id": "8da03629-d080-44a9-a4d5-1eba13908a52",
+      "refinement_id": "REFINEMENT_M15_1_2024-01-01 01:00:00",
       "stage": "EPISODE",
       "status": "ACCEPTED",
       "symbol": "EURUSD",
-      "trigger_id": "32e2fd72-a8f1-480e-8949-9686c3a95971"
+      "trigger_id": "EXECUTION_M15_1_2024-01-01 03:00:00"
     },
     {
-      "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|POI_H4_-1_2024-01-03 00:00:00|REFINEMENT_M15_-1_2024-01-03 01:00:00|CONFIRMATION_M15_-1_2024-01-03 02:00:00|EXECUTION_M15_-1_2024-01-03 03:00:00|-1",
       "component_tfs": {
         "confirmation": "M15",
         "context_htf": "NONE",
@@ -148,72 +148,72 @@
         "refinement": "M15",
         "trigger": "M15"
       },
-      "confirmation_id": "26b744b1-f016-48a3-8fd7-76f0da130afd",
-      "context_id": "NONE",
-      "contract_version": "EPISODES_FUNNEL_V1",
-      "decision_time": "2024-01-03T04:00:00",
-      "direction": 1,
-      "episode_id": "EP_46cb381e9d4999359c87f398",
-      "generator_commit": "",
-      "lineage": {
-        "confirmation": "26b744b1-f016-48a3-8fd7-76f0da130afd",
-        "context_htf": "NONE",
-        "poi": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "refinement": "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "trigger": "32e2fd72-a8f1-480e-8949-9686c3a95971"
-      },
-      "meta": {},
-      "object_refs": [
-        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "26b744b1-f016-48a3-8fd7-76f0da130afd",
-        "32e2fd72-a8f1-480e-8949-9686c3a95971"
-      ],
-      "poi_id": "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-      "reason": "",
-      "refinement_id": "8da03629-d080-44a9-a4d5-1eba13908a52",
-      "stage": "EPISODE",
-      "status": "ACCEPTED",
-      "symbol": "EURUSD",
-      "trigger_id": "32e2fd72-a8f1-480e-8949-9686c3a95971"
-    },
-    {
-      "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|b98e8184-c8c0-44ad-ba73-00015eaa21e1|a3cde7d9-0431-4880-84d4-c0fafe871631|0102eecb-4037-4c69-b5f9-15977ea4d401|756dec79-cd27-4a53-8614-024a291fe952|-1",
-      "component_tfs": {
-        "confirmation": "M15",
-        "context_htf": "NONE",
-        "poi": "H4",
-        "refinement": "M15",
-        "trigger": "M15"
-      },
-      "confirmation_id": "0102eecb-4037-4c69-b5f9-15977ea4d401",
+      "confirmation_id": "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
       "context_id": "NONE",
       "contract_version": "EPISODES_FUNNEL_V1",
       "decision_time": "2024-01-03T04:00:00",
       "direction": -1,
-      "episode_id": "EP_59d0a73a54edb801d0b4f35e",
+      "episode_id": "EP_05ea23a60b77466be2cfead4",
       "generator_commit": "",
       "lineage": {
-        "confirmation": "0102eecb-4037-4c69-b5f9-15977ea4d401",
+        "confirmation": "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
         "context_htf": "NONE",
-        "poi": "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
-        "refinement": "a3cde7d9-0431-4880-84d4-c0fafe871631",
-        "trigger": "756dec79-cd27-4a53-8614-024a291fe952"
+        "poi": "POI_H4_-1_2024-01-03 00:00:00",
+        "refinement": "REFINEMENT_M15_-1_2024-01-03 01:00:00",
+        "trigger": "EXECUTION_M15_-1_2024-01-03 03:00:00"
       },
       "meta": {},
       "object_refs": [
-        "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
-        "a3cde7d9-0431-4880-84d4-c0fafe871631",
-        "0102eecb-4037-4c69-b5f9-15977ea4d401",
-        "756dec79-cd27-4a53-8614-024a291fe952"
+        "POI_H4_-1_2024-01-03 00:00:00",
+        "REFINEMENT_M15_-1_2024-01-03 01:00:00",
+        "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
+        "EXECUTION_M15_-1_2024-01-03 03:00:00"
       ],
-      "poi_id": "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
+      "poi_id": "POI_H4_-1_2024-01-03 00:00:00",
       "reason": "SETUP_BLOCKED",
-      "refinement_id": "a3cde7d9-0431-4880-84d4-c0fafe871631",
+      "refinement_id": "REFINEMENT_M15_-1_2024-01-03 01:00:00",
       "stage": "EPISODE",
       "status": "REJECTED",
       "symbol": "EURUSD",
-      "trigger_id": "756dec79-cd27-4a53-8614-024a291fe952"
+      "trigger_id": "EXECUTION_M15_-1_2024-01-03 03:00:00"
+    },
+    {
+      "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|POI_H4_1_2024-01-01 00:00:00|REFINEMENT_M15_1_2024-01-01 01:00:00|CONFIRMATION_M15_1_2024-01-01 02:00:00|EXECUTION_M15_1_2024-01-01 03:00:00|1",
+      "component_tfs": {
+        "confirmation": "M15",
+        "context_htf": "NONE",
+        "poi": "H4",
+        "refinement": "M15",
+        "trigger": "M15"
+      },
+      "confirmation_id": "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+      "context_id": "NONE",
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2024-01-03T04:00:00",
+      "direction": 1,
+      "episode_id": "EP_243ac23796d61aaf635edb7d",
+      "generator_commit": "",
+      "lineage": {
+        "confirmation": "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+        "context_htf": "NONE",
+        "poi": "POI_H4_1_2024-01-01 00:00:00",
+        "refinement": "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "trigger": "EXECUTION_M15_1_2024-01-01 03:00:00"
+      },
+      "meta": {},
+      "object_refs": [
+        "POI_H4_1_2024-01-01 00:00:00",
+        "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+        "EXECUTION_M15_1_2024-01-01 03:00:00"
+      ],
+      "poi_id": "POI_H4_1_2024-01-01 00:00:00",
+      "reason": "",
+      "refinement_id": "REFINEMENT_M15_1_2024-01-01 01:00:00",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD",
+      "trigger_id": "EXECUTION_M15_1_2024-01-01 03:00:00"
     }
   ],
   "full_prefix": {
@@ -228,18 +228,18 @@
     "E4": "PASS",
     "E5": "PASS"
   },
-  "generator_commit": "cdc6bc01001704cba8469096e6d31dae694f969e",
+  "generator_commit": "b9c345dac09179607d6cb4aba611eec0cab2a127",
   "provenance": {},
   "records": [
     {
       "accepted": true,
-      "candidate_key": "EURUSD|2024-01-01T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "candidate_key": "EURUSD|2024-01-01T04:00:00|NONE|POI_H4_1_2024-01-01 00:00:00|REFINEMENT_M15_1_2024-01-01 01:00:00|CONFIRMATION_M15_1_2024-01-01 02:00:00|EXECUTION_M15_1_2024-01-01 03:00:00|1",
       "decision_time": "2024-01-01T04:00:00",
       "object_refs": [
-        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "26b744b1-f016-48a3-8fd7-76f0da130afd",
-        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+        "POI_H4_1_2024-01-01 00:00:00",
+        "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+        "EXECUTION_M15_1_2024-01-01 03:00:00"
       ],
       "reason": "",
       "stage": "EPISODE",
@@ -247,27 +247,13 @@
     },
     {
       "accepted": true,
-      "candidate_key": "EURUSD|2024-01-02T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
+      "candidate_key": "EURUSD|2024-01-02T04:00:00|NONE|POI_H4_1_2024-01-01 00:00:00|REFINEMENT_M15_1_2024-01-01 01:00:00|CONFIRMATION_M15_1_2024-01-01 02:00:00|EXECUTION_M15_1_2024-01-01 03:00:00|1",
       "decision_time": "2024-01-02T04:00:00",
       "object_refs": [
-        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "26b744b1-f016-48a3-8fd7-76f0da130afd",
-        "32e2fd72-a8f1-480e-8949-9686c3a95971"
-      ],
-      "reason": "",
-      "stage": "EPISODE",
-      "status": "ACCEPTED"
-    },
-    {
-      "accepted": true,
-      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|df8b24bb-2fc1-4257-a5ba-6824428ab492|8da03629-d080-44a9-a4d5-1eba13908a52|26b744b1-f016-48a3-8fd7-76f0da130afd|32e2fd72-a8f1-480e-8949-9686c3a95971|1",
-      "decision_time": "2024-01-03T04:00:00",
-      "object_refs": [
-        "df8b24bb-2fc1-4257-a5ba-6824428ab492",
-        "8da03629-d080-44a9-a4d5-1eba13908a52",
-        "26b744b1-f016-48a3-8fd7-76f0da130afd",
-        "32e2fd72-a8f1-480e-8949-9686c3a95971"
+        "POI_H4_1_2024-01-01 00:00:00",
+        "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+        "EXECUTION_M15_1_2024-01-01 03:00:00"
       ],
       "reason": "",
       "stage": "EPISODE",
@@ -275,29 +261,43 @@
     },
     {
       "accepted": false,
-      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|b98e8184-c8c0-44ad-ba73-00015eaa21e1|a3cde7d9-0431-4880-84d4-c0fafe871631|0102eecb-4037-4c69-b5f9-15977ea4d401|756dec79-cd27-4a53-8614-024a291fe952|-1",
+      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|POI_H4_-1_2024-01-03 00:00:00|REFINEMENT_M15_-1_2024-01-03 01:00:00|CONFIRMATION_M15_-1_2024-01-03 02:00:00|EXECUTION_M15_-1_2024-01-03 03:00:00|-1",
       "decision_time": "2024-01-03T04:00:00",
       "object_refs": [
-        "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
-        "a3cde7d9-0431-4880-84d4-c0fafe871631",
-        "0102eecb-4037-4c69-b5f9-15977ea4d401",
-        "756dec79-cd27-4a53-8614-024a291fe952"
+        "POI_H4_-1_2024-01-03 00:00:00",
+        "REFINEMENT_M15_-1_2024-01-03 01:00:00",
+        "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
+        "EXECUTION_M15_-1_2024-01-03 03:00:00"
       ],
       "reason": "SETUP_BLOCKED",
       "stage": "EPISODE",
       "status": "REJECTED"
+    },
+    {
+      "accepted": true,
+      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|POI_H4_1_2024-01-01 00:00:00|REFINEMENT_M15_1_2024-01-01 01:00:00|CONFIRMATION_M15_1_2024-01-01 02:00:00|EXECUTION_M15_1_2024-01-01 03:00:00|1",
+      "decision_time": "2024-01-03T04:00:00",
+      "object_refs": [
+        "POI_H4_1_2024-01-01 00:00:00",
+        "REFINEMENT_M15_1_2024-01-01 01:00:00",
+        "CONFIRMATION_M15_1_2024-01-01 02:00:00",
+        "EXECUTION_M15_1_2024-01-01 03:00:00"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED"
     }
   ],
   "rejections": [
     {
       "accepted": false,
-      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|b98e8184-c8c0-44ad-ba73-00015eaa21e1|a3cde7d9-0431-4880-84d4-c0fafe871631|0102eecb-4037-4c69-b5f9-15977ea4d401|756dec79-cd27-4a53-8614-024a291fe952|-1",
+      "candidate_key": "EURUSD|2024-01-03T04:00:00|NONE|POI_H4_-1_2024-01-03 00:00:00|REFINEMENT_M15_-1_2024-01-03 01:00:00|CONFIRMATION_M15_-1_2024-01-03 02:00:00|EXECUTION_M15_-1_2024-01-03 03:00:00|-1",
       "decision_time": "2024-01-03T04:00:00",
       "object_refs": [
-        "b98e8184-c8c0-44ad-ba73-00015eaa21e1",
-        "a3cde7d9-0431-4880-84d4-c0fafe871631",
-        "0102eecb-4037-4c69-b5f9-15977ea4d401",
-        "756dec79-cd27-4a53-8614-024a291fe952"
+        "POI_H4_-1_2024-01-03 00:00:00",
+        "REFINEMENT_M15_-1_2024-01-03 01:00:00",
+        "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
+        "EXECUTION_M15_-1_2024-01-03 03:00:00"
       ],
       "reason": "SETUP_BLOCKED",
       "stage": "EPISODE",

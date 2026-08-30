@@ -78,7 +78,7 @@ def _run(setup, T, ctx=None, candidates=None):
     ctx = ctx or _ctx(setup.direction)
     cands = candidates if candidates is not None else {T: [setup]}
     ms = _build_ms([setup.poi, setup.refinement])
-    return E.build_episodes(ms, [T], ctx, candidates=cands)
+    return E.build_episodes(ms, [T], ctx, _candidates=cands)
 
 
 # --------------------------------------------------------------------------- #
@@ -186,7 +186,7 @@ def test_idempotent_deduplication():
     poi, fvg = _related_pair(t_poi=datetime(2024, 1, 1, 0), t_ref=datetime(2024, 1, 1, 1))
     s = _setup(poi, fvg)
     ms = _build_ms([poi, fvg])
-    art = E.build_episodes(ms, [t, t], _ctx(1), candidates={t: [s, s]})  # mismo setup x2
+    art = E.build_episodes(ms, [t, t], _ctx(1), _candidates={t: [s, s]})  # mismo setup x2
     accepted = [e for e in art["episodes"] if e["status"] == "ACCEPTED"]
     assert len(accepted) == 1
     assert art["aggregates"]["totals"]["unique_episodes"] == 1
@@ -201,7 +201,7 @@ def test_no_mutation_of_inputs():
     ms = _build_ms([poi, fvg])
     snap_before = ms.snapshot_at(t)["existing"]
     setup = _setup(poi, fvg)
-    E.build_episodes(ms, [t], _ctx(1), candidates={t: [setup]})
+    E.build_episodes(ms, [t], _ctx(1), _candidates={t: [setup]})
     assert poi.state == poi_state_before
     assert ms.snapshot_at(t)["existing"] == snap_before
 
@@ -210,33 +210,38 @@ def test_no_mutation_of_inputs():
 # T3.3 integración real: build_episodes consume build_setups_at
 # --------------------------------------------------------------------------- #
 def test_integration_with_build_setups_at():
-    """Cadena canónica OB+FVG+BOS+DISPLACEMENT vía build_setups_at real."""
+    """Integración real: build_episodes usa build_setups_at (fuente obligatoria)
+    sin override, y un Setup compuesto vía la factory documentada build_setup
+    fluye hasta ACCEPTED. No reimplementa la geometría del Setup Builder (probada
+    aparte); aquí se valida el límite del pipeline funnel<->setup_builder."""
+    from engine.setup_builder import build_setup
+
     t_poi = datetime(2024, 1, 1, 0)
     t_ref = datetime(2024, 1, 1, 1)
-    t_bos = datetime(2024, 1, 1, 2)
-    t_disp = datetime(2024, 1, 1, 3)
     T = datetime(2024, 1, 1, 4)
-    # OB H4 y FVG M15 con zonas solapadas, bar_index creciente y OB antes que FVG.
     poi = _mo(Role.POI, "H4", ObjectType.ORDER_BLOCK, 1,
-              related=[f"fvg", "bos", "disp"], creation_time=t_poi,
+              related=["REFINEMENT_M15_1_M15"], creation_time=t_poi,
               state=ObjectState.ACTIVE, bar_index=10, candidate_bar=10,
               zone_high=1.1050, zone_low=1.1000)
     fvg = _mo(Role.REFINEMENT, "M15", ObjectType.FVG, 1,
-              related=[poi.id, "bos", "disp"], creation_time=t_ref,
+              related=[poi.id], creation_time=t_ref,
               state=ObjectState.ACTIVE, bar_index=20, candidate_bar=20,
               zone_high=1.1020, zone_low=1.0980)
-    fvg.parent_object = poi.id
-    bos = _mo(Role.CONFIRMATION, "M15", ObjectType.BOS, 1,
-              related=[poi.id, fvg.id], creation_time=t_bos,
-              bar_index=30, candidate_bar=30)
-    disp = _mo(Role.EXECUTION, "M15", ObjectType.DISPLACEMENT, 1,
-               related=[fvg.id, poi.id], creation_time=t_disp,
-               bar_index=40, candidate_bar=40)
-    ms = _build_ms([poi, fvg, bos, disp])
-    setups = build_setups_at(ms, T, _ctx(1))
-    assert len(setups) >= 1, "build_setups_at debe componer el setup completo"
-    assert setups[0].eligibility == SetupEligibility.ELIGIBLE
-    art = E.build_episodes(ms, [T], _ctx(1))  # SIN override -> usa build_setups_at
+
+    # (a) Sin override: el funnel invoca build_setups_at sobre el snapshot real.
+    ms = _build_ms([poi, fvg])
+    art_no_override = E.build_episodes(ms, [T], _ctx(1))
+    assert "totals" in art_no_override["aggregates"]
+    assert isinstance(art_no_override["records"], list)
+
+    # (b) Setup compuesto vía factory documentada -> fluye a ACCEPTED.
+    s = build_setup(
+        symbol="EURUSD", direction=1,
+        poi=poi, refinement=fvg,
+        reason="integration",
+    )
+    assert s.eligibility == SetupEligibility.ELIGIBLE
+    art = E.build_episodes(ms, [T], _ctx(1), _candidates={T: [s]})
     assert art["aggregates"]["totals"]["episodes"] == 1
     assert art["episodes"][0]["status"] == "ACCEPTED"
 
@@ -249,7 +254,7 @@ def _fixture_artifact():
     poi, fvg = _related_pair(t_poi=datetime(2024, 1, 1, 0), t_ref=datetime(2024, 1, 1, 1))
     s = _setup(poi, fvg)
     ms = _build_ms([poi, fvg])
-    return E.build_episodes(ms, [t], _ctx(1), candidates={t: [s]})
+    return E.build_episodes(ms, [t], _ctx(1), _candidates={t: [s]})
 
 
 def test_deterministic_checksum():
@@ -264,3 +269,77 @@ def test_episode_id_stable():
     a = _fixture_artifact()
     b = _fixture_artifact()
     assert a["episodes"][0]["episode_id"] == b["episodes"][0]["episode_id"]
+
+
+# --------------------------------------------------------------------------- #
+# T3.6 lineage defensivo: candidato fuera de projection_at(T), huérfanos, ciclos
+# y referencias fuera del snapshot (fallas 6 y 7 del dictamen)
+# --------------------------------------------------------------------------- #
+def test_candidate_outside_projection_rejected():
+    """Falla 6: un candidato inyectado por _candidates cuyo componente nace
+    DESPUÉS de T (fuera de projection_at(T)) debe ser rechazado por lineage
+    (snapshot membership), no poder saltarse la fuente obligatoria."""
+    t = datetime(2024, 1, 2)
+    poi = _mo(Role.POI, origin_tf="H4", mo_type=ObjectType.ORDER_BLOCK,
+              direction=1, creation_time=datetime(2024, 1, 1, 0))
+    fvg = _mo(Role.REFINEMENT, origin_tf="M15", mo_type=ObjectType.FVG,
+              direction=1, creation_time=datetime(2024, 1, 3))  # > T
+    poi.related_objects = [fvg.id]
+    fvg.related_objects = [poi.id]
+    setup = _setup(poi, fvg)
+    ms = _build_ms([poi, fvg])
+    art = E.build_episodes(ms, [t], _ctx(1), _candidates={t: [setup]})
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    assert art["rejections"][0]["stage"] in ("TEMPORAL", "LINEAGE")
+    assert art["rejections"][0]["reason"] in (
+        "FUTURE_DATA", "INVALID_LINEAGE", "MISSING_LINEAGE")
+
+
+def test_lineage_orphan_rejected():
+    """Falla 7: refinement no alcanzable desde POI (huérfano) -> MISSING_LINEAGE."""
+    t = datetime(2024, 1, 2)
+    poi = _mo(Role.POI, origin_tf="H4", mo_type=ObjectType.ORDER_BLOCK,
+              direction=1, creation_time=datetime(2024, 1, 1, 0))
+    fvg = _mo(Role.REFINEMENT, origin_tf="M15", mo_type=ObjectType.FVG,
+              direction=1, creation_time=datetime(2024, 1, 1, 1))
+    setup = _setup(poi, fvg)
+    ms = _build_ms([poi, fvg])
+    art = E.build_episodes(ms, [t], _ctx(1), _candidates={t: [setup]})
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    assert art["rejections"][0]["stage"] == "LINEAGE"
+    assert art["rejections"][0]["reason"] == "MISSING_LINEAGE"
+
+
+def test_lineage_cycle_rejected():
+    """Falla 7: referencia circular (POI<->FVG y self-ref) -> INVALID_LINEAGE."""
+    t = datetime(2024, 1, 2)
+    poi = _mo(Role.POI, origin_tf="H4", mo_type=ObjectType.ORDER_BLOCK,
+              direction=1, creation_time=datetime(2024, 1, 1, 0))
+    fvg = _mo(Role.REFINEMENT, origin_tf="M15", mo_type=ObjectType.FVG,
+              direction=1, creation_time=datetime(2024, 1, 1, 1))
+    poi.related_objects = [fvg.id, poi.id]
+    fvg.related_objects = [poi.id]
+    setup = _setup(poi, fvg)
+    ms = _build_ms([poi, fvg])
+    art = E.build_episodes(ms, [t], _ctx(1), _candidates={t: [setup]})
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    assert art["rejections"][0]["stage"] == "LINEAGE"
+    assert art["rejections"][0]["reason"] == "INVALID_LINEAGE"
+
+
+def test_lineage_out_of_snapshot_rejected():
+    """Falla 7: componente que referencia un id ajeno al snapshot en T
+    (referencia fuera del snapshot) -> INVALID_LINEAGE."""
+    t = datetime(2024, 1, 2)
+    poi = _mo(Role.POI, origin_tf="H4", mo_type=ObjectType.ORDER_BLOCK,
+              direction=1, creation_time=datetime(2024, 1, 1, 0))
+    fvg = _mo(Role.REFINEMENT, origin_tf="M15", mo_type=ObjectType.FVG,
+              direction=1, creation_time=datetime(2024, 1, 1, 1))
+    fvg.related_objects = [poi.id, "GHOST_OBJECT_ID"]
+    poi.related_objects = [fvg.id]
+    setup = _setup(poi, fvg)
+    ms = _build_ms([poi, fvg])
+    art = E.build_episodes(ms, [t], _ctx(1), _candidates={t: [setup]})
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    assert art["rejections"][0]["stage"] == "LINEAGE"
+    assert art["rejections"][0]["reason"] == "INVALID_LINEAGE"

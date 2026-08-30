@@ -21,9 +21,9 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, Callable, Dict, Iterable, List, Optional
 
-from engine.market_object import MarketObject
+from engine.market_object import MarketObject, Role
 from engine.setup_builder import (
     Setup,
     SetupEligibility,
@@ -254,24 +254,37 @@ def _check_authority(setup: Setup) -> Optional[str]:
     return None
 
 
-def _check_lineage(setup: Setup) -> Optional[str]:
+def _check_lineage(setup: Setup, ms: "MarketState", T: datetime) -> Optional[str]:
+    """Valida lineage (contrato §10) de forma fail-closed.
+
+    Devuelve una razón de rechazo (cadena) si falla, o ``None`` si pasa.
+    Verifica:
+      1. Dirección compatible en todos los componentes presentes.
+      2. Refinement relacionado con POI.
+      3. Confirmation (BOS) y trigger (DISPLACEMENT) cuelgan de la cadena POI.
+      4. Sin referencias fuera del snapshot: todo id referenciado por
+         related_objects/parent_object debe existir en ``ms.projection_at(T)``.
+      5. Sin huérfanos: cada componente presente debe ser alcanzable desde el
+         POI por related_objects/parent_object (o ser el POI mismo).
+      6. Sin ciclos: la cadena de parentesco no debe formar bucles.
+    """
     comps = _components(setup)
     poi = comps["poi"]
     refinement = comps["refinement"]
     confirmation = comps["confirmation"]
     trigger = comps["trigger"]
 
-    # Dirección compatible en todos los componentes presentes.
+    # 1) Dirección compatible.
     for mo in comps.values():
         if isinstance(mo, MarketObject) and mo.direction not in (0, setup.direction):
             return "INVALID_LINEAGE"
 
-    # Refinement debe estar relacionado con el POI.
+    # 2) Refinement <-> POI.
     if isinstance(refinement, MarketObject) and isinstance(poi, MarketObject):
         if not _related(poi, refinement):
             return "MISSING_LINEAGE"
 
-    # Confirmation (BOS) y trigger (DISPLACEMENT) deben colgar de la cadena.
+    # 3) Confirmation y trigger cuelgan de la cadena.
     if isinstance(confirmation, MarketObject):
         if not any(
             isinstance(x, MarketObject) and _related(x, confirmation)
@@ -284,6 +297,76 @@ def _check_lineage(setup: Setup) -> Optional[str]:
             for x in (poi, refinement, confirmation)
         ):
             return "MISSING_LINEAGE"
+
+    # Snapshot membership: ids referenciados deben existir en projection_at(T).
+    proj = ms.projection_at(T) if ms else {}
+    proj_ids = set(proj.keys()) if isinstance(proj, dict) else set()
+    all_objs = [mo for mo in comps.values() if isinstance(mo, MarketObject)]
+    # 4) Sin referencias fuera del snapshot.
+    for mo in all_objs:
+        for ref in list(getattr(mo, "related_objects", []) or []) + (
+            [getattr(mo, "parent_object", None)] if getattr(mo, "parent_object", None) else []
+        ):
+            if ref not in proj_ids:
+                return "INVALID_LINEAGE"  # referencia fuera del snapshot en T
+
+    # 5) Sin huérfanos y 6) sin ciclos: BFS de alcanzabilidad desde POI + DFS de ciclos.
+    #    confirmation (BOS) y trigger (DISPLACEMENT) son HOJAS: cuelgan de POI/FVG
+    #    pero no se transitan como ancestros (su related apunta de vuelta a POI/FVG,
+    #    lo cual es legitimo y NO constituye ciclo).
+    if isinstance(poi, MarketObject):
+        LEAF_ROLES = {Role.CONFIRMATION, Role.EXECUTION}
+
+        def _is_leaf(mo):
+            return isinstance(mo, MarketObject) and mo.role in LEAF_ROLES
+
+        # Alcanzabilidad: el POI debe poder llegar a todos los componentes
+        # presentes a través de related_objects (mutuos o en cadena).
+        reachable: set = set()
+        queue = [poi.id]
+        while queue:
+            cur = queue.pop()
+            if cur in reachable:
+                continue
+            reachable.add(cur)
+            child = proj.get(cur) if isinstance(proj, dict) else None
+            if child is None or _is_leaf(child):
+                continue  # hoja: no transitar sus related como ancestros
+            for nxt in list(getattr(child, "related_objects", []) or []) + (
+                [getattr(child, "parent_object", None)] if getattr(child, "parent_object", None) else []
+            ):
+                if nxt not in reachable:
+                    queue.append(nxt)
+        for mo in all_objs:
+            if mo.id not in reachable:
+                return "MISSING_LINEAGE"  # huérfano: no alcanzable desde POI
+
+        # Detección de ciclos por DFS con pila de recursión (se permite la arista
+        # de retorno al padre inmediato y las hojas; solo un ciclo real falla).
+        in_stack: set = set()
+        visiting: set = set()
+
+        def _has_cycle(node: str, parent: Optional[str] = None) -> bool:
+            if node in in_stack:
+                return True  # ciclo real
+            if node in visiting:
+                return False  # ya explorado en otro camino, sin ciclo
+            in_stack.add(node)
+            visiting.add(node)
+            child = proj.get(node) if isinstance(proj, dict) else None
+            if child is not None and not _is_leaf(child):
+                for nxt in list(getattr(child, "related_objects", []) or []) + (
+                    [getattr(child, "parent_object", None)] if getattr(child, "parent_object", None) else []
+                ):
+                    if nxt == parent:
+                        continue  # arista de retorno al padre: no es ciclo
+                    if _has_cycle(nxt, node):
+                        return True
+            in_stack.discard(node)
+            return False
+
+        if _has_cycle(poi.id):
+            return "INVALID_LINEAGE"  # ciclo en la cadena de parentesco
     return None
 
 
@@ -307,6 +390,8 @@ def _process_candidate(
     setup: Setup,
     decision_time: Any,
     seen_keys: set,
+    ms: "MarketState",
+    T: datetime,
 ) -> dict:
     refs = _object_refs(setup)
 
@@ -324,7 +409,7 @@ def _process_candidate(
         return _reject("TEMPORAL", temporal, decision_time, refs)
 
     # --- LINEAGE + AUTHORITY ---
-    lineage = _check_lineage(setup)
+    lineage = _check_lineage(setup, ms, T)
     if lineage:
         return _reject("LINEAGE", lineage, decision_time, refs)
     authority = _check_authority(setup)
@@ -397,13 +482,13 @@ def _process_candidate(
 # API principal del funnel
 # --------------------------------------------------------------------------- #
 def build_episodes(
-    ms,
-    decisions_T,
-    ctx,
+    ms: "MarketState",
+    decisions_T: Iterable[datetime],
+    ctx: Optional[Any] = None,
     *,
     config: Optional[dict] = None,
     contract_version: str = CONTRACT_VERSION,
-    candidates: Optional[dict] = None,
+    _candidates: Optional[Dict[datetime, List[Any]]] = None,
 ) -> dict:
     """Construye el artefacto del Funnel (contrato §8) de forma causal y determinista.
 
@@ -412,11 +497,12 @@ def build_episodes(
 
     No muta ``ms``, los ``MarketObject`` ni los ``Setup`` de entrada.
 
-    Parámetro ``candidates`` (opcional, solo para auditoría/tests): un dict
-    ``{T: [Setup, ...]}`` que reemplaza la llamada a ``build_setups_at`` en T.
-    La lógica del funnel (temporal/autoridad/lineage/identidad/dedupe/estado)
-    se aplica igual; el cálculo de candidatos queda fuera del alcance de esta
-    capa (lo aporta ``setup_builder`` o el caller de auditoría).
+    Parámetro ``_candidates`` (opcional, PRIVADO, solo para auditoría/tests):
+    un dict ``{T: [Setup, ...]}`` que reemplaza la llamada a ``build_setups_at``
+    en T. La lógica del funnel se aplica igual y el linaje NO puede saltarse la
+    fuente: cualquier componente fuera de ``projection_at(T)`` es rechazado por
+    ``_check_lineage`` (snapshot membership). En producción NO se usa este
+    parámetro; el path público siempre compone desde ``build_setups_at``.
     """
     config = dict(config or {})
     records: list[FunnelRecord] = []
@@ -425,7 +511,7 @@ def build_episodes(
     seen_keys: set = set()
 
     for T in decisions_T:
-        setups = candidates.get(T, None) if candidates else None
+        setups = _candidates.get(T, None) if _candidates else None
         if setups is None:
             setups = build_setups_at(ms, T, ctx)
 
@@ -446,7 +532,7 @@ def build_episodes(
             continue
 
         for setup in setups:
-            out = _process_candidate(setup, T, seen_keys)
+            out = _process_candidate(setup, T, seen_keys, ms, T)
             rec = out["record"]
             records.append(rec)
             if out["episode"] is not None:
@@ -533,7 +619,7 @@ def _self_gates(contract_version: str, config: dict) -> dict:
 
 
 def _checksum(artifact: dict) -> str:
-    core = {k: v for k, v in artifact.items() if k != "generated_at"}
+    core = {k: v for k, v in artifact.items() if k not in ("generated_at", "checksum")}
     payload = json.dumps(core, sort_keys=True, default=_ser)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:32]
 

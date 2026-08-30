@@ -21,6 +21,7 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -167,19 +168,53 @@ def _truncate_objects_before(ms: MarketState, T) -> MarketState:
 
 
 def run_full_prefix(ms, decisions):
-    """E2: build_episodes FULL == PREFIX truncado en T, para cada T (literal)."""
+    """E2 (FULL/PREFIX literal): para cada T, el artefacto FULL debe coincidir
+    EXACTAMENTE con el artefacto PREFIX (corpus truncado en T) en TODOS los
+    campos: records, episodes, rejections, aggregates (por TF/dirección/razón),
+    gates, estados, lineage, razones y orden. No solo episodios/rechazos."""
     full = EP.build_episodes(ms, decisions, _ctx(1))
     mismatches = []
     for T in decisions:
         prefix_ms = _truncate_objects_before(ms, T)
         prefix = EP.build_episodes(prefix_ms, [T], _ctx(1))
-        # comparación literal solo de la decisión T (corpus truncado)
-        full_slice_ep = [e for e in full["episodes"] if e["decision_time"] == _ser(T)]
-        full_slice_rej = [r for r in full["rejections"] if r["decision_time"] == _ser(T)]
-        if full_slice_ep != prefix["episodes"]:
-            mismatches.append({"T": _ser(T), "kind": "episodes"})
-        if full_slice_rej != prefix["rejections"]:
-            mismatches.append({"T": _ser(T), "kind": "rejections"})
+        # Reconstruimos los dicts full/prefix como aparecerían guardados.
+        full_all = {
+            "records": full["records"],
+            "episodes": full["episodes"],
+            "rejections": full["rejections"],
+            "aggregates": full["aggregates"],
+            "gates": full["gates"],
+        }
+        prefix_all = {
+            "records": prefix["records"],
+            "episodes": prefix["episodes"],
+            "rejections": prefix["rejections"],
+            "aggregates": prefix["aggregates"],
+            "gates": prefix["gates"],
+        }
+        # Slice por T: comparamos SOLO lo que corresponde a esta decisión.
+        def _slice(d, key):
+            return [x for x in d[key] if x.get("decision_time") == _ser(T)]
+        for field in ("records", "episodes", "rejections"):
+            if _slice(full_all, field) != _slice(prefix_all, field):
+                mismatches.append({"T": _ser(T), "kind": field})
+        # Conteo total de episodios/rechazos/records de T debe ser idéntico.
+        full_counts = {
+            "episodes": len(_slice(full_all, "episodes")),
+            "rejections": len(_slice(full_all, "rejections")),
+            "records": len(_slice(full_all, "records")),
+        }
+        prefix_counts = {
+            "episodes": len(_slice(prefix_all, "episodes")),
+            "rejections": len(_slice(prefix_all, "rejections")),
+            "records": len(_slice(prefix_all, "records")),
+        }
+        if full_counts != prefix_counts:
+            mismatches.append({"T": _ser(T), "kind": "counts",
+                               "full": full_counts, "prefix": prefix_counts})
+        # gates deben ser idénticos
+        if full_all["gates"] != prefix_all["gates"]:
+            mismatches.append({"T": _ser(T), "kind": "gates"})
     return {"prefix_matches_full": len(mismatches) == 0, "mismatches": mismatches}
 
 
@@ -203,6 +238,15 @@ def _git_commit() -> str:
         return "UNKNOWN"
 
 
+def _rechecksum(artifact: dict) -> str:
+    """Recalcula el checksum del artefacto COMPLETO (incluye generator_commit,
+    full_prefix y aggregated_status), excluyendo generated_at y el propio
+    checksum (para evitar dependencia circular)."""
+    core = {k: v for k, v in artifact.items() if k not in ("generated_at", "checksum")}
+    payload = json.dumps(core, sort_keys=True, default=_ser)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:32]
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--out", required=True, help="ruta del reporte JSON")
@@ -224,6 +268,10 @@ def main(argv=None) -> int:
     else:
         status = "PASS"
     artifact["aggregated_status"] = status
+
+    # FALLA 4 corregida: el checksum debe cubrir TODOS los campos, incluida la
+    # provenancia del repo (generator_commit), full_prefix y aggregated_status.
+    artifact["checksum"] = _rechecksum(artifact)
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as f:

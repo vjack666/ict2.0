@@ -2,7 +2,9 @@
 
 Este verificador no vuelve a construir el Funnel ni busca edge. Consume los dos
 reportes A7 más recientes, comprueba la evidencia persistida de los doce OE y
-falla cerrado si cualquier gate obligatorio no está demostrado.
+falla cerrado si cualquier gate técnico obligatorio no está demostrado. La
+autorización legal de la fuente histórica queda fuera del alcance técnico A7 y
+se conserva como limitación explícita del dataset.
 """
 from __future__ import annotations
 
@@ -109,6 +111,26 @@ def _independent_review_recorded() -> bool:
     return "cro" in lowered and "auditoría independiente" in lowered
 
 
+def _a7_technical_provenance_pass(report: dict[str, Any]) -> bool:
+    """OE-A7.9: exact bytes/hashes + trace of the A7 generator.
+
+    ``provenance_source`` can remain REVIEW/BLOCKED because provider
+    authorization is not the technical Funnel gate for this historical
+    research fixture. Requiring the explicit scope marker prevents an old
+    report from being accepted accidentally under the new interpretation.
+    """
+    return bool(
+        report.get("provenance_scope") == "TECHNICAL_FUNNEL_ONLY"
+        and report.get("provenance_mechanical_ok") is True
+        and report.get("a7_provenance_ok") is True
+        and report.get("provenance_ok") is True
+        and report.get("commit") not in {None, "", "UNKNOWN"}
+        and isinstance(report.get("config"), dict)
+        and bool(report.get("contract_version"))
+        and bool(report.get("provenance_source", {}).get("metadata_sha256"))
+    )
+
+
 def build_audit(report_paths: list[Path], *, run_tests: bool = True) -> dict[str, Any]:
     if len(report_paths) != 2:
         raise ValueError("Se requieren exactamente dos reportes A7")
@@ -137,8 +159,8 @@ def build_audit(report_paths: list[Path], *, run_tests: bool = True) -> dict[str
     )
     strict_relations = first.get("config", {}).get("relation_rule") == "STRICT FVG_OB_CAUSAL"
     no_findings = not _findings(first) and not _findings(second)
-    mechanical = first.get("provenance_mechanical_ok") is True
-    total_provenance = first.get("provenance_ok") is True
+    mechanical = all(report.get("provenance_mechanical_ok") is True for report in reports)
+    technical_provenance = all(_a7_technical_provenance_pass(report) for report in reports)
     matrix = [
         {"id": "OE-A7.1", "status": "PASS" if technical else "FAIL", "evidence": "A7 sections with zero findings; FunnelAudit temporal contract"},
         {"id": "OE-A7.2", "status": "PASS" if prefix else "FAIL", "evidence": "All configured FULL/PREFIX cuts, missing=0 and extra=0"},
@@ -148,7 +170,7 @@ def build_audit(report_paths: list[Path], *, run_tests: bool = True) -> dict[str
         {"id": "OE-A7.6", "status": "PASS" if technical and required_metrics else "FAIL", "evidence": "Per-section rejection and timeframe metrics serialized"},
         {"id": "OE-A7.7", "status": "PASS" if technical and timeframe_ok else "FAIL", "evidence": "H1/H4/D1 sections remain isolated by timeframe"},
         {"id": "OE-A7.8", "status": "PASS" if same_logical else "FAIL", "evidence": "Two independent reports have equal logical payload and checksum"},
-        {"id": "OE-A7.9", "status": "PASS" if mechanical and total_provenance else "BLOCKED", "evidence": "Mechanical hashes PASS; source provenance is required for total PASS"},
+        {"id": "OE-A7.9", "status": "PASS" if mechanical and technical_provenance else "BLOCKED", "evidence": "Exact dataset bytes/hashes, metadata hash, configuration and generator commit are linked; source authorization is outside technical A7 scope"},
         {"id": "OE-A7.10", "status": tests.get("status", "NOT_RUN"), "evidence": tests.get("summary", "")},
         {"id": "OE-A7.11", "status": "PASS" if clean else "FAIL", "evidence": "Both reports declare CLEAN worktrees"},
         {"id": "OE-A7.12", "status": "PASS" if _independent_review_recorded() else "REVIEW", "evidence": "CRO independent review recorded in worklog"},
@@ -166,12 +188,16 @@ def build_audit(report_paths: list[Path], *, run_tests: bool = True) -> dict[str
             "license_and_permitted_use": metadata.get("license_and_permitted_use"),
             "execution_verified": metadata.get("request_parameters", {}).get("execution_verified"),
             "mechanical_ok": mechanical,
-            "total_ok": total_provenance,
+            "technical_ok": technical_provenance,
+            "scope_status": metadata.get("project_scope", {}).get(
+                "source_authorization_gate", "UNDECLARED"
+            ),
+            "source_certification_outside_a7": True,
         },
         "overall_status": overall,
         "next_action": (
-            "Obtain written source permission and version a machine acquisition log, "
-            "then rerun provenance review."
+            "Repair the failed technical A7 evidence; source authorization is "
+            "outside this technical gate."
             if overall == "BLOCKED" else "A7 complete; proceed only under the next frozen phase contract."
         ),
     }

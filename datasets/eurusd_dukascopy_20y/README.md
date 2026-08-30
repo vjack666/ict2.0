@@ -30,9 +30,10 @@ overrides Windows `core.autocrlf=true`, so clean Windows checkouts and the Git
 blob expose the same CSV bytes. `SHA256SUMS` contains the resulting LF hashes.
 
 The CSV values were not changed; only CRLF line endings were normalized to LF.
-The hash gate is PASS for this snapshot. Overall A7 provenance remains
-BLOCKED until source license/acquisition evidence and a clean A7 generator
-run are independently established. The inspected report
-`mtf_seq_funnel_a7_20260829_115117.json` predates this LF correction and was
-not rewritten; it remains historical evidence with `git_status=DIRTY`. This
-does not certify the dataset or Funnel A7.
+The hash gate is PASS for this snapshot. For project scope, this dataset is a
+historical research fixture only: MT5 is the operational source for real use,
+and this snapshot is not a production or redistribution source. A7 certifies
+the causal, deterministic and reproducible Funnel built from the declared
+bytes; it does not certify provider licensing. The unresolved source-license
+and acquisition-log questions remain recorded in `metadata.json` as a source
+limitation outside the technical A7 gate.

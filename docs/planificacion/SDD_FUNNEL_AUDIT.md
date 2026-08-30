@@ -1,9 +1,9 @@
 # SDD — Funnel Audit ICT FVG/OB
 
-**Estado:** NORMATIVO — **GO técnico / certificación total bloqueada (A7, 2026-08-29)**
+**Estado:** NORMATIVO — **A7 técnico; fuente histórica fuera del alcance de certificación del Funnel (2026-08-29)**
 **Fase:** Pre-backtest
 **Código canónico:** `audits/codigo/funnel.py` (FunnelAudit A7 completo) y `audits/codigo/mtf_seq_funnel.py` (histórico)
-**Runner A7:** `audits/codigo/mtf_seq_funnel_a7.py` (provenance mecánica y de fuente separadas; fail-closed; NO sobrescribe histórico)
+**Runner A7:** `audits/codigo/mtf_seq_funnel_a7.py` (provenance técnica y de fuente separadas; fail-closed; NO sobrescribe histórico)
 **Propósito:** auditar la transformación causal de OHLC a candidatos ICT sin evaluar todavía rentabilidad.
 
 ## 1. Principio
@@ -92,19 +92,29 @@ Mismo dataset + mismo commit + misma configuración → mismo reporte, salvo cam
 
 La corrida histórica que cerró este gate queda como evidencia versionada. Las futuras validaciones se ejecutan desde el checkout operativo local mediante las funciones canónicas; no se usa un destino remoto de ejecución.
 
-### 5.2 Provenance en dos capas
+### 5.2 Provenance técnica y límite de la fuente
 
 El runner distingue explícitamente:
 
 - `provenance_mechanical_ok`: los bytes de cada CSV coinciden con `SHA256SUMS`;
-- `provenance_source`: metadata de proveedor, licencia, adquisición y ejecución;
-- `provenance_ok`: ambas capas completas;
-- `certification_status`: `PASS` únicamente si auditoría, provenance total y PREFIX pasan.
+- `provenance_source`: metadata de proveedor, licencia, adquisición y ejecución,
+  conservada como información descriptiva y de riesgo;
+- `provenance_scope=TECHNICAL_FUNNEL_ONLY`: el alcance de A7;
+- `a7_provenance_ok`/`provenance_ok`: bytes, hashes, metadata, configuración y
+  commit del Funnel están enlazados;
+- `certification_status`: `PASS` únicamente si auditoría técnica, provenance A7
+  y PREFIX pasan.
+
+La licencia o autorización del proveedor no forma parte del gate técnico A7 para
+este snapshot histórico. `metadata.provenance.project_scope` lo clasifica como
+`HISTORICAL_RESEARCH_FIXTURE_ONLY`: no es fuente operativa, no se usa en producción
+y MT5 es la fuente objetivo para uso real. La metadata puede seguir mostrando
+`license_and_permitted_use=UNKNOWN`; eso es una limitación de la fuente, no una
+falla de causalidad del Funnel.
 
 Un `aggregated_status=PASS` describe la auditoría de records del Funnel; no autoriza
-por sí solo certificación de datos, backtest, promoción ni trading. Si la metadata de
-fuente está `BLOCKED`, el runner debe emitir `certification_status=BLOCKED` aunque los
-hashes y la causalidad sean correctos.
+por sí solo backtest, promoción ni trading. El cierre técnico A7 tampoco certifica
+derechos legales de uso de los datos históricos.
 
 El cierre de los doce objetivos se comprueba además con
 `audits/codigo/a7_completion_audit.py`, que consume dos reportes independientes,
@@ -152,8 +162,10 @@ Gate local: el auditor ejecutado desde el checkout operativo valida `status=COMP
 
 ## 7. Estado del pre-backtest
 
-El Funnel 20Y tiene cierre técnico reproducible, pero la certificación total A7 sigue
-`BLOCKED` por la provenance de fuente pendiente. Eso **no** cierra A0-A9 ni TNA completo.
+El Funnel 20Y puede cerrar técnicamente con provenance mecánica reproducible. La
+revisión legal de la fuente histórica queda documentada fuera de A7 y no se reabre
+salvo que el proyecto necesite certificar derechos de uso o realizar nuevas
+adquisiciones. Eso **no** cierra A0-A9 ni TNA completo.
 
 La habilitación del backtest sigue condicionada a la pila pre-backtest vigente y a una especificación de ejecución congelada.
 

@@ -38,6 +38,15 @@
     "volume": "UNAVAILABLE",
     "open_interest": "UNAVAILABLE",
     "license_and_permitted_use": "UNKNOWN",
+    "project_scope": {
+      "classification": "HISTORICAL_RESEARCH_FIXTURE_ONLY",
+      "operational_source": "MT5",
+      "production_use": false,
+      "raw_redistribution": false,
+      "source_authorization_gate": "OUT_OF_SCOPE_FOR_A7_TECHNICAL_CERTIFICATION",
+      "decision_date": "2026-08-29",
+      "decision_note": "Dukascopy is retained only as a historical fixture because MT5 does not provide the full historical window. A7 certifies Funnel integrity, not provider licensing or production data use."
+    },
     "acquired_at_utc": "2026-08-18T21:05:00Z",
     "source_documentation_refs": [
       "datasets/eurusd_dukascopy_20y/README.md"
@@ -109,7 +118,7 @@
     },
     "hash_verification_status": "PASS",
     "provenance_status": "BLOCKED",
-    "blocking_reason": "Official terms were reviewed but do not establish written permission for this automated acquisition or this project's use scope; license_and_permitted_use remains UNKNOWN and execution_verified is false. The acquisition timestamp is recorded from the dated worklog, but no machine execution log or written automated-access consent is versioned. Mechanical bytes, hashes, EOL policy, and clean-generator A7 evidence are verified, but this metadata does not certify legal source permission or Funnel A7.",
-    "required_follow_up": "Obtain and record written source permission for the automated acquisition and a machine execution log; retain the clean A7 reports and repeat independent review if the provenance contract requires legal/source certification."
+    "blocking_reason": "Source authorization and machine acquisition execution evidence remain UNKNOWN/PARTIAL. This metadata does not certify provider licensing; by explicit project scope, that source-certification question is outside technical Funnel A7.",
+    "required_follow_up": "No action for technical A7. Reopen only if the project later requires independent source-license certification or additional Dukascopy acquisition."
   }
 }

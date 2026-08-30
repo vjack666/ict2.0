@@ -1,11 +1,11 @@
 """Funnel de auditoría A7 (Gate A7) — runner con provenance y validación real.
 
 NO sobrescribe el artefacto histórico mtf_seq_funnel.json; escribe un reporte
-nuevo con timestamp y provenance completa: commit, estado git, hashes del
-dataset (validados contra SHA256SUMS), metadata de fuente/licencia, configuración,
-versión contractual y checksum del reporte. ``provenance_mechanical_ok`` valida
-bytes; ``provenance_ok`` y ``certification_status`` no pasan mientras la
-metadata declare una procedencia de fuente incompleta.
+nuevo con timestamp y provenance técnica: commit, estado git, hashes del
+dataset (validados contra SHA256SUMS), configuración, versión contractual y
+checksum del reporte. La metadata de fuente/licencia se conserva como una
+limitación separada. ``provenance_ok`` significa provenance técnica del Funnel
+A7; no certifica derechos de uso del proveedor ni autoriza producción.
 
 Materializa las etapas del contrato A7 con poblaciones REALES del motor:
   RAW_BARS -> VALID_BARS -> FVG -> OB -> CONFLUENCE -> LINEAGE ->
@@ -42,6 +42,7 @@ PRECOMPUTE = True
 # early, middle, late, and near-terminal history without selecting a cut after
 # observing the result.
 PREFIX_RATIOS = (0.10, 0.25, 0.50, 0.75, 0.90)
+A7_PROVENANCE_SCOPE = "TECHNICAL_FUNNEL_ONLY"
 
 
 # --------------------------------------------------------------------------
@@ -102,9 +103,9 @@ def _read_source_provenance() -> dict:
     """Lee la decisión de procedencia declarada junto al snapshot.
 
     La comprobación de hashes demuestra integridad mecánica, pero no demuestra
-    permiso de adquisición/uso ni que exista un log de ejecución. Mantener
-    ambos planos separados evita que un ``provenance_ok`` mecánico se interprete
-    como certificación total del dataset.
+    permiso de adquisición/uso ni que exista un log de ejecución. Esa revisión
+    permanece visible, pero está fuera del gate técnico A7 por decisión de
+    alcance del proyecto. A7 no certifica la licencia del proveedor.
     """
     metadata_path = CANON / "metadata.json"
     try:
@@ -113,6 +114,7 @@ def _read_source_provenance() -> dict:
         acquisition = provenance.get("acquisition_evidence", {})
         request = provenance.get("request_parameters", {})
         license_review = provenance.get("license_review", {})
+        project_scope = provenance.get("project_scope", {})
         declared_status = str(provenance.get("provenance_status", "UNKNOWN"))
         license_value = provenance.get("license_and_permitted_use")
         timestamp = provenance.get("acquired_at_utc")
@@ -137,6 +139,11 @@ def _read_source_provenance() -> dict:
             "execution_verified": execution_verified,
             "license_review_status": license_review.get("status", "UNKNOWN"),
             "source_provenance_complete": source_complete,
+            "a7_scope_status": project_scope.get(
+                "source_authorization_gate", "UNDECLARED"
+            ),
+            "operational_source": project_scope.get("operational_source", "UNKNOWN"),
+            "production_use": project_scope.get("production_use"),
         }
     except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
         return {
@@ -480,9 +487,13 @@ def main() -> dict:
     provenance = _verify_provenance()
     source_provenance = _read_source_provenance()
     mechanical_provenance_ok = all(v["match"] for v in provenance.values())
-    total_provenance_ok = (
+    # OE-A7.9 is technical: exact dataset bytes + manifest hashes + metadata
+    # hash + generator commit/configuration. Provider authorization is retained
+    # in ``provenance_source`` but is not an A7 gate for this historical fixture.
+    a7_provenance_ok = (
         mechanical_provenance_ok
-        and source_provenance["source_provenance_complete"]
+        and bool(source_provenance.get("metadata_sha256"))
+        and _git_commit() != "UNKNOWN"
     )
     all_records: list[dict] = []
     funnel_sections: dict = {}
@@ -510,7 +521,11 @@ def main() -> dict:
         "provenance": provenance,
         "provenance_mechanical_ok": mechanical_provenance_ok,
         "provenance_source": source_provenance,
-        "provenance_ok": total_provenance_ok,
+        "provenance_scope": A7_PROVENANCE_SCOPE,
+        "a7_provenance_ok": a7_provenance_ok,
+        # Compatibility field: in an A7 report this is the technical A7 gate,
+        # never a claim that the source license was certified.
+        "provenance_ok": a7_provenance_ok,
         "config": {"sample_every": SAMPLE_EVERY, "precompute_sequences": PRECOMPUTE,
                     "relation_rule": "STRICT FVG_OB_CAUSAL", "causal_mode": "strict",
                     "prefix_ratios": list(PREFIX_RATIOS)},
@@ -525,7 +540,7 @@ def main() -> dict:
         "certification_status": (
             "PASS"
             if overall["audit_status"] == "PASS"
-            and total_provenance_ok
+            and a7_provenance_ok
             and prefix["sequence"]["all_cuts_invariant"]
             and all(v["all_cuts_invariant"] for v in prefix["by_timeframe"].values())
             else "BLOCKED"

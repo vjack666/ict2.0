@@ -2,7 +2,7 @@
 
 **Proyecto:** `ict2.0`  
 **Estado:** DOCUMENTO NORMATIVO VIVO — sincronizado hasta Funnel 20Y, Context State y TNA trace  
-**Última sincronización:** 2026-08-20  
+**Última sincronización:** 2026-08-29
 **Regla:** este SDD se actualiza al cerrar cada fase, experimento arquitectónico o cambio de contrato relevante.
 
 ## 1. Objetivo
@@ -20,7 +20,7 @@ Cadena objetivo:
 - Fase C — Detección canónica FVG/OB: `PASS`.
 - Fase D — Relación causal y lineage: `PASS`.
 - D-extension FVG↔OB 20Y: `PASS STRICT + gate CI`.
-- Funnel MTF+Sequence 20Y: `PASS + gate CI`.
+- Funnel MTF+Sequence 20Y: `PASS técnico + gate CI`; Dukascopy queda como fixture histórico fuera de producción.
 - AHF: `IMPLEMENTADO v1`.
 - TNA trace integrity: `PASS estratificado`; behavioral/full-span pendiente.
 - Fase E — Ejecución: **BLOQUEADA como backtest hasta cerrar la pila pre-backtest/TNA**.

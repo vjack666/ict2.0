@@ -1,6 +1,6 @@
 # SDD — Funnel Audit ICT FVG/OB
 
-**Estado:** NORMATIVO — **A7 técnico; fuente histórica fuera del alcance de certificación del Funnel (2026-08-29)**
+**Estado:** NORMATIVO — **A7 técnico COMPLETADO; fuente histórica fuera del alcance de certificación del Funnel (2026-08-29)**
 **Fase:** Pre-backtest
 **Código canónico:** `audits/codigo/funnel.py` (FunnelAudit A7 completo) y `audits/codigo/mtf_seq_funnel.py` (histórico)
 **Runner A7:** `audits/codigo/mtf_seq_funnel_a7.py` (provenance técnica y de fuente separadas; fail-closed; NO sobrescribe histórico)
@@ -158,11 +158,27 @@ MTF dense: **1239 samples, `sample_every=100`, `ok_rate=1.0`**, interpretado com
 
 Artifact: `reports/audits/experiments/fvg_ob/mtf_seq_funnel.json`.
 
+### 6.1 Cierre técnico A7
+
+La auditoría independiente de completitud confirmó los doce objetivos `PASS`
+con dos clean runs locales desde el commit `25d0e32`:
+
+- `mtf_seq_funnel_a7_20260829_192637.json`;
+- `mtf_seq_funnel_a7_20260829_200059.json`;
+- `git_status=CLEAN` en ambos;
+- `aggregated_status=PASS`, `findings=0`, `prefix_sequence_invariant=true`;
+- checksum lógico idéntico: `321ce484e7b9a9458a00b324bd4377d5d50648872a1761de38e5913276c49a13`;
+- suite completa: `375 passed`.
+
+`OE-A7.9` certifica la provenance técnica exigida por A7: bytes, hashes,
+metadata, configuración y commit. La autorización de la fuente histórica no
+forma parte de este gate y permanece documentada como riesgo fuera de alcance.
+
 Gate local: el auditor ejecutado desde el checkout operativo valida `status=COMPLETE`, PASS por TF, `causal_links == relation_count`, Sequence PASS y cobertura MTF mínima. No existe automatización remota vigente.
 
 ## 7. Estado del pre-backtest
 
-El Funnel 20Y puede cerrar técnicamente con provenance mecánica reproducible. La
+El Funnel 20Y cerró técnicamente con provenance mecánica reproducible. La
 revisión legal de la fuente histórica queda documentada fuera de A7 y no se reabre
 salvo que el proyecto necesite certificar derechos de uso o realizar nuevas
 adquisiciones. Eso **no** cierra A0-A9 ni TNA completo.

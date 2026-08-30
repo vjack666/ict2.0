@@ -1,13 +1,13 @@
 {
   "gate": "A7",
-  "generated_at": "2026-08-29T23:16:16.664525+00:00",
+  "generated_at": "2026-08-30T01:01:24.478336+00:00",
   "reports": [
-    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_180838.json",
-    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_180845.json"
+    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_192637.json",
+    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_200059.json"
   ],
   "report_commits": [
-    "131901490c8fac9b91a61cf44d0a327b0b3c9530",
-    "131901490c8fac9b91a61cf44d0a327b0b3c9530"
+    "25d0e32e9a6ceee0c056a73b874b86da466dc4b1",
+    "25d0e32e9a6ceee0c056a73b874b86da466dc4b1"
   ],
   "matrix": [
     {
@@ -52,13 +52,13 @@
     },
     {
       "id": "OE-A7.9",
-      "status": "BLOCKED",
-      "evidence": "Mechanical hashes PASS; source provenance is required for total PASS"
+      "status": "PASS",
+      "evidence": "Exact dataset bytes/hashes, metadata hash, configuration and generator commit are linked; source authorization is outside technical A7 scope"
     },
     {
       "id": "OE-A7.10",
       "status": "PASS",
-      "evidence": "373 passed in 8.68s"
+      "evidence": "375 passed in 6.80s"
     },
     {
       "id": "OE-A7.11",
@@ -74,8 +74,8 @@
   "tests": {
     "command": "python -B -m pytest -q",
     "returncode": 0,
-    "summary": "373 passed in 8.68s",
-    "passed": 373,
+    "summary": "375 passed in 6.80s",
+    "passed": 375,
     "status": "PASS"
   },
   "source_provenance": {
@@ -83,8 +83,10 @@
     "license_and_permitted_use": "UNKNOWN",
     "execution_verified": false,
     "mechanical_ok": true,
-    "total_ok": false
+    "technical_ok": true,
+    "scope_status": "OUT_OF_SCOPE_FOR_A7_TECHNICAL_CERTIFICATION",
+    "source_certification_outside_a7": true
   },
-  "overall_status": "BLOCKED",
-  "next_action": "Obtain written source permission and version a machine acquisition log, then rerun provenance review."
+  "overall_status": "PASS",
+  "next_action": "A7 complete; proceed only under the next frozen phase contract."
 }

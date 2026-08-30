@@ -1,7 +1,8 @@
-# Solicitud de autorización — dataset histórico EURUSD
+# Solicitud de autorización — dataset histórico EURUSD (ARCHIVADA)
 
-> Plantilla para enviar al proveedor. No es evidencia de autorización y no debe
-> cambiar `provenance_status` hasta recibir una respuesta escrita verificable.
+> **Estado:** ARCHIVADA — NO ENVIAR. El proyecto decidió no continuar buscando
+> autorización de Dukascopy para este snapshot histórico. El documento se
+> conserva solo como registro de la evaluación que se hizo.
 
 ## Destinatario
 
@@ -10,7 +11,7 @@ Usar el canal oficial de API para desarrolladores de Dukascopy:
 - https://www.dukascopy.com/trading-tools/api/apply
 - https://www.dukascopy.com/swiss/docs/api/index.php
 
-## Texto sugerido
+## Texto histórico no enviado
 
 **Asunto:** Request for written permission — private automated historical EURUSD research
 
@@ -49,7 +50,7 @@ Please confirm explicitly:
 Thank you. Please provide the applicable terms or written authorization so that
 I can preserve it with the research provenance record.
 
-## Evidencia que debe conservarse si responden
+## Evidencia histórica que habría sido necesaria si se hubiera enviado
 
 - mensaje original y respuesta completa, preferiblemente `.eml` o PDF;
 - fecha/hora UTC y dominio/canal del remitente;
@@ -58,9 +59,7 @@ I can preserve it with the research provenance record.
 - alcance autorizado, restricciones, expiración y atribución;
 - decisión humana documentada sobre si cubre el snapshot existente.
 
-## Protocolo para el log de una adquisición futura autorizada
+## Protocolo histórico para una adquisición futura autorizada
 
-No ejecutar hasta tener autorización y confirmar el cliente aprobado. La ejecución
-debe ocurrir en un checkout limpio y conservar stdout/stderr, parámetros, versión
-de Node/npm/cliente, fecha UTC, archivos producidos, hashes y estado Git. La
-metadata solo podrá cambiar a `PASS` después de revisar ese paquete y repetir A7.
+No forma parte del plan actual. Solo se reabriría si el cliente decide volver a
+usar Dukascopy o necesita certificar los derechos de la fuente.

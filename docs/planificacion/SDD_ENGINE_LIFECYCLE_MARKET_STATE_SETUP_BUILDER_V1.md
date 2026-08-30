@@ -236,6 +236,12 @@ inferencia ni cambiando el criterio después de ver el resultado.
 La siguiente fase no debe rehacer Lifecycle, MarketState ni Setup Builder.
 Debe agrupar setups ya compuestos en episodios causales para análisis posterior.
 
+La fase ya tiene contrato y SDD específicos:
+
+- `docs/contratos/CONTRATO_EPISODES_FUNNEL_V1.md`;
+- `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md`;
+- `.hermes/plans/2026-08-30_EPISODES_FUNNEL_V1.md`.
+
 Objetivo de entrada:
 
 ```text

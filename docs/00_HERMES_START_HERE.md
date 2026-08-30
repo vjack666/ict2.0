@@ -31,10 +31,13 @@ Lee y respeta, en este orden:
 5. `docs/planificacion/SDD_FVG_OB_ENGINE.md` — diseño técnico.
 6. `docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md` — SDD vigente de la misión post-A7.
 7. `.hermes/plans/2026-08-30_POST_A7_ENGINE_STATE_EPISODES.md` — plan operativo vigente para Hermes y Codex.
-8. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
-9. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
-10. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
-11. `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
+8. `docs/contratos/CONTRATO_EPISODES_FUNNEL_V1.md` — contrato de la siguiente capa.
+9. `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md` — diseño técnico de Episodes/Funnel.
+10. `.hermes/plans/2026-08-30_EPISODES_FUNNEL_V1.md` — lista ejecutable con subtareas dinámicas.
+11. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
+12. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
+13. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
+14. `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
 
 La tesis ICT vigente y sus enmiendas tienen autoridad superior sobre cualquier documento de implementación. **OTE queda fuera del alcance.**
 
@@ -49,9 +52,9 @@ el SDD de `Lifecycle → MarketState → Setup Builder` y su plan operativo asoc
 La implementación canónica está en `engine/`. El SDD histórico del visor en otra
 rama no autoriza cambios en `engine/` ni la creación de un segundo motor.
 
-El siguiente objetivo es `Episodes/Funnel`, pero no se implementa hasta congelar
-su contrato, SDD, write set y gates. Si falta evidencia, el estado es `REVIEW` o
-`BLOCKED`, nunca `COMPLETED`.
+El siguiente objetivo es `Episodes/Funnel`. Ya tiene contrato, SDD y plan; la
+implementación queda bloqueada hasta la revisión D5 del contrato. Si falta
+evidencia, el estado es `REVIEW` o `BLOCKED`, nunca `COMPLETED`.
 
 ## 3. OBJETIVO
 

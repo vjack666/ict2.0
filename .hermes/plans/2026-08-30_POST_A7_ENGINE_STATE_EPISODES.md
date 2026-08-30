@@ -49,7 +49,8 @@ en esta misma fase y se vuelve a verificar.
 - definir Episode, ventana causal, identidad, agrupación, estados y razones de
   rechazo;
 - distinguir `SetupEligibility` de estado del objeto y de resultado futuro;
-- redactar `CONTRATO_EPISODES_FUNNEL.md` y `SDD_EPISODES_FUNNEL_V1.md`;
+- contrato y SDD preparados en `docs/contratos/CONTRATO_EPISODES_FUNNEL_V1.md`
+  y `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md`;
 - proponer tests negativos y write set.
 
 **Gate:** aprobación documental independiente de D5 antes de implementar.

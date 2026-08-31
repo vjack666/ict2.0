@@ -114,3 +114,44 @@ def test_exporter_has_no_operational_or_legacy_backtest_loader():
     imports = [node for node in ast.walk(tree) if isinstance(node, (ast.Import, ast.ImportFrom))]
     assert all("ict_backtest" not in ast.unparse(node) for node in imports)
     assert "load_raw_frames" not in source
+
+
+def test_decision_window_keeps_linked_trades_and_forward_candles(tmp_path, monkeypatch):
+    root = _dataset(tmp_path)
+
+    def fake_replay(frames, config):
+        return VisualBacktest(
+            symbol="EURUSD",
+            timeframe="H1",
+            candles=[
+                {"index": 0, "time": "2006-01-01T00:00:00+00:00", "open": 1.1, "high": 1.101, "low": 1.099, "close": 1.1},
+                {"index": 1, "time": "2006-01-02T00:00:00+00:00", "open": 1.1, "high": 1.101, "low": 1.099, "close": 1.1},
+            ],
+            events=[],
+            signals=[
+                {"signal_index": 3, "decision_time": "2006-01-01T12:00:00+00:00", "direction": "LONG", "features_at_t": {}},
+                {"signal_index": 4, "decision_time": "2006-01-03T12:00:00+00:00", "direction": "SHORT", "features_at_t": {}},
+            ],
+            trades=[
+                {"signal_index": 3, "entry_index": 0, "entry_time": "2006-01-01T13:00:00+00:00", "direction": "LONG"},
+                {"signal_index": 4, "entry_index": 1, "entry_time": "2006-01-03T13:00:00+00:00", "direction": "SHORT"},
+            ],
+        )
+
+    monkeypatch.setattr(exporter, "run_visual_replay", fake_replay)
+    payload = exporter.build_historical_replay(
+        dataset_dir=root,
+        decision_start="2006-01-01T00:00:00Z",
+        decision_end="2006-01-02T23:59:59Z",
+    )
+
+    assert [item["signal_index"] for item in payload["signals"]] == [3]
+    assert [item["signal_index"] for item in payload["trades"]] == [3]
+    assert len(payload["candles"]) == 2
+    assert payload["metadata"]["decision_window"]["signals_selected"] == 1
+
+
+def test_decision_window_requires_both_bounds(tmp_path):
+    root = _dataset(tmp_path)
+    with pytest.raises(exporter.HistoricalReplayError, match="DECISION_WINDOW_INVALID"):
+        exporter.build_historical_replay(dataset_dir=root, decision_start="2006-01-01")

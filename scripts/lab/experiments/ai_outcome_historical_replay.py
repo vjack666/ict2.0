@@ -145,6 +145,61 @@ def _apply_window(
     return selected
 
 
+def _window_bounds(*, start: Any | None, end: Any | None) -> tuple[pd.Timestamp | None, pd.Timestamp | None]:
+    """Parse an optional UTC decision window and reject inverted bounds."""
+
+    start_ts = _timestamp(start, "start") if start is not None else None
+    end_ts = _timestamp(end, "end") if end is not None else None
+    if start_ts is not None and end_ts is not None and start_ts > end_ts:
+        raise HistoricalReplayError("DECISION_WINDOW_INVALID: start is after end")
+    if (start_ts is None) != (end_ts is None):
+        raise HistoricalReplayError("DECISION_WINDOW_INVALID: start and end are required together")
+    return start_ts, end_ts
+
+
+def _filter_decision_window(
+    payload: dict[str, Any],
+    *,
+    start: Any | None,
+    end: Any | None,
+) -> dict[str, Any]:
+    """Keep only signals in the decision month while retaining outcome horizon bars."""
+
+    start_ts, end_ts = _window_bounds(start=start, end=end)
+    if start_ts is None:
+        return payload
+
+    signals = payload.get("signals") or []
+    selected_signals: list[dict[str, Any]] = []
+    selected_indexes: set[int] = set()
+    for signal in signals:
+        if not isinstance(signal, Mapping) or signal.get("decision_time") is None:
+            continue
+        decision_time = _timestamp(signal["decision_time"], "decision_time")
+        if start_ts <= decision_time <= end_ts:
+            selected_signals.append(dict(signal))
+            index = signal.get("signal_index")
+            if isinstance(index, int):
+                selected_indexes.add(index)
+
+    trades = payload.get("trades") or []
+    selected_trades = [
+        dict(trade) for trade in trades
+        if isinstance(trade, Mapping) and trade.get("signal_index") in selected_indexes
+    ]
+    payload["signals"] = selected_signals
+    payload["trades"] = selected_trades
+    payload["metadata"] = dict(payload.get("metadata") or {})
+    payload["metadata"]["decision_window"] = {
+        "start": start_ts.isoformat(),
+        "end": end_ts.isoformat(),
+        "selection_policy": "signals and linked trades only; source candles retain forward horizon",
+        "signals_selected": len(selected_signals),
+        "trades_selected": len(selected_trades),
+    }
+    return payload
+
+
 def _load_historical_frames(
     dataset_dir: Path,
     *,
@@ -281,6 +336,8 @@ def build_historical_replay(
     full_mtf: bool = True,
     horizon_bars: int = HISTORICAL_HORIZON_BARS,
     verify_prefix: bool = False,
+    decision_start: Any | None = None,
+    decision_end: Any | None = None,
 ) -> dict[str, Any]:
     """Build the observational H1 artifact from the closed Dukascopy source."""
 
@@ -386,6 +443,9 @@ def build_historical_replay(
         "provenance": provenance,
         "metadata": metadata,
     })
+    payload = _filter_decision_window(
+        payload, start=decision_start, end=decision_end,
+    )
     validate_visual_backtest(payload)
     return payload
 
@@ -399,12 +459,15 @@ def export_historical_replay(
     full_mtf: bool = True,
     horizon_bars: int = HISTORICAL_HORIZON_BARS,
     verify_prefix: bool = False,
+    decision_start: Any | None = None,
+    decision_end: Any | None = None,
 ) -> dict[str, Any]:
     """Build and atomically write one observational JSON artifact."""
 
     payload = build_historical_replay(
         dataset_dir=dataset_dir, start=start, end=end,
         full_mtf=full_mtf, horizon_bars=horizon_bars, verify_prefix=verify_prefix,
+        decision_start=decision_start, decision_end=decision_end,
     )
     write_visual_backtest(payload, Path(output))
     return payload
@@ -416,6 +479,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--start", help="inclusive UTC window start")
     parser.add_argument("--end", help="inclusive UTC window end")
+    parser.add_argument("--decision-start", help="inclusive UTC decision window start")
+    parser.add_argument("--decision-end", help="inclusive UTC decision window end")
     parser.add_argument(
         "--output",
         type=Path,
@@ -441,6 +506,8 @@ def main(argv: list[str] | None = None) -> int:
             full_mtf=not args.fast,
             horizon_bars=args.horizon_bars,
             verify_prefix=args.verify_prefix,
+            decision_start=args.decision_start,
+            decision_end=args.decision_end,
         )
     except (HistoricalReplayError, FileNotFoundError, KeyError, ValueError) as exc:
         print(f"[AI_OUTCOME_REPLAY][BLOCKED] {exc}", file=sys.stderr)

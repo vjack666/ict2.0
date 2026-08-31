@@ -65,6 +65,13 @@ def ok(x):
     return x is not None and not pd.isna(x)
 
 
+def _console_safe(value) -> str:
+    """Make subprocess text printable on Windows consoles such as cp1252."""
+    text = str(value)
+    encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+    return text.encode(encoding, errors="replace").decode(encoding, errors="replace")
+
+
 def as_float(value):
     """Convierte un valor a float de forma segura, devolviendo None si no aplica."""
     if value is None:
@@ -189,7 +196,7 @@ def refresh_mt5_or_fail(symbols, tfs=READ_TFS, asof_time=None):
         ) from exc
 
     if result.stdout:
-        print(result.stdout.rstrip())
+        print(_console_safe(result.stdout.rstrip()))
     if result.returncode != 0:
         detail = (result.stderr or "").strip()
         raise RuntimeError(

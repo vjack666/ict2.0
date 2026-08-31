@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-31
 **Agente:** Codex — CEO operativo
 **Departamentos:** D2, D4, D5, D1 y D7
-**STATUS:** COMPLETED — ensamblaje implementado y verificado; auditoría independiente pendiente
+**STATUS:** COMPLETED — ensamblaje y aceptación operativa local verificados; auditoría independiente/publicación pendiente
 
 ## Decisión
 
@@ -44,10 +44,10 @@ nuevo exige nombrar la frontera explícitamente.
 - `scripts/daily/brief_lunes.py` consume el snapshot único y muestra su estado,
   conteo de objetos, TF faltantes y provenance.
 - Pruebas focales: `11 passed`.
-- Suite completa final: `397 passed in 16.32s`.
+- Suite completa final: `399 passed in 37.58s`.
 - Compilación: `py_compile=PASS`.
-- Integración con parquet MT5 local (sin refrescar terminal): `READY`,
-  `provenance=PASS`, 6 hashes/artefactos hasheados, 90 objetos proyectados,
+- Integración final con parquet MT5 local tras refresco real: `READY`,
+  `provenance=PASS`, 6 hashes/artefactos hasheados, 3418 objetos históricos,
   JSON serializable y `OBSERVE_ONLY_NO_ORDER`.
 - La integración se conectó al brief diario; el commit del generador se toma
   localmente con `git rev-parse HEAD` y los hashes se calculan sobre los bytes
@@ -56,9 +56,20 @@ nuevo exige nombrar la frontera explícitamente.
   `reports/audits/operational/mt5_operational_snapshot_audit_20260831.json`.
   Resultado técnico `PASS`: ASSEMBLY, POLICY, FULL_PREFIX, AUTHORITY_AND_PIT,
   SERIALIZATION, BOUNDARY y PROVENANCE.
-- `MT5_FRESHNESS=REVIEW`: no se ejecutó refresco de la terminal en esta
-  auditoría; `REPRODUCIBILITY=REVIEW` porque el reporte aún no estaba
-  versionado durante su propia ejecución. No se declara certificación final.
+- El gate operativo del brief ejecutó refresco MT5 local `OK=6/6` y confirmó que
+  D1/H4/H1/M15/M5/M1 alcanzaban su último cierre requerido. El brief EURUSD se
+  escribió en 146.0 s; su snapshot quedó `READY`, con `TF faltantes=[]` y
+  `provenance=PASS`.
+- La auditoría reproducible `AUDIT_ONLY` conserva `MT5_FRESHNESS=REVIEW`
+  porque deliberadamente no refresca la terminal; la aceptación live anterior
+  es evidencia separada y no una auto-certificación de publicación.
+- Se corrigió un bloqueo Windows de `EURUSD_M1.parquet`: el updater ahora
+  materializa un temporal, valida que no esté vacío y reemplaza atómicamente
+  con reintentos acotados. Un benchmark residual de Codex fue cerrado; no se
+  tocó ningún proceso de Hermes.
+- Se eliminó el replay LTF duplicado del ensamblador: `Object MarketState` es
+  la única proyección de lifecycle del snapshot; `ltf_canonical_feed` conserva
+  detección/relaciones y el modo público de touch.
 - Fallas encontradas durante la misión: sello `tf` ausente, identidad
   `__index__` ausente y fixture de longitud inválida; todas corregidas y
   reverificadas.
@@ -70,10 +81,13 @@ nuevo exige nombrar la frontera explícitamente.
 - El puente certifica ensamblaje mecánico y causal, no la actualidad del feed
   ni la calidad científica de una lectura.
 - Este gate no prueba edge ni autoriza trading.
+- El brief completo EURUSD tarda 146 s en el host actual; es operativo y
+  fail-closed, pero queda como deuda de rendimiento antes de ampliar a cuatro
+  símbolos.
 
 ## Siguiente acción
 
-M2–M5 quedan cerrados técnicamente. La siguiente acción es ejecutar el gate de
-frescura MT5 en una misión autorizada, y después decidir la publicación de los
-commits. Esto no autoriza trading, backtest, IA, descarga Dukascopy ni
-promoción.
+M2–M5 quedan cerrados técnicamente y la frescura operativa fue verificada en
+local. La siguiente acción es regenerar la auditoría final sobre el commit
+local, realizar revisión independiente y decidir la publicación de los commits.
+Esto no autoriza trading, backtest, IA, descarga Dukascopy ni promoción.

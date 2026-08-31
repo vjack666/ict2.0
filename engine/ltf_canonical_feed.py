@@ -51,6 +51,20 @@ def _touch_state(obj: MarketObject, frame: pd.DataFrame, decision_time: Any) -> 
         return obj
     # La vela de confirmación crea la zona; no cuenta como retest de la zona.
     hits = frame.loc[(times > tradable) & (times <= tt)].copy()
+    # Lifecycle solo puede producir una observacion o transicion cuando la
+    # vela cruza la zona o cierra mas alla de su far_side. Las velas restantes
+    # son NO_CHANGE y no dejan estado ni historial; filtrarlas conserva
+    # exactamente la semantica de ``evaluate`` y evita un coste O(objetos x
+    # barras) en la lectura operativa diaria.
+    if not hits.empty:
+        low = pd.to_numeric(hits["low"], errors="coerce")
+        high = pd.to_numeric(hits["high"], errors="coerce")
+        close = pd.to_numeric(hits["close"], errors="coerce")
+        touched = (low <= obj.zone_high) & (high >= obj.zone_low)
+        close_beyond = (
+            (close < obj.zone_low) if obj.direction >= 0 else (close > obj.zone_high)
+        )
+        hits = hits.loc[(touched | close_beyond).fillna(False)].copy()
     hits["__index__"] = hits.index
     # Garantía C1: la barra debe llevar su sello de temporalidad para que
     # evaluate() valide closed_bar['tf'] == authority_tf. Sin esto, la
@@ -146,6 +160,7 @@ def build_ltf_canonical_feed(
     sequence_tf: str = "H1",
     symbol: str = "",
     include_sequence: bool = True,
+    touch_lifecycle: bool = True,
 ) -> dict[str, Any]:
     """Construye la entrada canónica read-only del motor diario.
 
@@ -177,7 +192,9 @@ def build_ltf_canonical_feed(
     fvgs = [obj for obj in assembled["objects"] if obj.type.value == "FVG"]
     obs = [obj for obj in assembled["objects"] if obj.type.value == "ORDER_BLOCK"]
 
-    objects = [_touch_state(obj, frame, decision_time) for obj in [*fvgs, *obs]]
+    objects = [*fvgs, *obs]
+    if touch_lifecycle:
+        objects = [_touch_state(obj, frame, decision_time) for obj in objects]
     objects.sort(key=lambda obj: (str(obj.tradable_time), str(obj.id)))
     sequence = _sequence_summary(frames.get(sequence_tf), decision_time, sequence_tf) if include_sequence else {
         "available": False, "refs": [], "depth": 0, "complete_count": 0, "timeframe": sequence_tf,

@@ -89,19 +89,40 @@ def _advance_object_state(
         frame = _frame_prefix(frames.get(tf), tt)
         if frame.empty:
             continue
-        objects = [obj for obj in market_state.all_objects() if obj.authority_tf == tf]
-        if not objects:
+        pending = sorted(
+            (obj for obj in market_state.all_objects() if obj.authority_tf == tf),
+            key=lambda obj: (str(obj.tradable_time), str(obj.id)),
+        )
+        if not pending:
             continue
+        live: list[Any] = []
+        next_object = 0
         for _, row in frame.iterrows():
             bar = row.to_dict()
             bar["tf"] = tf
-            for obj in objects:
+            while next_object < len(pending):
+                tradable = _utc(pending[next_object].tradable_time)
+                if tradable is None or row["time"] <= tradable:
+                    break
+                live.append(pending[next_object])
+                next_object += 1
+            if not live:
+                continue
+            survivors: list[Any] = []
+            for obj in live:
                 tradable = _utc(obj.tradable_time)
                 if tradable is None or row["time"] <= tradable:
+                    survivors.append(obj)
                     continue
                 # ``advance_bar`` delegates the transition to lifecycle and
                 # records only official changes in the event-sourced history.
                 market_state.advance_bar(obj.id, bar)
+                # Terminal objects can never change again, so removing them
+                # preserves the exact lifecycle result while avoiding a
+                # quadratic scan over the remaining bars.
+                if not obj.is_terminal:
+                    survivors.append(obj)
+            live = survivors
 
 
 def build_object_market_state(
@@ -167,6 +188,10 @@ def build_mt5_operational_snapshot(
         sequence_tf="H1",
         symbol=symbol,
         include_sequence=True,
+        # Object MarketState below is the single lifecycle projection for the
+        # snapshot. Avoid replaying the same M15 objects a second time in the
+        # LTF adapter; the public feed keeps its historical default=True.
+        touch_lifecycle=False,
     ) if tt is not None else {"zones": {"M15": []}, "sequence": {"available": False, "refs": [], "depth": 0}}
     wyckoff = build_wyckoff_snapshot(
         mtf_frames,
@@ -176,6 +201,15 @@ def build_mt5_operational_snapshot(
         layers=("D1", "H4", "H1", "M15"),
     ) if tt is not None else None
     object_state = build_object_market_state(normalized, tt, symbol=symbol) if tt is not None else ObjectMarketState()
+    object_projection = object_state.objects_existing_at(tt) if tt is not None else []
+    # Reuse the authoritative event-sourced M15 projection for the daily
+    # consumer. Detection/relations remain canonical in ltf_canonical_feed;
+    # lifecycle is owned only by Object MarketState in this assembler.
+    if tt is not None:
+        by_id = {obj.id: obj for obj in object_projection}
+        canonical["zones"]["M15"] = [
+            by_id.get(obj.id, obj) for obj in canonical.get("zones", {}).get("M15", [])
+        ]
     daily = build_daily_motor_snapshot(
         normalized,
         decision_time=tt,
@@ -215,7 +249,7 @@ def build_mt5_operational_snapshot(
         "generator_commit": generator_commit,
         "context_state": context_state.to_dict() if context_state is not None else None,
         "object_market_state": object_state.to_dict(),
-        "object_projection": [obj.to_dict() for obj in object_state.objects_existing_at(tt)] if tt is not None else [],
+        "object_projection": [obj.to_dict() for obj in object_projection],
         "canonical_zones": {
             tf: [obj.to_dict() for obj in objects]
             for tf, objects in canonical.get("zones", {}).items()

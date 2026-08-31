@@ -19,7 +19,9 @@ Requisito: terminal MT5 (FundedNext) ABIERTA y LOGUEADA.
 
 from __future__ import annotations
 import argparse
+import os
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -75,6 +77,42 @@ def merge_tip(local_path: Path, tip):
     return tip[cols].reset_index(drop=True)
 
 
+def write_parquet_atomic(local_path: Path, frame) -> None:
+    """Write a feed through a sibling temp file and replace it atomically.
+
+    Directly opening a large existing parquet for overwrite can fail on
+    Windows with ``Invalid argument`` (and a partial write would be unsafe for
+    the daily reader). The temporary file is fully materialized first; the
+    destination is replaced only after a non-empty artifact exists.
+    """
+    tmp_path = local_path.with_name(
+        f".{local_path.name}.{os.getpid()}.{time.time_ns()}.tmp"
+    )
+    try:
+        frame.to_parquet(tmp_path, index=False)
+        if not tmp_path.is_file() or tmp_path.stat().st_size <= 0:
+            raise OSError(f"parquet temporal vacío: {tmp_path}")
+        # Git status and antivirus can briefly open a large parquet on
+        # Windows. Retry only the final replace; never overwrite a partial
+        # destination.
+        last_error = None
+        for attempt in range(20):
+            try:
+                os.replace(tmp_path, local_path)
+                last_error = None
+                break
+            except OSError as exc:
+                last_error = exc
+                if attempt == 19:
+                    raise
+                time.sleep(0.5)
+        if last_error is not None:
+            raise last_error
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Append punta MT5 al data/raw de ICT SYSTEM")
     ap.add_argument("--symbols", default=",".join(SYMS_DEFAULT))
@@ -108,7 +146,7 @@ def main() -> int:
                 tip = download_tip(sym, tf)
                 path = sym_dir / f"{sym}_{tf}.parquet"
                 merged = merge_tip(path, tip)
-                merged.to_parquet(path, index=False)
+                write_parquet_atomic(path, merged)
                 print(f"[OK] {sym} {tf}: {len(merged)} velas, ultima {merged['time'].iloc[-1]}")
                 ok += 1
             except Exception as e:

@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 from scripts.daily import brief_lunes
+from scripts.daily.update_mt5_ict import write_parquet_atomic
 
 
 def _write_feed(root: Path, symbol: str, tf: str, timestamp: str) -> None:
@@ -100,3 +101,27 @@ def test_refresh_fails_closed_when_mt5_subprocess_fails(monkeypatch):
             ("M15",),
             asof_time=pd.Timestamp("2026-08-24 15:39", tz="UTC"),
         )
+
+
+def test_console_safe_handles_cp1252_replacement_character(monkeypatch):
+    class Stdout:
+        encoding = "cp1252"
+
+    monkeypatch.setattr(brief_lunes.sys, "stdout", Stdout())
+    safe = brief_lunes._console_safe("MT5 \ufffd conectado")
+    assert "MT5" in safe
+    assert "conectado" in safe
+
+
+def test_update_mt5_writes_parquet_atomically(tmp_path: Path):
+    path = tmp_path / "EURUSD" / "EURUSD_M1.parquet"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    old = pd.DataFrame({"time": pd.to_datetime(["2026-08-24 15:38"], utc=True), "close": [1.1]})
+    new = pd.DataFrame({"time": pd.to_datetime(["2026-08-24 15:39"], utc=True), "close": [1.2]})
+    old.to_parquet(path, index=False)
+
+    write_parquet_atomic(path, new)
+
+    result = pd.read_parquet(path)
+    assert result.iloc[0]["close"] == 1.2
+    assert not list(path.parent.glob(f".{path.name}.*.tmp"))

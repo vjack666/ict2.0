@@ -307,6 +307,7 @@ def _trade_records(
         }
         trades.append({
             "id": f"TRADE_{signal_index + 1:04d}",
+            "signal_index": signal_index,
             "signal_id": exported_event_ids.get("RETURN"),
             "chain_id": f"CHAIN_{signal_index + 1:04d}",
             "direction": _direction(direction),
@@ -326,6 +327,54 @@ def _trade_records(
             "event_ids": exported_event_ids,
         })
     return trades
+
+
+def _signal_records(signals: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Export signal lineage and PIT features without future outcome fields."""
+
+    stage_by_role = (
+        ("LIQUIDITY", "LIQUIDITY_POOL"),
+        ("SWEEP", "SWEEP"),
+        ("DISPLACE", "DISPLACEMENT"),
+        ("BOS", "STRUCTURE"),
+        ("POI", "OB"),
+        ("REFINEMENT", "FVG"),
+        ("RETURN", "RETEST"),
+        ("CONTRACT", "CONTRACT"),
+    )
+    result: list[dict[str, Any]] = []
+    for signal_index, signal in enumerate(signals):
+        direction = int(signal.get("direction", 0))
+        event_ids = dict(signal.get("event_ids") or {})
+        stages = [stage for role, stage in stage_by_role if event_ids.get(role)]
+        htf_alignment = (
+            "ALIGNED" if signal.get("htf_aligned") is True
+            else "AGAINST" if signal.get("htf_aligned") is False
+            else "NEUTRAL"
+        )
+        features_at_t = {
+            "sequence": stages,
+            "sequence_depth": len(stages),
+            "context_inputs": {
+                "sequence_direction": direction,
+                "d1_bias": "UNKNOWN",
+                "h4_location": "UNKNOWN",
+                "h1_alignment": htf_alignment,
+            },
+        }
+        result.append({
+            "signal_index": signal_index,
+            "episode_id": f"EP_SIGNAL_{signal_index + 1:06d}",
+            "decision_time": signal.get("time"),
+            "direction": direction,
+            "status": "ACCEPTED",
+            "features_at_t": features_at_t,
+            "lineage": {str(role): str(value) for role, value in event_ids.items() if value},
+            "event_objects": json_safe(signal.get("event_objects") or {}),
+            "source": "engine.sequence.run_sequence",
+            "can_trade": False,
+        })
+    return result
 
 
 def run_visual_replay(
@@ -388,12 +437,14 @@ def run_visual_replay(
     signals, phase_seen = run_sequence(main, est_htf_fn, sequence_config, **replay_kwargs)
     structure_events = extract_structure_events(main_raw, structure=config.structure)
     trades = _trade_records(signals, featured, config)
+    signal_records = _signal_records(signals)
     artifact = VisualBacktest(
         symbol=config.symbol,
         timeframe=config.timeframe,
         candles=_candle_records(main_raw),
         events=structure_events,
         trades=trades,
+        signals=signal_records,
         metadata={
             "causal": True,
             "engine": {

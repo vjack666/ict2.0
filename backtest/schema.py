@@ -45,6 +45,7 @@ class VisualBacktest:
     candles: list[dict[str, Any]]
     events: list[dict[str, Any]]
     trades: list[dict[str, Any]]
+    signals: list[dict[str, Any]] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -55,6 +56,7 @@ class VisualBacktest:
             "candles": self.candles,
             "events": self.events,
             "trades": self.trades,
+            "signals": self.signals,
             "metadata": self.metadata,
         }
         return json_safe(payload)

@@ -42,6 +42,11 @@ from runtime.ai_learning.training_pipeline import TrainingPipeline
 CONTRACT_VERSION = "AI_OUTCOME_DATASET_V1"
 EPISODES_CONTRACT_VERSION = "EPISODES_FUNNEL_V1"
 OUTCOME_CLASSES = ("continuation", "reversal", "failure")
+REGISTERED_SPLIT_BLOCKS = (
+    ("DESIGN", datetime(2006, 1, 1, tzinfo=timezone.utc), datetime(2015, 12, 31, 23, 59, 59, tzinfo=timezone.utc)),
+    ("VALIDATION", datetime(2016, 1, 1, tzinfo=timezone.utc), datetime(2020, 12, 31, 23, 59, 59, tzinfo=timezone.utc)),
+    ("HOLDOUT", datetime(2021, 1, 1, tzinfo=timezone.utc), datetime(2025, 12, 31, 23, 59, 59, tzinfo=timezone.utc)),
+)
 _DIRECTION_ALIASES = {
     "BULLISH": 1,
     "BULL": 1,
@@ -130,6 +135,13 @@ def _utc(value: Any, field_name: str) -> datetime:
 
 def _iso(value: Any, field_name: str) -> str:
     return _utc(value, field_name).isoformat()
+
+
+def _registered_split(value: datetime) -> str:
+    for name, start, end in REGISTERED_SPLIT_BLOCKS:
+        if start <= value <= end:
+            return name
+    raise OutcomeDatasetError("EVENT_OUTSIDE_PREREGISTERED_SPLIT")
 
 
 def _direction(value: Any, field_name: str) -> int:
@@ -453,6 +465,7 @@ def materialize_outcome_rows(
         episode_id = str(episode.get("episode_id", ""))
         try:
             decision_time = _iso(episode.get("decision_time"), f"episode[{episode_id}].decision_time")
+            decision_dt = _utc(decision_time, f"episode[{episode_id}].decision_time")
             feature_source = _features_source(episode, features_by_episode)
             features, depth = _causal_features(episode, feature_source, _utc(decision_time, "decision_time"))
             trade = _trade_for_episode(episode, times, trades)
@@ -465,6 +478,7 @@ def materialize_outcome_rows(
                 "timeframe": str(backtest.get("timeframe") or ""),
                 "episode_id": episode_id,
                 "event_time": decision_time,
+                "split": _registered_split(decision_dt),
                 "label_available_time": available_time,
                 "direction": _direction(episode.get("direction"), f"episode[{episode_id}].direction"),
                 "sequence_depth": depth,
@@ -525,7 +539,12 @@ def build_snapshot_manifest(
         "schema_version": "1.0",
         "experiment_id": experiment_id,
         "verdict": "PASS",
-        "gate": {"causal": "PASS", "a7": "PASS", "scientific": "TRAINING_ELIGIBLE"},
+        "gate": {
+            "causal_full_vs_prefix": "PASS",
+            "tna_behavioral_full_span": "PASS",
+            "a7": "PASS",
+            "scientific": "TRAINING_ELIGIBLE",
+        },
         "dataset_hash": data_hash,
         "code_commit": code_commit,
         "scope": {"contract_version": CONTRACT_VERSION, "can_trade": False},

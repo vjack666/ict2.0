@@ -34,6 +34,7 @@ def test_new_replay_emits_valid_schema_without_old_backtest_imports():
     payload = artifact.to_dict()
     validate_visual_backtest(payload)
     assert payload["metadata"]["legacy_backtest"] is False
+    assert "signals" in payload
     assert payload["metadata"]["promotion_authorized"] is False
 
     for path in ("backtest/__init__.py", "backtest/replay.py", "backtest/schema.py"):

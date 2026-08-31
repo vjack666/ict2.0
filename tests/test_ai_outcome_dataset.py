@@ -111,6 +111,7 @@ def test_labels_come_only_from_canonical_backtest_outcome_and_are_temporal():
 
     assert [row["label"] for row in result.rows] == ["continuation", "reversal", "failure"]
     assert [row["label_end_2"] for row in result.rows] == ["continuation", "reversal", "failure"]
+    assert {row["split"] for row in result.rows} == {"HOLDOUT"}
     assert all(row["can_trade"] is False for row in result.rows)
     assert all(row["label_available_time"] > row["event_time"] for row in result.rows)
     assert all("label" not in row["features_at_t"] for row in result.rows)

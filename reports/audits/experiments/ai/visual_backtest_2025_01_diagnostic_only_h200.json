@@ -1,0 +1,61 @@
+{
+  "artifact_hash": "978fa4373443915e16be09f0cb2ce3e503df1116530db6f186fde4a0758cfc05",
+  "artifact_kind": "ai_outcome_classifier_diagnostic_only",
+  "can_trade": false,
+  "certified_snapshot": false,
+  "config": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "can_trade": false,
+    "iterations": 500,
+    "l2": 0.0001,
+    "learning_rate": 0.05,
+    "min_class_rows": 5,
+    "mode": "DIAGNOSTIC_ONLY",
+    "seed": 7,
+    "target": "label_end_200",
+    "train_fraction": 0.6,
+    "validation_fraction": 0.2
+  },
+  "diagnostics": [
+    "no se ejecutó ajuste: faltan filas para 30 TRAIN + 10 VALIDATION + 10 TEST/OOS"
+  ],
+  "fit_executed": false,
+  "input": {
+    "format": "causal_materialized_jsonl",
+    "rows": 1,
+    "schema_hash": "b20f2607eb23c031b687a07a660bd94b42d3bf8b361f4cc013de1f046099926c",
+    "sha256": "30609734f87b9d341601266a3374cbbc5ab3bb8442589dc565c9c66d6d266877",
+    "source_name": "visual_backtest_2025_01_outcome_rows.jsonl"
+  },
+  "minimum_window": {
+    "additional_rows_at_least": 49,
+    "available_class_counts": {
+      "continuation": 0,
+      "failure": 0,
+      "reversal": 1
+    },
+    "available_rows": 1,
+    "earliest_qualifying_window": null,
+    "minimum_partition_rows": {
+      "test": 10,
+      "train": 30,
+      "validation": 10
+    },
+    "minimum_total_rows": 50,
+    "minimum_train_class_rows": 5,
+    "window_policy": "chronological prefix; 60% train, 20% validation, remainder test"
+  },
+  "promotion_authorized": false,
+  "reason_code": "INSUFFICIENT_DATA",
+  "schema_version": "1.0",
+  "scientific_training_eligible": false,
+  "shadow_mode": true,
+  "status": "BLOCKED",
+  "target": "label_end_200",
+  "temporal_split": {
+    "split_source": "diagnostic_configured_temporal",
+    "test_rows": 1,
+    "train_rows": 0,
+    "validation_rows": 0
+  }
+}

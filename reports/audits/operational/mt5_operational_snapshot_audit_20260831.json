@@ -49,7 +49,7 @@
       "status": "REVIEW"
     },
     {
-      "details": "generator_commit=10f3515f0f6c24ea34996b28823533ac987225c0; worktree_state=DIRTY",
+      "details": "generator_commit=571d0b67c21657ac480e8dfe4e5ef22b94ba59b8; worktree_state=DIRTY",
       "evidence_refs": [],
       "id": "REPRODUCIBILITY",
       "status": "REVIEW"
@@ -57,11 +57,11 @@
   ],
   "generator": {
     "branch": "codex/audit-hermes-cert-20260826",
-    "commit": "10f3515f0f6c24ea34996b28823533ac987225c0",
+    "commit": "571d0b67c21657ac480e8dfe4e5ef22b94ba59b8",
     "script": "audits/codigo/mt5_operational_snapshot.py",
     "worktree_state": "DIRTY"
   },
-  "generator_commit": "10f3515f0f6c24ea34996b28823533ac987225c0",
+  "generator_commit": "571d0b67c21657ac480e8dfe4e5ef22b94ba59b8",
   "mode": "AUDIT_ONLY",
   "next_action": "Run the local MT5 freshness gate before operational use; then independent GO for publication.",
   "operational_freshness": "REVIEW",
@@ -83,49 +83,49 @@
   },
   "source_artifacts": [
     {
-      "bytes": 90115,
+      "bytes": 90228,
       "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_D1.parquet",
-      "sha256": "8b85a6c6c80c39ca5b18dce5e31d8aeca7b6d11388066698142502c8adcb0074",
+      "sha256": "c92269b6b2f1157347730bd7d77cc6610de0ceaade4ebb0aba38c5d1df6c9699",
       "tf": "D1"
     },
     {
-      "bytes": 4287971,
+      "bytes": 4289232,
       "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H1.parquet",
-      "sha256": "77e094ae056795435c93667d4aaed5ce36af1213f9443a69782ea07792501a89",
+      "sha256": "5b750f85514e4689e4577b7a2e0b61d74f19d34da547eb5fa66a70c4796d9b7e",
       "tf": "H1"
     },
     {
-      "bytes": 455968,
+      "bytes": 456651,
       "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H4.parquet",
-      "sha256": "38e659c6ae64d87bfb21f16aa1ae5659bc7e36f6fc8ec077ce70329bfce8e96c",
+      "sha256": "ef29c8916e8d99b7f66894a9b0cadf9383beb1ffa080a0cb4bf2c577398b479c",
       "tf": "H4"
     },
     {
-      "bytes": 91655845,
+      "bytes": 91760952,
       "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M1.parquet",
-      "sha256": "1cbd1d17955cf77f61f1d1bb214835a58873f3e91c29b18db1890a873170094d",
+      "sha256": "c0d689cb5fbd6b6678a2c0e139b1748c42c656ed8483a9216d1554117484ffd3",
       "tf": "M1"
     },
     {
-      "bytes": 2547741,
+      "bytes": 2552986,
       "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M15.parquet",
-      "sha256": "7fea7d857aba1a2cbded38dd4bde3ee332832318083f6c763df5ab936ca3d6f6",
+      "sha256": "49773c106f70a332ad80f2c4bf69b83e1ed0a62a54249f3d6f752570451750b9",
       "tf": "M15"
     },
     {
-      "bytes": 5556785,
+      "bytes": 5578394,
       "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M5.parquet",
-      "sha256": "399fee700a00f9f3ae94a1ad86a2cbdd09e281f9e33ea489d8f0ec1b20a236ee",
+      "sha256": "40e3b47592e1abccb3a3d2c06a919d14d448a52614f026aceb33fc0ddcd03743",
       "tf": "M5"
     }
   ],
   "source_hashes": {
-    "D1": "8b85a6c6c80c39ca5b18dce5e31d8aeca7b6d11388066698142502c8adcb0074",
-    "H1": "77e094ae056795435c93667d4aaed5ce36af1213f9443a69782ea07792501a89",
-    "H4": "38e659c6ae64d87bfb21f16aa1ae5659bc7e36f6fc8ec077ce70329bfce8e96c",
-    "M1": "1cbd1d17955cf77f61f1d1bb214835a58873f3e91c29b18db1890a873170094d",
-    "M15": "7fea7d857aba1a2cbded38dd4bde3ee332832318083f6c763df5ab936ca3d6f6",
-    "M5": "399fee700a00f9f3ae94a1ad86a2cbdd09e281f9e33ea489d8f0ec1b20a236ee"
+    "D1": "c92269b6b2f1157347730bd7d77cc6610de0ceaade4ebb0aba38c5d1df6c9699",
+    "H1": "5b750f85514e4689e4577b7a2e0b61d74f19d34da547eb5fa66a70c4796d9b7e",
+    "H4": "ef29c8916e8d99b7f66894a9b0cadf9383beb1ffa080a0cb4bf2c577398b479c",
+    "M1": "c0d689cb5fbd6b6678a2c0e139b1748c42c656ed8483a9216d1554117484ffd3",
+    "M15": "49773c106f70a332ad80f2c4bf69b83e1ed0a62a54249f3d6f752570451750b9",
+    "M5": "40e3b47592e1abccb3a3d2c06a919d14d448a52614f026aceb33fc0ddcd03743"
   },
   "status": "PASS"
 }

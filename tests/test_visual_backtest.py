@@ -66,6 +66,7 @@ def test_last_closed_index_normalizes_pandas_timestamp_units():
     ], utc=True)})
     assert _last_closed_index(frame, "2006-01-01T04:00:00Z") == 1
     assert _last_closed_index(frame, "2006-01-01T02:00:00Z") == 0
+    assert "_replay_time_values_ns" in frame.attrs
 
 
 def test_candles_preserve_source_ohlc_and_no_trade_is_invented():

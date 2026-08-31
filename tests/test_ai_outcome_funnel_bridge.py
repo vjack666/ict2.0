@@ -54,3 +54,10 @@ def test_bridge_stays_blocked_without_prefix_proof():
     artifact = build_funnel_artifact(_payload(prefix=False), generator_commit="a" * 40)
     assert artifact["aggregated_status"] == "BLOCKED"
     assert artifact["gates"]["causal_full_vs_prefix"] == "BLOCKED"
+
+
+def test_bridge_can_namespace_episode_ids_for_partitioned_corpus():
+    artifact = build_funnel_artifact(
+        _payload(prefix=True), generator_commit="a" * 40, episode_namespace="Y2006_2010"
+    )
+    assert artifact["episodes"][0]["episode_id"] == "Y2006_2010__EP_0"

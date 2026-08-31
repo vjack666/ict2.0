@@ -256,12 +256,17 @@ def _last_closed_index(frame: pd.DataFrame, timestamp: Any) -> int:
     # ``Timestamp.value`` is nanoseconds.  Normalize both sides explicitly;
     # otherwise every historical target can compare greater than the entire
     # frame and the replay silently reads the final (future) HTF row.
-    values = (
-        pd.to_datetime(frame["time"], utc=True)
-        .dt.tz_localize(None)
-        .to_numpy(dtype="datetime64[ns]")
-        .astype("int64")
-    )
+    values = frame.attrs.get("_replay_time_values_ns")
+    if not isinstance(values, np.ndarray) or values.dtype != np.dtype("int64") or len(values) != len(frame):
+        values = (
+            pd.to_datetime(frame["time"], utc=True)
+            .dt.tz_localize(None)
+            .to_numpy(dtype="datetime64[ns]")
+            .astype("int64")
+        )
+        # This is an internal, non-serialized cache. It removes an O(n) frame
+        # conversion from every lookup while preserving the exact search rule.
+        frame.attrs["_replay_time_values_ns"] = values
     target_ts = pd.Timestamp(timestamp)
     target_ts = target_ts.tz_localize("UTC") if target_ts.tzinfo is None else target_ts.tz_convert("UTC")
     target = int(

@@ -1,0 +1,125 @@
+{
+  "batches": [
+    {
+      "batch": 1,
+      "diagnostic_count": 5,
+      "episodes": 7,
+      "partition": "2016",
+      "path": "partitions/2016/batch_00001.jsonl",
+      "rows": 7,
+      "rows_sha256": "930138c75ea764c501a6a29a0363e573a92b910de003e9f175f068f73fc796c6",
+      "status": "BLOCKED",
+      "training_eligible": false
+    },
+    {
+      "batch": 1,
+      "diagnostic_count": 5,
+      "episodes": 5,
+      "partition": "2017",
+      "path": "partitions/2017/batch_00001.jsonl",
+      "rows": 5,
+      "rows_sha256": "3c4735bdf1d6fce2f71522fc1d5554c87860d6f12c9e9c8f48086d4999e29001",
+      "status": "BLOCKED",
+      "training_eligible": false
+    },
+    {
+      "batch": 1,
+      "diagnostic_count": 5,
+      "episodes": 4,
+      "partition": "2018",
+      "path": "partitions/2018/batch_00001.jsonl",
+      "rows": 4,
+      "rows_sha256": "fadfad88d66833724a1081a6acb7b6a9d2f585bf728d1b4d832d446edc918659",
+      "status": "BLOCKED",
+      "training_eligible": false
+    },
+    {
+      "batch": 1,
+      "diagnostic_count": 5,
+      "episodes": 7,
+      "partition": "2019",
+      "path": "partitions/2019/batch_00001.jsonl",
+      "rows": 7,
+      "rows_sha256": "da02974c72b6f4177d470ad7f8c2d2f89d91d15a8992080075478fa5b29fd335",
+      "status": "BLOCKED",
+      "training_eligible": false
+    },
+    {
+      "batch": 1,
+      "diagnostic_count": 5,
+      "episodes": 10,
+      "partition": "2020",
+      "path": "partitions/2020/batch_00001.jsonl",
+      "rows": 10,
+      "rows_sha256": "168339b2d8ad9be6fc201d2b9fb54d56697e806d1d145c7ebe17c9898c6803cd",
+      "status": "BLOCKED",
+      "training_eligible": false
+    }
+  ],
+  "can_trade": false,
+  "causality": {
+    "features_source": "Funnel episode.features_at_t",
+    "future_features_exported": false,
+    "labels_source": "canonical backtest trade outcome",
+    "no_replay_or_relabel": true,
+    "outcome_horizon_bars": 200
+  },
+  "contract_version": "AI_OUTCOME_BATCH_MATERIALIZER_V1",
+  "counts": {
+    "batches": 5,
+    "candles_indexed": 31921,
+    "diagnostics": 30,
+    "episodes_seen_accepted": 33,
+    "events_validated": 34300,
+    "rows": 33,
+    "trades_indexed": 33
+  },
+  "dataset_hash": "3bef40916f4b5c8cd877e0cd7cf9c2c0324ef5fcdcd322b887fd39e36d384a30",
+  "diagnostics_path": "diagnostics.jsonl",
+  "generator": {
+    "branch": "codex/audit-hermes-cert-20260826",
+    "commit": "c4c9c774edc3f8843831b61daa259f23eafe534f",
+    "script": "scripts/lab/experiments/ai_outcome_batch_materializer.py",
+    "worktree_state": "DIRTY"
+  },
+  "local_only": true,
+  "next_action": "Resolver provenance/A7/research_gate y ampliar volumen antes de ejecutar ai_outcome_train.py.",
+  "partitioning": {
+    "full_backtest_arrays_loaded": false,
+    "max_episodes_per_batch": 64,
+    "memory_model": "compact candle timestamp index + temporary on-disk SQLite trade index + bounded episode batch",
+    "mode": "year",
+    "source_arrays_streamed": [
+      "candles",
+      "events",
+      "trades",
+      "episodes"
+    ]
+  },
+  "source_artifacts": {
+    "backtest": {
+      "bytes": 18863337,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\replay_2016_2020_h200.json",
+      "sha256": "7fa0d3ef46e86c219805cd1a130f905925f9c01f7410336e93b469c76db5e1a1"
+    },
+    "funnel": {
+      "bytes": 111058,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\replay_2016_2020_h200_funnel_ns.json",
+      "sha256": "822f3156e29ff348a7e7348303ad5327e1f1798ddfa608e5257b39bfc771d679"
+    }
+  },
+  "source_contracts": {
+    "backtest": "1.0",
+    "funnel": "EPISODES_FUNNEL_V1",
+    "materializer": "scripts/lab/experiments/ai_outcome_dataset.py"
+  },
+  "status": "BLOCKED",
+  "temporal_splits": {
+    "counts": {
+      "VALIDATION": 33
+    },
+    "no_random_shuffle": true,
+    "policy": "ai_outcome_dataset.REGISTERED_SPLIT_BLOCKS"
+  },
+  "training_eligible": false
+}

@@ -22,6 +22,7 @@ from backtest.schema import validate_visual_backtest
 CONTRACT_VERSION = "EPISODES_FUNNEL_V1"
 ROOT = Path(__file__).resolve().parents[3]
 _HEX_COMMIT = re.compile(r"^[0-9a-fA-F]{7,64}$")
+_NAMESPACE = re.compile(r"^[A-Za-z0-9_-]{1,48}$")
 
 
 class FunnelBridgeError(ValueError):
@@ -49,6 +50,7 @@ def build_funnel_artifact(
     backtest_artifact: Mapping[str, Any] | str | Path,
     *,
     generator_commit: str,
+    episode_namespace: str | None = None,
 ) -> dict[str, Any]:
     """Link replay signals to trades without inventing Funnel acceptance."""
 
@@ -59,6 +61,8 @@ def build_funnel_artifact(
         raise FunnelBridgeError(f"BACKTEST_SCHEMA_INVALID: {exc}") from exc
     if not _HEX_COMMIT.fullmatch(generator_commit):
         raise FunnelBridgeError("generator_commit inválido")
+    if episode_namespace is not None and not _NAMESPACE.fullmatch(episode_namespace):
+        raise FunnelBridgeError("episode_namespace inválido")
 
     metadata = payload.get("metadata")
     signals = payload.get("signals")
@@ -96,7 +100,11 @@ def build_funnel_artifact(
         if not isinstance(features, Mapping):
             rejected.append({"signal_index": index, "reason": "MISSING_FEATURES_AT_T"})
             continue
-        episode_id = str(signal.get("episode_id") or f"EP_SIGNAL_{index + 1:06d}")
+        base_episode_id = str(signal.get("episode_id") or f"EP_SIGNAL_{index + 1:06d}")
+        episode_id = (
+            f"{episode_namespace}__{base_episode_id}"
+            if episode_namespace else base_episode_id
+        )
         event_time = signal.get("decision_time")
         if not isinstance(event_time, str) or not event_time:
             rejected.append({"signal_index": index, "reason": "MISSING_DECISION_TIME"})
@@ -153,6 +161,7 @@ def write_funnel_artifact(
     output: str | Path,
     *,
     generator_commit: str,
+    episode_namespace: str | None = None,
 ) -> dict[str, Any]:
     """Build and write one immutable Episodes/Funnel bridge artifact."""
 
@@ -164,6 +173,7 @@ def write_funnel_artifact(
     artifact = build_funnel_artifact(
         backtest_artifact,
         generator_commit=generator_commit,
+        episode_namespace=episode_namespace,
     )
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_name(f".{destination.name}.tmp")
@@ -194,12 +204,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backtest", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--generator-commit", help="Commit que contiene el bridge")
+    parser.add_argument(
+        "--episode-namespace",
+        help="Prefijo determinista para evitar colisiones al unir particiones",
+    )
     args = parser.parse_args(argv)
     try:
         artifact = write_funnel_artifact(
             args.backtest,
             args.output,
             generator_commit=args.generator_commit or _git_commit(),
+            episode_namespace=args.episode_namespace,
         )
     except (FunnelBridgeError, OSError) as exc:
         print(f"[AI_OUTCOME_FUNNEL][BLOCKED] {exc}", file=sys.stderr)

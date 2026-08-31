@@ -1,9 +1,9 @@
 # CAIO — Primer entrenamiento DIAGNOSTIC_ONLY
 
-**Fecha:** 2026-08-31  
-**Agente:** Codex / CAIO Training Engineering  
-**Departamento:** D3 IA  
-**Tarea:** Probar la ruta `JSONL causal materializado -> split temporal -> OutcomeClassifier` sin snapshot certificado ni promoción.  
+**Fecha:** 2026-08-31
+**Agente:** Codex / CAIO Training Engineering
+**Departamento:** D3 IA
+**Tarea:** Probar la ruta `JSONL causal materializado -> split temporal -> OutcomeClassifier` sin snapshot certificado ni promoción.
 **Modo:** `LOCAL_ONLY`
 
 ## Resultado

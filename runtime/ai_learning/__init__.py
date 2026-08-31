@@ -53,6 +53,15 @@ from .training_pipeline import (
     create_training_plan,
     run_training_pipeline,
 )
+from .outcome_classifier import (
+    FEATURE_NAMES,
+    OUTCOME_CLASSES,
+    OUTCOME_CLASSIFIER_SCHEMA_VERSION,
+    OutcomeClassifierArtifact,
+    OutcomeClassifierError,
+    TrainingAuthorizationError,
+    train_outcome_classifier,
+)
 from .score_fusion import (
     OOSContractError,
     OOS_SPLITS,
@@ -170,6 +179,13 @@ __all__ = [
     "TrainingResult",
     "create_training_plan",
     "run_training_pipeline",
+    "FEATURE_NAMES",
+    "OUTCOME_CLASSES",
+    "OUTCOME_CLASSIFIER_SCHEMA_VERSION",
+    "OutcomeClassifierArtifact",
+    "OutcomeClassifierError",
+    "TrainingAuthorizationError",
+    "train_outcome_classifier",
     "OOSContractError",
     "OOS_SPLITS",
     "SCORE_FUSION_SCHEMA_VERSION",

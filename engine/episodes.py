@@ -436,6 +436,21 @@ def _process_candidate(
 
     # --- EPISODE: estado derivado de la elegibilidad ---
     status, reason = _map_eligibility(setup)
+    # El contrato reserva ``episodes`` para episodios aceptados. Los candidatos
+    # rechazados o superseded permanecen trazables en ``records`` y
+    # ``rejections`` mediante su estado y razón explícitos.
+    if status != "ACCEPTED":
+        rec = FunnelRecord(
+            candidate_key=key,
+            stage="EPISODE",
+            accepted=False,
+            reason=reason,
+            decision_time=decision_time,
+            object_refs=refs,
+            status=status,
+        )
+        return {"record": rec, "episode": None, "rejected": True}
+
     comps = _components(setup)
     component_tfs = {
         role: (mo.origin_tf if isinstance(mo, MarketObject) else NONE_SENTINEL)

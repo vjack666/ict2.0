@@ -198,24 +198,75 @@ def run_full_prefix(ms, decisions):
         for field in ("records", "episodes", "rejections"):
             if _slice(full_all, field) != _slice(prefix_all, field):
                 mismatches.append({"T": _ser(T), "kind": field})
-        # Conteo total de episodios/rechazos/records de T debe ser idéntico.
-        full_counts = {
-            "episodes": len(_slice(full_all, "episodes")),
-            "rejections": len(_slice(full_all, "rejections")),
-            "records": len(_slice(full_all, "records")),
-        }
-        prefix_counts = {
-            "episodes": len(_slice(prefix_all, "episodes")),
-            "rejections": len(_slice(prefix_all, "rejections")),
-            "records": len(_slice(prefix_all, "records")),
-        }
-        if full_counts != prefix_counts:
-            mismatches.append({"T": _ser(T), "kind": "counts",
-                               "full": full_counts, "prefix": prefix_counts})
+        # Los agregados globales del FULL no se pueden comparar directamente
+        # con los del PREFIX de una sola decisión. Se reconstruye el agregado
+        # del corte T y se compara campo por campo, incluyendo TF, dirección,
+        # etapa, razones y totales.
+        full_slice = {key: _slice(full_all, key) for key in
+                      ("records", "episodes", "rejections")}
+        prefix_slice = {key: _slice(prefix_all, key) for key in
+                        ("records", "episodes", "rejections")}
+        full_aggregates = _aggregate_dicts(
+            full_slice["records"], full_slice["episodes"],
+            full_slice["rejections"])
+        prefix_aggregates = prefix["aggregates"]
+        if full_aggregates != prefix_aggregates:
+            mismatches.append({"T": _ser(T), "kind": "aggregates",
+                               "full": full_aggregates,
+                               "prefix": prefix_aggregates})
         # gates deben ser idénticos
         if full_all["gates"] != prefix_all["gates"]:
             mismatches.append({"T": _ser(T), "kind": "gates"})
     return {"prefix_matches_full": len(mismatches) == 0, "mismatches": mismatches}
+
+
+def _aggregate_dicts(records, episodes, rejections):
+    """Reconstruye los agregados de un corte FULL usando dicts serializados."""
+    by_tf = {}
+    by_direction = {"1": _zero_counts(), "-1": _zero_counts(), "0": _zero_counts()}
+    by_stage = {stage: 0 for stage in EP.STAGES}
+    by_reason = {reason: 0 for reason in EP.REASONS}
+
+    def bump(bucket, status):
+        if status == "ACCEPTED":
+            bucket["accepted"] += 1
+        elif status == "SUPERSEDED":
+            bucket["superseded"] += 1
+        else:
+            bucket["rejected"] += 1
+
+    for episode in episodes:
+        tf = episode.get("component_tfs", {}).get("poi", "UNKNOWN")
+        by_tf.setdefault(tf, _zero_counts())
+        bump(by_tf[tf], episode.get("status", "REJECTED"))
+        direction = str(int(episode.get("direction", 0)))
+        by_direction.setdefault(direction, _zero_counts())
+        bump(by_direction[direction], episode.get("status", "REJECTED"))
+
+    for rejection in rejections:
+        reason = rejection.get("reason", "")
+        by_reason[reason] = by_reason.get(reason, 0) + 1
+
+    for record in records:
+        stage = record.get("stage", "")
+        by_stage[stage] = by_stage.get(stage, 0) + 1
+
+    return {
+        "by_tf": by_tf,
+        "by_direction": by_direction,
+        "by_stage": by_stage,
+        "by_reason": by_reason,
+        "totals": {
+            "candidates": len(records),
+            "episodes": len(episodes),
+            "rejections": len(rejections),
+            "unique_episodes": len({e.get("episode_id") for e in episodes}),
+        },
+    }
+
+
+def _zero_counts():
+    return {"accepted": 0, "rejected": 0, "superseded": 0}
 
 
 def _ser(v):

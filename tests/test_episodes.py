@@ -100,8 +100,9 @@ def test_superseded_maps_to_superseded():
     poi, fvg = _related_pair(t_poi=datetime(2024, 1, 1, 0), t_ref=datetime(2024, 1, 1, 1))
     poi.state = ObjectState.INVALIDATED
     art = _run(_setup(poi, fvg, SetupEligibility.SUPERSEDED), t)
-    assert art["aggregates"]["totals"]["episodes"] == 1
-    assert art["episodes"][0]["status"] == "SUPERSEDED"
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    assert art["rejections"][0]["status"] == "SUPERSEDED"
+    assert art["rejections"][0]["reason"] == "SETUP_SUPERSEDED"
 
 
 def test_blocked_maps_to_rejected_setup_blocked():
@@ -109,18 +110,19 @@ def test_blocked_maps_to_rejected_setup_blocked():
     poi, fvg = _related_pair(t_poi=datetime(2024, 1, 1, 0), t_ref=datetime(2024, 1, 1, 1))
     art = _run(_setup(poi, fvg, SetupEligibility.BLOCKED,
                        reason="contexto HTF no alineado"), t)
-    assert art["aggregates"]["totals"]["episodes"] == 1
-    ep = art["episodes"][0]
-    assert ep["status"] == "REJECTED"
-    assert ep["reason"] == "SETUP_BLOCKED"
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    rejection = art["rejections"][0]
+    assert rejection["status"] == "REJECTED"
+    assert rejection["reason"] == "SETUP_BLOCKED"
 
 
 def test_out_of_context_maps_to_rejected():
     t = datetime(2024, 1, 2)
     poi, fvg = _related_pair(t_poi=datetime(2024, 1, 1, 0), t_ref=datetime(2024, 1, 1, 1))
     art = _run(_setup(poi, fvg, SetupEligibility.OUT_OF_CONTEXT), t)
-    assert art["episodes"][0]["status"] == "REJECTED"
-    assert art["episodes"][0]["reason"] == "OUT_OF_CONTEXT"
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    assert art["rejections"][0]["status"] == "REJECTED"
+    assert art["rejections"][0]["reason"] == "OUT_OF_CONTEXT"
 
 
 # --------------------------------------------------------------------------- #

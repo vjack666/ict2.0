@@ -19,7 +19,7 @@ contra el código/evidencia real (no por afirmación).
 
 | # | Falla | Corrección aplicada | Evidencia |
 |---|-------|---------------------|-----------|
-| 1 | `generator_commit=cdc6bc0` en reporte, código en `b9c345d` | Reporte regenerado desde el commit correcto; `_git_commit()` ya tomaba HEAD real | reporte ahora `generator_commit=b9c345d...` |
+| 1 | `generator_commit=cdc6bc0` en reporte, código en `b9c345d` | Reporte regenerado desde el commit de código correcto; `_git_commit()` toma el HEAD de la corrida | reporte ahora `generator_commit=7fceda3...` |
 | 2 | Reporte con UUID aleatorios | El runner usa ids deterministas (`_mo` asigna `id` estable); el reporte guardado previo era de una corrida anterior con uuid | 0 UUID en el reporte regenerado |
 | 3 | Checksum guardado no coincide con recálculo | `checksum` se excluye del payload (antes incluía el valor previo → dependencia circular) en `_checksum` y `_rechecksum` | recálculo == guardado (`bbcb0742...`) |
 | 4 | Checksum calculado antes de añadir `generator_commit`/`full_prefix`/`aggregated_status` | `_rechecksum` se ejecuta AL FINAL, cubriendo todos los campos | alterar `generator_commit` cambia el checksum |

@@ -26,6 +26,7 @@ if str(ROOT) not in sys.path:
 
 from backtest.replay import ReplayConfig, run_visual_replay
 from backtest.schema import validate_visual_backtest, write_visual_backtest
+from engine.market_features import build_features
 from engine.sequential_outcome import OutcomeConfig
 
 
@@ -215,10 +216,16 @@ def _verify_full_prefix(
     *,
     full_mtf: bool,
     horizon_bars: int,
+    featured: dict[str, pd.DataFrame] | None = None,
 ) -> dict[str, Any]:
     """Prove that future bars do not rewrite earlier replay signals."""
 
     main = frames["H1"]
+    if featured is None:
+        featured = {
+            tf: build_features(frame, include_liquidity_zones=False)
+            for tf, frame in frames.items()
+        }
     full_signals = full_payload.get("signals")
     if not isinstance(full_signals, list):
         return {"prefix_matches_full": False, "status": "BLOCKED", "reason": "SIGNALS_MISSING"}
@@ -236,6 +243,10 @@ def _verify_full_prefix(
         prefix = run_visual_replay(
             prefix_frames,
             _replay_config(full_mtf=full_mtf, horizon_bars=horizon_bars),
+            precomputed_features={
+                tf: feature.iloc[: len(prefix_frames[tf])].reset_index(drop=True)
+                for tf, feature in featured.items()
+            },
         ).to_dict()
         full_at_cut = [
             item for item in full_signals
@@ -277,7 +288,16 @@ def build_historical_replay(
         raise HistoricalReplayError("HORIZON_INVALID: horizon_bars must be positive")
     frames, source_files = _load_historical_frames(dataset_dir, start=start, end=end)
     config = _replay_config(full_mtf=full_mtf, horizon_bars=horizon_bars)
-    artifact = run_visual_replay(frames, config)
+    featured = None
+    if verify_prefix:
+        featured = {
+            tf: build_features(frame, include_liquidity_zones=False)
+            for tf, frame in frames.items()
+        }
+    if featured is None:
+        artifact = run_visual_replay(frames, config)
+    else:
+        artifact = run_visual_replay(frames, config, precomputed_features=featured)
     payload = artifact.to_dict()
     generator = _generator_evidence()
     provenance = {
@@ -332,7 +352,13 @@ def build_historical_replay(
         "source_timeframes": list(TIMEFRAMES),
         "full_mtf_context": bool(full_mtf),
         "full_prefix": (
-            _verify_full_prefix(frames, payload, full_mtf=full_mtf, horizon_bars=horizon_bars)
+            _verify_full_prefix(
+                frames,
+                payload,
+                full_mtf=full_mtf,
+                horizon_bars=horizon_bars,
+                featured=featured,
+            )
             if verify_prefix
             else {"prefix_matches_full": False, "status": "NOT_RUN"}
         ),

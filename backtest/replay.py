@@ -399,6 +399,8 @@ def _signal_records(
 def run_visual_replay(
     raw_frames: dict[str, pd.DataFrame],
     config: ReplayConfig | None = None,
+    *,
+    precomputed_features: dict[str, pd.DataFrame] | None = None,
 ) -> VisualBacktest:
     """Run the canonical engine and return a visual-backtest artifact."""
 
@@ -406,10 +408,18 @@ def run_visual_replay(
     if config.timeframe not in raw_frames:
         raise KeyError(f"main timeframe {config.timeframe!r} not supplied")
     frames = {tf: _canonical_frame(frame, name=tf) for tf, frame in raw_frames.items()}
-    featured = {
-        tf: build_features(frame, include_liquidity_zones=config.include_liquidity_zones)
-        for tf, frame in frames.items()
-    }
+    if precomputed_features is None:
+        featured = {
+            tf: build_features(frame, include_liquidity_zones=config.include_liquidity_zones)
+            for tf, frame in frames.items()
+        }
+    else:
+        if set(precomputed_features) != set(frames):
+            raise KeyError("precomputed_features must cover exactly raw_frames")
+        featured = {
+            tf: _canonical_frame(precomputed_features[tf], name=f"features:{tf}")
+            for tf in frames
+        }
     main = featured[config.timeframe]
     main_raw = frames[config.timeframe]
 

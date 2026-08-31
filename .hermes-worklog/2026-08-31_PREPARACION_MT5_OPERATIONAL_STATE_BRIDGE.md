@@ -44,11 +44,14 @@ nuevo exige nombrar la frontera explícitamente.
 - `scripts/daily/brief_lunes.py` consume el snapshot único y muestra su estado,
   conteo de objetos, TF faltantes y provenance.
 - Pruebas focales: `11 passed`.
-- Suite completa: `396 passed in 15.24s`.
+- Suite completa final: `397 passed in 16.32s`.
 - Compilación: `py_compile=PASS`.
 - Integración con parquet MT5 local (sin refrescar terminal): `READY`,
-  `provenance=PASS`, 6 artefactos hasheados, 90 objetos proyectados,
+  `provenance=PASS`, 6 hashes/artefactos hasheados, 90 objetos proyectados,
   JSON serializable y `OBSERVE_ONLY_NO_ORDER`.
+- La integración se conectó al brief diario; el commit del generador se toma
+  localmente con `git rev-parse HEAD` y los hashes se calculan sobre los bytes
+  de cada parquet suministrado.
 - Fallas encontradas durante la misión: sello `tf` ausente, identidad
   `__index__` ausente y fixture de longitud inválida; todas corregidas y
   reverificadas.

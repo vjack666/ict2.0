@@ -64,6 +64,32 @@ def test_snapshot_is_blocked_when_required_mt5_timeframe_is_missing():
     assert result["entry_authorized"] is False
 
 
+def test_source_artifacts_populate_hashes_and_mismatch_blocks(tmp_path):
+    source = tmp_path / "EURUSD_M15.parquet"
+    source.write_bytes(b"canonical-mt5-fixture")
+    frames = _frames()
+    result = build_mt5_operational_snapshot(
+        frames,
+        pd.Timestamp("2024-01-01 07:00", tz="UTC"),
+        required_tfs=tuple(frames),
+        source_files={"M15": str(source)},
+        generator_commit="abc123",
+    )
+    assert result["provenance"]["status"] == "PASS"
+    assert result["source_hashes"]["M15"] == result["source_artifacts"][0]["sha256"]
+
+    bad = build_mt5_operational_snapshot(
+        frames,
+        pd.Timestamp("2024-01-01 07:00", tz="UTC"),
+        required_tfs=tuple(frames),
+        source_files={"M15": str(source)},
+        source_hashes={"M15": "wrong"},
+        generator_commit="abc123",
+    )
+    assert bad["status"] == "BLOCKED"
+    assert "M15:hash_mismatch" in bad["provenance"]["errors"]
+
+
 def test_future_rows_do_not_change_operational_snapshot_at_t():
     t = pd.Timestamp("2024-01-01 04:00", tz="UTC")
     base = _frames()

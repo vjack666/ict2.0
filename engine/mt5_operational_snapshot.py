@@ -141,6 +141,13 @@ def build_mt5_operational_snapshot(
     missing = [tf for tf in required_tfs if normalized.get(tf, pd.DataFrame()).empty]
     mtf_frames = {tf: normalized[tf] for tf in ("D1", "H4", "H1", "M15") if not normalized.get(tf, pd.DataFrame()).empty}
     source_artifacts, provenance_errors = _source_artifacts(source_files)
+    computed_hashes = {item["tf"]: item["sha256"] for item in source_artifacts}
+    supplied_hashes = {str(tf): str(value) for tf, value in (source_hashes or {}).items()}
+    for tf, supplied in supplied_hashes.items():
+        actual = computed_hashes.get(tf)
+        if actual is not None and supplied != actual:
+            provenance_errors.append(f"{tf}:hash_mismatch")
+    resolved_hashes = {**computed_hashes, **supplied_hashes}
     if source_files:
         provenance_status = "BLOCKED" if provenance_errors else "PASS"
     else:
@@ -191,7 +198,7 @@ def build_mt5_operational_snapshot(
             for tf in required_tfs
         },
         "source_files": dict(source_files or {}),
-        "source_hashes": dict(source_hashes or {}),
+        "source_hashes": resolved_hashes,
         "source_artifacts": source_artifacts,
         "provenance": {
             "status": provenance_status,

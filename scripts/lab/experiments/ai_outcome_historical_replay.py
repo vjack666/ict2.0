@@ -194,6 +194,7 @@ def _replay_config(*, full_mtf: bool, horizon_bars: int) -> ReplayConfig:
         htf_timeframe="H4",
         use_multitf_context=full_mtf,
         outcome=OutcomeConfig(horizon_bars=horizon_bars),
+        include_liquidity_zones=False,
     )
 
 

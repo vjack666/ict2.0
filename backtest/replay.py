@@ -39,6 +39,7 @@ class ReplayConfig:
     structure: StructureConfig = field(default_factory=StructureConfig)
     sequence: SequenceConfig = field(default_factory=SequenceConfig)
     outcome: OutcomeConfig = field(default_factory=OutcomeConfig)
+    include_liquidity_zones: bool = True
 
 
 def _canonical_frame(frame: pd.DataFrame, *, name: str) -> pd.DataFrame:
@@ -405,7 +406,10 @@ def run_visual_replay(
     if config.timeframe not in raw_frames:
         raise KeyError(f"main timeframe {config.timeframe!r} not supplied")
     frames = {tf: _canonical_frame(frame, name=tf) for tf, frame in raw_frames.items()}
-    featured = {tf: build_features(frame) for tf, frame in frames.items()}
+    featured = {
+        tf: build_features(frame, include_liquidity_zones=config.include_liquidity_zones)
+        for tf, frame in frames.items()
+    }
     main = featured[config.timeframe]
     main_raw = frames[config.timeframe]
 

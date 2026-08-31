@@ -48,7 +48,9 @@ def _ob_dir(row: pd.Series) -> str:
     return "-"
 
 
-def build_features(df: pd.DataFrame) -> pd.DataFrame:
+def build_features(
+    df: pd.DataFrame, *, include_liquidity_zones: bool = True
+) -> pd.DataFrame:
     """Corre detectores ICT sobre un frame OHLC y devuelve columnas del contrato."""
     d = df.copy().reset_index(drop=True)
     # --- Estructura canonica (BOS/CHOCH/trend) como UNICA fuente de verdad ---
@@ -115,9 +117,18 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     d["displacement_bullish"] = disp["displacement_bullish"].values
     d["displacement_bearish"] = disp["displacement_bearish"].values
     d["displacement_mag"] = disp["displacement_magnitude"].values
-    liq = detect_liquidity(d)
-    d["bsl_price"] = liq["bsl_price"].values
-    d["ssl_price"] = liq["ssl_price"].values
+    if include_liquidity_zones:
+        liq = detect_liquidity(d)
+        d["bsl_price"] = liq["bsl_price"].values
+        d["ssl_price"] = liq["ssl_price"].values
+    else:
+        # The replay/sequence consumer uses canonical_sweep below, not the
+        # expensive visual liquidity-cluster projection.  Keeping this switch
+        # explicit prevents an O(n²) map-only detector from dominating causal
+        # research replays and makes it impossible to mistake omitted zones
+        # for omitted signal logic.
+        d["bsl_price"] = np.nan
+        d["ssl_price"] = np.nan
     # Niveles de la MECHA del sweep (SL estructural, sin look-ahead).
     from detectors.liquidity_context import canonical_sweep, DEFAULT_SWEEP_LOOKBACK
     swept = canonical_sweep(d, lookback=DEFAULT_SWEEP_LOOKBACK)

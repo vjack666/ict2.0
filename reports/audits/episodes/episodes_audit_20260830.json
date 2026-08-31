@@ -4,7 +4,7 @@
     "by_direction": {
       "-1": {
         "accepted": 0,
-        "rejected": 1,
+        "rejected": 0,
         "superseded": 0
       },
       "0": {
@@ -46,18 +46,18 @@
     "by_tf": {
       "H4": {
         "accepted": 3,
-        "rejected": 1,
+        "rejected": 0,
         "superseded": 0
       }
     },
     "totals": {
       "candidates": 4,
-      "episodes": 4,
+      "episodes": 3,
       "rejections": 1,
-      "unique_episodes": 4
+      "unique_episodes": 3
     }
   },
-  "checksum": "b11f8c975e6a7b2e417f0391b6f58781",
+  "checksum": "bbcb07429ba910a2c11c0f027809a548",
   "config": {
     "contract_version": "EPISODES_FUNNEL_V1"
   },
@@ -140,44 +140,6 @@
       "trigger_id": "EXECUTION_M15_1_2024-01-01 03:00:00"
     },
     {
-      "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|POI_H4_-1_2024-01-03 00:00:00|REFINEMENT_M15_-1_2024-01-03 01:00:00|CONFIRMATION_M15_-1_2024-01-03 02:00:00|EXECUTION_M15_-1_2024-01-03 03:00:00|-1",
-      "component_tfs": {
-        "confirmation": "M15",
-        "context_htf": "NONE",
-        "poi": "H4",
-        "refinement": "M15",
-        "trigger": "M15"
-      },
-      "confirmation_id": "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
-      "context_id": "NONE",
-      "contract_version": "EPISODES_FUNNEL_V1",
-      "decision_time": "2024-01-03T04:00:00",
-      "direction": -1,
-      "episode_id": "EP_05ea23a60b77466be2cfead4",
-      "generator_commit": "",
-      "lineage": {
-        "confirmation": "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
-        "context_htf": "NONE",
-        "poi": "POI_H4_-1_2024-01-03 00:00:00",
-        "refinement": "REFINEMENT_M15_-1_2024-01-03 01:00:00",
-        "trigger": "EXECUTION_M15_-1_2024-01-03 03:00:00"
-      },
-      "meta": {},
-      "object_refs": [
-        "POI_H4_-1_2024-01-03 00:00:00",
-        "REFINEMENT_M15_-1_2024-01-03 01:00:00",
-        "CONFIRMATION_M15_-1_2024-01-03 02:00:00",
-        "EXECUTION_M15_-1_2024-01-03 03:00:00"
-      ],
-      "poi_id": "POI_H4_-1_2024-01-03 00:00:00",
-      "reason": "SETUP_BLOCKED",
-      "refinement_id": "REFINEMENT_M15_-1_2024-01-03 01:00:00",
-      "stage": "EPISODE",
-      "status": "REJECTED",
-      "symbol": "EURUSD",
-      "trigger_id": "EXECUTION_M15_-1_2024-01-03 03:00:00"
-    },
-    {
       "canonical_setup_key": "EURUSD|2024-01-03T04:00:00|NONE|POI_H4_1_2024-01-01 00:00:00|REFINEMENT_M15_1_2024-01-01 01:00:00|CONFIRMATION_M15_1_2024-01-01 02:00:00|EXECUTION_M15_1_2024-01-01 03:00:00|1",
       "component_tfs": {
         "confirmation": "M15",
@@ -228,7 +190,7 @@
     "E4": "PASS",
     "E5": "PASS"
   },
-  "generator_commit": "d7320cf4869e11041226117b91b33f86b3e3baa4",
+  "generator_commit": "7fceda3141538eaeb2ffdc95a3a3a8df91c0254d",
   "provenance": {},
   "records": [
     {

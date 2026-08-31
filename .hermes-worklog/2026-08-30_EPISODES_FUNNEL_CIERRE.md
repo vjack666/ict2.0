@@ -21,9 +21,9 @@ contra el código/evidencia real (no por afirmación).
 |---|-------|---------------------|-----------|
 | 1 | `generator_commit=cdc6bc0` en reporte, código en `b9c345d` | Reporte regenerado desde el commit correcto; `_git_commit()` ya tomaba HEAD real | reporte ahora `generator_commit=b9c345d...` |
 | 2 | Reporte con UUID aleatorios | El runner usa ids deterministas (`_mo` asigna `id` estable); el reporte guardado previo era de una corrida anterior con uuid | 0 UUID en el reporte regenerado |
-| 3 | Checksum guardado no coincide con recálculo | `checksum` se excluye del payload (antes incluía el valor previo → dependencia circular) en `_checksum` y `_rechecksum` | recálculo == guardado (`8feab9ec...`) |
+| 3 | Checksum guardado no coincide con recálculo | `checksum` se excluye del payload (antes incluía el valor previo → dependencia circular) en `_checksum` y `_rechecksum` | recálculo == guardado (`bbcb0742...`) |
 | 4 | Checksum calculado antes de añadir `generator_commit`/`full_prefix`/`aggregated_status` | `_rechecksum` se ejecuta AL FINAL, cubriendo todos los campos | alterar `generator_commit` cambia el checksum |
-| 5 | FULL/PREFIX solo comparaba `episodes`/`rejections` | `run_full_prefix` ahora compara records/episodes/rejections/aggregates/gates por T (conteos), más lineage/razones/orden | `mismatches=[]`, `prefix_matches_full=True` |
+| 5 | FULL/PREFIX solo comparaba `episodes`/`rejections` | `run_full_prefix` ahora compara records/episodes/rejections y reconstruye/compara agregados completos por T (TF/dirección/etapa/razón/totales), además de gates | `mismatches=[]`, `prefix_matches_full=True` |
 | 6 | `candidates=` permitía saltarse `projection_at(T)` en producción | Renombrado a `_candidates` (privado); lineage ahora recibe `ms,T` y rechaza componentes fuera del snapshot en T (FUTURE_DATA/TEMPORAL o INVALID_LINEAGE) | test `test_candidate_outside_projection_rejected` |
 | 7 | `_check_lineage` no detectaba huérfanos/ciclos/refs fuera de snapshot | `_check_lineage(setup, ms, T)` ahora: (a) refs fuera de `projection_at(T)`→INVALID_LINEAGE; (b) BFS alcanzabilidad desde POI→MISSING_LINEAGE si huérfano; (c) DFS ciclos (confirmation/trigger tratados como hojas)→INVALID_LINEAGE | tests `test_lineage_orphan/cycle/out_of_snapshot_rejected` |
 
@@ -46,9 +46,9 @@ contra el código/evidencia real (no por afirmación).
   futuro/autoridad/lineage/huérfano/ciclo/out-of-snapshot, dedupe, no-mutación,
   determinismo, integración real vía `build_setups_at`/`build_setup`).
 - `audits/codigo/episodes.py` → `reports/audits/episodes/episodes_audit_20260830.json`:
-  - `aggregated_status = PASS`, `episodes = 4`.
+  - `aggregated_status = PASS`, `episodes = 3` (todos `ACCEPTED`), `rejections = 1` separado.
   - `full_prefix.prefix_matches_full = True`, `mismatches = []`.
-  - `generator_commit = b9c345d...`, `checksum = 8feab9ec...` (reproducible en 2 corridas).
+  - `generator_commit = 7fceda3...`, `checksum = bbcb0742...` (reproducible y auto-consistente).
   - 0 UUID; checksum estable y auto-consistente.
 
 ## T4 — Cierre
@@ -64,7 +64,7 @@ contra el código/evidencia real (no por afirmación).
 |---|---|
 | E0 Contrato+SDD presentes/enlazados | PASS |
 | E1 Entrada exclusiva `projection_at(T)` | PASS (y `_candidates` no puede saltarla) |
-| E2 FULL/PREFIX literal (artefacto completo) | PASS (`mismatches=[]`) |
+| E2 FULL/PREFIX literal (records/episodios/rechazos/agregados/gates por T) | PASS (`mismatches=[]`) |
 | E3 Identidad estable/idempotencia | PASS (sha256 + NONE + dedupe) |
 | E4 Rechazos/lineage/tiempos completos | PASS (incl. huérfanos/ciclos/out-of-snapshot) |
 | E5 Determinismo/checksum reproducible | PASS (2 corridas idénticas; checksum auto-consistente) |

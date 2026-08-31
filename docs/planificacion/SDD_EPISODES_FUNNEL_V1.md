@@ -1,6 +1,6 @@
 # SDD — Episodes / Funnel causal v1
 
-**Estado:** NORMATIVO PARA DISEÑO; implementación pendiente de ejecución del plan
+**Estado:** NORMATIVO; implementación local revisada, pendiente únicamente de auditoría independiente y GO de publicación
 **Fecha:** 2026-08-30
 **Contrato:** `docs/contratos/CONTRATO_EPISODES_FUNNEL_V1.md`
 **Padre:** `docs/planificacion/SDD_ENGINE_LIFECYCLE_MARKET_STATE_SETUP_BUILDER_V1.md`

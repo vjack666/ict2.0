@@ -93,9 +93,9 @@ ejecutiva y las reglas de delegación están en
 | Archivo | Rol | Estado |
 |---|---|---|
 | `docs/contratos/CONTRATO_EPISODES_FUNNEL_V1.md` | Identidad, etapas, razones de rechazo, lineage, deduplicación y gates del Funnel. | **NORMATIVO PARA IMPLEMENTACIÓN LOCAL** |
-| `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md` | Diseño de la capa sobre `MarketState(T)` y `Setup(T)`. | **NORMATIVO PARA DISEÑO; REVISIÓN D5 PENDIENTE** |
-| `.hermes/plans/2026-08-30_EPISODES_FUNNEL_V1.md` | Lista de tareas, subtareas dinámicas, responsables y criterio de cierre para Hermes. | **READY_FOR_EXECUTION** |
-| `.hermes-worklog/2026-08-30_AUDITORIA_PRE_EPISODES_FUNNEL.md` | Auditoría de entrada y decisión de alcance. | **CERRADO — IMPLEMENTACIÓN PENDIENTE** |
+| `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md` | Diseño de la capa sobre `MarketState(T)` y `Setup(T)`. | **NORMATIVO; IMPLEMENTACIÓN REVISADA — AUDITORÍA INDEPENDIENTE PENDIENTE** |
+| `.hermes/plans/2026-08-30_EPISODES_FUNNEL_V1.md` | Lista de tareas, subtareas dinámicas, responsables y criterio de cierre para Hermes. | **READY_FOR_INDEPENDENT_AUDIT** |
+| `.hermes-worklog/2026-08-30_AUDITORIA_PRE_EPISODES_FUNNEL.md` | Auditoría de entrada y decisión de alcance. | **CERRADO — IMPLEMENTACIÓN EJECUTADA Y REVISADA** |
 
 La siguiente capa es Episodes/Funnel. Debe tener contrato y SDD propios antes de
 crear código; no se deben reimplementar Lifecycle, MarketState ni Setup Builder.

@@ -63,25 +63,25 @@ presupuesto, seguridad, datos, promoción, push o una acción destructiva.
 - [x] `T2.3` Validación temporal/autoridad/lineage fail-closed (`_check_temporal`/`_check_authority`/`_check_lineage`).
 - [x] `T2.4` Identidad canónica `sha256` + sentinel NONE + dedupe idempotente (`_canonical_key`/`_episode_id_for`/`seen_keys`).
 - [x] `T2.5` Separación de outcomes/labels: el funnel NO consume `outcome`/label futuro; estado derivado solo de `SetupEligibility`.
-- [x] `T2.6` Dependencia no escrita resuelta: `build_episodes` acepta `candidates` override (audit/tests) sin salir del write set.
+- [x] `T2.6` Dependencia no escrita resuelta: `_candidates` privado para audit/tests; componentes fuera de `projection_at(T)` se rechazan.
 
 ### T3 — Tests de dominio y auditoría — D2/D5
 
 - [x] `T3.1` Tests de aceptación/rechazo (`tests/test_episodes.py`: ELIGIBLE→ACCEPTED, SUPERSEDED, BLOCKED→REJECTED, OUT_OF_CONTEXT→REJECTED).
 - [x] `T3.2` Tests negativos: futuro (FUTURE_DATA), autoridad (INVALID_AUTHORITY), lineage (MISSING_LINEAGE), temporal (TEMPORAL_ORDER), duplicados (DUPLICATE_SETUP/idempotencia), no-mutación.
 - [x] `T3.3` `audits/codigo/episodes.py` con salida determinista (JSON: records/episodes/rejections/aggregates/gates/checksum).
-- [x] `T3.4` FULL/PREFIX literal en 3 decisiones T, TF H4/M15, dirección ±1 (`run_full_prefix` → `prefix_matches_full=True`).
-- [x] `T3.5` Dos corridas idénticas → checksum estable (`da1008f8...` reproducible).
-- [x] `T3.6` Fallos reproducibles corregidos y re-verificados (ids no deterministas del corpus audit → arreglados; 388 passed).
+- [x] `T3.4` FULL/PREFIX literal en 3 decisiones T, TF H4/M15, dirección ±1; compara records, episodios, rechazos, agregados completos y gates.
+- [x] `T3.5` Dos corridas idénticas → checksum estable (`bbcb0742...` reproducible y auto-consistente).
+- [x] `T3.6` Fallos reproducibles corregidos y re-verificados; IDs deterministas, lineage defensivo y solo episodios aceptados en `episodes` (392 passed).
 
 ### T4 — Cierre documental y entrega — D1/D7
 
-- [x] `T4.1` `pytest tests/` completo → **388 passed**.
-- [x] `T4.2` Reporte `reports/audits/episodes/episodes_audit_20260830.json` (status PASS, commit, config, provenance, aggregates, rejections, lineage, checksum).
+- [x] `T4.1` `pytest tests/` completo → **392 passed**.
+- [x] `T4.2` Reporte `reports/audits/episodes/episodes_audit_20260830.json` (status PASS, 3 episodios aceptados, 1 rechazo separado, commit, config, provenance, aggregates, lineage, checksum).
 - [x] `T4.3` Worklog `2026-08-30_EPISODES_FUNNEL_CIERRE.md` + index + contrato/SDD actualizados por la revisión D5.
 - [x] `T4.4` `graphify update .` ejecutado (10962 nodos, 17907 edges, graph.json + GRAPH_REPORT.md actualizados).
 - [x] `T4.5` `git diff --check` limpio (solo warnings CRLF de config de repo; sin errores); write set revisado.
-- [x] `T4.6` Commit local selectivo `f955b31` (10 archivos); **sin push** (política del proyecto).
+- [x] `T4.6` Commits locales selectivos `f955b31`, `b9c345d`, `d7320cf`, `44665d4`, `7fceda3` y reporte regenerado; **sin push**.
 - [x] `T4.7` Entrega final con AGENTE/DEPARTAMENTO/TAREA/STATUS/EVIDENCIA/ARCHIVOS/RIESGOS/SIGUIENTE ACCIÓN.
 
 ## Condiciones de cierre

@@ -58,10 +58,10 @@ nuevo exige nombrar la frontera explícitamente.
 
 ## Riesgos
 
-- El brief actual aún no materializa un Object MarketState completo a partir de
-  todos los objetos MT5; eso es M2, no se debe declarar resuelto ahora.
-- Frescura de MT5 depende de la terminal local; si falla, el brief debe quedar
-  bloqueado.
+- La frescura de MT5 depende de la terminal local; si falla, el brief debe
+  quedar bloqueado. Esta misión no ejecutó un refresco de la terminal.
+- El puente certifica ensamblaje mecánico y causal, no la actualidad del feed
+  ni la calidad científica de una lectura.
 - Este gate no prueba edge ni autoriza trading.
 
 ## Siguiente acción

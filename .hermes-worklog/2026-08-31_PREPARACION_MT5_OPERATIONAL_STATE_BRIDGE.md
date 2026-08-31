@@ -3,7 +3,7 @@
 **Fecha:** 2026-08-31
 **Agente:** Codex — CEO operativo
 **Departamentos:** D2, D4, D5, D1 y D7
-**STATUS:** READY — preflight documental completado; implementación pendiente
+**STATUS:** COMPLETED — ensamblaje implementado y verificado; auditoría independiente pendiente
 
 ## Decisión
 
@@ -35,6 +35,24 @@ nuevo exige nombrar la frontera explícitamente.
 - `docs/planificacion/SDD_MT5_OPERATIONAL_STATE_BRIDGE_V1.md`
 - `.hermes/plans/2026-08-31_MT5_OPERATIONAL_STATE_BRIDGE_V1.md`
 
+## Implementación y evidencia
+
+- `engine/ltf_canonical_feed.py` expone `build_canonical_objects` y conserva
+  detectores/relaciones como autoridades únicas.
+- `engine/mt5_operational_snapshot.py` ensambla Context State, Object
+  MarketState event-sourced, canonical feed, Wyckoff y daily motor.
+- `scripts/daily/brief_lunes.py` consume el snapshot único y muestra su estado,
+  conteo de objetos, TF faltantes y provenance.
+- Pruebas focales: `11 passed`.
+- Suite completa: `396 passed in 15.24s`.
+- Compilación: `py_compile=PASS`.
+- Integración con parquet MT5 local (sin refrescar terminal): `READY`,
+  `provenance=PASS`, 6 artefactos hasheados, 90 objetos proyectados,
+  JSON serializable y `OBSERVE_ONLY_NO_ORDER`.
+- Fallas encontradas durante la misión: sello `tf` ausente, identidad
+  `__index__` ausente y fixture de longitud inválida; todas corregidas y
+  reverificadas.
+
 ## Riesgos
 
 - El brief actual aún no materializa un Object MarketState completo a partir de
@@ -45,5 +63,6 @@ nuevo exige nombrar la frontera explícitamente.
 
 ## Siguiente acción
 
-Implementar M2 únicamente después de revisar el contrato y conservar el write
-set acordado; luego ejecutar M3 causalidad/determinismo y auditoría independiente.
+M2–M4 quedan cerrados técnicamente. La siguiente acción es la auditoría
+independiente del puente y del reporte; no se autoriza por esto trading,
+backtest, IA, descarga Dukascopy ni promoción.

@@ -360,46 +360,27 @@ def build_symbol_section(sym, feats, last_dates):
     # precompute_sequences=False evita que esta lectura cree una segunda
     # ejecución pesada; Sequence se entrega por su interfaz canónica cuando
     # el caller disponga de ese snapshot.
-    from engine.daily_motor import build_daily_motor_snapshot
-    from engine.ltf_canonical_feed import build_ltf_canonical_feed
-    from engine.mtf_navigation import MTFNavigator, NavigatorConfig
-    from engine.Wyckoff import build_wyckoff_snapshot
+    from engine.mt5_operational_snapshot import build_mt5_operational_snapshot
     decision_time = last_dates.get("M15")
     nav_frames = {tf: frame for tf, frame in feats.items() if frame is not None}
-    mtf_frames = {
-        tf: nav_frames[tf]
-        for tf in ("D1", "H4", "H1", "M15")
-        if tf in nav_frames
-    }
-    market_state = None
-    if decision_time is not None and mtf_frames:
-        market_state = MTFNavigator(
-            mtf_frames,
-            NavigatorConfig(precompute_sequences=False, sequence_tf="H1"),
-        ).navigate(decision_time=decision_time, exec_tf="M15")
-    canonical_feed = build_ltf_canonical_feed(
+    operational = build_mt5_operational_snapshot(
         feats,
         decision_time=decision_time,
-        exec_tf="M15",
-        sequence_tf="H1",
         symbol=sym,
-        include_sequence=True,
-    ) if decision_time is not None else {"zones": {"M15": []}, "sequence": {"available": False, "refs": [], "depth": 0}}
-    wyckoff_read = build_wyckoff_snapshot(
-        nav_frames,
-        decision_time=decision_time,
-        context_state=market_state,
-        authority_tf="D1",
-        layers=("D1", "H4", "H1", "M15"),
-    ) if decision_time is not None else None
-    ltf_read = build_daily_motor_snapshot(
-        feats,
-        decision_time=decision_time,
-        context_state=market_state,
-        canonical_zones=canonical_feed.get("zones"),
-        sequence_snapshot=canonical_feed.get("sequence"),
-        wyckoff_snapshot=wyckoff_read,
+        source_files={
+            tf: str(ROOT_PATH / "data" / "raw" / sym / f"{sym}_{tf}.parquet")
+            for tf in READ_TFS
+            if (ROOT_PATH / "data" / "raw" / sym / f"{sym}_{tf}.parquet").exists()
+        },
+        generator_commit=subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT_PATH,
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip() or None,
     )
+    ltf_read = operational["daily_motor"]
     ltf = ltf_read.get("ltf", {})
     ctx = ltf_read.get("context", {})
     direction_label = ltf_read.get("direction_label", "RANGING")
@@ -407,6 +388,12 @@ def build_symbol_section(sym, feats, last_dates):
     lines.append(
         f"- **Context State:** `{direction_label}` · location=`{context_location}` · "
         f"fuente=`{ctx.get('source', 'n/a')}`"
+    )
+    lines.append(
+        f"- **Snapshot operativo MT5:** `{operational['status']}` · "
+        f"objetos históricos=`{len(operational['object_market_state'].get('objects', []))}` · "
+        f"TF faltantes=`{operational.get('missing_timeframes', [])}` · "
+        f"provenance=`{operational.get('provenance', {}).get('status', 'NOT_RUN')}`"
     )
     lines.append(f"- **Sesgo diagnóstico legacy:** `{bias}` (fuente {src}) · D1={per_tf['D1']} H4={per_tf['H4']} H1={per_tf['H1']}")
     wyckoff = ltf_read.get("wyckoff", {})

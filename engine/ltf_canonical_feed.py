@@ -78,6 +78,66 @@ def _sequence_summary(frame: pd.DataFrame, decision_time: Any, timeframe: str) -
     }
 
 
+def build_canonical_objects(
+    frames: Mapping[str, pd.DataFrame],
+    decision_time: Any,
+    *,
+    timeframes: tuple[str, ...] = ("D1", "H4", "H1", "M15"),
+    symbol: str = "",
+) -> dict[str, Any]:
+    """Ensambla objetos canónicos closed-only sin avanzar su lifecycle.
+
+    Esta es la interfaz de composición para consumidores que necesitan
+    construir un ``engine.market_state.MarketState`` event-sourced. Los
+    detectores siguen siendo los únicos que crean FVG/OB y ``relate_fvg_ob``
+    sigue siendo la única autoridad de lineage; la función solo coordina esas
+    APIs y deja las transiciones para ``engine.lifecycle``/``MarketState``.
+    """
+    normalized_tfs = tuple(dict.fromkeys(tf.upper() for tf in timeframes))
+    objects_by_tf: dict[str, list[MarketObject]] = {}
+    relations: list[Any] = []
+    for tf in normalized_tfs:
+        frame = _asof_prefix(frames.get(tf), decision_time)
+        rows = frame.to_dict("records")
+        fvgs = detect_fvg(rows, timeframe=tf, symbol=symbol)
+        obs = detect_order_blocks(rows, timeframe=tf, symbol=symbol)
+        objects_by_tf[tf] = [*fvgs, *obs]
+        # Keep relation work bounded per timeframe. The relation layer itself
+        # owns the strict causal rule; cross-TF setup composition remains a
+        # separate consumer concern and must not create an O(N^2) operational
+        # scan across every object in every timeframe.
+        relations.extend(relate_fvg_ob(fvgs, obs, causal_mode="strict"))
+
+    by_id = {
+        obj.id: obj
+        for objects in objects_by_tf.values()
+        for obj in objects
+    }
+    for rel in relations:
+        fvg = by_id[rel.fvg_id]
+        ob = by_id[rel.ob_id]
+        fvg.parent_object = ob.id
+        if fvg.id not in ob.related_objects:
+            ob.related_objects.append(fvg.id)
+        fvg.meta.setdefault("lineage_refs", []).append(ob.id)
+        ob.meta.setdefault("lineage_refs", []).append(fvg.id)
+
+    return {
+        "objects_by_tf": objects_by_tf,
+        "objects": sorted(by_id.values(), key=lambda obj: (str(obj.tradable_time), str(obj.id))),
+        "relations": [
+            {
+                "fvg_id": r.fvg_id,
+                "ob_id": r.ob_id,
+                "relation": r.relation,
+                "direction": r.direction,
+                "bars_apart": r.bars_apart,
+            }
+            for r in relations
+        ],
+    }
+
+
 def build_ltf_canonical_feed(
     frames: Mapping[str, pd.DataFrame],
     decision_time: Any,
@@ -104,19 +164,18 @@ def build_ltf_canonical_feed(
             "lineage_refs": [],
         }
 
-    rows = frame.to_dict("records")
-    fvgs = detect_fvg(rows, timeframe=exec_tf, symbol=symbol)
-    obs = detect_order_blocks(rows, timeframe=exec_tf, symbol=symbol)
-    relations = relate_fvg_ob(fvgs, obs, causal_mode="strict")
-    by_id = {obj.id: obj for obj in [*fvgs, *obs]}
-    for rel in relations:
-        fvg = by_id[rel.fvg_id]
-        ob = by_id[rel.ob_id]
-        fvg.parent_object = ob.id
-        if fvg.id not in ob.related_objects:
-            ob.related_objects.append(fvg.id)
-        fvg.meta.setdefault("lineage_refs", []).append(ob.id)
-        ob.meta.setdefault("lineage_refs", []).append(fvg.id)
+    assembled = build_canonical_objects(
+        {exec_tf: frame}, decision_time, timeframes=(exec_tf,), symbol=symbol
+    )
+    by_id = {obj.id: obj for obj in assembled["objects"]}
+    relations = [
+        relate_fvg_ob(
+            [by_id[r["fvg_id"]]], [by_id[r["ob_id"]]], causal_mode="strict"
+        )[0]
+        for r in assembled["relations"]
+    ]
+    fvgs = [obj for obj in assembled["objects"] if obj.type.value == "FVG"]
+    obs = [obj for obj in assembled["objects"] if obj.type.value == "ORDER_BLOCK"]
 
     objects = [_touch_state(obj, frame, decision_time) for obj in [*fvgs, *obs]]
     objects.sort(key=lambda obj: (str(obj.tradable_time), str(obj.id)))
@@ -137,4 +196,4 @@ def build_ltf_canonical_feed(
     }
 
 
-__all__ = ["build_ltf_canonical_feed"]
+__all__ = ["build_canonical_objects", "build_ltf_canonical_feed"]

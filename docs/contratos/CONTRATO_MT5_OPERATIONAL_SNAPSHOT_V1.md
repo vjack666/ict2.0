@@ -18,6 +18,20 @@ La salida debe responder qué se conocía en `decision_time`, usando únicamente
 velas cerradas, y debe ser reproducible con los mismos archivos, configuración y
 commit.
 
+## 1.1 Separación de planos de datos
+
+El proyecto mantiene dos feeds deliberadamente distintos:
+
+| Plano | Fuente | Uso autorizado | No significa |
+|---|---|---|---|
+| Investigación | Dukascopy histórico | funnel, análisis, backtest y tests generales | no es feed operativo ni reemplaza MT5 |
+| Operación | MT5 local | actualizar la punta actual, snapshot diario y futura ejecución | no es evidencia histórica del funnel ni autoriza órdenes por sí solo |
+
+No se mezclan ni se sustituyen silenciosamente. La frescura del parquet MT5
+prueba actualidad operativa; la reproducibilidad de Dukascopy prueba una
+investigación histórica. Son gates diferentes y cada reporte debe identificar
+el plano que está auditando.
+
 ## 2. Fronteras de autoridad
 
 | Concepto | Autoridad |
@@ -56,12 +70,15 @@ context_state, object_market_state, canonical_zones, sequence,
 wyckoff, lineage_refs, status, policy=OBSERVE_ONLY_NO_ORDER
 ```
 
-La salida es descriptiva. No contiene orden, fill, broker, sizing, PnL ni
-`entry_authorized=True`.
+La salida de esta versión es descriptiva. No contiene orden, fill, broker,
+sizing, PnL ni `entry_authorized=True`. La futura emisión de órdenes será una
+misión posterior, con contrato propio, usando el snapshot MT5 como entrada y
+sus gates de seguridad; no se activa automáticamente al cerrar este puente.
 
 ## 5. Prohibiciones
 
-- No descargar ni modificar Dukascopy para esta etapa.
+- No descargar ni modificar Dukascopy durante esta etapa operativa; el feed
+  histórico permanece reservado al plano de investigación.
 - No sustituir MT5 por otra fuente ni mezclar feeds sin declarar contrato.
 - No recalcular FVG/OB, Sequence, AHF o Lifecycle en el adaptador.
 - No usar el `MarketState` presente cuando se requiere `T`.

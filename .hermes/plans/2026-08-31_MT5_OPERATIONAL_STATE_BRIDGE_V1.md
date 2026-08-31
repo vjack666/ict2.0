@@ -13,6 +13,10 @@ Producir una lectura semanal/diaria desde el MT5 local, cerrada por tiempo,
 causal, trazable y solo informativa. El trabajo termina cuando el snapshot se
 puede reproducir y explicar; no cuando genera una entrada.
 
+**Frontera de datos:** Dukascopy continúa reservado a investigación, funnel,
+análisis, backtest y tests generales. MT5 local actualiza la punta operativa y
+es la fuente prevista para una futura ejecución; este plan no emite órdenes.
+
 ## Reparto
 
 | Dueño | Entrega | Write set |
@@ -39,8 +43,10 @@ puede reproducir y explicar; no cuando genera una entrada.
 
 ## Fuera de alcance
 
-Dukascopy, nuevas descargas, backtest de rendimiento, experimentos, IA,
-órdenes, broker, producción y `git push`.
+Descarga o mezcla operativa de Dukascopy, backtest de rendimiento,
+experimentos, IA, órdenes, broker, producción y `git push`. El histórico
+Dukascopy sigue disponible únicamente para misiones de investigación con su
+contrato propio.
 
 ## Gates
 

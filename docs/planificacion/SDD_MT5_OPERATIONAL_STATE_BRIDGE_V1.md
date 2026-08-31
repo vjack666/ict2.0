@@ -11,6 +11,18 @@
 Completar la lectura MT5 semanal/diaria sobre las autoridades ya existentes.
 El puente ensambla; no inventa semántica y no reemplaza ningún motor.
 
+## 1.1 Frontera entre investigación y operación
+
+- **Dukascopy histórico:** permanece en el plano de investigación para funnel,
+  análisis, backtest y tests generales. No se usa para decidir el estado actual
+  del mercado ni se mezcla con MT5 en este puente.
+- **MT5 local:** actualiza únicamente la punta operativa disponible y alimenta
+  el snapshot/brief actual. Es la fuente prevista para una futura capa de
+  ejecución, pero esta versión sigue siendo `OBSERVE_ONLY_NO_ORDER`.
+- La frescura MT5 y la reproducibilidad del dataset histórico son controles
+  independientes. Un `REVIEW` del runner `AUDIT_ONLY` no implica que falte
+  Dukascopy ni que el parquet MT5 sea incorrecto.
+
 ## 2. Diseño aprobado
 
 ```text
@@ -73,5 +85,6 @@ actualizar worklog/índice/Graphify y crear commit selectivo sin push.
 - entradas no mutadas;
 - provenance mecánica visible;
 - tests y compilación PASS;
-- ningún backtest, descarga Dukascopy, entrenamiento, orden o push;
+- ningún backtest dentro de esta misión, ninguna descarga Dukascopy operativa,
+  entrenamiento, orden o push;
 - auditoría independiente pendiente antes de publicar.

@@ -11,6 +11,12 @@ Después del cierre técnico de Episodes/Funnel, la siguiente etapa será la
 lectura operativa local desde MT5. Dukascopy no se usa en esta misión: queda
 como evidencia histórica/fixure y no se descarga, modifica ni mezcla.
 
+La arquitectura conserva dos planos: Dukascopy histórico para investigación,
+funnel, análisis, backtest y tests generales; MT5 local para actualizar la
+punta actual y alimentar la lectura operativa. MT5 será la fuente de una futura
+capa de envío de órdenes, pero ese envío requiere otro contrato y no queda
+activado por este puente de observación.
+
 ## Evidencia de entrada
 
 - `scripts/daily/update_mt5_ict.py` ya actualiza parquet local.

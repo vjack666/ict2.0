@@ -12,12 +12,15 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import re
+import subprocess
+import sys
 from typing import Any, Mapping
 
 from backtest.schema import validate_visual_backtest
 
 
 CONTRACT_VERSION = "EPISODES_FUNNEL_V1"
+ROOT = Path(__file__).resolve().parents[3]
 _HEX_COMMIT = re.compile(r"^[0-9a-fA-F]{7,64}$")
 
 
@@ -145,4 +148,79 @@ def build_funnel_artifact(
     return artifact
 
 
-__all__ = ["CONTRACT_VERSION", "FunnelBridgeError", "build_funnel_artifact"]
+def write_funnel_artifact(
+    backtest_artifact: Mapping[str, Any] | str | Path,
+    output: str | Path,
+    *,
+    generator_commit: str,
+) -> dict[str, Any]:
+    """Build and write one immutable Episodes/Funnel bridge artifact."""
+
+    destination = Path(output).resolve()
+    if destination.suffix.lower() != ".json":
+        raise FunnelBridgeError("output debe ser JSON")
+    if destination.exists():
+        raise FunnelBridgeError(f"output ya existe y no se sobrescribe: {destination}")
+    artifact = build_funnel_artifact(
+        backtest_artifact,
+        generator_commit=generator_commit,
+    )
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_name(f".{destination.name}.tmp")
+    temporary.write_text(
+        json.dumps(artifact, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(destination)
+    return artifact
+
+
+def _git_commit() -> str:
+    try:
+        value = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, stderr=subprocess.STDOUT
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise FunnelBridgeError("no se pudo determinar el commit del bridge") from exc
+    if not _HEX_COMMIT.fullmatch(value):
+        raise FunnelBridgeError("commit del bridge inválido")
+    return value
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--backtest", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--generator-commit", help="Commit que contiene el bridge")
+    args = parser.parse_args(argv)
+    try:
+        artifact = write_funnel_artifact(
+            args.backtest,
+            args.output,
+            generator_commit=args.generator_commit or _git_commit(),
+        )
+    except (FunnelBridgeError, OSError) as exc:
+        print(f"[AI_OUTCOME_FUNNEL][BLOCKED] {exc}", file=sys.stderr)
+        return 2
+    print(json.dumps({
+        "status": artifact["aggregated_status"],
+        "output": str(args.output),
+        "episodes": len(artifact["episodes"]),
+        "rejections": len(artifact["rejections"]),
+        "gates": artifact["gates"],
+    }, ensure_ascii=False, sort_keys=True))
+    return 0 if artifact["aggregated_status"] == "PASS" else 2
+
+
+__all__ = [
+    "CONTRACT_VERSION",
+    "FunnelBridgeError",
+    "build_funnel_artifact",
+    "write_funnel_artifact",
+]
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

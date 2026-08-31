@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 from typing import Any, Mapping
@@ -105,6 +106,7 @@ def _validate_snapshot_contract(
     rows: tuple[dict[str, Any], ...],
     *,
     time_column: str,
+    target: str,
 ) -> None:
     source = snapshot.source_path.replace("\\", "/").lower()
     if source.endswith(".parquet") or source.startswith("data/raw/") or "/mt5/" in source:
@@ -120,7 +122,7 @@ def _validate_snapshot_contract(
         raise TrainingRunnerBlocked("gates del snapshot no PASS: " + ", ".join(missing))
 
     columns = set(snapshot.schema.columns)
-    required = set(FEATURE_COLUMNS) | {TARGET, time_column}
+    required = set(FEATURE_COLUMNS) | {target, time_column}
     absent = sorted(required - columns)
     if absent:
         raise TrainingRunnerBlocked("snapshot sin columnas requeridas: " + ", ".join(absent))
@@ -167,6 +169,7 @@ def _register_or_validate_model(
     *,
     git_commit: str,
     config: Mapping[str, Any],
+    target: str,
 ) -> None:
     try:
         registry.get_model(MODEL_ID, MODEL_VERSION)
@@ -180,7 +183,7 @@ def _register_or_validate_model(
             git_commit=git_commit,
             snapshot=snapshot,
             features=FEATURE_COLUMNS,
-            labels=(TARGET,),
+            labels=(target,),
             seed=int(config["seed"]),
             config=config,
             created_at=snapshot.created_at,
@@ -223,12 +226,15 @@ def run_training(
     learning_rate: float = 0.05,
     l2: float = 1e-4,
     min_class_rows: int = 5,
+    target: str = TARGET,
 ) -> dict[str, Any]:
     """Ejecuta el entrenamiento únicamente detrás de todos los gates."""
     if time_column not in {"event_time", "timestamp"}:
         raise TrainingRunnerBlocked("time_column no permitido; use event_time o timestamp")
+    if re.fullmatch(r"label_end_[1-9][0-9]*", target) is None:
+        raise TrainingRunnerBlocked("target no permitido; use label_end_N con N positivo")
     snapshot, rows = _load_certified_snapshot(snapshot_path)
-    _validate_snapshot_contract(snapshot, rows, time_column=time_column)
+    _validate_snapshot_contract(snapshot, rows, time_column=time_column, target=target)
     research_gate = _load_json_object(research_gate_path, "research_gate")
     _validate_training_authorization(research_gate, snapshot)
 
@@ -237,7 +243,7 @@ def run_training(
         "algorithm": "deterministic_multinomial_softmax",
         "can_trade": False,
         "shadow_mode": True,
-        "target": TARGET,
+        "target": target,
         "time_column": time_column,
         "train_fraction": 0.6,
         "validation_fraction": 0.2,
@@ -248,7 +254,7 @@ def run_training(
         "min_class_rows": min_class_rows,
     }
     registry = ModelRegistry(_assert_local_path(registry_root, "registry_root"))
-    _register_or_validate_model(registry, snapshot, git_commit=git_commit, config=config)
+    _register_or_validate_model(registry, snapshot, git_commit=git_commit, config=config, target=target)
     pipeline = TrainingPipeline(
         snapshot=snapshot.snapshot_path,
         registry=registry,
@@ -258,7 +264,7 @@ def run_training(
         model_id=MODEL_ID,
         model_version=MODEL_VERSION,
         features=FEATURE_COLUMNS,
-        labels=(TARGET,),
+        labels=(target,),
         seed=seed,
         config=config,
         time_column=time_column,
@@ -270,7 +276,7 @@ def run_training(
         model = train_outcome_classifier(
             pipeline,
             research_gate=research_gate,
-            target=TARGET,
+            target=target,
             min_class_rows=min_class_rows,
             iterations=iterations,
             learning_rate=learning_rate,
@@ -327,6 +333,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--registry-root", default=str(DEFAULT_REGISTRY))
     parser.add_argument("--checkpoint-root", default=str(DEFAULT_CHECKPOINTS))
     parser.add_argument("--time-column", default="event_time", choices=("event_time", "timestamp"))
+    parser.add_argument("--target", default=TARGET, help="Etiqueta temporal label_end_N")
     return parser
 
 
@@ -340,6 +347,7 @@ def main(argv: list[str] | None = None) -> int:
             registry_root=args.registry_root,
             checkpoint_root=args.checkpoint_root,
             time_column=args.time_column,
+            target=args.target,
         )
     except TrainingRunnerBlocked as exc:
         print(json.dumps({"runner_schema_version": RUNNER_SCHEMA_VERSION, "status": "BLOCKED", "reason": str(exc)}, ensure_ascii=False))

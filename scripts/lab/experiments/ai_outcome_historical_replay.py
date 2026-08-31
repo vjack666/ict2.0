@@ -11,10 +11,11 @@ training/promotion decisions.
 from __future__ import annotations
 
 import hashlib
+import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 import numpy as np
 import pandas as pd
@@ -184,24 +185,99 @@ def _generator_evidence() -> dict[str, str]:
     }
 
 
+def _replay_config(*, full_mtf: bool, horizon_bars: int) -> ReplayConfig:
+    return ReplayConfig(
+        symbol="EURUSD",
+        timeframe="H1",
+        timeframes=TIMEFRAMES,
+        execution_tf="H1",
+        htf_timeframe="H4",
+        use_multitf_context=full_mtf,
+        outcome=OutcomeConfig(horizon_bars=horizon_bars),
+    )
+
+
+def _prefix_signature(signal: Mapping[str, Any]) -> str:
+    """Canonical causal signal view, excluding ordinal export identifiers."""
+
+    view = {
+        "decision_time": signal.get("decision_time"),
+        "direction": signal.get("direction"),
+        "features_at_t": signal.get("features_at_t"),
+        "lineage": signal.get("lineage"),
+        "event_objects": signal.get("event_objects"),
+    }
+    return json.dumps(view, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _verify_full_prefix(
+    frames: dict[str, pd.DataFrame],
+    full_payload: dict[str, Any],
+    *,
+    full_mtf: bool,
+    horizon_bars: int,
+) -> dict[str, Any]:
+    """Prove that future bars do not rewrite earlier replay signals."""
+
+    main = frames["H1"]
+    full_signals = full_payload.get("signals")
+    if not isinstance(full_signals, list):
+        return {"prefix_matches_full": False, "status": "BLOCKED", "reason": "SIGNALS_MISSING"}
+    cuts: list[dict[str, Any]] = []
+    for percent in (10, 25, 50, 75, 90):
+        cutoff_index = max(1, int(len(main) * percent / 100) - 1)
+        cutoff = main.iloc[cutoff_index]["time"]
+        prefix_frames = {
+            tf: frame[frame["time"] <= cutoff].reset_index(drop=True)
+            for tf, frame in frames.items()
+        }
+        if any(frame.empty for frame in prefix_frames.values()):
+            cuts.append({"percent": percent, "status": "BLOCKED", "reason": "PREFIX_FRAME_EMPTY"})
+            continue
+        prefix = run_visual_replay(
+            prefix_frames,
+            _replay_config(full_mtf=full_mtf, horizon_bars=horizon_bars),
+        ).to_dict()
+        full_at_cut = [
+            item for item in full_signals
+            if isinstance(item, Mapping) and item.get("decision_time") is not None
+            and item["decision_time"] <= cutoff.isoformat()
+        ]
+        prefix_signals = prefix.get("signals") or []
+        left = [_prefix_signature(item) for item in full_at_cut if isinstance(item, Mapping)]
+        right = [_prefix_signature(item) for item in prefix_signals if isinstance(item, Mapping)]
+        match = left == right
+        cuts.append({
+            "percent": percent,
+            "cutoff_time": cutoff.isoformat(),
+            "full_signals": len(left),
+            "prefix_signals": len(right),
+            "status": "PASS" if match else "BLOCKED",
+        })
+    passed = bool(cuts) and all(item.get("status") == "PASS" for item in cuts)
+    return {
+        "prefix_matches_full": passed,
+        "status": "PASS" if passed else "BLOCKED",
+        "cuts": cuts,
+        "comparison": "causal signal fields by decision_time; ordinal signal_index excluded",
+    }
+
+
 def build_historical_replay(
     *,
     dataset_dir: Path = DATASET_DIR,
     start: Any | None = None,
     end: Any | None = None,
+    full_mtf: bool = True,
+    horizon_bars: int = HISTORICAL_HORIZON_BARS,
+    verify_prefix: bool = False,
 ) -> dict[str, Any]:
     """Build the observational H1 artifact from the closed Dukascopy source."""
 
+    if isinstance(horizon_bars, bool) or not isinstance(horizon_bars, int) or horizon_bars < 1:
+        raise HistoricalReplayError("HORIZON_INVALID: horizon_bars must be positive")
     frames, source_files = _load_historical_frames(dataset_dir, start=start, end=end)
-    config = ReplayConfig(
-        symbol="EURUSD",
-        timeframe="H1",
-        timeframes=TIMEFRAMES,
-        execution_tf="H1",
-        htf_timeframe="H1",
-        use_multitf_context=True,
-        outcome=OutcomeConfig(horizon_bars=HISTORICAL_HORIZON_BARS),
-    )
+    config = _replay_config(full_mtf=full_mtf, horizon_bars=horizon_bars)
     artifact = run_visual_replay(frames, config)
     payload = artifact.to_dict()
     generator = _generator_evidence()
@@ -242,8 +318,8 @@ def build_historical_replay(
         "generator": generator,
         "provenance": provenance,
         "outcome": {
-            "label_contract": "label_end_6",
-            "horizon_bars": HISTORICAL_HORIZON_BARS,
+            "label_contract": f"label_end_{horizon_bars}",
+            "horizon_bars": horizon_bars,
             "entry_bar_excluded_from_scan": True,
             "scan_starts_at_entry_plus_one": True,
         },
@@ -255,6 +331,12 @@ def build_historical_replay(
             "source_rows_repaired": False,
         },
         "source_timeframes": list(TIMEFRAMES),
+        "full_mtf_context": bool(full_mtf),
+        "full_prefix": (
+            _verify_full_prefix(frames, payload, full_mtf=full_mtf, horizon_bars=horizon_bars)
+            if verify_prefix
+            else {"prefix_matches_full": False, "status": "NOT_RUN"}
+        ),
         "funnel_episodes": {
             "status": "BLOCKED",
             "derived": False,
@@ -289,10 +371,16 @@ def export_historical_replay(
     dataset_dir: Path = DATASET_DIR,
     start: Any | None = None,
     end: Any | None = None,
+    full_mtf: bool = True,
+    horizon_bars: int = HISTORICAL_HORIZON_BARS,
+    verify_prefix: bool = False,
 ) -> dict[str, Any]:
     """Build and atomically write one observational JSON artifact."""
 
-    payload = build_historical_replay(dataset_dir=dataset_dir, start=start, end=end)
+    payload = build_historical_replay(
+        dataset_dir=dataset_dir, start=start, end=end,
+        full_mtf=full_mtf, horizon_bars=horizon_bars, verify_prefix=verify_prefix,
+    )
     write_visual_backtest(payload, Path(output))
     return payload
 
@@ -308,12 +396,26 @@ def main(argv: list[str] | None = None) -> int:
         type=Path,
         default=ROOT / "backtest" / "visual_backtest.json",
     )
+    parser.add_argument(
+        "--fast",
+        action="store_true",
+        help="Use the causal H4 projection path without rebuilding the full MTF context per bar.",
+    )
+    parser.add_argument("--horizon-bars", type=int, default=HISTORICAL_HORIZON_BARS)
+    parser.add_argument(
+        "--verify-prefix",
+        action="store_true",
+        help="Run FULL/PREFIX replay comparisons at 10/25/50/75/90 percent cuts.",
+    )
     args = parser.parse_args(argv)
     try:
         payload = export_historical_replay(
             args.output,
             start=args.start,
             end=args.end,
+            full_mtf=not args.fast,
+            horizon_bars=args.horizon_bars,
+            verify_prefix=args.verify_prefix,
         )
     except (HistoricalReplayError, FileNotFoundError, KeyError, ValueError) as exc:
         print(f"[AI_OUTCOME_REPLAY][BLOCKED] {exc}", file=sys.stderr)

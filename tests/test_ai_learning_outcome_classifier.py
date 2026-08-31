@@ -93,6 +93,7 @@ def _make_pipeline(tmp_path):
         labels=["label_end_6"],
         seed=7,
         config=CONFIG,
+        allow_configured_temporal_split=True,
     )
     return pipeline, snapshot, rows
 

@@ -329,7 +329,9 @@ def _trade_records(
     return trades
 
 
-def _signal_records(signals: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _signal_records(
+    signals: list[dict[str, Any]], *, context_available: bool = True
+) -> list[dict[str, Any]]:
     """Export signal lineage and PIT features without future outcome fields."""
 
     stage_by_role = (
@@ -347,11 +349,13 @@ def _signal_records(signals: list[dict[str, Any]]) -> list[dict[str, Any]]:
         direction = int(signal.get("direction", 0))
         event_ids = dict(signal.get("event_ids") or {})
         stages = [stage for role, stage in stage_by_role if event_ids.get(role)]
-        htf_alignment = (
-            "ALIGNED" if signal.get("htf_aligned") is True
-            else "AGAINST" if signal.get("htf_aligned") is False
-            else "NEUTRAL"
-        )
+        htf_alignment = "NEUTRAL"
+        if context_available:
+            htf_alignment = (
+                "ALIGNED" if signal.get("htf_aligned") is True
+                else "AGAINST" if signal.get("htf_aligned") is False
+                else "NEUTRAL"
+            )
         features_at_t = {
             "sequence": stages,
             "sequence_depth": len(stages),
@@ -437,7 +441,9 @@ def run_visual_replay(
     signals, phase_seen = run_sequence(main, est_htf_fn, sequence_config, **replay_kwargs)
     structure_events = extract_structure_events(main_raw, structure=config.structure)
     trades = _trade_records(signals, featured, config)
-    signal_records = _signal_records(signals)
+    signal_records = _signal_records(
+        signals, context_available=config.use_multitf_context
+    )
     artifact = VisualBacktest(
         symbol=config.symbol,
         timeframe=config.timeframe,

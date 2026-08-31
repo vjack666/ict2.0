@@ -2,8 +2,10 @@
 
 Este módulo no entrena modelos. Materializa el contrato que un entrenador
 futuro deberá respetar: consume únicamente un :class:`DatasetSnapshot`
-certificado, separa los datos por tiempo, limita la selección a TRAIN y
-VALIDATION, y guarda un estado JSON reanudable en :class:`CheckpointStore`.
+certificado, respeta su split pre-registrado DESIGN/VALIDATION/HOLDOUT y solo
+permite inferir un split temporal cuando el llamador lo autoriza explícitamente.
+Limita la selección a TRAIN y VALIDATION, y guarda un estado JSON reanudable en
+:class:`CheckpointStore`.
 
 No importa ``runtime.ai_learning.__init__`` para mantener este archivo
 utilizable sin modificar la API pública existente de INF-0..INF-3.
@@ -62,6 +64,9 @@ class TrainingRegistryError(TrainingPipelineError):
 
 class TrainingResumeError(TrainingPipelineError):
     """El checkpoint no pertenece exactamente a este contrato."""
+
+
+_REGISTERED_SPLITS = ("DESIGN", "VALIDATION", "HOLDOUT")
 
 
 def _canonical_json(value: Any) -> bytes:
@@ -141,6 +146,7 @@ class TemporalSplit:
     time_column: str
     train_end: Any
     validation_end: Any
+    split_source: str = "configured_temporal"
 
     @property
     def selection(self) -> tuple[Mapping[str, Any], ...]:
@@ -178,6 +184,7 @@ class TemporalSplit:
             "validation_end": self.validation_end,
             "selection_scope": "train+validation",
             "oos_scope": "test",
+            "split_source": self.split_source,
         }
 
 
@@ -288,13 +295,11 @@ def _certified_snapshot(
     return loaded, rows
 
 
-def _build_split(
+def _index_rows(
     rows: Sequence[Mapping[str, Any]],
     *,
     time_column: str,
-    train_fraction: float,
-    validation_fraction: float,
-) -> TemporalSplit:
+) -> list[tuple[tuple[int, float | str], str, dict[str, Any]]]:
     if len(rows) < 3:
         raise TemporalSplitError("se requieren al menos 3 filas para train/validation/test")
     indexed: list[tuple[tuple[int, float | str], str, dict[str, Any]]] = []
@@ -309,16 +314,17 @@ def _build_split(
     if len(key_kinds) != 1:
         raise TemporalSplitError("la columna temporal mezcla timestamps numéricos e ISO-8601")
     indexed.sort(key=lambda item: (item[0], item[1]))
+    return indexed
 
-    train_count = max(1, int(math.floor(len(indexed) * train_fraction)))
-    validation_count = max(1, int(math.floor(len(indexed) * validation_fraction)))
-    test_count = len(indexed) - train_count - validation_count
-    if test_count < 1:
-        raise TemporalSplitError("las proporciones deben dejar al menos una fila OOS")
 
-    train_items = indexed[:train_count]
-    validation_items = indexed[train_count : train_count + validation_count]
-    test_items = indexed[train_count + validation_count :]
+def _make_split(
+    train_items: Sequence[tuple[tuple[int, float | str], str, dict[str, Any]]],
+    validation_items: Sequence[tuple[tuple[int, float | str], str, dict[str, Any]]],
+    test_items: Sequence[tuple[tuple[int, float | str], str, dict[str, Any]]],
+    *,
+    time_column: str,
+    split_source: str,
+) -> TemporalSplit:
     if not train_items or not validation_items or not test_items:
         raise TemporalSplitError("cada partición temporal debe tener filas")
     if train_items[-1][0] >= validation_items[0][0] or validation_items[-1][0] >= test_items[0][0]:
@@ -333,6 +339,80 @@ def _build_split(
         time_column=time_column,
         train_end=train_items[-1][2][time_column],
         validation_end=validation_items[-1][2][time_column],
+        split_source=split_source,
+    )
+
+
+def _build_split(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    time_column: str,
+    train_fraction: float,
+    validation_fraction: float,
+) -> TemporalSplit:
+    indexed = _index_rows(rows, time_column=time_column)
+
+    train_count = max(1, int(math.floor(len(indexed) * train_fraction)))
+    validation_count = max(1, int(math.floor(len(indexed) * validation_fraction)))
+    test_count = len(indexed) - train_count - validation_count
+    if test_count < 1:
+        raise TemporalSplitError("las proporciones deben dejar al menos una fila OOS")
+
+    train_items = indexed[:train_count]
+    validation_items = indexed[train_count : train_count + validation_count]
+    test_items = indexed[train_count + validation_count :]
+    return _make_split(
+        train_items,
+        validation_items,
+        test_items,
+        time_column=time_column,
+        split_source="configured_temporal",
+    )
+
+
+def _build_registered_split(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    time_column: str,
+) -> TemporalSplit | None:
+    """Consume an immutable DESIGN/VALIDATION/HOLDOUT split from the snapshot.
+
+    ``None`` means that no row declares the split field.  Once any row declares
+    it, the field is mandatory and invalid/partial registrations are rejected;
+    they must never silently fall back to a newly inferred split.
+    """
+
+    has_split = ["split" in row for row in rows]
+    if not any(has_split):
+        return None
+    if not all(has_split):
+        raise TemporalSplitError(
+            "split pre-registrado incompleto: todas las filas deben declarar split"
+        )
+
+    indexed = _index_rows(rows, time_column=time_column)
+    groups: dict[str, list[tuple[tuple[int, float | str], str, dict[str, Any]]]] = {
+        name: [] for name in _REGISTERED_SPLITS
+    }
+    for item in indexed:
+        value = item[2]["split"]
+        if not isinstance(value, str) or value not in groups:
+            raise TemporalSplitError(
+                "split pre-registrado inválido: se esperan DESIGN, VALIDATION o HOLDOUT"
+            )
+        groups[value].append(item)
+
+    missing = [name for name in _REGISTERED_SPLITS if not groups[name]]
+    if missing:
+        raise TemporalSplitError(
+            "split pre-registrado incompleto; faltan particiones: " + ", ".join(missing)
+        )
+    return _make_split(
+        groups["DESIGN"],
+        groups["VALIDATION"],
+        groups["HOLDOUT"],
+        time_column=time_column,
+        split_source="pre_registered",
     )
 
 
@@ -381,7 +461,12 @@ def _validate_registered_model(
 
 
 class TrainingPipeline:
-    """Construye y persiste un plan INF-4 sin ejecutar entrenamiento real."""
+    """Construye y persiste un plan INF-4 sin ejecutar entrenamiento real.
+
+    Los snapshots con split DESIGN/VALIDATION/HOLDOUT son la autoridad. El
+    fallback por fracciones existe para compatibilidad con snapshots antiguos,
+    pero exige ``allow_configured_temporal_split=True``.
+    """
 
     def __init__(
         self,
@@ -398,6 +483,7 @@ class TrainingPipeline:
         time_column: str = "timestamp",
         train_fraction: float = 0.6,
         validation_fraction: float = 0.2,
+        allow_configured_temporal_split: bool = False,
     ):
         self.snapshot_input = snapshot
         self.registry = registry
@@ -415,6 +501,9 @@ class TrainingPipeline:
         self.time_column = _non_empty_text(time_column, "time_column")
         self.train_fraction = _ratio(train_fraction, "train_fraction")
         self.validation_fraction = _ratio(validation_fraction, "validation_fraction")
+        if not isinstance(allow_configured_temporal_split, bool):
+            raise TrainingPipelineError("allow_configured_temporal_split debe ser booleano")
+        self.allow_configured_temporal_split = allow_configured_temporal_split
         if self.train_fraction + self.validation_fraction >= 1.0:
             raise TemporalSplitError("train_fraction + validation_fraction debe ser menor que 1")
 
@@ -430,12 +519,19 @@ class TrainingPipeline:
             seed=self.seed,
             config=self.config,
         )
-        split = _build_split(
-            rows,
-            time_column=self.time_column,
-            train_fraction=self.train_fraction,
-            validation_fraction=self.validation_fraction,
-        )
+        split = _build_registered_split(rows, time_column=self.time_column)
+        if split is None:
+            if not self.allow_configured_temporal_split:
+                raise TemporalSplitError(
+                    "snapshot sin split pre-registrado; el split temporal configurado "
+                    "requiere allow_configured_temporal_split=True"
+                )
+            split = _build_split(
+                rows,
+                time_column=self.time_column,
+                train_fraction=self.train_fraction,
+                validation_fraction=self.validation_fraction,
+            )
         data_digest = hashlib.sha256(_canonical_json(rows)).hexdigest()
         metrics = {
             "pipeline_schema_version": TRAINING_PIPELINE_SCHEMA_VERSION,
@@ -446,6 +542,7 @@ class TrainingPipeline:
             "oos_test_rows": len(split.oos_test),
             "selection_scope": "train+validation",
             "oos_scope": "test",
+            "split_source": split.split_source,
             "data_digest": data_digest,
             "model_training_executed": False,
         }
@@ -463,6 +560,7 @@ class TrainingPipeline:
             "time_column": self.time_column,
             "train_fraction": self.train_fraction,
             "validation_fraction": self.validation_fraction,
+            "split_source": split.split_source,
             "data_digest": data_digest,
         }
         run_id = hashlib.sha256(_canonical_json(identity)).hexdigest()

@@ -35,18 +35,24 @@ def _manifest(dataset_path: str, dataset_hash: str) -> dict:
     }
 
 
-def _snapshot(tmp_path, *, duplicate_boundary=False):
+def _snapshot(tmp_path, *, duplicate_boundary=False, registered_split=False, split_values=None):
     tmp_path.mkdir(parents=True, exist_ok=True)
     source = tmp_path / "certified.jsonl"
-    rows = [
-        {
+    rows = []
+    for day in range(1, 11):
+        row = {
             "timestamp": f"2026-01-{day:02d}T00:00:00+00:00",
             "feature": float(day),
             "label": day % 2,
             "row_id": day,
         }
-        for day in range(1, 11)
-    ]
+        if split_values is not None:
+            split = split_values[day - 1]
+            if split is not None:
+                row["split"] = split
+        elif registered_split:
+            row["split"] = "DESIGN" if day <= 6 else "VALIDATION" if day <= 8 else "HOLDOUT"
+        rows.append(row)
     if duplicate_boundary:
         rows[5]["timestamp"] = rows[6]["timestamp"]
     source.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
@@ -63,6 +69,7 @@ def _snapshot(tmp_path, *, duplicate_boundary=False):
 
 def _pipeline(tmp_path, snapshot=None, *, seed=7, config=None, **overrides):
     snapshot = snapshot or _snapshot(tmp_path)
+    overrides.setdefault("allow_configured_temporal_split", True)
     registry = ModelRegistry(tmp_path / "model-registry")
     registry.register_model(
         "skeleton-model",
@@ -98,9 +105,64 @@ def test_temporal_split_reserves_oos_test_from_selection(tmp_path):
     assert {row["row_id"] for row in result.selection_rows}.isdisjoint(
         {row["row_id"] for row in result.oos_test_rows}
     )
+    assert result.split.split_source == "configured_temporal"
     assert result.metrics["selection_scope"] == "train+validation"
     assert result.metrics["oos_scope"] == "test"
     assert result.metrics["model_training_executed"] is False
+
+
+def test_pre_registered_split_is_used_as_train_validation_and_oos(tmp_path):
+    snapshot = _snapshot(tmp_path, registered_split=True)
+    result = _pipeline(
+        tmp_path / "pre-registered",
+        snapshot=snapshot,
+        train_fraction=0.1,
+        validation_fraction=0.1,
+    ).run()
+
+    assert [row["row_id"] for row in result.split.train] == [1, 2, 3, 4, 5, 6]
+    assert [row["row_id"] for row in result.split.validation] == [7, 8]
+    assert [row["row_id"] for row in result.split.test] == [9, 10]
+    assert result.split.split_source == "pre_registered"
+    assert result.metrics["split_source"] == "pre_registered"
+    assert all(row["split"] == "DESIGN" for row in result.split.train)
+    assert all(row["split"] == "VALIDATION" for row in result.split.validation)
+    assert all(row["split"] == "HOLDOUT" for row in result.split.test)
+    assert {row["row_id"] for row in result.selection_rows}.isdisjoint(
+        {row["row_id"] for row in result.oos_test_rows}
+    )
+
+
+def test_missing_split_is_blocked_without_explicit_temporal_fallback(tmp_path):
+    with pytest.raises(TemporalSplitError, match="allow_configured_temporal_split=True"):
+        _pipeline(
+            tmp_path / "fallback-blocked",
+            allow_configured_temporal_split=False,
+        ).plan()
+
+
+def test_invalid_registered_split_cannot_fallback(tmp_path):
+    values = ("DESIGN",) * 6 + ("VALIDATION",) * 2 + ("HOLDOUT", "INVALID")
+    snapshot = _snapshot(tmp_path, split_values=values)
+
+    with pytest.raises(TemporalSplitError, match="split pre-registrado inválido"):
+        _pipeline(
+            tmp_path / "invalid-registered",
+            snapshot=snapshot,
+            allow_configured_temporal_split=True,
+        ).plan()
+
+
+def test_partial_registered_split_cannot_fallback(tmp_path):
+    values = ("DESIGN",) * 6 + ("VALIDATION",) * 2 + ("HOLDOUT", None)
+    snapshot = _snapshot(tmp_path, split_values=values)
+
+    with pytest.raises(TemporalSplitError, match="split pre-registrado incompleto"):
+        _pipeline(
+            tmp_path / "partial-registered",
+            snapshot=snapshot,
+            allow_configured_temporal_split=True,
+        ).plan()
 
 
 def test_pipeline_is_deterministic_and_checkpoint_state_is_a_skeleton(tmp_path):

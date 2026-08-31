@@ -52,6 +52,13 @@ nuevo exige nombrar la frontera explícitamente.
 - La integración se conectó al brief diario; el commit del generador se toma
   localmente con `git rev-parse HEAD` y los hashes se calculan sobre los bytes
   de cada parquet suministrado.
+- Auditoría independiente: `audits/codigo/mt5_operational_snapshot.py` produjo
+  `reports/audits/operational/mt5_operational_snapshot_audit_20260831.json`.
+  Resultado técnico `PASS`: ASSEMBLY, POLICY, FULL_PREFIX, AUTHORITY_AND_PIT,
+  SERIALIZATION, BOUNDARY y PROVENANCE.
+- `MT5_FRESHNESS=REVIEW`: no se ejecutó refresco de la terminal en esta
+  auditoría; `REPRODUCIBILITY=REVIEW` porque el reporte aún no estaba
+  versionado durante su propia ejecución. No se declara certificación final.
 - Fallas encontradas durante la misión: sello `tf` ausente, identidad
   `__index__` ausente y fixture de longitud inválida; todas corregidas y
   reverificadas.
@@ -66,6 +73,7 @@ nuevo exige nombrar la frontera explícitamente.
 
 ## Siguiente acción
 
-M2–M4 quedan cerrados técnicamente. La siguiente acción es la auditoría
-independiente del puente y del reporte; no se autoriza por esto trading,
-backtest, IA, descarga Dukascopy ni promoción.
+M2–M5 quedan cerrados técnicamente. La siguiente acción es ejecutar el gate de
+frescura MT5 en una misión autorizada, y después decidir la publicación de los
+commits. Esto no autoriza trading, backtest, IA, descarga Dukascopy ni
+promoción.

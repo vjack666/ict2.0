@@ -49,4 +49,4 @@ Dukascopy, nuevas descargas, backtest de rendimiento, experimentos, IA,
 - M2 ensamblaje read-only: PASS técnico
 - M3 causalidad/determinismo: PASS técnico
 - M4 brief/evidencia: PASS técnico; certificación independiente pendiente
-- M5 auditoría independiente: pendiente
+- M5 auditoría independiente: PASS técnico; frescura/reproducibilidad operativa en REVIEW

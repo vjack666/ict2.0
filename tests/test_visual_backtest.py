@@ -7,7 +7,7 @@ import ast
 import numpy as np
 import pandas as pd
 
-from backtest.replay import ReplayConfig, extract_structure_events, run_visual_replay
+from backtest.replay import ReplayConfig, _last_closed_index, extract_structure_events, run_visual_replay
 from backtest.schema import validate_visual_backtest
 
 
@@ -58,6 +58,14 @@ def test_structure_events_are_prefix_stable_and_parents_are_causal():
         if event.get("formation_index") is not None:
             assert event["formation_index"] < event["confirmed_index"]
         seen.add(event["id"])
+
+
+def test_last_closed_index_normalizes_pandas_timestamp_units():
+    frame = pd.DataFrame({"time": pd.to_datetime([
+        "2006-01-01T00:00:00Z", "2006-01-01T04:00:00Z", "2006-01-01T08:00:00Z"
+    ], utc=True)})
+    assert _last_closed_index(frame, "2006-01-01T04:00:00Z") == 1
+    assert _last_closed_index(frame, "2006-01-01T02:00:00Z") == 0
 
 
 def test_candles_preserve_source_ohlc_and_no_trade_is_invented():

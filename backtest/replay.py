@@ -251,10 +251,24 @@ def extract_structure_events(
 
 
 def _last_closed_index(frame: pd.DataFrame, timestamp: Any) -> int:
-    values = frame["time"].astype("int64").to_numpy()
+    # Pandas may store parsed timestamps at microsecond resolution while
+    # ``Timestamp.value`` is nanoseconds.  Normalize both sides explicitly;
+    # otherwise every historical target can compare greater than the entire
+    # frame and the replay silently reads the final (future) HTF row.
+    values = (
+        pd.to_datetime(frame["time"], utc=True)
+        .dt.tz_localize(None)
+        .to_numpy(dtype="datetime64[ns]")
+        .astype("int64")
+    )
     target_ts = pd.Timestamp(timestamp)
     target_ts = target_ts.tz_localize("UTC") if target_ts.tzinfo is None else target_ts.tz_convert("UTC")
-    target = target_ts.value
+    target = int(
+        target_ts.tz_localize(None)
+        .to_datetime64()
+        .astype("datetime64[ns]")
+        .astype("int64")
+    )
     return int(np.searchsorted(values, target, side="right") - 1)
 
 

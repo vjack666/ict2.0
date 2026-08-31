@@ -198,14 +198,12 @@ def _replay_config(*, full_mtf: bool, horizon_bars: int) -> ReplayConfig:
 
 
 def _prefix_signature(signal: Mapping[str, Any]) -> str:
-    """Canonical causal signal view, excluding ordinal export identifiers."""
+    """Canonical causal signal view, excluding run-local object identifiers."""
 
     view = {
         "decision_time": signal.get("decision_time"),
         "direction": signal.get("direction"),
         "features_at_t": signal.get("features_at_t"),
-        "lineage": signal.get("lineage"),
-        "event_objects": signal.get("event_objects"),
     }
     return json.dumps(view, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 

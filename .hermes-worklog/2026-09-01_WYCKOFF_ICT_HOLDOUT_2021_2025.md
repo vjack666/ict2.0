@@ -10,7 +10,7 @@
 
 ## STATUS
 
-`HOLDOUT_EVALUATION_COMPLETED_BLOCKED_PROVENANCE`
+`HOLDOUT_EVALUATION_COMPLETED_REVIEW` — gate formal `BLOCKED_PROVENANCE`
 
 La evaluación mecánica terminó. El resultado no demuestra edge y la fuente no
 puede certificarse todavía: existen anomalías OHLC reproducibles y la licencia/

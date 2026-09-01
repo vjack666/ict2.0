@@ -50,12 +50,12 @@ distancia material frente al baseline.
 
 ## Evidencia
 
-- Reporte: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010_comparison/comparison.json`.
-- Resumen legible: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010_comparison/comparison.md`.
-- Hash interno del reporte: `9e12b3b08440c07ac8743b28dc18645ad9731af57242bd353b9577b8410fe114`.
+- Reporte final post-commit: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010_comparison_postcommit_e7692d8/comparison.json`.
+- Resumen legible: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010_comparison_postcommit_e7692d8/comparison.md`.
+- Hash interno del reporte: `99ada9c56b621c856981db01fe15da8b719e7f6ef04424f85148b124e20a6219`.
 - Commit de código usado por la comparación:
-  `9d65975d8dec68eb4fe98c346bd81a58c5dd210d`.
-- Pruebas focales: `11 passed`.
+  `e7692d841871236bd8dd88201e5341ca449d3fcd`.
+- Pruebas focales: `11 passed`; suite completa: `445 passed`.
 
 ## RIESGOS Y SIGUIENTE ACCIÓN
 

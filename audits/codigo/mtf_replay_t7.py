@@ -7,11 +7,11 @@ or repair source rows.
 from __future__ import annotations
 
 import argparse
+import ctypes
 import hashlib
 import json
 import subprocess
 import time
-import tracemalloc
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -32,6 +32,30 @@ SOURCES = (
 )
 WINDOW_START = pd.Timestamp("2025-01-01T00:00:00Z")
 WINDOW_END = pd.Timestamp("2025-02-01T00:00:00Z")
+
+
+class _ProcessMemoryCounters(ctypes.Structure):
+    _fields_ = [
+        ("cb", ctypes.c_ulong), ("PageFaultCount", ctypes.c_ulong),
+        ("PeakWorkingSetSize", ctypes.c_size_t), ("WorkingSetSize", ctypes.c_size_t),
+        ("QuotaPeakPagedPoolUsage", ctypes.c_size_t), ("QuotaPagedPoolUsage", ctypes.c_size_t),
+        ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t), ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+        ("PagefileUsage", ctypes.c_size_t), ("PeakPagefileUsage", ctypes.c_size_t),
+    ]
+
+
+def _peak_working_set_mb() -> float:
+    counters = _ProcessMemoryCounters()
+    counters.cb = ctypes.sizeof(counters)
+    get_current = ctypes.windll.kernel32.GetCurrentProcess
+    get_current.restype = ctypes.c_void_p
+    get_memory = ctypes.windll.psapi.GetProcessMemoryInfo
+    get_memory.argtypes = [ctypes.c_void_p, ctypes.POINTER(_ProcessMemoryCounters), ctypes.c_ulong]
+    get_memory.restype = ctypes.c_int
+    handle = get_current()
+    if not get_memory(handle, ctypes.byref(counters), counters.cb):
+        raise OSError("GetProcessMemoryInfo failed")
+    return counters.PeakWorkingSetSize / (1024 * 1024)
 
 
 def _sha256(path: Path) -> str:
@@ -125,16 +149,10 @@ def run_once(
         symbol="EURUSD", profile=INTRADAY_H4_M15, checkpoint_every=250,
         chunk_size=500, dataset_hash=dataset_hash, code_commit=commit,
     )
-    if measure_resources:
-        tracemalloc.start()
     started = time.perf_counter()
     artifact = MTFReplayOrchestrator(config, state).run(frames)
     elapsed = time.perf_counter() - started
-    peak_mb = None
-    if measure_resources:
-        _, peak = tracemalloc.get_traced_memory()
-        tracemalloc.stop()
-        peak_mb = peak / (1024 * 1024)
+    peak_mb = _peak_working_set_mb() if measure_resources else None
     validate_mtf_replay(artifact)
     return artifact, elapsed, peak_mb, object_counts
 

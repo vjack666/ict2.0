@@ -47,12 +47,16 @@ Shadow MT5 ni órdenes.
 - TRAIN: accuracy `0.428912`, log-loss `1.075941`.
 - VALIDATION: accuracy `0.398624`, log-loss `1.087645`.
 - TEST/OOS diagnóstico: accuracy `0.402678`, log-loss `1.090112`.
-- Artefacto: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010_train.json`.
+- Artefacto final post-commit: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010_train_postcommit_32a3a2e.json`.
 - Corpus: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010.jsonl`.
-- Hash del artefacto: `58cf304860293fc5ff2098402cd7fb154efb7bb39f371bea1544a5860e21e39f`.
+- Hash del artefacto final: `c43ec7cb63b16572db2ed7ab390655cb343e4daf0bd31b8e8f23a2c12b250cf3`.
 - Hash del corpus: `7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922`.
-- Verificación: hash del artefacto autoconsistente; features sin campos futuros
-  detectables; orden temporal estricto; `fit_executed=true`.
+- Código fuente del artefacto final: commit `32a3a2e89cb03de62e4dd78f1aa597925ccf36a7`.
+- Verificación: hash del artefacto autoconsistente; corpus idéntico al primer
+  ajuste; métricas idénticas; features sin campos futuros detectables; orden
+  temporal estricto; `fit_executed=true`. El artefacto inicial se conserva como
+  evidencia de la salvaguarda anti-sobrescritura, pero no es el artefacto final
+  por haber sido generado antes del commit.
 
 ## Interpretación
 

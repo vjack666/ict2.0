@@ -1,6 +1,6 @@
 # Plan ejecutable — MTF Replay Orchestrator v1
 
-**Estado:** COMPLETED T0–T6/T8 — T7 WAITING FOR EXPLICIT GO
+**Estado:** COMPLETED T0–T6/T8 — T7 IN PROGRESS (GO 2026-09-01)
 
 **Owner:** D2 Ingeniería; D1 PMO integra; D5 audita independientemente
 
@@ -83,7 +83,7 @@ presupuesto/seguridad.
 
 ### T7 — Corrida real acotada — requiere GO explícito posterior
 
-- [ ] `T7.1` Pre-registrar dataset, mes, perfil, hashes y criterios; no optimizar.
+- [x] `T7.1` Pre-registrar dataset, mes, perfil, hashes y criterios; no optimizar.
 - [ ] `T7.2` Ejecutar un mes local y generar chunks/visor.
 - [ ] `T7.3` Auditar causalidad, recursos y completitud; no medir edge como gate del software.
 - [ ] `T7.4` Solo después decidir si ampliar ventana o abrir protocolo científico de edge.

@@ -120,9 +120,15 @@ def build_state(frames: dict[str, pd.DataFrame]) -> tuple[MarketState, dict[str,
         frames, frames["M15"]["time"].max(), timeframes=("H4", "M15"), symbol="EURUSD"
     )
     state = MarketState()
-    for obj in assembled["objects"]:
+    # T7 exercises the authority path H4 -> M15 observation. Loading every M15
+    # zone would create an incomplete setup-candidate population because this
+    # historical adapter does not materialize BOS/displacement MarketObjects.
+    # Synthetic M6 remains the authority for complete setup paths.
+    authority_objects = assembled["objects_by_tf"]["H4"]
+    for obj in authority_objects:
         state.ingest(deepcopy(obj))
     counts = {tf: len(items) for tf, items in assembled["objects_by_tf"].items()}
+    counts["objects_loaded_h4_authority"] = len(authority_objects)
     counts["relations_same_tf"] = len(assembled["relations"])
     return state, counts
 
@@ -211,7 +217,7 @@ def execute(output_dir: Path) -> dict[str, Any]:
             "setups": len(first["setups"]), "episodes": len(first["episodes"]),
             "trades": len(first["trades"]), "rejections": len(first["rejections"]),
         },
-        "population_note": "NO_COMPLETE_SETUP_POPULATION" if not first["setups"] else "COMPLETE_SETUP_POPULATION_PRESENT",
+        "population_note": "NO_COMPLETE_SETUP_POPULATION_H4_AUTHORITY_REPLAY" if not first["setups"] else "COMPLETE_SETUP_POPULATION_PRESENT",
         "determinism": {"pass": deterministic, "run_1_checksum": checksum, "run_2_checksum": logical_checksum(second)},
         "chunk_invariance": {
             "pass": manifest_500["artifact_checksum"] == manifest_257["artifact_checksum"] == checksum,

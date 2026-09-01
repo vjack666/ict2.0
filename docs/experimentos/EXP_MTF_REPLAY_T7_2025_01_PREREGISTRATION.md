@@ -42,7 +42,9 @@ solo en el plano histórico de investigación. Su licencia/permitted-use y
 - `profile=INTRADAY_H4_M15`
 - `checkpoint_every=250`
 - `chunk_size=500`
-- objetos: ensamblador público `engine.ltf_canonical_feed.build_canonical_objects`
+- objetos: ensamblador público `engine.ltf_canonical_feed.build_canonical_objects`;
+  se cargan objetos H4 para probar autoridad H4 y observación subordinada M15;
+  la población M15 se cuenta pero no se presenta como setup incompleto
 - ejecución: desactivada (`execution_plan_provider` no genera SL/TP)
 
 ## Gates preregistrados
@@ -53,8 +55,10 @@ solo en el plano histórico de investigación. Su licencia/permitted-use y
 4. Dos runs idénticos y chunk sizes 500/257: checksum lógico idéntico: PASS.
 5. Artefacto schema 2.0 y manifiestos/chunks válidos: PASS.
 6. Pico de memoria y tiempo se reportan; no se cambia el perfil tras observarlos.
-7. Cero setups es admisible solo si se declara `NO_COMPLETE_SETUP_POPULATION`:
-   el ensamblador público actual produce FVG/OB, no inventa BOS/displacement.
+7. Cero setups es admisible solo si se declara
+   `NO_COMPLETE_SETUP_POPULATION_H4_AUTHORITY_REPLAY`: el ensamblador público
+   actual produce FVG/OB, no inventa BOS/displacement. Los caminos completos de
+   setup permanecen certificados por M6 sintético, no por una población falsa.
 8. Procedencia formal: `BLOCKED_PROVENANCE` hasta que existan licencia y fecha de
    adquisición; este estado no invalida la prueba mecánica local ni se convierte
    silenciosamente en PASS.

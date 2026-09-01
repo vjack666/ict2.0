@@ -98,6 +98,26 @@ La selección automática del mejor valor de la métrica solo produce un
 baseline publicado y no concede `TRAINING_ELIGIBLE`. Esa decisión requiere
 auditoría independiente y comparación fuera de muestra.
 
+### A2.5 — HOLDOUT final del candidato congelado
+
+Después de A1.5 se congela un único candidato y se evalúa una sola vez sobre
+HOLDOUT 2021–2025. El runner no importa entrenamiento ni modifica pesos: solo
+rehidrata el artefacto serializado y calcula métricas sobre observaciones cuyo
+`event_time` pertenece al intervalo `[2021-01-01, 2026-01-01)`. Enero de 2026
+puede usarse únicamente como warmup para completar el outcome de las últimas
+12 velas de diciembre de 2025.
+
+El HOLDOUT no puede seleccionar perfiles, hiperparámetros, etiquetas, features,
+SL/TP ni reglas. Si la fuente presenta anomalías, licencia o lineage sin
+resolver, el resultado mecánico se conserva como `REVIEW/BLOCKED` y no se
+convierte en evidencia científica certificada. MT5 queda fuera de esta fase:
+es el endpoint operativo futuro, no un sustituto de M15 histórico.
+
+El informe debe incluir: hashes por archivo, cobertura y huecos, anomalías sin
+corrección silenciosa, hash y commit del artefacto C10, `fit_executed=false`,
+baseline mayoritario, métricas globales y por año, `shadow_mode=true` y
+`can_trade=false`.
+
 ### A3 — Shadow MT5
 
 Consumir el snapshot operativo MT5 actual con el modelo congelado, medir
@@ -115,6 +135,7 @@ ejecución. Esta SDD no autoriza broker, órdenes ni `can_trade=true`.
 - dataset certificado y lineage verificable;
 - split temporal sin leakage;
 - métricas TRAIN/VALIDATION/TEST separadas;
+- HOLDOUT final evaluado con candidato congelado y sin reajuste;
 - calibración, dominio y abstención documentados;
 - Shadow Mode explícito;
 - cero órdenes y cero promoción automática.

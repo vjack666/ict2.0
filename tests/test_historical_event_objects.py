@@ -54,6 +54,6 @@ def test_bos_and_displacement_are_event_objects_when_present():
     result = build_historical_event_objects({"M15": m15, "H4": derive_h4(m15)})
     for obj in result["objects"]:
         if obj.type is ObjectType.BOS:
-            assert obj.parent_object and obj.origin_tf == "H4"
+            assert obj.parent_object and obj.origin_tf == "M15"
         if obj.type is ObjectType.DISPLACEMENT:
             assert obj.parent_object and obj.origin_tf == "M15"

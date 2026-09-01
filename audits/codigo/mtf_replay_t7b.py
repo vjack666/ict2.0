@@ -95,7 +95,7 @@ def execute(output_dir: Path) -> dict[str, Any]:
     write_mtf_replay(first, output_dir / "mtf_replay_t7b_2025_01.json")
     manifest = write_chunks(first, output_dir / "viewer", 500)
     gates = {
-        "producer_population": bool(population["counts"]["bos_h4_linked"] and population["counts"]["displacement_m15_linked"]),
+        "producer_population": bool(population["counts"]["bos_m15_linked"] and population["counts"]["displacement_m15_linked"]),
         "january_displacement": bool(january_disp),
         "complete_setups": bool(complete),
         "eligible_setups": bool(eligible),

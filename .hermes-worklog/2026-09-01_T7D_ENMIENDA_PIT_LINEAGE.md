@@ -114,3 +114,17 @@ hacia el corpus causal 2006–2020.
 - El audit `commit` aún refleja `de24d68`; se debe commitear la enmienda y
   re-ejecutar T7d para que el artefacto apunte al código nuevo.
 - No se midió edge, beneficio ni WR; no se entrenó IA; no se operó MT5.
+
+## Publicación (push)
+
+- **Instrucción explícita del usuario**: "push" (2026-09-01).
+- **Alcance**: rama completa `codex/audit-hermes-cert-20260826` (incluye código
+  del motor + evidencia). El usuario eligió "Push rama completa" sobre la
+  Opción B (evidencia solo en `cert/`).
+- **Push**: `af5ab85..1a02a3e` → `origin/codex/audit-hermes-cert-20260826`.
+- **Commits publicados**: 12 (T7b/T7c/T7d + enmiendas PIT/lineage/H6 + OE4-OE6 +
+  fix B5 `c99d00b` + worklog `1a02a3e`).
+- **Verificación previa**: sin secretos en los archivos pusheados (solo falsos
+  positivos: nombres npm, strings de test, tokens de lógica de negocio).
+- **Excluidos del push**: `datasets/`, `data/raw/*.parquet`, `.atl/*`,
+  `reports/audits/experiments/ai/*` (no relacionados, quedan sin commitear).

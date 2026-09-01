@@ -49,7 +49,7 @@ Shadow MT5 ni órdenes.
 - TEST/OOS diagnóstico: accuracy `0.402678`, log-loss `1.090112`.
 - Artefacto final post-commit: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010_train_postcommit_32a3a2e.json`.
 - Corpus: `reports/audits/experiments/ai/wyckoff_intraday_2006_2010.jsonl`.
-- Hash del artefacto final: `c43ec7cb63b16572db2ed7ab390655cb343e4daf0bd31b8e8f23a2c12b250cf3`.
+- Hash del artefacto final: `283fecb7f4b99348afcc840757f7468ea381359bf8a14db10c1acf13f2c58fa3`.
 - Hash del corpus: `7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922`.
 - Código fuente del artefacto final: commit `32a3a2e89cb03de62e4dd78f1aa597925ccf36a7`.
 - Verificación: hash del artefacto autoconsistente; corpus idéntico al primer

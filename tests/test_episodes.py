@@ -342,6 +342,27 @@ def test_lineage_cycle_rejected():
     assert art["rejections"][0]["reason"] == "INVALID_LINEAGE"
 
 
+def test_lineage_poi_with_parent_rejected():
+    """OE6-B5: el POI es la raíz del árbol de lineage y NO debe tener
+    parent_object. Un POI con padre (p.ej. poi.parent_object -> fvg) es un
+    lineage inválido por construcción -> INVALID_LINEAGE. El productor histórico
+    v3 nunca genera este caso, pero debe fallar de forma segura."""
+    t = datetime(2024, 1, 2)
+    poi = _mo(Role.POI, origin_tf="H4", mo_type=ObjectType.ORDER_BLOCK,
+              direction=1, creation_time=datetime(2024, 1, 1, 0))
+    fvg = _mo(Role.REFINEMENT, origin_tf="M15", mo_type=ObjectType.FVG,
+              direction=1, creation_time=datetime(2024, 1, 1, 1))
+    # POI declara a su propio refinement como padre -> ciclo de 2 nodos
+    poi.parent_object = fvg.id
+    fvg.parent_object = poi.id
+    setup = _setup(poi, fvg)
+    ms = _build_ms([poi, fvg])
+    art = E.build_episodes(ms, [t], _ctx(1), _candidates={t: [setup]})
+    assert art["aggregates"]["totals"]["episodes"] == 0
+    assert art["rejections"][0]["stage"] == "LINEAGE"
+    assert art["rejections"][0]["reason"] == "INVALID_LINEAGE"
+
+
 def test_lineage_out_of_snapshot_rejected():
     """Falla 7: componente que referencia un id ajeno al snapshot en T
     (referencia fuera del snapshot) -> INVALID_LINEAGE."""

@@ -292,6 +292,12 @@ def _check_lineage(setup: Setup, ms: "MarketState", T: datetime) -> Optional[str
         if isinstance(mo, MarketObject) and mo.direction not in (0, setup.direction):
             return "INVALID_LINEAGE"
 
+    # 1b) El POI es la raíz del árbol de lineage: no debe tener parent_object.
+    #     Un POI con padre (p.ej. poi.parent_object -> fvg) es un lineage
+    #     inválido por construcción; el productor histórico v3 nunca lo genera.
+    if isinstance(poi, MarketObject) and getattr(poi, "parent_object", None):
+        return "INVALID_LINEAGE"
+
     # 2) Refinement <-> POI.
     if isinstance(refinement, MarketObject) and isinstance(poi, MarketObject):
         if not _related(poi, refinement):

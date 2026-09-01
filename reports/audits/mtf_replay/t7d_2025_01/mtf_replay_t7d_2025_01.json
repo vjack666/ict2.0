@@ -5,8 +5,8 @@
     "symbol": "EURUSD",
     "profile_id": "INTRADAY_H4_M15",
     "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
-    "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
-    "code_commit": "dfa12b3c1d626e3e346a2386bdf46f95a35264cb",
+    "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
+    "code_commit": "9f0d56af1f6be6f21c25b554b9f13957186fb893",
     "chunk_size": 500
   },
   "policy": {
@@ -110034,7 +110034,7 @@
     {
       "cursor": 0,
       "observation_time": "2024-12-01T22:15:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -114409,7 +114409,7 @@
     {
       "cursor": 250,
       "observation_time": "2024-12-11T08:15:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -119051,7 +119051,7 @@
     {
       "cursor": 500,
       "observation_time": "2024-12-15T22:30:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -123693,7 +123693,7 @@
     {
       "cursor": 750,
       "observation_time": "2024-12-18T13:00:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -128335,7 +128335,7 @@
     {
       "cursor": 1000,
       "observation_time": "2024-12-23T03:15:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -132977,7 +132977,7 @@
     {
       "cursor": 1250,
       "observation_time": "2024-12-26T08:15:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -137619,7 +137619,7 @@
     {
       "cursor": 1500,
       "observation_time": "2024-12-30T22:30:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -142520,7 +142520,7 @@
     {
       "cursor": 1750,
       "observation_time": "2025-01-03T12:45:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -147421,7 +147421,7 @@
     {
       "cursor": 2000,
       "observation_time": "2025-01-08T03:00:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -152322,7 +152322,7 @@
     {
       "cursor": 2250,
       "observation_time": "2025-01-10T17:30:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -157223,7 +157223,7 @@
     {
       "cursor": 2500,
       "observation_time": "2025-01-15T07:45:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -162151,7 +162151,7 @@
     {
       "cursor": 2750,
       "observation_time": "2025-01-18T00:00:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -167335,7 +167335,7 @@
     {
       "cursor": 3000,
       "observation_time": "2025-01-22T12:30:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -172519,7 +172519,7 @@
     {
       "cursor": 3250,
       "observation_time": "2025-01-27T02:45:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -177723,7 +177723,7 @@
     {
       "cursor": 3500,
       "observation_time": "2025-01-29T17:15:00+00:00",
-      "config_hash": "b54ef58c92350d0f1d7e6f28e79a42a40dce5903d839d8c6ac962fd7a268e811",
+      "config_hash": "34c23235802187c0eeeb4ff4c68988a4b40b3b11d368c34c9fb808cbf6bcd2a5",
       "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
       "market_state": {
         "objects": [
@@ -233642,5 +233642,5 @@
       "parent_ids": []
     }
   ],
-  "checksum": "39a1496298ece769ff0dcffbf729979a090ded7cdc49ec9d48f2fdf36f9c59e5"
+  "checksum": "7cee3645c06aa9dc99041f250ed75bad1be780c5506ba314a2dd28cf5bc911ed"
 }

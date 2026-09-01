@@ -293,6 +293,71 @@ class OutcomeClassifierArtifact:
     shadow_mode: bool = True
     can_trade: bool = False
 
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> "OutcomeClassifierArtifact":
+        """Rehidrata un artefacto serializado sin entrenar ni conceder autoridad.
+
+        La carga verifica la identidad del artefacto y conserva las barreras de
+        Shadow Mode. Se usa para evaluar un candidato congelado; nunca ajusta
+        pesos ni escribe en el registry productivo.
+        """
+        if not isinstance(payload, Mapping):
+            raise OutcomeClassifierError("el artefacto debe ser un objeto")
+        body = dict(payload)
+        expected_hash = body.pop("artifact_hash", None)
+        if expected_hash is not None:
+            actual_hash = hashlib.sha256(_canonical_json(body)).hexdigest()
+            if str(expected_hash) != actual_hash:
+                raise OutcomeClassifierError("artifact_hash no coincide con el contenido")
+        if body.get("schema_version") != OUTCOME_CLASSIFIER_SCHEMA_VERSION:
+            raise OutcomeClassifierError("schema_version de artefacto no soportada")
+        if tuple(body.get("classes", ())) != OUTCOME_CLASSES:
+            raise OutcomeClassifierError("clases del artefacto no coinciden con el contrato")
+        feature_names = tuple(str(value) for value in body.get("feature_names", ()))
+        if feature_names not in INTRADAY_FEATURE_PROFILES.values() and feature_names != FEATURE_NAMES:
+            raise OutcomeClassifierError("perfil de features del artefacto no está registrado")
+        try:
+            mean = tuple(_finite(value, "mean") for value in body["mean"])
+            scale = tuple(_finite(value, "scale") for value in body["scale"])
+            weights = tuple(
+                tuple(_finite(value, "weights") for value in row)
+                for row in body["weights"]
+            )
+            bias = tuple(_finite(value, "bias") for value in body["bias"])
+        except (KeyError, TypeError) as exc:
+            raise OutcomeClassifierError("parámetros numéricos incompletos") from exc
+        dimension = len(feature_names)
+        if len(mean) != dimension or len(scale) != dimension:
+            raise OutcomeClassifierError("mean/scale no coinciden con feature_names")
+        if any(value == 0.0 for value in scale):
+            raise OutcomeClassifierError("scale no puede contener cero")
+        if len(weights) != len(OUTCOME_CLASSES) or any(len(row) != dimension for row in weights):
+            raise OutcomeClassifierError("weights no coincide con clases/features")
+        if len(bias) != len(OUTCOME_CLASSES):
+            raise OutcomeClassifierError("bias no coincide con clases")
+        if body.get("can_trade") is not False or body.get("shadow_mode") is not True:
+            raise OutcomeClassifierError("un artefacto evaluable debe permanecer en Shadow Mode")
+        return cls(
+            model_id=str(body["model_id"]),
+            model_version=str(body["model_version"]),
+            target=str(body["target"]),
+            snapshot_id=str(body["snapshot_id"]),
+            dataset_hash=str(body["dataset_hash"]),
+            schema_hash=str(body["schema_hash"]),
+            source_code_commit=str(body["source_code_commit"]),
+            experiment_id=str(body["experiment_id"]),
+            feature_names=feature_names,
+            classes=tuple(str(value) for value in body["classes"]),
+            mean=mean,
+            scale=scale,
+            weights=weights,
+            bias=bias,
+            metrics=body.get("metrics", {}),
+            seed=int(body["seed"]),
+            shadow_mode=True,
+            can_trade=False,
+        )
+
     def _probabilities(self, features: Mapping[str, Any]) -> np.ndarray:
         vector = _features(features, self.feature_names)
         mean = np.asarray(self.mean, dtype=float)

@@ -10,6 +10,7 @@ from runtime.ai_learning.model_registry import ModelRegistry
 from runtime.ai_learning.outcome_classifier import (
     FEATURE_NAMES,
     OUTCOME_CLASSES,
+    OutcomeClassifierArtifact,
     TrainingAuthorizationError,
     train_outcome_classifier,
 )
@@ -132,6 +133,20 @@ def test_classifier_trains_temporally_and_predicts_shadow_only(tmp_path):
     assert prediction["lineage"]["source_code_commit"] == "c" * 40
     assert prediction["abstention"]["state"] in {"ACCEPT", "REVIEW", "ABSTAIN"}
     json.dumps(artifact.to_dict(), sort_keys=True, allow_nan=False)
+
+
+def test_classifier_artifact_roundtrips_for_frozen_evaluation(tmp_path):
+    pipeline, snapshot, rows = _make_pipeline(tmp_path)
+    artifact = train_outcome_classifier(pipeline, research_gate=_gate(snapshot))
+
+    restored = OutcomeClassifierArtifact.from_dict(json.loads(json.dumps(artifact.to_dict())))
+    assert restored.to_dict() == artifact.to_dict()
+    assert restored.predict(rows[-1]) == artifact.predict(rows[-1])
+
+    tampered = artifact.to_dict()
+    tampered["bias"][0] += 0.01
+    with pytest.raises(ValueError, match="artifact_hash"):
+        OutcomeClassifierArtifact.from_dict(tampered)
 
 
 def test_classifier_artifact_is_deterministic(tmp_path):

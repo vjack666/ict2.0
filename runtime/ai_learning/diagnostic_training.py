@@ -25,6 +25,8 @@ from types import SimpleNamespace
 from typing import Any, Mapping, Sequence
 
 from .outcome_classifier import (
+    FEATURE_NAMES,
+    INTRADAY_FEATURE_NAMES,
     OUTCOME_CLASSES,
     OutcomeClassifierError,
     TrainingAuthorizationError,
@@ -325,6 +327,7 @@ def _plan(
     target: str,
     seed: int,
     config: Mapping[str, Any],
+    feature_names: Sequence[str],
 ) -> TrainingPlan:
     data_digest = hashlib.sha256(
         b"\n".join(_canonical_json(row) for row in rows.rows)
@@ -361,7 +364,7 @@ def _plan(
         schema_hash=rows.schema_hash,
         model_id=DIAGNOSTIC_MODEL_ID,
         model_version=DIAGNOSTIC_MODEL_VERSION,
-        features=("features_at_t", "direction", "sequence_depth"),
+        features=tuple(feature_names),
         labels=(target,),
         seed=seed,
         config=dict(config),
@@ -406,11 +409,15 @@ def run_diagnostic_training(
     train_fraction: float = 0.6,
     validation_fraction: float = 0.2,
     code_commit: str | None = None,
+    feature_names: Sequence[str] = FEATURE_NAMES,
 ) -> dict[str, Any]:
     """Ejecuta o bloquea el primer ajuste diagnóstico, sin certificación."""
 
     if not isinstance(min_class_rows, int) or isinstance(min_class_rows, bool) or min_class_rows < 1:
         raise DiagnosticTrainingError("min_class_rows debe ser entero positivo")
+    feature_names = tuple(feature_names)
+    if feature_names not in (FEATURE_NAMES, INTRADAY_FEATURE_NAMES):
+        raise DiagnosticTrainingError("perfil de features no registrado")
     rows = load_causal_jsonl(jsonl_path, target=target)
     config = {
         "algorithm": "deterministic_multinomial_softmax",
@@ -472,7 +479,14 @@ def run_diagnostic_training(
         ]
         return _with_hash(payload)
 
-    plan = _plan(rows, split, target=target, seed=seed, config=config)
+    plan = _plan(
+        rows,
+        split,
+        target=target,
+        seed=seed,
+        config=config,
+        feature_names=feature_names,
+    )
     pipeline = _DiagnosticPipeline(plan, code_commit=code_commit or _git_commit())
     # La API existente del clasificador exige estas dos claves. Este mapping
     # es deliberadamente local y de diagnóstico; nunca se trata como el gate
@@ -494,6 +508,7 @@ def run_diagnostic_training(
             iterations=iterations,
             learning_rate=learning_rate,
             l2=l2,
+            feature_names=feature_names,
         )
     except (OutcomeClassifierError, TrainingAuthorizationError) as exc:
         payload["reason_code"] = "CLASSIFIER_CONTRACT_BLOCKED"

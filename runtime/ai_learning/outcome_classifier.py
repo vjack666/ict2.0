@@ -49,6 +49,29 @@ FEATURE_NAMES = (
     "sequence_has=FVG",
     "sequence_has=CONFLUENCE",
 )
+INTRADAY_PHASES = (
+    "ACCUMULATION", "MARKUP", "DISTRIBUTION", "MARKDOWN",
+    "RANGE_UNCLASSIFIED", "TRANSITION", "UNKNOWN",
+)
+INTRADAY_EVENTS = (
+    "SPRING", "UPTHRUST", "UTAD", "SOS", "SOW", "LPS", "LPSY",
+    "TEST", "FAILED_TEST", "RANGE_BREAK", "EFFORT_RESULT_DIVERGENCE",
+)
+# Same deterministic softmax trainer, with an explicit causal feature profile
+# for the Wyckoff H1 -> M15 research line.  The original ICT profile remains
+# byte-for-byte compatible for existing artifacts.
+INTRADAY_FEATURE_NAMES = (
+    "direction", "sequence_depth",
+    "ict_m15_bos_bullish", "ict_m15_bos_bearish",
+    "ict_m15_choch_bullish", "ict_m15_choch_bearish",
+    "ict_m15_displacement_bullish", "ict_m15_displacement_bearish",
+    "ict_m15_fvg_bullish", "ict_m15_fvg_bearish",
+    "ict_m15_sweep_up", "ict_m15_sweep_down",
+    *(f"wyckoff_h1_phase={value}" for value in INTRADAY_PHASES),
+    *(f"wyckoff_m15_phase={value}" for value in INTRADAY_PHASES),
+    *(f"wyckoff_h1_event={value}" for value in INTRADAY_EVENTS),
+    *(f"wyckoff_m15_event={value}" for value in INTRADAY_EVENTS),
+)
 _CATEGORIES = {
     "context_bucket": ("ALIGNED", "NEUTRAL", "AGAINST"),
     "h1_alignment": ("ALIGNED", "NEUTRAL", "AGAINST"),
@@ -82,7 +105,70 @@ def _finite(value: Any, field: str) -> float:
     return result
 
 
-def _features(row: Mapping[str, Any]) -> np.ndarray:
+def _intraday_features(row: Mapping[str, Any]) -> np.ndarray:
+    raw = row.get("features_at_t", row)
+    if not isinstance(raw, Mapping):
+        raise OutcomeClassifierError("features_at_t debe ser un objeto")
+    context = raw.get("context_inputs", {})
+    intraday = raw.get("intraday", {})
+    if not isinstance(context, Mapping) or not isinstance(intraday, Mapping):
+        raise OutcomeClassifierError("features_at_t intradía incompleto")
+    ict = intraday.get("ict_m15", {})
+    wyckoff = intraday.get("wyckoff", {})
+    if not isinstance(ict, Mapping) or not isinstance(wyckoff, Mapping):
+        raise OutcomeClassifierError("features_at_t intradía inválido")
+
+    def flag(name: str) -> float:
+        return 1.0 if bool(ict.get(name, False)) else 0.0
+
+    def layer(name: str) -> Mapping[str, Any]:
+        value = wyckoff.get(name, {})
+        return value if isinstance(value, Mapping) else {}
+
+    def event_set(layer_payload: Mapping[str, Any]) -> set[str]:
+        events = layer_payload.get("events", ())
+        if not isinstance(events, (list, tuple)):
+            return set()
+        result: set[str] = set()
+        for event in events:
+            if isinstance(event, Mapping):
+                value = event.get("event_type", event.get("type", ""))
+            else:
+                value = event
+            result.add(str(value).upper())
+        return result
+
+    h1 = layer("H1")
+    m15 = layer("M15")
+    h1_phase = str(h1.get("phase", "UNKNOWN")).upper()
+    m15_phase = str(m15.get("phase", "UNKNOWN")).upper()
+    h1_events = event_set(h1)
+    m15_events = event_set(m15)
+    values = [
+        _finite(context.get("sequence_direction", row.get("direction", 0)), "direction"),
+        _finite(row.get("sequence_depth", 0), "sequence_depth"),
+        flag("bos_bullish"), flag("bos_bearish"),
+        flag("choch_bullish"), flag("choch_bearish"),
+        flag("displacement_bullish"), flag("displacement_bearish"),
+        flag("fvg_bullish"), flag("fvg_bearish"),
+        flag("sweep_up"), flag("sweep_down"),
+    ]
+    values.extend(1.0 if h1_phase == value else 0.0 for value in INTRADAY_PHASES)
+    values.extend(1.0 if m15_phase == value else 0.0 for value in INTRADAY_PHASES)
+    values.extend(1.0 if value in h1_events else 0.0 for value in INTRADAY_EVENTS)
+    values.extend(1.0 if value in m15_events else 0.0 for value in INTRADAY_EVENTS)
+    result = np.asarray(values, dtype=float)
+    if len(result) != len(INTRADAY_FEATURE_NAMES) or not np.isfinite(result).all():
+        raise OutcomeClassifierError("vector de features intradía inválido")
+    return result
+
+
+def _features(
+    row: Mapping[str, Any],
+    feature_names: Sequence[str] = FEATURE_NAMES,
+) -> np.ndarray:
+    if tuple(feature_names) == INTRADAY_FEATURE_NAMES:
+        return _intraday_features(row)
     raw = row.get("features_at_t", row)
     if not isinstance(raw, Mapping):
         raise OutcomeClassifierError("features_at_t debe ser un objeto")
@@ -115,7 +201,11 @@ def _softmax(logits: np.ndarray) -> np.ndarray:
     return exponent / exponent.sum(axis=1, keepdims=True)
 
 
-def _rows(rows: Sequence[Mapping[str, Any]], target: str) -> tuple[np.ndarray, np.ndarray]:
+def _rows(
+    rows: Sequence[Mapping[str, Any]],
+    target: str,
+    feature_names: Sequence[str] = FEATURE_NAMES,
+) -> tuple[np.ndarray, np.ndarray]:
     if not rows:
         raise OutcomeClassifierError("no hay filas para entrenar/evaluar")
     labels: list[int] = []
@@ -126,7 +216,7 @@ def _rows(rows: Sequence[Mapping[str, Any]], target: str) -> tuple[np.ndarray, n
         label = str(row.get(target, "")).lower()
         if label not in OUTCOME_CLASSES:
             raise OutcomeClassifierError(f"etiqueta {target} inválida: {label!r}")
-        matrix.append(_features(row))
+        matrix.append(_features(row, feature_names))
         labels.append(OUTCOME_CLASSES.index(label))
     return np.vstack(matrix), np.asarray(labels, dtype=int)
 
@@ -167,7 +257,7 @@ class OutcomeClassifierArtifact:
     can_trade: bool = False
 
     def _probabilities(self, features: Mapping[str, Any]) -> np.ndarray:
-        vector = _features(features)
+        vector = _features(features, self.feature_names)
         mean = np.asarray(self.mean, dtype=float)
         scale = np.asarray(self.scale, dtype=float)
         weights = np.asarray(self.weights, dtype=float)
@@ -176,10 +266,11 @@ class OutcomeClassifierArtifact:
 
     def predict(self, features: Mapping[str, Any], *, in_domain: bool | None = None) -> dict[str, Any]:
         probabilities = self._probabilities(features)
+        feature_vector = _features(features, self.feature_names)
         confidence = float(np.max(probabilities))
         index = int(np.argmax(probabilities))
         abstention = evaluate_abstention(
-            {name: float(value) for name, value in zip(self.feature_names, _features(features))},
+            {name: float(value) for name, value in zip(self.feature_names, feature_vector)},
             confidence,
             in_domain,
             required_features=("direction", "sequence_depth"),
@@ -247,6 +338,7 @@ def train_outcome_classifier(
     iterations: int = 500,
     learning_rate: float = 0.05,
     l2: float = 1e-4,
+    feature_names: Sequence[str] = FEATURE_NAMES,
 ) -> OutcomeClassifierArtifact:
     """Entrena el baseline únicamente con autorización científica explícita."""
     plan = pipeline.plan()
@@ -262,6 +354,9 @@ def train_outcome_classifier(
         raise OutcomeClassifierError("min_class_rows debe ser entero positivo")
     if isinstance(iterations, bool) or not isinstance(iterations, int) or iterations < 1:
         raise OutcomeClassifierError("iterations debe ser entero positivo")
+    feature_names = tuple(feature_names)
+    if feature_names not in (FEATURE_NAMES, INTRADAY_FEATURE_NAMES):
+        raise OutcomeClassifierError("perfil de features no registrado")
     lr = _finite(learning_rate, "learning_rate")
     penalty = _finite(l2, "l2")
     if lr <= 0 or penalty < 0:
@@ -271,9 +366,9 @@ def train_outcome_classifier(
     for name, rows in (("train", train_rows), ("validation", validation_rows), ("test", test_rows)):
         if len(rows) < _MIN_ROWS[name]:
             raise TrainingAuthorizationError(f"{name} no alcanza el mínimo de {_MIN_ROWS[name]} filas")
-    x_train, y_train = _rows(train_rows, target)
-    x_validation, y_validation = _rows(validation_rows, target)
-    x_test, y_test = _rows(test_rows, target)
+    x_train, y_train = _rows(train_rows, target, feature_names)
+    x_validation, y_validation = _rows(validation_rows, target, feature_names)
+    x_test, y_test = _rows(test_rows, target, feature_names)
     counts = np.bincount(y_train, minlength=len(OUTCOME_CLASSES))
     if np.any(counts < min_class_rows):
         raise TrainingAuthorizationError("TRAIN no contiene soporte mínimo para las tres clases")
@@ -318,7 +413,7 @@ def train_outcome_classifier(
         schema_hash=plan.schema_hash,
         source_code_commit=pipeline.registry.get_model(plan.model_id, plan.model_version).git_commit,
         experiment_id=pipeline.registry.get_model(plan.model_id, plan.model_version).experiment_id,
-        feature_names=FEATURE_NAMES,
+        feature_names=feature_names,
         classes=OUTCOME_CLASSES,
         mean=tuple(float(value) for value in mean),
         scale=tuple(float(value) for value in scale),
@@ -331,6 +426,7 @@ def train_outcome_classifier(
 
 __all__ = [
     "FEATURE_NAMES",
+    "INTRADAY_FEATURE_NAMES",
     "OUTCOME_CLASSES",
     "OUTCOME_CLASSIFIER_SCHEMA_VERSION",
     "OutcomeClassifierArtifact",

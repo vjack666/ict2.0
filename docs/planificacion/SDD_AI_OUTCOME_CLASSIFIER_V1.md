@@ -4,6 +4,11 @@
 **Contrato:** `docs/contratos/CONTRATO_AI_OUTCOME_CLASSIFIER_V1.md`
 **Alcance:** clasificador histórico de `continuation/reversal/failure`.
 
+La línea intradía Wyckoff×ICT se especifica en el addendum
+`docs/experimentos/EXP_WYCKOFF_ICT_INTRADAY_ADDENDUM.md`. Reutiliza este
+clasificador y `TrainingPipeline` con el perfil explícito
+`INTRADAY_FEATURE_NAMES`; no crea una segunda registry ni una política nueva.
+
 ## 1. Arquitectura
 
 ```text
@@ -42,6 +47,11 @@ actualizar la punta y probar el modelo congelado en observación.
 Crear o seleccionar un nuevo experimento pre-registrado usando Dukascopy,
 resolver la insuficiencia de muestra y producir un snapshot certificado. No se
 puede usar el snapshot pequeño actual para declarar aprendizaje.
+
+Para Wyckoff intradía, A0 exige datos H1 y M15 históricos sincronizados. El
+primer bloque diagnóstico 2006–2010 puede producir un artefacto de prueba, pero
+permanece fuera de `TRAINING_ELIGIBLE` hasta cerrar provenance, causalidad y la
+separación cronológica con HOLDOUT 2021–2025.
 
 ### A1 — Entrenamiento baseline
 

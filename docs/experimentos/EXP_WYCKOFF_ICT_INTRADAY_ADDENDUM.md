@@ -88,3 +88,20 @@ ninguna variante, el HOLDOUT 2021–2025 no se tocó y todas mantienen
 `can_trade=false`. La interpretación científica queda en `REVIEW`: las
 diferencias observadas no son suficientes para declarar edge ni superioridad
 robusta.
+
+## Protocolo A1.5 de optimización
+
+La optimización se ejecutará solo después de este preregistro y sobre el bloque
+2006–2010. La rejilla inicial queda congelada así:
+
+- perfiles: `ICT_ONLY`, `WYCKOFF_ONLY`, `WYCKOFF_ICT_COMBINED`;
+- `learning_rate`: `0.02`, `0.05`;
+- `l2`: `0.0001`, `0.001`;
+- `iterations`: `500` fijo;
+- semilla: `20260831` fija.
+
+Son 12 candidatos. TRAIN ajusta; `validation.log_loss` selecciona. TEST/OOS
+solo se reporta después de seleccionar y no participa en el criterio. El
+HOLDOUT 2021–2025 no se lee. En caso de empate se usa `validation.accuracy` y
+el orden estable de la rejilla. El resultado solo puede ser diagnóstico; no
+concede `TRAINING_ELIGIBLE`, promoción ni autoridad de trading.

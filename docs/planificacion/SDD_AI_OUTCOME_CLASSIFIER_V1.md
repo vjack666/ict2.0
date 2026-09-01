@@ -74,6 +74,25 @@ la diferencia de cada perfil frente a ese baseline y si Wyckoff añade
 información incremental a ICT. Un resultado cercano al baseline permanece en
 `REVIEW`, aunque el ajuste técnico haya terminado.
 
+### A1.5 — Optimización controlada intradía
+
+Después de la comparación baseline y antes del HOLDOUT final se permite una
+búsqueda acotada y pre-registrada. La búsqueda puede variar únicamente los
+perfiles `ICT_ONLY`, `WYCKOFF_ONLY`, `WYCKOFF_ICT_COMBINED`, `learning_rate` y
+`l2` dentro de la rejilla congelada en el addendum intradía. Cada candidato
+entrena solo con TRAIN.
+
+La selección se realiza exclusivamente por `validation.log_loss` menor; los
+empates se resuelven por `validation.accuracy` mayor y después por orden
+determinista de la rejilla. TEST/OOS puede quedar reportado como diagnóstico,
+pero está prohibido usarlo para elegir el candidato. El HOLDOUT 2021–2025 no se
+lee en esta fase. El candidato ganador se congela con su hash, configuración y
+commit antes de cualquier evaluación final.
+
+Si ningún candidato mejora materialmente al baseline, se conserva el baseline
+y se registra `NO_MATERIAL_IMPROVEMENT`; cambiar la rejilla o la etiqueta exige
+un nuevo pre-registro.
+
 ### A3 — Shadow MT5
 
 Consumir el snapshot operativo MT5 actual con el modelo congelado, medir

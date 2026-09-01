@@ -2,9 +2,11 @@
 
 ## Estado
 
-`COMPLETED` (técnico): T7d pasa `PASS_TECHNICAL_BLOCKED_PROVENANCE`. Todos los
-gates en `true`; 4 setups completos, 4 elegibles y 4 episodios en enero de
-2025. No se promueve nada (provenance bloqueado por diseño).
+`COMPLETED` — veredicto OE7 de la auditoría independiente (misión T7e):
+**`CERTIFIED_REPLAY_SEED`**. T7d pasa `PASS_TECHNICAL_BLOCKED_PROVENANCE`; todos
+los gates en `true`; 4 setups completos, 4 elegibles y 4 episodios en enero de
+2025. Se certifica determinismo y legitimidad causal de la población; NO se
+certifica suficiencia estadística ni se promueve nada (sin edge, IA ni MT5).
 
 ## Trabajo realizado
 
@@ -49,7 +51,17 @@ Dos enmiendas preregistradas e implementadas para destrabar T7d:
 - Suite completa: 474 passed (472 baseline + 2 nuevos).
 - Integridad mecánica: PASS; procedencia formal: `BLOCKED_PROVENANCE`.
 
-## OE4–OE6 — Auditoría causal (misión T7e)
+## OE3–OE7 — Auditoría independiente (misión T7e)
+
+### OE3 — Determinismo: PASS
+
+2 runs independientes de T7d en worktree limpio (commit `9f0d56a` + fix B5):
+
+- **Checksums IDÉNTICOS**: `7cee3645c06aa9dc99041f250ed75bad1be780c5506ba314a2dd28cf5bc911ed`
+  reproducido en ambos runs (canónico y run1).
+- **Counts idénticos**: 4 complete, 4 eligible, 4 episodes, 20 setups, 0 trades.
+- **1 divergencia benigna**: bloque `resources` (runtime) en `t7d_audit.json`,
+  excluido del checksum.
 
 ### OE4 — Auditoría causal de los 4 setups: PASS
 
@@ -103,16 +115,40 @@ raíz del árbol de lineage y NO debe tener `parent_object`; si lo tiene →
 re-ejecutado → `PASS_TECHNICAL_BLOCKED_PROVENANCE`, counts 4/4/4/20/0, checksum
 `7cee3645...` (idéntico). El fix no altera la población real.
 
+### OE7 — Veredicto: CERTIFIED_REPLAY_SEED
+
+Auditoría independiente en worktree limpio `t7e-clean-7572ae8` (base inmutable
+`9f0d56a` + fix B5 equivalente a `c99d00b`). Dictamen en
+`reports/audits/mtf_replay/t7d_2025_01/CERTIFICATION_VERDICT.md`:
+**`CERTIFIED_REPLAY_SEED`**.
+
+- OE1–OE6 todos PASS: se certifica determinismo y legitimidad causal de la
+  población de enero 2025 (4 setups elegibles → 4 episodios ejecutan en
+  punto-en-el-tiempo correcto, con lineage íntegro y sin auto-mitigación),
+  reproducible desde la base inmutable `9f0d56a` + fix B5.
+- **NO certifica suficiencia estadística**: muestra mínima de 2 setups únicos ×
+  2 `decision_time` = 4 episodios, 0 trades.
+- Alcance restringido: `edge_measured=false`, `ai_training_executed=false`,
+  `mt5_used=false`, `can_trade=false`, `promotion_authorized=false`.
+- **T7f** (expansión del replay hacia 2006–2020) requiere autorización explícita
+  del usuario/CEO; no iniciar sin ella.
+
 ## Decisión
 
-T7d queda técnicamente aprobado. El siguiente paso del roadmap es auditar los
-gates y verificar la población real antes de expandir el replay preregistrado
-hacia el corpus causal 2006–2020.
+T7d queda técnicamente aprobado y la población de enero 2025 queda certificada
+como **`CERTIFIED_REPLAY_SEED`** (OE7): determinismo y legitimidad causal
+confirmados por auditoría independiente. El siguiente paso del roadmap es T7f
+(expansión del replay preregistrado hacia el corpus causal 2006–2020), que
+requiere autorización explícita antes de iniciar.
 
 ## Riesgos
 
-- El audit `commit` aún refleja `de24d68`; se debe commitear la enmienda y
-  re-ejecutar T7d para que el artefacto apunte al código nuevo.
+- Muestra mínima: 2 setups únicos, 4 episodios, 0 trades — sin evidencia
+  estadística de performance.
+- Cualquier commit nuevo de `engine/` invalidaría el checksum canónico
+  `7cee3645...` y requeriría re-certificación.
+- El fix B5 vive como parche unstaged en el worktree `t7e-clean-7572ae8`
+  (idéntico a `c99d00b`); reproducir desde la punta commiteada, no del worktree.
 - No se midió edge, beneficio ni WR; no se entrenó IA; no se operó MT5.
 
 ## Publicación (push)

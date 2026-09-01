@@ -58,10 +58,21 @@ separación cronológica con HOLDOUT 2021–2025.
 Registrar un modelo compatible en `ModelRegistry`, suministrar autorización
 `TRAINING_ELIGIBLE`, entrenar solo TRAIN y guardar el artefacto inmutable.
 
+Para la línea intradía, antes de solicitar `TRAINING_ELIGIBLE` se ejecuta una
+comparación diagnóstica con tres perfiles sobre el mismo corpus y split:
+`ICT_ONLY`, `WYCKOFF_ONLY` y `WYCKOFF_ICT_COMBINED`. Esta comparación no elige
+parámetros con TEST/OOS, no usa el HOLDOUT 2021–2025 y no crea una segunda
+registry.
+
 ### A2 — Evaluación
 
 Medir baseline, VALIDATION y TEST/OOS; calcular calibración y revisar que el
 resultado no sea un efecto de una sola clase, período o horizonte.
+
+La comparación intradía debe reportar también el baseline de clase mayoritaria,
+la diferencia de cada perfil frente a ese baseline y si Wyckoff añade
+información incremental a ICT. Un resultado cercano al baseline permanece en
+`REVIEW`, aunque el ajuste técnico haya terminado.
 
 ### A3 — Shadow MT5
 

@@ -60,18 +60,32 @@ INTRADAY_EVENTS = (
 # Same deterministic softmax trainer, with an explicit causal feature profile
 # for the Wyckoff H1 -> M15 research line.  The original ICT profile remains
 # byte-for-byte compatible for existing artifacts.
-INTRADAY_FEATURE_NAMES = (
-    "direction", "sequence_depth",
+INTRADAY_BASE_FEATURE_NAMES = ("direction", "sequence_depth")
+INTRADAY_ICT_FEATURE_NAMES = (
     "ict_m15_bos_bullish", "ict_m15_bos_bearish",
     "ict_m15_choch_bullish", "ict_m15_choch_bearish",
     "ict_m15_displacement_bullish", "ict_m15_displacement_bearish",
     "ict_m15_fvg_bullish", "ict_m15_fvg_bearish",
     "ict_m15_sweep_up", "ict_m15_sweep_down",
+)
+INTRADAY_WYCKOFF_FEATURE_NAMES = (
     *(f"wyckoff_h1_phase={value}" for value in INTRADAY_PHASES),
     *(f"wyckoff_m15_phase={value}" for value in INTRADAY_PHASES),
     *(f"wyckoff_h1_event={value}" for value in INTRADAY_EVENTS),
     *(f"wyckoff_m15_event={value}" for value in INTRADAY_EVENTS),
 )
+INTRADAY_ICT_ONLY_FEATURE_NAMES = INTRADAY_BASE_FEATURE_NAMES + INTRADAY_ICT_FEATURE_NAMES
+INTRADAY_WYCKOFF_ONLY_FEATURE_NAMES = INTRADAY_BASE_FEATURE_NAMES + INTRADAY_WYCKOFF_FEATURE_NAMES
+INTRADAY_FEATURE_NAMES = (
+    INTRADAY_BASE_FEATURE_NAMES
+    + INTRADAY_ICT_FEATURE_NAMES
+    + INTRADAY_WYCKOFF_FEATURE_NAMES
+)
+INTRADAY_FEATURE_PROFILES = {
+    "ICT_ONLY": INTRADAY_ICT_ONLY_FEATURE_NAMES,
+    "WYCKOFF_ONLY": INTRADAY_WYCKOFF_ONLY_FEATURE_NAMES,
+    "WYCKOFF_ICT_COMBINED": INTRADAY_FEATURE_NAMES,
+}
 _CATEGORIES = {
     "context_bucket": ("ALIGNED", "NEUTRAL", "AGAINST"),
     "h1_alignment": ("ALIGNED", "NEUTRAL", "AGAINST"),
@@ -105,7 +119,10 @@ def _finite(value: Any, field: str) -> float:
     return result
 
 
-def _intraday_features(row: Mapping[str, Any]) -> np.ndarray:
+def _intraday_features(
+    row: Mapping[str, Any],
+    feature_names: Sequence[str] = INTRADAY_FEATURE_NAMES,
+) -> np.ndarray:
     raw = row.get("features_at_t", row)
     if not isinstance(raw, Mapping):
         raise OutcomeClassifierError("features_at_t debe ser un objeto")
@@ -144,21 +161,41 @@ def _intraday_features(row: Mapping[str, Any]) -> np.ndarray:
     m15_phase = str(m15.get("phase", "UNKNOWN")).upper()
     h1_events = event_set(h1)
     m15_events = event_set(m15)
-    values = [
-        _finite(context.get("sequence_direction", row.get("direction", 0)), "direction"),
-        _finite(row.get("sequence_depth", 0), "sequence_depth"),
-        flag("bos_bullish"), flag("bos_bearish"),
-        flag("choch_bullish"), flag("choch_bearish"),
-        flag("displacement_bullish"), flag("displacement_bearish"),
-        flag("fvg_bullish"), flag("fvg_bearish"),
-        flag("sweep_up"), flag("sweep_down"),
-    ]
-    values.extend(1.0 if h1_phase == value else 0.0 for value in INTRADAY_PHASES)
-    values.extend(1.0 if m15_phase == value else 0.0 for value in INTRADAY_PHASES)
-    values.extend(1.0 if value in h1_events else 0.0 for value in INTRADAY_EVENTS)
-    values.extend(1.0 if value in m15_events else 0.0 for value in INTRADAY_EVENTS)
-    result = np.asarray(values, dtype=float)
-    if len(result) != len(INTRADAY_FEATURE_NAMES) or not np.isfinite(result).all():
+    values_by_name: dict[str, float] = {
+        "direction": _finite(
+            context.get("sequence_direction", row.get("direction", 0)), "direction"
+        ),
+        "sequence_depth": _finite(row.get("sequence_depth", 0), "sequence_depth"),
+    }
+    values_by_name.update({
+        f"ict_m15_{name}": flag(name)
+        for name in (
+            "bos_bullish", "bos_bearish", "choch_bullish", "choch_bearish",
+            "displacement_bullish", "displacement_bearish", "fvg_bullish",
+            "fvg_bearish", "sweep_up", "sweep_down",
+        )
+    })
+    values_by_name.update({
+        f"wyckoff_h1_phase={value}": 1.0 if h1_phase == value else 0.0
+        for value in INTRADAY_PHASES
+    })
+    values_by_name.update({
+        f"wyckoff_m15_phase={value}": 1.0 if m15_phase == value else 0.0
+        for value in INTRADAY_PHASES
+    })
+    values_by_name.update({
+        f"wyckoff_h1_event={value}": 1.0 if value in h1_events else 0.0
+        for value in INTRADAY_EVENTS
+    })
+    values_by_name.update({
+        f"wyckoff_m15_event={value}": 1.0 if value in m15_events else 0.0
+        for value in INTRADAY_EVENTS
+    })
+    unknown = sorted(set(feature_names).difference(values_by_name))
+    if unknown:
+        raise OutcomeClassifierError(f"perfil intradía contiene features desconocidas: {unknown}")
+    result = np.asarray([values_by_name[name] for name in feature_names], dtype=float)
+    if len(result) != len(feature_names) or not np.isfinite(result).all():
         raise OutcomeClassifierError("vector de features intradía inválido")
     return result
 
@@ -167,8 +204,8 @@ def _features(
     row: Mapping[str, Any],
     feature_names: Sequence[str] = FEATURE_NAMES,
 ) -> np.ndarray:
-    if tuple(feature_names) == INTRADAY_FEATURE_NAMES:
-        return _intraday_features(row)
+    if tuple(feature_names) in INTRADAY_FEATURE_PROFILES.values():
+        return _intraday_features(row, feature_names)
     raw = row.get("features_at_t", row)
     if not isinstance(raw, Mapping):
         raise OutcomeClassifierError("features_at_t debe ser un objeto")
@@ -355,7 +392,7 @@ def train_outcome_classifier(
     if isinstance(iterations, bool) or not isinstance(iterations, int) or iterations < 1:
         raise OutcomeClassifierError("iterations debe ser entero positivo")
     feature_names = tuple(feature_names)
-    if feature_names not in (FEATURE_NAMES, INTRADAY_FEATURE_NAMES):
+    if feature_names not in (FEATURE_NAMES, *INTRADAY_FEATURE_PROFILES.values()):
         raise OutcomeClassifierError("perfil de features no registrado")
     lr = _finite(learning_rate, "learning_rate")
     penalty = _finite(l2, "l2")
@@ -426,7 +463,13 @@ def train_outcome_classifier(
 
 __all__ = [
     "FEATURE_NAMES",
+    "INTRADAY_BASE_FEATURE_NAMES",
+    "INTRADAY_FEATURE_PROFILES",
+    "INTRADAY_ICT_FEATURE_NAMES",
+    "INTRADAY_ICT_ONLY_FEATURE_NAMES",
     "INTRADAY_FEATURE_NAMES",
+    "INTRADAY_WYCKOFF_FEATURE_NAMES",
+    "INTRADAY_WYCKOFF_ONLY_FEATURE_NAMES",
     "OUTCOME_CLASSES",
     "OUTCOME_CLASSIFIER_SCHEMA_VERSION",
     "OutcomeClassifierArtifact",

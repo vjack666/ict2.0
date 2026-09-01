@@ -73,3 +73,18 @@ Debe incluir hashes de datos y JSONL, conteos de clases, split temporal,
 No puede declarar `TRAINING_ELIGIBLE`, certificación científica, edge,
 promoción, Shadow MT5 ni órdenes. La certificación de provenance y la revisión
 independiente se mantienen como gates separados.
+
+## Ejecución comparativa 2026-09-01
+
+Se ejecutaron tres perfiles sobre el mismo JSONL causal de 2006–2010, con la
+misma semilla, etiqueta `label_end_12`, algoritmo y split temporal 60/20/20:
+
+1. `ICT_ONLY`: señales ICT M15 y contexto direccional básico.
+2. `WYCKOFF_ONLY`: fases/eventos Wyckoff H1/M15 y contexto direccional básico.
+3. `WYCKOFF_ICT_COMBINED`: ambos perfiles.
+
+La salida es comparativa y diagnóstica. El TEST/OOS no se utilizó para ajustar
+ninguna variante, el HOLDOUT 2021–2025 no se tocó y todas mantienen
+`can_trade=false`. La interpretación científica queda en `REVIEW`: las
+diferencias observadas no son suficientes para declarar edge ni superioridad
+robusta.

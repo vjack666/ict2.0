@@ -26,6 +26,7 @@ from typing import Any, Mapping, Sequence
 
 from .outcome_classifier import (
     FEATURE_NAMES,
+    INTRADAY_FEATURE_PROFILES,
     INTRADAY_FEATURE_NAMES,
     OUTCOME_CLASSES,
     OutcomeClassifierError,
@@ -416,7 +417,7 @@ def run_diagnostic_training(
     if not isinstance(min_class_rows, int) or isinstance(min_class_rows, bool) or min_class_rows < 1:
         raise DiagnosticTrainingError("min_class_rows debe ser entero positivo")
     feature_names = tuple(feature_names)
-    if feature_names not in (FEATURE_NAMES, INTRADAY_FEATURE_NAMES):
+    if feature_names != FEATURE_NAMES and feature_names not in INTRADAY_FEATURE_PROFILES.values():
         raise DiagnosticTrainingError("perfil de features no registrado")
     rows = load_causal_jsonl(jsonl_path, target=target)
     config = {

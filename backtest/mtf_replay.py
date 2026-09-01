@@ -22,9 +22,13 @@ from engine.episodes import build_episodes
 from engine.market_state import MarketState
 from engine.sequential_outcome import OutcomeConfig, TradeLevels, resolve_outcome
 from engine.setup_builder import Setup, SetupEligibility, build_setups_at
+from engine.market_object import ObjectType
 
 
 TF_RANK = {"D1": 0, "H4": 1, "H1": 2, "M15": 3, "M5": 4, "M1": 5}
+LIFECYCLE_MANAGED_TYPES = {
+    ObjectType.FVG, ObjectType.ORDER_BLOCK, ObjectType.BREAKER, ObjectType.BPR,
+}
 
 
 @dataclass(frozen=True)
@@ -218,6 +222,10 @@ class MTFReplayOrchestrator:
             # Terminal lifecycle states are immutable. Skipping them avoids
             # replaying and serializing irrelevant dedupe events.
             if obj.is_terminal:
+                continue
+            # BOS and displacement are immutable published events, not price
+            # zones governed by FVG/OB mitigation lifecycle.
+            if obj.type not in LIFECYCLE_MANAGED_TYPES:
                 continue
             if obj.creation_time is not None and _utc(obj.creation_time) > _utc(bar["observation_time"]):
                 continue

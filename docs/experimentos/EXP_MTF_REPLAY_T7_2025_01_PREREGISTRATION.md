@@ -1,9 +1,9 @@
 # Preregistro T7 — MTF Replay real, enero de 2025
 
-**Estado:** FROZEN_BEFORE_RUN  
-**Modo:** LOCAL_ONLY / investigación histórica / sin órdenes  
-**Perfil:** `INTRADAY_H4_M15`  
-**Ventana evaluada:** `[2025-01-01T00:00:00Z, 2025-02-01T00:00:00Z)`  
+**Estado:** FROZEN_BEFORE_RUN
+**Modo:** LOCAL_ONLY / investigación histórica / sin órdenes
+**Perfil:** `INTRADAY_H4_M15`
+**Ventana evaluada:** `[2025-01-01T00:00:00Z, 2025-02-01T00:00:00Z)`
 **Warmup no evaluado:** diciembre de 2024
 
 ## Objetivo
@@ -63,4 +63,3 @@ solo en el plano histórico de investigación. Su licencia/permitted-use y
 
 No buscar edge, seleccionar reglas, ajustar detectores, SL/TP o parámetros,
 entrenar IA, usar MT5, enviar órdenes, descargar/reparar datos ni hacer push.
-

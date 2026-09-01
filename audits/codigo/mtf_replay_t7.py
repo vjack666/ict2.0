@@ -117,20 +117,26 @@ def _window_projection(artifact: dict[str, Any], cutoff: pd.Timestamp) -> dict[s
     }
 
 
-def run_once(frames: dict[str, pd.DataFrame], dataset_hash: str, commit: str) -> tuple[dict[str, Any], float, float, dict[str, int]]:
+def run_once(
+    frames: dict[str, pd.DataFrame], dataset_hash: str, commit: str, *, measure_resources: bool = False
+) -> tuple[dict[str, Any], float, float | None, dict[str, int]]:
     state, object_counts = build_state(frames)
     config = ReplayConfig(
         symbol="EURUSD", profile=INTRADAY_H4_M15, checkpoint_every=250,
         chunk_size=500, dataset_hash=dataset_hash, code_commit=commit,
     )
-    tracemalloc.start()
+    if measure_resources:
+        tracemalloc.start()
     started = time.perf_counter()
     artifact = MTFReplayOrchestrator(config, state).run(frames)
     elapsed = time.perf_counter() - started
-    _, peak = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
+    peak_mb = None
+    if measure_resources:
+        _, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        peak_mb = peak / (1024 * 1024)
     validate_mtf_replay(artifact)
-    return artifact, elapsed, peak / (1024 * 1024), object_counts
+    return artifact, elapsed, peak_mb, object_counts
 
 
 def execute(output_dir: Path) -> dict[str, Any]:
@@ -138,7 +144,9 @@ def execute(output_dir: Path) -> dict[str, Any]:
     h4 = derive_h4(m15)
     frames = {"H4": h4, "M15": m15}
     commit = _commit()
-    first, elapsed, peak_mb, object_counts = run_once(frames, dataset_hash, commit)
+    first, elapsed, peak_mb, object_counts = run_once(
+        frames, dataset_hash, commit, measure_resources=True
+    )
     second, _, _, _ = run_once(frames, dataset_hash, commit)
     checksum = logical_checksum(first)
     deterministic = checksum == logical_checksum(second)
@@ -214,4 +222,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

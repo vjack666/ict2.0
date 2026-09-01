@@ -37,6 +37,8 @@ def test_historical_event_producer_is_deterministic_and_child_to_parent():
         if obj.parent_object:
             assert obj.parent_object in by_id
             assert pd.Timestamp(by_id[obj.parent_object].tradable_time) <= pd.Timestamp(obj.tradable_time)
+        if obj.type in {ObjectType.BOS, ObjectType.DISPLACEMENT}:
+            assert by_id[obj.parent_object].type is ObjectType.ORDER_BLOCK
 
 
 def test_historical_event_producer_full_prefix_is_exact():

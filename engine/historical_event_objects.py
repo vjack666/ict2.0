@@ -119,7 +119,6 @@ def build_historical_event_objects(
         bos_parent[obj.id] = ob
 
     displacement = detect_displacement(m15, cfg.displacement)
-    disp_window = pd.Timedelta(hours=cfg.bos_to_displacement_max_hours)
     displacement_objects: list[MarketObject] = []
     for i, row in displacement.loc[
         displacement["displacement_bullish"] | displacement["displacement_bearish"]
@@ -127,16 +126,15 @@ def build_historical_event_objects(
         direction = 1 if bool(row["displacement_bullish"]) else -1
         event_time = _utc(m15.iloc[int(i)]["time"])
         candidates = [
-            bos for bos in bos_objects
-            if bos.direction == direction
-            and _utc(bos.tradable_time) <= event_time
-            and event_time - _utc(bos.tradable_time) <= disp_window
-            and _active_at(bos_parent[bos.id], h4, event_time)
+            ob for ob in obs
+            if ob.direction == direction
+            and _utc(ob.tradable_time) <= event_time
+            and event_time - _utc(ob.tradable_time) <= poi_window
+            and _active_at(ob, h4, event_time)
         ]
         if not candidates:
             continue
-        bos = max(candidates, key=lambda item: (_utc(item.tradable_time), item.id))
-        ob = bos_parent[bos.id]
+        ob = max(candidates, key=lambda item: (_utc(item.tradable_time), item.id))
         obj = MarketObject(
             id=_event_id("DISP", "M15", event_time, direction), symbol=symbol,
             type=ObjectType.DISPLACEMENT, origin_tf="M15", role=Role.TRIGGER,
@@ -146,8 +144,8 @@ def build_historical_event_objects(
             candidate_bar=int(i), candidate_time=event_time,
             confirmation_bar=int(i), confirmation_time=event_time,
             tradable_bar=int(i), tradable_time=event_time,
-            parent_object=bos.id, related_objects=[ob.id],
-            meta={"producer": "detect_displacement", "lineage_relation": "DISPLACEMENT_TRIGGERS_BOS", "magnitude": float(row["displacement_magnitude"])},
+            parent_object=ob.id,
+            meta={"producer": "detect_displacement", "lineage_relation": "DISPLACEMENT_EVIDENCES_OB_HTF", "magnitude": float(row["displacement_magnitude"])},
         )
         displacement_objects.append(obj)
 
@@ -182,7 +180,6 @@ def build_historical_event_objects(
         },
         "config": {
             "poi_to_child_max_hours": cfg.poi_to_child_max_hours,
-            "bos_to_displacement_max_hours": cfg.bos_to_displacement_max_hours,
         },
     }
 

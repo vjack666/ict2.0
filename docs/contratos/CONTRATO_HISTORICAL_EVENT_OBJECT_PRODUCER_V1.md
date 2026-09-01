@@ -1,4 +1,4 @@
-# Contrato — Historical Event Object Producer v2
+# Contrato — Historical Event Object Producer v3
 
 ## Autoridades reutilizadas
 
@@ -11,11 +11,12 @@ etiqueta posterior. No se redefinen detectores dentro de backtest.
 
 ## Lineage y tiempo
 
-DAG: `OB H4 → FVG M15`, `OB H4 → BOS M15` y
-`BOS M15 → displacement M15`. El FVG puede publicarse antes, durante o
-después del displacement; no se crea una referencia a un objeto futuro. Todos
-los hijos conservan referencia al POI H4. Ventanas congeladas: POI→hijo 120 h
-y BOS→displacement 24 h. Se elige el padre previo más reciente, ACTIVE en su
+DAG: `OB H4 → {FVG M15, BOS M15, displacement M15}`. Los tres eventos M15
+son evidencias hermanas del mismo POI y pueden publicarse en cualquier orden;
+el Setup Builder solo compone cuando todos son visibles. Esto cubre el caso
+observado donde el displacement causa la ruptura y el BOS se confirma después,
+sin crear referencias a objetos futuros. Ventana congelada POI→hijo: 120 h.
+Se elige el padre previo más reciente, ACTIVE en su
 temporalidad de autoridad y compatible en dirección; FVG además debe solapar el
 POI.
 
@@ -31,5 +32,5 @@ FVG/OB.
 - sin referencias padre→hijo futuro;
 - FULL/PREFIX exacto en varios cortes;
 - setups completos solo mediante `engine.setup_builder`;
-- T7c no mide edge, no crea SL/TP, no entrena IA y no opera MT5. Solo habilita
+- T7d no mide edge, no crea SL/TP, no entrena IA y no opera MT5. Solo habilita
   materializar el corpus cuando produce setups completos reales.

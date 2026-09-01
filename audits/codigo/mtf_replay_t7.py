@@ -30,6 +30,10 @@ SOURCES = (
     DATA_ROOT / "2024" / "eurusd-m15-bid-2024-12-01-2025-01-01.csv",
     DATA_ROOT / "2025" / "eurusd-m15-bid-2025-01-01-2025-02-01.csv",
 )
+EXPECTED_SHA256 = {
+    "eurusd-m15-bid-2024-12-01-2025-01-01.csv": "bce883373218e4ca20ac7092422d9893edbe346b96c44cbe5a3d13c172c80c6e",
+    "eurusd-m15-bid-2025-01-01-2025-02-01.csv": "c62b93557bb0a61b69c63af6618368b51878a1aa7299d99e06abafd815fe0cf6",
+}
 WINDOW_START = pd.Timestamp("2025-01-01T00:00:00Z")
 WINDOW_END = pd.Timestamp("2025-02-01T00:00:00Z")
 
@@ -70,6 +74,12 @@ def load_source() -> tuple[pd.DataFrame, list[dict[str, Any]], str]:
     frames: list[pd.DataFrame] = []
     manifest: list[dict[str, Any]] = []
     for path in SOURCES:
+        actual_hash = _sha256(path)
+        expected_hash = EXPECTED_SHA256[path.name]
+        if actual_hash != expected_hash:
+            raise ValueError(
+                f"preregistered hash mismatch for {path.name}: {actual_hash} != {expected_hash}"
+            )
         raw = pd.read_csv(path)
         required = {"timestamp", "open", "high", "low", "close", "volume"}
         if set(raw.columns) != required:
@@ -88,7 +98,7 @@ def load_source() -> tuple[pd.DataFrame, list[dict[str, Any]], str]:
         frames.append(frame)
         manifest.append({
             "path": path.relative_to(ROOT).as_posix(),
-            "sha256": _sha256(path),
+            "sha256": actual_hash,
             "bytes": path.stat().st_size,
             "rows": len(raw),
             "open_time_min": opened.min().isoformat(),
@@ -224,7 +234,7 @@ def execute(output_dir: Path) -> dict[str, Any]:
             "chunk_500_count": len(manifest_500["chunks"]), "chunk_257_count": len(manifest_257["chunks"]),
         },
         "full_prefix": cuts,
-        "resources": {"elapsed_seconds_run_1": elapsed, "tracemalloc_peak_mb_run_1": peak_mb},
+        "resources": {"elapsed_seconds_run_1": elapsed, "peak_working_set_mb_run_1": peak_mb},
         "artifact": "mtf_replay_t7_2025_01.json",
         "viewer_manifest": "viewer/manifest.json",
         "edge_measured": False, "optimization_executed": False, "ai_training_executed": False,

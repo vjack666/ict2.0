@@ -105,3 +105,19 @@ solo se reporta después de seleccionar y no participa en el criterio. El
 HOLDOUT 2021–2025 no se lee. En caso de empate se usa `validation.accuracy` y
 el orden estable de la rejilla. El resultado solo puede ser diagnóstico; no
 concede `TRAINING_ELIGIBLE`, promoción ni autoridad de trading.
+
+## Resultado de optimización A1.5 — 2026-09-01
+
+Se evaluaron 12 candidatos sin leer el HOLDOUT 2021–2025. El selector usó
+únicamente `validation.log_loss`, con empates por `validation.accuracy`.
+
+- Candidato técnico: `C10`.
+- Perfil: `WYCKOFF_ICT_COMBINED`.
+- `learning_rate=0.02`, `l2=0.001`, `iterations=500`.
+- Validation: accuracy `0.398810`, log-loss `1.087424`.
+- TEST/OOS diagnóstico: accuracy `0.402492`, log-loss `1.089695`.
+
+La mejora frente al baseline combinado es pequeña y no se considera evidencia
+de edge ni mejora material. El candidato queda congelado solo como candidato
+técnico para una auditoría posterior; no reemplaza el baseline, no recibe
+`TRAINING_ELIGIBLE` y no habilita trading.

@@ -93,6 +93,11 @@ Si ningún candidato mejora materialmente al baseline, se conserva el baseline
 y se registra `NO_MATERIAL_IMPROVEMENT`; cambiar la rejilla o la etiqueta exige
 un nuevo pre-registro.
 
+La selección automática del mejor valor de la métrica solo produce un
+`technical_candidate`; no decide que la mejora sea material, no modifica el
+baseline publicado y no concede `TRAINING_ELIGIBLE`. Esa decisión requiere
+auditoría independiente y comparación fuera de muestra.
+
 ### A3 — Shadow MT5
 
 Consumir el snapshot operativo MT5 actual con el modelo congelado, medir

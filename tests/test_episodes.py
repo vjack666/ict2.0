@@ -95,6 +95,19 @@ def test_eligible_setup_becomes_accepted():
     assert ep["episode_id"].startswith("EP_") and len(ep["episode_id"]) == 27
 
 
+def test_parent_object_lineage_accepted_without_related_objects():
+    # El productor histórico v3 establece lineage SOLO vía parent_object
+    # (FVG/BOS/displacement cuelgan de su OB); related_objects queda vacío.
+    # El funnel debe reconocer parent_object como relación (§3 del contrato).
+    t = datetime(2024, 1, 2)
+    poi, fvg = _related_pair(t_poi=datetime(2024, 1, 1, 0), t_ref=datetime(2024, 1, 1, 1),
+                             related=False)
+    fvg.parent_object = poi.id  # lineage padre→hijo, sin related_objects
+    art = _run(_setup(poi, fvg), t)
+    assert art["aggregates"]["totals"]["episodes"] == 1
+    assert art["episodes"][0]["status"] == "ACCEPTED"
+
+
 def test_superseded_maps_to_superseded():
     t = datetime(2024, 1, 2)
     poi, fvg = _related_pair(t_poi=datetime(2024, 1, 1, 0), t_ref=datetime(2024, 1, 1, 1))

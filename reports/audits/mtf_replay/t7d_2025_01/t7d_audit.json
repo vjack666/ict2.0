@@ -1,0 +1,122 @@
+{
+  "ai_training_executed": false,
+  "can_trade": false,
+  "checksum": "55deb815daa0d01fa4f885e4cc8d2c9b5a0ed4539b3fd0f6246a292bd24002e9",
+  "commit": "de24d68c37f36382e62029cd0578f186a2fba145",
+  "counts": {
+    "january_complete_records": 4,
+    "january_displacement_objects": 6,
+    "january_eligible_records": 4,
+    "january_episodes": 4,
+    "january_setup_records": 20,
+    "trades": 0
+  },
+  "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
+  "edge_measured": false,
+  "full_prefix": [
+    {
+      "cutoff": "2025-01-09T10:00:00+00:00",
+      "producer_counts": {
+        "bos_m15_linked": 11,
+        "displacement_m15_linked": 0,
+        "fvg_m15_linked": 0,
+        "ob_h4": 3
+      },
+      "ratio": 0.25,
+      "replay_pass": true
+    },
+    {
+      "cutoff": "2025-01-16T22:00:00+00:00",
+      "producer_counts": {
+        "bos_m15_linked": 20,
+        "displacement_m15_linked": 2,
+        "fvg_m15_linked": 0,
+        "ob_h4": 4
+      },
+      "ratio": 0.5,
+      "replay_pass": true
+    },
+    {
+      "cutoff": "2025-01-24T10:00:00+00:00",
+      "producer_counts": {
+        "bos_m15_linked": 55,
+        "displacement_m15_linked": 5,
+        "fvg_m15_linked": 2,
+        "ob_h4": 6
+      },
+      "ratio": 0.75,
+      "replay_pass": true
+    },
+    {
+      "cutoff": "2025-01-29T17:00:00+00:00",
+      "producer_counts": {
+        "bos_m15_linked": 66,
+        "displacement_m15_linked": 6,
+        "fvg_m15_linked": 2,
+        "ob_h4": 9
+      },
+      "ratio": 0.9,
+      "replay_pass": true
+    }
+  ],
+  "gates": {
+    "chunk_manifest": true,
+    "complete_setups": true,
+    "determinism": true,
+    "eligible_setups": true,
+    "episodes": true,
+    "full_prefix": true,
+    "january_displacement": true,
+    "no_pretrigger_setup": true,
+    "producer_population": true
+  },
+  "optimization_executed": false,
+  "producer": {
+    "bos_m15_linked": 71,
+    "displacement_m15_linked": 6,
+    "fvg_m15_linked": 4,
+    "ob_h4": 11
+  },
+  "producer_config": {
+    "poi_to_child_max_hours": 120
+  },
+  "profile": {
+    "exec_tf": "M15",
+    "htf": "H4",
+    "itf": "M15",
+    "profile_id": "INTRADAY_H4_M15",
+    "refine_tf": null
+  },
+  "promotion_authorized": false,
+  "provenance": {
+    "formal_status": "BLOCKED_PROVENANCE",
+    "mechanical_integrity": "PASS",
+    "mt5_used": false
+  },
+  "resources": {
+    "elapsed_seconds_run_1": 56.329926800040994,
+    "peak_working_set_mb_run_1": 147.7890625
+  },
+  "run_id": "t7d",
+  "source_manifest": [
+    {
+      "bytes": 89241,
+      "gaps_gt_15m": 12,
+      "open_time_max": "2024-12-31T21:45:00+00:00",
+      "open_time_min": "2024-12-01T22:00:00+00:00",
+      "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-12-01-2025-01-01.csv",
+      "rows": 1587,
+      "sha256": "bce883373218e4ca20ac7092422d9893edbe346b96c44cbe5a3d13c172c80c6e"
+    },
+    {
+      "bytes": 118858,
+      "gaps_gt_15m": 4,
+      "open_time_max": "2025-01-31T21:45:00+00:00",
+      "open_time_min": "2025-01-01T22:00:00+00:00",
+      "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-01-01-2025-02-01.csv",
+      "rows": 2112,
+      "sha256": "c62b93557bb0a61b69c63af6618368b51878a1aa7299d99e06abafd815fe0cf6"
+    }
+  ],
+  "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE"
+}

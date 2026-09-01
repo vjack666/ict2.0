@@ -117,7 +117,7 @@ def _mid(obj: MarketObject) -> float:
 
 
 def _bar_after_tradable(obj: MarketObject, bar_index: int, bar_time: Any) -> bool:
-    """True si la vela evaluada ocurre en o después de ``tradable_time`` (PIT).
+    """True si la vela evaluada ocurre ESTRICTAMENTE después de ``tradable_time`` (PIT).
 
     CONTRATO POR TIMESTAMP (Corrección temporal LTF/HTF — Codex H4): la frontera
     PIT se decide EXCLUSIVAMENTE por timestamp. NUNCA se compara ``bar_index``
@@ -129,6 +129,17 @@ def _bar_after_tradable(obj: MarketObject, bar_index: int, bar_time: Any) -> boo
     índice no pierde información y elimina el riesgo cross-TF. Fail-closed: sin
     timestamp válido no se asume "después" — el llamador ya rechaza la vela por
     identidad incompleta antes de llegar aquí.
+
+    ESTRICTO (Enmienda PIT — Codex): ``tradable_time`` es el timestamp de la
+    vela de CONFIRMACIÓN del objeto (contrato del productor: los eventos se
+    vuelven tradables al cierre de su vela). La vela de confirmación se observa
+    exactamente en ese timestamp y es la vela que CREA el objeto: evaluarla
+    contra el propio objeto es auto-mitigación (el FVG bull define
+    ``zone_low = third.low``, así que su tercera vela SIEMPRE toca la zona; el
+    OB se confirma con la vela de followthrough que recorre la zona del source
+    candle). Por eso la frontera es ``>`` y no ``>=``: excluye exactamente la
+    vela de confirmación (la única observada en ``tradable_time``) y ninguna
+    otra. Toda vela posterior sigue evaluándose con normalidad.
     """
     if bar_time is None:
         return False
@@ -138,7 +149,7 @@ def _bar_after_tradable(obj: MarketObject, bar_index: int, bar_time: Any) -> boo
     bt = pd.to_datetime(bar_time, utc=True, errors="coerce")
     if pd.isna(tt) or pd.isna(bt):
         return False
-    return bt >= tt
+    return bt > tt
 
 
 def _event_key(tf: str, bar_time: Any, bar_index: int, event_type: str) -> str:

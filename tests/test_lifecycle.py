@@ -178,6 +178,32 @@ def test_small_replay_sequence_and_pit_tradable():
     assert obj.state == ObjectState.INVALIDATED
 
 
+def test_confirmation_bar_does_not_transition_its_own_object():
+    # Enmienda PIT: la vela de confirmación se observa EXACTAMENTE en
+    # tradable_time y es la vela que CREA el objeto. Evaluarla contra el propio
+    # objeto es auto-mitigación (el FVG bull define zone_low = third.low, así
+    # que su tercera vela SIEMPRE toca la zona; el OB se confirma con la vela
+    # de followthrough que recorre la zona del source candle). La frontera PIT
+    # es ESTRICTA: bar_time > tradable_time.
+    # FVG: la tercera vela (bar 10) con low == zone_low no debe transicionar.
+    fvg = _fvg_bull(10, 1.0995, 1.1005)
+    dec = evaluate(fvg, _bar(10, 1.0996, 1.1008, 1.0995, 1.1000), authority_tf="M15")
+    assert dec.changed is False
+    assert fvg.state == ObjectState.ACTIVE
+    assert fvg.first_touch_bar is None
+    # OB: la vela de followthrough (bar 10) no debe transicionar.
+    ob = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    dec = evaluate(ob, _bar(10, 1.0996, 1.1008, 1.0995, 1.1000, tf="H4"), authority_tf="H4")
+    assert dec.changed is False
+    assert ob.state == ObjectState.ACTIVE
+    assert ob.first_touch_bar is None
+    # Una vela ESTRICTAMENTE posterior (bar 11) sigue transicionando con normalidad.
+    dec = evaluate(fvg, _bar(11, 1.1002, 1.1010, 1.1000, 1.1008), authority_tf="M15")
+    assert dec.changed is True
+    assert fvg.state == ObjectState.PARTIALLY_MITIGATED
+    assert fvg.first_touch_bar == 11
+
+
 def test_partial_not_terminal_and_ce_touched_is_evidence():
     obj = _fvg_bull(10, 1.0995, 1.1005)
     # Vela que penetra solo hasta el 50% (low llega a 1.1000, mitad = 1.1000).

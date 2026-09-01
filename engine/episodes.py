@@ -184,9 +184,22 @@ def _object_refs(setup: Setup) -> list:
 
 
 def _related(a: MarketObject, b: MarketObject) -> bool:
+    """True si ``a`` y ``b`` están relacionados por lineage.
+
+    El contrato §3 reconoce DOS fuentes de lineage:
+    ``MarketObject.parent_object`` (relación padre→hijo, la que establece el
+    productor histórico v3: FVG/BOS/displacement cuelgan de su OB) y
+    ``MarketObject.related_objects`` (relación mutua). ``_related`` acepta
+    cualquiera de las dos: un hijo cuyo ``parent_object`` apunta a ``b`` está
+    relacionado con ``b`` aunque ``related_objects`` esté vacío.
+    """
     ra = a.related_objects or []
     rb = b.related_objects or []
-    return (b.id in ra) or (a.id in rb)
+    if (b.id in ra) or (a.id in rb):
+        return True
+    if a.parent_object == b.id or b.parent_object == a.id:
+        return True
+    return False
 
 
 def _available_time(mo: MarketObject) -> Any:
@@ -321,7 +334,11 @@ def _check_lineage(setup: Setup, ms: "MarketState", T: datetime) -> Optional[str
             return isinstance(mo, MarketObject) and mo.role in LEAF_ROLES
 
         # Alcanzabilidad: el POI debe poder llegar a todos los componentes
-        # presentes a través de related_objects (mutuos o en cadena).
+        # presentes a través de related_objects (mutuos o en cadena) y de la
+        # relación padre→hijo (parent_object). El productor histórico v3
+        # establece lineage SOLO vía parent_object (FVG/BOS/displacement cuelgan
+        # de su OB), así que el BFS debe transitar también los hijos cuyo
+        # parent_object apunta al nodo actual.
         reachable: set = set()
         queue = [poi.id]
         while queue:
@@ -337,6 +354,10 @@ def _check_lineage(setup: Setup, ms: "MarketState", T: datetime) -> Optional[str
             ):
                 if nxt not in reachable:
                     queue.append(nxt)
+            # Hijos cuyo parent_object apunta al nodo actual (relación padre→hijo).
+            for oid, o in (proj.items() if isinstance(proj, dict) else []):
+                if oid not in reachable and getattr(o, "parent_object", None) == cur:
+                    queue.append(oid)
         for mo in all_objs:
             if mo.id not in reachable:
                 return "MISSING_LINEAGE"  # huérfano: no alcanzable desde POI

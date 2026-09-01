@@ -185,3 +185,11 @@ def test_observe_does_not_record_state_transition():
     ms.observe("o1", {"time": T11, "index": 11, "tf": "M15", "high": 1996.0, "low": 1994.0, "close": 1995.0}, observed_tf="M15")
     assert ms.history_of("o1") == [] or len(ms.history_of("o1")) == 1  # solo fundacional
     assert ms.all_objects()[0].state == ObjectState.ACTIVE
+
+
+def test_has_objects_at_matches_birth_membership_without_projection():
+    ms = MarketState()
+    ms.ingest(_make_obj("o1", T10, ObjectState.ACTIVE))
+    assert ms.has_objects_at(datetime(2026, 1, 1, 9, 59, tzinfo=UTC)) is False
+    assert ms.has_objects_at(T10) is True
+    assert ms.has_objects_at(T20) is True

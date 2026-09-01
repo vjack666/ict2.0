@@ -531,8 +531,7 @@ def build_episodes(
             setups = build_setups_at(ms, T, ctx)
 
         if not setups:
-            proj = ms.projection_at(T)
-            if not proj:
+            if not ms.has_objects_at(T):
                 records.append(
                     FunnelRecord(
                         candidate_key=f"SNAPSHOT@{_ser(T)}",

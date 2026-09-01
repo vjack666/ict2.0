@@ -339,6 +339,15 @@ def build_setups_at(
       - NO muta object_state ni POI.meta (la linaje la fija el caller).
       - Es determinista y causal: solo lee el mundo conocido hasta T.
     """
+    # Static ontology guard before the expensive historical projection. Type,
+    # origin_tf and role are immutable birth attributes; if the universe has no
+    # possible POI or LTF refinement at all, no state-at-T can create a setup.
+    universe = list(ms.all_objects())
+    if not any(o.type is ObjectType.ORDER_BLOCK and o.origin_tf in _POI_TFS for o in universe):
+        return []
+    if not any(o.type is ObjectType.FVG and o.origin_tf in _LTF_TFS for o in universe):
+        return []
+
     # 1) Snapshot causal en T (proyecciones congeladas; sin look-ahead).
     proj = ms.projection_at(t)
     existing = list(proj.values())

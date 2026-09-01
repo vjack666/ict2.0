@@ -266,6 +266,20 @@ class MarketState:
         """Registro evidence de eventos fuera de orden rechazados (OE-03)."""
         return list(self._out_of_order_events)
 
+    def has_objects_at(self, t: Any) -> bool:
+        """Return whether at least one object exists by T without projecting it.
+
+        Object birth time is immutable, so this cheap membership query is
+        causally equivalent to ``bool(projection_at(T))`` and avoids deep-copying
+        the whole state when a consumer only needs snapshot membership.
+        """
+        tt = _as_utc(t)
+        for obj in self._objects.values():
+            born = _as_utc(obj.creation_time)
+            if born is None or tt is None or born <= tt:
+                return True
+        return False
+
     # --- Replay causal (state-at / projection) ------------------------------
     def state_at(self, obj_id: str, t: Any) -> Optional[ObjectState]:
         """Estado OFICIAL del objeto en o antes de T (replay de la línea temporal).

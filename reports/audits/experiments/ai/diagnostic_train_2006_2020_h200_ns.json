@@ -1,0 +1,425 @@
+{
+  "artifact_hash": "cfae26b24f09b389a700caaf17abb96cc73be46b2b0eb44f4c8268ff63417557",
+  "artifact_kind": "ai_outcome_classifier_diagnostic_only",
+  "can_trade": false,
+  "certified_snapshot": false,
+  "config": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "can_trade": false,
+    "iterations": 500,
+    "l2": 0.0001,
+    "learning_rate": 0.05,
+    "min_class_rows": 5,
+    "mode": "DIAGNOSTIC_ONLY",
+    "seed": 20260831,
+    "target": "label_end_200",
+    "train_fraction": 0.6,
+    "validation_fraction": 0.2
+  },
+  "diagnostic_authorization": {
+    "certified_snapshot": false,
+    "dataset_hash": "abcdaa1f3681ee027632fea3c56628c844dd52ae1c165e6d17ecafd5fd854faa",
+    "promotion_authorized": false,
+    "scope": "DIAGNOSTIC_ONLY",
+    "status": "PASS",
+    "verdict": "TRAINING_ELIGIBLE"
+  },
+  "diagnostics": [
+    "ajuste ejecutado sólo para diagnóstico local; no es certificación ni promoción"
+  ],
+  "fit_executed": true,
+  "input": {
+    "format": "causal_materialized_jsonl",
+    "rows": 86,
+    "schema_hash": "b20f2607eb23c031b687a07a660bd94b42d3bf8b361f4cc013de1f046099926c",
+    "sha256": "abcdaa1f3681ee027632fea3c56628c844dd52ae1c165e6d17ecafd5fd854faa",
+    "source_name": "diagnostic_corpus_2006_2020_h200_ns.jsonl"
+  },
+  "metrics": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "calibration_status": "NOT_CALIBRATED",
+    "classes": [
+      "continuation",
+      "reversal",
+      "failure"
+    ],
+    "model_training_executed": true,
+    "oos_scope": "TEST_OOS never used for fitting",
+    "policy": "SHADOW_ONLY_NO_ORDER",
+    "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+    "target": "label_end_200",
+    "test_oos": {
+      "accuracy": 0.6111111111111112,
+      "class_counts": {
+        "continuation": 5,
+        "failure": 2,
+        "reversal": 11
+      },
+      "log_loss": 1.0906897943591694,
+      "rows": 18
+    },
+    "train": {
+      "accuracy": 0.5882352941176471,
+      "class_counts": {
+        "continuation": 6,
+        "failure": 15,
+        "reversal": 30
+      },
+      "log_loss": 0.9160766261964242,
+      "rows": 51
+    },
+    "validation": {
+      "accuracy": 0.7647058823529411,
+      "class_counts": {
+        "continuation": 0,
+        "failure": 4,
+        "reversal": 13
+      },
+      "log_loss": 0.6491615927270202,
+      "rows": 17
+    }
+  },
+  "minimum_window": {
+    "additional_rows_at_least": 0,
+    "available_class_counts": {
+      "continuation": 11,
+      "failure": 21,
+      "reversal": 54
+    },
+    "available_rows": 86,
+    "earliest_qualifying_window": {
+      "end_event_time": "2020-05-18T14:00:00+00:00",
+      "rows_required": 80,
+      "start_event_time": "2006-01-17T13:00:00+00:00",
+      "test_rows": 16,
+      "train_class_counts": {
+        "continuation": 5,
+        "failure": 15,
+        "reversal": 28
+      },
+      "train_rows": 48,
+      "validation_rows": 16
+    },
+    "minimum_partition_rows": {
+      "test": 10,
+      "train": 30,
+      "validation": 10
+    },
+    "minimum_total_rows": 50,
+    "minimum_train_class_rows": 5,
+    "window_policy": "chronological prefix; 60% train, 20% validation, remainder test"
+  },
+  "model": {
+    "artifact_hash": "d8f55359c30a65e71ffdff72ae2585fec685ed742143487100a35ac830f075cb",
+    "bias": [
+      -0.8252067331092954,
+      0.7676813070536908,
+      0.0575254260556032
+    ],
+    "can_trade": false,
+    "classes": [
+      "continuation",
+      "reversal",
+      "failure"
+    ],
+    "dataset_hash": "abcdaa1f3681ee027632fea3c56628c844dd52ae1c165e6d17ecafd5fd854faa",
+    "experiment_id": "EXP-AI-OUTCOME-DIAGNOSTIC-ONLY",
+    "feature_names": [
+      "direction",
+      "sequence_depth",
+      "context_bucket=ALIGNED",
+      "context_bucket=NEUTRAL",
+      "context_bucket=AGAINST",
+      "h1_alignment=ALIGNED",
+      "h1_alignment=NEUTRAL",
+      "h1_alignment=AGAINST",
+      "d1_bias=BULLISH",
+      "d1_bias=BEARISH",
+      "d1_bias=UNKNOWN",
+      "d1_bias=MIXED",
+      "h4_location=DISCOUNT",
+      "h4_location=PREMIUM",
+      "h4_location=EQUILIBRIUM",
+      "h4_location=MID",
+      "h4_location=UNKNOWN",
+      "sequence_has=LIQUIDITY_POOL",
+      "sequence_has=SWEEP",
+      "sequence_has=DISPLACEMENT",
+      "sequence_has=STRUCTURE",
+      "sequence_has=OB",
+      "sequence_has=FVG",
+      "sequence_has=CONFLUENCE"
+    ],
+    "mean": [
+      -0.2549019607843137,
+      7.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "metrics": {
+      "algorithm": "deterministic_multinomial_softmax",
+      "calibration_status": "NOT_CALIBRATED",
+      "classes": [
+        "continuation",
+        "reversal",
+        "failure"
+      ],
+      "model_training_executed": true,
+      "oos_scope": "TEST_OOS never used for fitting",
+      "policy": "SHADOW_ONLY_NO_ORDER",
+      "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+      "target": "label_end_200",
+      "test_oos": {
+        "accuracy": 0.6111111111111112,
+        "class_counts": {
+          "continuation": 5,
+          "failure": 2,
+          "reversal": 11
+        },
+        "log_loss": 1.0906897943591694,
+        "rows": 18
+      },
+      "train": {
+        "accuracy": 0.5882352941176471,
+        "class_counts": {
+          "continuation": 6,
+          "failure": 15,
+          "reversal": 30
+        },
+        "log_loss": 0.9160766261964242,
+        "rows": 51
+      },
+      "validation": {
+        "accuracy": 0.7647058823529411,
+        "class_counts": {
+          "continuation": 0,
+          "failure": 4,
+          "reversal": 13
+        },
+        "log_loss": 0.6491615927270202,
+        "rows": 17
+      }
+    },
+    "model_id": "ICT_OUTCOME_CLASSIFIER_V1_DIAGNOSTIC",
+    "model_version": "diagnostic-1.0.0",
+    "scale": [
+      0.9669669024265062,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "schema_hash": "b20f2607eb23c031b687a07a660bd94b42d3bf8b361f4cc013de1f046099926c",
+    "schema_version": "1.0",
+    "seed": 20260831,
+    "shadow_mode": true,
+    "snapshot_id": "DIAGNOSTIC_JSONL_abcdaa1f3681ee02",
+    "source_code_commit": "c4c9c774edc3f8843831b61daa259f23eafe534f",
+    "target": "label_end_200",
+    "weights": [
+      [
+        -0.0862874562536242,
+        -0.0026033742888741424,
+        0.002208208280621223,
+        0.015644909106542634,
+        -0.008224968697762406,
+        -0.01844151348032711,
+        -0.005960235589712521,
+        -0.0037303826757689048,
+        -0.011249539244166197,
+        -0.002565068757338071,
+        0.020281999336464993,
+        -0.00950905836298141,
+        0.004510144233975001,
+        0.014955054000650819,
+        0.015423865863540907,
+        0.015053629515754854,
+        -0.004191553226769066,
+        0.0017056138467338962,
+        0.01593066459064473,
+        -0.027468033176707436,
+        0.020262423364414348,
+        0.011633112638933383,
+        0.005563119124812042,
+        0.003196710121951921
+      ],
+      [
+        -0.09289512836960774,
+        -0.008125090251541631,
+        0.002094876365533932,
+        -0.018304346063432356,
+        -0.0007197443688162994,
+        0.0004397895675658127,
+        0.02184578215879945,
+        -0.013361967299416841,
+        0.008432261752567487,
+        -0.019569023903696203,
+        -0.008719669160122876,
+        0.01352357908132839,
+        0.0030375346345968136,
+        0.006551148790837142,
+        0.00012197915980910965,
+        -0.03253531038026191,
+        0.002030484059335881,
+        -0.005607392812923486,
+        -0.00042771798748775,
+        -0.011104503241052192,
+        0.003815777420071521,
+        0.005378615176103677,
+        -0.0065262094932297555,
+        -0.0022934011178413196
+      ],
+      [
+        0.1782546479482206,
+        0.011761247131766064,
+        -0.012005037734520075,
+        0.005441536007145443,
+        -0.0028004278927743786,
+        -0.00026092676796184475,
+        -0.0021729809354770805,
+        0.013320288355723466,
+        0.004485201581763986,
+        0.0037036541566119628,
+        -0.007514663041015783,
+        -0.002433995172190898,
+        -0.00213560233355433,
+        0.014036798549904533,
+        -0.003457907928285201,
+        0.0001248932263389377,
+        -0.009908318340045021,
+        0.004372067330093343,
+        -0.024101385609219497,
+        -0.008191031209706575,
+        -0.019816807016953743,
+        -0.01640189995854705,
+        -0.0008732776401740455,
+        -0.013832222771395807
+      ]
+    ]
+  },
+  "promotion_authorized": false,
+  "reason_code": null,
+  "schema_version": "1.0",
+  "scientific_training_eligible": false,
+  "shadow_mode": true,
+  "status": "DIAGNOSTIC_ONLY_COMPLETED",
+  "target": "label_end_200",
+  "temporal_split": {
+    "oos_scope": "test",
+    "oos_test_rows": 18,
+    "selection_rows": 68,
+    "selection_scope": "train+validation",
+    "split_source": "diagnostic_configured_temporal",
+    "test_rows": 18,
+    "time_column": "event_time",
+    "train_end": "2015-09-15T16:00:00+00:00",
+    "train_rows": 51,
+    "validation_end": "2018-10-09T08:00:00+00:00",
+    "validation_rows": 17
+  },
+  "train_class_counts": {
+    "continuation": 6,
+    "failure": 15,
+    "reversal": 30
+  },
+  "training_plan": {
+    "config": {
+      "algorithm": "deterministic_multinomial_softmax",
+      "can_trade": false,
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.05,
+      "min_class_rows": 5,
+      "mode": "DIAGNOSTIC_ONLY",
+      "seed": 20260831,
+      "target": "label_end_200",
+      "train_fraction": 0.6,
+      "validation_fraction": 0.2
+    },
+    "dataset_hash": "abcdaa1f3681ee027632fea3c56628c844dd52ae1c165e6d17ecafd5fd854faa",
+    "features": [
+      "features_at_t",
+      "direction",
+      "sequence_depth"
+    ],
+    "labels": [
+      "label_end_200"
+    ],
+    "metrics": {
+      "data_digest": "77c055c818f68cbfe0260c41883bfe70b60a5388a5c56052c08cb05fc885af4e",
+      "model_training_executed": false,
+      "oos_scope": "test",
+      "oos_test_rows": 18,
+      "pipeline_schema_version": "1.0",
+      "selection_rows": 68,
+      "selection_scope": "train+validation",
+      "split_source": "diagnostic_configured_temporal",
+      "test_rows": 18,
+      "train_rows": 51,
+      "validation_rows": 17
+    },
+    "model_id": "ICT_OUTCOME_CLASSIFIER_V1_DIAGNOSTIC",
+    "model_training": {
+      "executed": false,
+      "kind": "contract-skeleton"
+    },
+    "model_version": "diagnostic-1.0.0",
+    "pipeline_schema_version": "1.0",
+    "run_id": "dd72c3cbdd72b11c5139e9974bb8f6c6e69ebfc7cdbf08eab76865ab0afc5dcb",
+    "schema_hash": "b20f2607eb23c031b687a07a660bd94b42d3bf8b361f4cc013de1f046099926c",
+    "seed": 20260831,
+    "snapshot_id": "DIAGNOSTIC_JSONL_abcdaa1f3681ee02",
+    "split": {
+      "oos_scope": "test",
+      "oos_test_rows": 18,
+      "selection_rows": 68,
+      "selection_scope": "train+validation",
+      "split_source": "diagnostic_configured_temporal",
+      "test_rows": 18,
+      "time_column": "event_time",
+      "train_end": "2015-09-15T16:00:00+00:00",
+      "train_rows": 51,
+      "validation_end": "2018-10-09T08:00:00+00:00",
+      "validation_rows": 17
+    }
+  }
+}

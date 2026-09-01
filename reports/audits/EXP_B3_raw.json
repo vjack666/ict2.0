@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B3",
+  "role": "INCREMENTAL_H4_BIAS_FILTER (subconjunto filtrado de B1)",
+  "hypothesis": "H_B3: Anadir filtro de sesgo H4 (entra solo si sesgo H4 alinea direccion con la estructura) incrementa la expectancy del baseline LTF (B1) en R por operacion, bajo protocolo identico. Metrica: expectancy (mean_R). Gate: n_closed>=30. Comparador: B1.",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": "Dataset canonico H1 2019-2024 (mismo que B1/B2)."
+  },
+  "htf_input": {
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+    "tf": "H4",
+    "rows": 32133,
+    "dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+    "bias_column": "trend (engine.market_features.build_features)",
+    "pit_safe_full_vs_prefix_violations": 0,
+    "note": "Sesgo H4 por columna trend de build_features; PIT-verificado (0 violaciones)."
+  },
+  "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "depth_min": 4,
+    "anchor": "STRUCTURE_bar_close (depth>=4)",
+    "sl_rule": "min(sweep_wick, broken_swing)-buffer (defensa pareja, 2 terminos)",
+    "tp_rule": "measured_projection (fallback sancionado)",
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "htf_context": true,
+    "htf_filter": "keep iff (dir==1 and H4 BULLISH) or (dir==-1 and H4 BEARISH); RANGING/counter dropped"
+  },
+  "fecha": "2026-08-22T00:05:27.847555+00:00",
+  "treatment": {
+    "n_closed": 80,
+    "n_trades": 81,
+    "n_open": 1,
+    "mean_R": 0.3205,
+    "median_R": 1.0278,
+    "win_rate": 0.575,
+    "profit_factor": 1.754,
+    "expectancy": 0.3205,
+    "drawdown": 5.313,
+    "wilson_95": [
+      0.4657,
+      0.6774
+    ],
+    "bootstrap_ci_95": [
+      0.07433783901194813,
+      0.5672483316366738
+    ]
+  },
+  "baseline": null,
+  "baseline_note": "El comparador de B3 es B1 (control LTF en disco). No se genera baseline propio.",
+  "filter": {
+    "method": "H4 trend alignment via engine.market_features.build_features(H4)['trend']",
+    "total_treatment_trades": 215,
+    "kept": 81,
+    "dropped": 134,
+    "dropped_ranging": 0,
+    "dropped_counter_trend": 134
+  },
+  "delta_vs_B1": {
+    "b1_expectancy": 0.2499,
+    "b3_expectancy": 0.3205,
+    "delta_expectancy": 0.0706,
+    "delta_expectancy_ci95": [
+      -0.1297,
+      0.2703
+    ],
+    "b1_win_rate": 0.5498,
+    "b3_win_rate": 0.575,
+    "delta_win_rate": 0.0252,
+    "delta_win_rate_ci95": [
+      -0.0598,
+      0.1122
+    ],
+    "htf_contributes": false,
+    "note": "Delta CI por bootstrap por pares agrupado por chain_id (B3 subconjunto de B1)."
+  },
+  "motor_summary": {
+    "n_chains": 3478,
+    "by_depth": {
+      "1": 1312,
+      "2": 1697,
+      "3": 213,
+      "4": 229,
+      "5": 3,
+      "6": 2,
+      "7": 22
+    },
+    "by_status": {
+      "EXPIRED": 3456,
+      "COMPLETE": 22
+    },
+    "complete_bull": 9,
+    "complete_bear": 13,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "depth_min": 4,
+    "n": 256,
+    "by_status": {
+      "EXPIRED": 234,
+      "COMPLETE": 22
+    }
+  },
+  "protocol": {
+    "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado 2019-2024 (PIT-estable DENTRO del rango). El sesgo H4 se obtiene de build_features(H4)['trend'], columna PIT-verificada (FULL==PREFIX, 0 violaciones): se lee el valor en la ultima vela H4 cerrada <= t del anchor H1. Sin leakage futuro.",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true,
+      "origin": "csv",
+      "htf_source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+      "htf_dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "note": "Dataset canonico H1 verificado por SHA256; mismo motor/commit que B1/B2."
+    }
+  },
+  "elapsed_s": 195.88
+}

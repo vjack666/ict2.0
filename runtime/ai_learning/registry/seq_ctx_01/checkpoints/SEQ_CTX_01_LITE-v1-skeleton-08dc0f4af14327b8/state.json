@@ -1,0 +1,58 @@
+{
+  "state": {
+    "config": {
+      "can_trade": false,
+      "contract_version": "v2",
+      "shadow_mode": true,
+      "structure_mode": "lite"
+    },
+    "dataset_hash": "555f26e5cea7166dbf8838deaf38d36a30ac0ab48b9ff589e2fd86fdc39203bc",
+    "features": [
+      "context_bucket",
+      "direction",
+      "sequence_depth",
+      "split"
+    ],
+    "labels": [
+      "label_end_6",
+      "label_end_12",
+      "label_end_24",
+      "label_end_48"
+    ],
+    "metrics": {
+      "data_digest": "fdaee19bf9ed7a23366241f8283d80e9f7c086803a782eae0e031fc1a6cfd30d",
+      "model_training_executed": false,
+      "oos_scope": "test",
+      "oos_test_rows": 39,
+      "pipeline_schema_version": "1.0",
+      "selection_rows": 153,
+      "selection_scope": "train+validation",
+      "test_rows": 39,
+      "train_rows": 115,
+      "validation_rows": 38
+    },
+    "model_id": "SEQ_CTX_01_LITE",
+    "model_training": {
+      "executed": false,
+      "kind": "contract-skeleton"
+    },
+    "model_version": "v1-skeleton",
+    "pipeline_schema_version": "1.0",
+    "run_id": "08dc0f4af14327b8fffdc404f3f00100e1ac9ce10335a1c9981758740d33a54a",
+    "schema_hash": "ce906f27096ae17a1ef7dba404eecc7e0f333997142ee16b3630bdfb1181ef63",
+    "seed": 20260823,
+    "snapshot_id": "56016621e075859e33abfa7c92feca86d7ad52d27a7ad9d5cd080fa853091f70",
+    "split": {
+      "oos_scope": "test",
+      "oos_test_rows": 39,
+      "selection_rows": 153,
+      "selection_scope": "train+validation",
+      "test_rows": 39,
+      "time_column": "event_time",
+      "train_end": "2019-06-14T15:00:00+00:00",
+      "train_rows": 115,
+      "validation_end": "2021-10-11T19:00:00+00:00",
+      "validation_rows": 38
+    }
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A3",
+  "component_isolated": "Anclaje secuencial depth>=4 en H4 (mismo m\u00e9todo A1, defensa pareja)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-21T16:15:27.661920+00:00",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H4",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 9545,
+    "dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": null
+  },
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "depth_min": 4,
+    "sl_rule": "min(sweep_wick,broken_swing)-buffer",
+    "tp_rule": "measured_projection (fallback sancionado)",
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "pairing_seed": 4242,
+    "paired_sweep_defense": true
+  },
+  "motor_summary": {
+    "n_chains": 942,
+    "by_depth": {
+      "1": 364,
+      "2": 479,
+      "3": 35,
+      "4": 57,
+      "7": 7
+    },
+    "by_status": {
+      "EXPIRED": 935,
+      "COMPLETE": 7
+    },
+    "complete_bull": 6,
+    "complete_bear": 1,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge": {
+    "depth_min": 4,
+    "n": 64,
+    "by_status": {
+      "EXPIRED": 57,
+      "COMPLETE": 7
+    }
+  },
+  "treatment": {
+    "n_trades": 52,
+    "n_closed": 51,
+    "n_open": 1,
+    "n_invalid": 0,
+    "wins": 25,
+    "losses": 26,
+    "win_rate": 0.4902,
+    "win_rate_wilson95": [
+      0.3586,
+      0.6232
+    ],
+    "mean_r": 0.0539,
+    "median_r": -1.0,
+    "std_r": 1.096,
+    "min_r": -1.0,
+    "max_r": 1.9284,
+    "expectancy": 0.0539,
+    "profit_factor": 1.1058,
+    "drawdown": 6.922,
+    "bootstrap": {
+      "n_closed": 51,
+      "mean_r_ci": [
+        -0.24028536310625986,
+        0.3503154588921177
+      ],
+      "win_rate_ci": [
+        0.35294117647058826,
+        0.6274509803921569
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 51
+    }
+  },
+  "baseline": {
+    "n_trades": 52,
+    "n_closed": 50,
+    "n_open": 2,
+    "n_invalid": 0,
+    "wins": 20,
+    "losses": 30,
+    "win_rate": 0.4,
+    "win_rate_wilson95": [
+      0.2761,
+      0.5382
+    ],
+    "mean_r": -0.1289,
+    "median_r": -1.0,
+    "std_r": 1.1238,
+    "min_r": -1.0,
+    "max_r": 2.7753,
+    "expectancy": -0.1289,
+    "profit_factor": 0.7851,
+    "drawdown": 13.5341,
+    "bootstrap": {
+      "n_closed": 50,
+      "mean_r_ci": [
+        -0.42633221110223224,
+        0.179722730447806
+      ],
+      "win_rate_ci": [
+        0.26,
+        0.54
+      ],
+      "n_resamples": 2000,
+      "seed": 42,
+      "n_clusters": 50
+    }
+  },
+  "delta_win_rate": 0.0902,
+  "delta_mean_r": 0.1828,
+  "n_treatment": 52,
+  "n_baseline": 52,
+  "paired": true,
+  "n_paired_offsets": {
+    "1": 24,
+    "-1": 28
+  },
+  "elapsed_s": 0.65
+}

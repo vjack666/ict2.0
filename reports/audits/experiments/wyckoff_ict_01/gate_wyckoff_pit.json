@@ -1,0 +1,16 @@
+{
+  "experiment": "EXP-WYCKOFF-ICT-01_GATE_WYCKOFF_PIT",
+  "description": "wyckoff_state_at(full,t) == wyckoff_state_at(prefix_through_t,t) on H1 20Y sample",
+  "generated_at": "2026-08-25T22:42:02.714073+00:00",
+  "motor_lineage": "engine/Wyckoff adapter (build_wyckoff_snapshot), PIT truncate close_time<=t",
+  "window": 1500,
+  "n_samples": 80,
+  "n_checked": 80,
+  "n_divergences": 0,
+  "status": "PASS",
+  "usable_for_inference": true,
+  "divergences_sample": [],
+  "elapsed_s": 208.6,
+  "generator_commit": "a20c66aaf5d56126850701b93296cd651d04b993",
+  "generator_worktree": "CLEAN"
+}

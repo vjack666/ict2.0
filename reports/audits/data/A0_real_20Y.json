@@ -1,0 +1,40 @@
+{
+  "protocol": "A0_real_20Y_cleaned",
+  "symbol": "EURUSD",
+  "source": "dukascopy-node 2006-2026",
+  "tfs": {
+    "H1": {
+      "bars_raw": 124390,
+      "bars_clean": 124377,
+      "removed_bad_ohlc": 13,
+      "status": "PASS",
+      "findings": 0,
+      "ordered": true,
+      "t_min": "2006-01-01 21:00:00",
+      "t_max": "2025-12-31 21:00:00",
+      "years": 20.0
+    },
+    "H4": {
+      "bars_raw": 32137,
+      "bars_clean": 32133,
+      "removed_bad_ohlc": 4,
+      "status": "PASS",
+      "findings": 0,
+      "ordered": true,
+      "t_min": "2006-01-01 20:00:00",
+      "t_max": "2025-12-31 20:00:00",
+      "years": 20.0
+    },
+    "D1": {
+      "bars_raw": 6258,
+      "bars_clean": 6258,
+      "removed_bad_ohlc": 0,
+      "status": "PASS",
+      "findings": 0,
+      "ordered": true,
+      "t_min": "2006-01-01 00:00:00",
+      "t_max": "2025-12-31 00:00:00",
+      "years": 20.0
+    }
+  }
+}

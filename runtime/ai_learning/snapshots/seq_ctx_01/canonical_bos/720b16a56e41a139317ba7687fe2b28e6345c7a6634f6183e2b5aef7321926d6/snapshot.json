@@ -1,0 +1,161 @@
+{
+  "certified_manifest": {
+    "artifact_paths": [
+      "data/learning/seq_ctx_01/SEQ_CTX_01_CANONICAL_BOS.jsonl",
+      "reports/audits/experiments/seq_ctx_01/gate_causal.json",
+      "reports/audits/tna_streaming_prefix_2026-08-22.json",
+      "docs/contratos/CONTRATO_DATASET_SEQ_CTX_01.md",
+      "scripts/lab/experiments/exp_seq_ctx_01_dataset.py",
+      "engine/sequential_events.py",
+      "engine/mtf_navigation.py"
+    ],
+    "certifier": "HERMES-CEO",
+    "code_commit": "33fb73d5303b322d35ca16d05700f3ae8540584a",
+    "dataset_hash": "cf0e5a2e9f7060fc491dbcca4a86e4875b7f1052da26b7441208429fe9f49ec9",
+    "experiment_id": "EXP-SEQ-CTX-01",
+    "gate": {
+      "causal_full_vs_prefix": "PASS",
+      "tna_behavioral_full_span": "PASS"
+    },
+    "metrics": {
+      "by_bucket_split": {
+        "DESIGN": {
+          "ALIGNED": 1,
+          "NEUTRAL": 35
+        },
+        "HOLDOUT": {
+          "AGAINST": 1,
+          "ALIGNED": 5,
+          "NEUTRAL": 14
+        },
+        "VALIDATION": {
+          "ALIGNED": 4,
+          "NEUTRAL": 40
+        }
+      },
+      "by_split": {
+        "DESIGN": 36,
+        "HOLDOUT": 20,
+        "VALIDATION": 44
+      },
+      "can_trade": false,
+      "total_rows": 100
+    },
+    "produced_at": "2026-08-24T15:06:15+00:00",
+    "schema_version": "1.0",
+    "scope": {
+      "contract_version": "v2",
+      "experiment": "EXP-SEQ-CTX-01",
+      "structure_mode": "canonical_bos",
+      "symbol": "EURUSD",
+      "timeframe": "H1"
+    },
+    "verdict": "PASS"
+  },
+  "code_commit": "33fb73d5303b322d35ca16d05700f3ae8540584a",
+  "config": {
+    "can_trade": false,
+    "contract_version": "v2",
+    "snapshot_kind": "offline_research_only",
+    "structure_mode": "canonical_bos"
+  },
+  "consumer_code_commit": "33fb73d5303b322d35ca16d05700f3ae8540584a",
+  "created_at": "2026-08-24T15:06:15+00:00",
+  "data_path": "SEQ_CTX_01_CANONICAL_BOS.jsonl",
+  "dataset_hash": "cf0e5a2e9f7060fc491dbcca4a86e4875b7f1052da26b7441208429fe9f49ec9",
+  "experiment_id": "EXP-SEQ-CTX-01",
+  "row_count": 100,
+  "schema": {
+    "columns": [
+      "can_trade",
+      "chain_id",
+      "context_bucket",
+      "contract_version",
+      "dataset_id",
+      "dataset_sha256",
+      "direction",
+      "event_id",
+      "event_time",
+      "features_at_t",
+      "generator_commit",
+      "label_end_12",
+      "label_end_24",
+      "label_end_48",
+      "label_end_6",
+      "sequence_depth",
+      "split",
+      "structure_mode",
+      "symbol",
+      "timeframe"
+    ],
+    "format": "jsonl",
+    "schema_hash": "ce906f27096ae17a1ef7dba404eecc7e0f333997142ee16b3630bdfb1181ef63",
+    "types": {
+      "can_trade": [
+        "bool"
+      ],
+      "chain_id": [
+        "string"
+      ],
+      "context_bucket": [
+        "string"
+      ],
+      "contract_version": [
+        "string"
+      ],
+      "dataset_id": [
+        "string"
+      ],
+      "dataset_sha256": [
+        "string"
+      ],
+      "direction": [
+        "int"
+      ],
+      "event_id": [
+        "string"
+      ],
+      "event_time": [
+        "string"
+      ],
+      "features_at_t": [
+        "object"
+      ],
+      "generator_commit": [
+        "string"
+      ],
+      "label_end_12": [
+        "string"
+      ],
+      "label_end_24": [
+        "string"
+      ],
+      "label_end_48": [
+        "string"
+      ],
+      "label_end_6": [
+        "string"
+      ],
+      "sequence_depth": [
+        "int"
+      ],
+      "split": [
+        "string"
+      ],
+      "structure_mode": [
+        "string"
+      ],
+      "symbol": [
+        "string"
+      ],
+      "timeframe": [
+        "string"
+      ]
+    }
+  },
+  "schema_hash": "ce906f27096ae17a1ef7dba404eecc7e0f333997142ee16b3630bdfb1181ef63",
+  "snapshot_id": "720b16a56e41a139317ba7687fe2b28e6345c7a6634f6183e2b5aef7321926d6",
+  "snapshot_schema_version": "1.0",
+  "source_code_commit": "33fb73d5303b322d35ca16d05700f3ae8540584a",
+  "source_path": "data/learning/seq_ctx_01/SEQ_CTX_01_CANONICAL_BOS.jsonl"
+}

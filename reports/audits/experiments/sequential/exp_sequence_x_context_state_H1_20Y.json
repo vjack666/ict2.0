@@ -1,0 +1,120 @@
+{
+  "experiment": "SEQUENCE_X_CONTEXT_STATE",
+  "dataset": "EURUSD Dukascopy 20Y",
+  "symbol": "EURUSD",
+  "exec_tf": "H1",
+  "policy": "STUDY_DISTRIBUTION_NOT_ENTRY",
+  "contract": "docs/CONTRATO_CONTEXT_STATE.md",
+  "sequence": {
+    "module": "engine/sequential_events.py",
+    "structure_mode": "canonical_bos",
+    "min_depth": 4,
+    "anchor": "STRUCTURE_bar",
+    "summary": {
+      "n_chains": 1460,
+      "by_depth": {
+        "1": 767,
+        "2": 575,
+        "3": 86,
+        "4": 29,
+        "7": 3
+      },
+      "by_status": {
+        "EXPIRED": 1457,
+        "COMPLETE": 3
+      },
+      "complete_bull": 1,
+      "complete_bear": 2,
+      "stage_order": [
+        "LIQUIDITY_POOL",
+        "SWEEP",
+        "DISPLACEMENT",
+        "STRUCTURE",
+        "OB",
+        "FVG",
+        "RETEST"
+      ]
+    },
+    "n_depth4_raw": 32,
+    "n_scored_dedup_bar": 24
+  },
+  "context_state": {
+    "source": "engine/mtf_navigation.MTFNavigator",
+    "ema_used": false,
+    "buckets": [
+      "CTX_ALIGNED",
+      "CTX_AGAINST",
+      "CTX_NEUTRAL"
+    ]
+  },
+  "horizons_bars": [6, 12, 24, 48],
+  "tables": {
+    "ALL_DEPTH4": {
+      "n": 24,
+      "end_pos_6": 50.0,
+      "mean_end_6": -3.5e-05,
+      "n_end_6": 24,
+      "end_pos_12": 37.5,
+      "mean_end_12": -0.000975,
+      "n_end_12": 24,
+      "end_pos_24": 45.83,
+      "mean_end_24": -0.001195,
+      "n_end_24": 24,
+      "end_pos_48": 41.67,
+      "mean_end_48": -0.001421,
+      "n_end_48": 24
+    },
+    "CTX_ALIGNED": {
+      "n": 5,
+      "end_pos_6": 40.0,
+      "mean_end_6": -0.000406,
+      "n_end_6": 5,
+      "end_pos_12": 0.0,
+      "mean_end_12": -0.001316,
+      "n_end_12": 5,
+      "end_pos_24": 40.0,
+      "mean_end_24": -0.001914,
+      "n_end_24": 5,
+      "end_pos_48": 40.0,
+      "mean_end_48": -0.005534,
+      "n_end_48": 5
+    },
+    "CTX_AGAINST": {
+      "n": 11,
+      "end_pos_6": 54.55,
+      "mean_end_6": -0.000172,
+      "n_end_6": 11,
+      "end_pos_12": 54.55,
+      "mean_end_12": -0.00115,
+      "n_end_12": 11,
+      "end_pos_24": 45.45,
+      "mean_end_24": -0.001929,
+      "n_end_24": 11,
+      "end_pos_48": 54.55,
+      "mean_end_48": 0.002034,
+      "n_end_48": 11
+    },
+    "CTX_NEUTRAL": {
+      "n": 8,
+      "end_pos_6": 50.0,
+      "mean_end_6": 0.000386,
+      "n_end_6": 8,
+      "end_pos_12": 37.5,
+      "mean_end_12": -0.000523,
+      "n_end_12": 8,
+      "end_pos_24": 50.0,
+      "mean_end_24": 0.000264,
+      "n_end_24": 8,
+      "end_pos_48": 25.0,
+      "mean_end_48": -0.003601,
+      "n_end_48": 8
+    }
+  },
+  "delta_end_pos_24_aligned_minus_against": -5.45,
+  "gate": "INSUFFICIENT_N",
+  "reading": "n insuficiente en ALIGNED u AGAINST — no declarar diferencia de distribución",
+  "navigate_errors": 0,
+  "elapsed_s": 46.04,
+  "generated_at": "2026-08-19T23:40:27.709462+00:00",
+  "host": "Grok cloud"
+}

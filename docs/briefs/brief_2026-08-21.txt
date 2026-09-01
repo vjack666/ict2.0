@@ -1,0 +1,200 @@
+# BRIEF DE LECTURA ICT/WYCKOFF — generado 2026-08-21 14:12 (Ecuador)
+
+> **Motor activo:** `GEN-000` · perfil `DAILY_D1_H4_H1_M15_READING` · estado `UNPINNED_WORKTREE`
+> **AVISO:** mapa de contexto, NO señal ejecutable. Motor de señales en construcción (v30).
+> Datos: `data/raw/*.parquet` (corte 2026-08-21, actualizado vía MT5 en vivo). El Context State normativo proviene de `MTFNavigator`; `trend` es diagnóstico legacy.
+> Regla informativa (libro 18): HTF/ITF aportan sesgo y zona; este brief solo lee mercado y no calcula ejecución.
+
+**Símbolos:** EURUSD, GBPUSD, XAUUSD, USDJPY
+
+
+## EURUSD
+
+- **Precio actual (M15 cierre):** `1.16826`
+- **Datos hasta:** D1 2026-08-21 00:00 · H4 2026-08-21 16:00 · H1 2026-08-21 19:00 · M15 2026-08-21 19:00
+
+- **Context State:** `BULLISH` · location=`PREMIUM` · fuente=`engine.mtf_navigation.MTFNavigator`
+- **Sesgo diagnóstico legacy:** `BULLISH` (fuente D1+H4) · D1=BULLISH H4=BULLISH H1=BEARISH
+- **Wyckoff:** fase=`DISTRIBUTION` · estado=`COUNTERTREND` · authority_tf=`D1` · alignment=`CONFLICT`
+- Wyckoff conflicto: `True` · `Wyckoff opuesto al contexto ICT con evidencia inicial de transición`
+### Semana en curso (OHLC del mismo feed MT5)
+- Ventana: `2026-08-17T00:00:00+00:00` → `2026-08-21T19:00:00+00:00` · barras M15=`461`
+- Open `1.15619` · High `1.17115` · Low `1.15614` · Close `1.16826`
+- Lectura: rango y posición semanal; no es PnL ni una instrucción de entrada.
+### LTF / exec M15 (motor diario)
+- Estado: `OBSERVABLE_SETUP`
+- Dirección heredada del contexto: `BULLISH`
+- Contexto permitido: `True` · razón: `context_state_constraints_allow`
+- Sequence canónica: disponible=`True` · refs=`443` · depth=`7`
+- Estructura a favor: `True` · zonas canónicas: `416` · retest: `OBSERVED`
+- Marcadores legacy de DataFrame (no promocionan estado): zona=`True` · retest=`False`
+- Política: `OBSERVE_ONLY_NO_ORDER` — no es entry ni autorización de operación.
+
+### Zona (dealing range H4)
+- Zona premium/discount: `PREMIUM`
+- Rango H4: high `1.17115` · low `1.16688` · mid `1.16901`
+
+### Liquidez objetivo (BSL/SSL H4)
+- SSL: `1.09008` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)
+
+### PD arrays activos (M15 — zonas de reacción)
+- FVG LONG: mid `1.16783` tier=T2 · fill=bullish_unfilled (0.8 ATR del precio)
+- FVG SHORT: mid `1.16756` tier=T2 · fill=bearish_unfilled (1.2 ATR del precio)
+
+### Sweeps recientes (M15)
+
+### Killzones a vigilar (sesión NY)
+- **London Open**: 02:00-05:00 ET  →  01:00-04:00 Ecuador (ago)
+- **New York AM**: 08:30-11:00 ET  →  07:30-10:00 Ecuador (ago)
+- **New York PM**: 13:00-16:00 ET  →  12:00-15:00 Ecuador (ago)
+- **Silver Bullet**: 10:00-11:00 ET / 14:00-15:00 ET  →  09:00-10:00 / 13:00-14:00 Ecuador (ago)
+
+### Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS)
+- Sesgo alcista pero precio en PREMIUM: NO comprar aquí. Esperar retracción a DISCOUNT antes de buscar long.
+
+*sección generada en 9.1s*
+
+## GBPUSD
+
+- **Precio actual (M15 cierre):** `1.36397`
+- **Datos hasta:** D1 2026-08-21 00:00 · H4 2026-08-21 16:00 · H1 2026-08-21 19:00 · M15 2026-08-21 19:00
+
+- **Context State:** `BULLISH` · location=`PREMIUM` · fuente=`engine.mtf_navigation.MTFNavigator`
+- **Sesgo diagnóstico legacy:** `BULLISH` (fuente D1+H4) · D1=BULLISH H4=BULLISH H1=BEARISH
+- **Wyckoff:** fase=`DISTRIBUTION` · estado=`COUNTERTREND` · authority_tf=`D1` · alignment=`CONFLICT`
+- Wyckoff conflicto: `True` · `Wyckoff opuesto al contexto ICT con evidencia inicial de transición`
+### Semana en curso (OHLC del mismo feed MT5)
+- Ventana: `2026-08-17T00:00:00+00:00` → `2026-08-21T19:00:00+00:00` · barras M15=`461`
+- Open `1.35262` · High `1.36757` · Low `1.35195` · Close `1.36397`
+- Lectura: rango y posición semanal; no es PnL ni una instrucción de entrada.
+### LTF / exec M15 (motor diario)
+- Estado: `OBSERVABLE_SETUP`
+- Dirección heredada del contexto: `BULLISH`
+- Contexto permitido: `True` · razón: `context_state_constraints_allow`
+- Sequence canónica: disponible=`True` · refs=`449` · depth=`7`
+- Estructura a favor: `True` · zonas canónicas: `440` · retest: `OBSERVED`
+- Marcadores legacy de DataFrame (no promocionan estado): zona=`True` · retest=`False`
+- Política: `OBSERVE_ONLY_NO_ORDER` — no es entry ni autorización de operación.
+
+### Zona (dealing range H4)
+- Zona premium/discount: `PREMIUM`
+- Rango H4: high `1.36757` · low `1.35947` · mid `1.36352`
+
+### Liquidez objetivo (BSL/SSL H4)
+- BSL (target si short / techo): `1.34283`
+- SSL: `1.25082` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)
+
+### PD arrays activos (M15 — zonas de reacción)
+- FVG LONG: mid `1.36331` tier=T2 · fill=bullish_unfilled (0.8 ATR del precio)
+- FVG SHORT: mid `1.36320` tier=T2 · fill=bearish_unfilled (1.0 ATR del precio)
+
+### Sweeps recientes (M15)
+- BSL (bull sweep / liquida cortos): nivel `1.36515`
+
+### Killzones a vigilar (sesión NY)
+- **London Open**: 02:00-05:00 ET  →  01:00-04:00 Ecuador (ago)
+- **New York AM**: 08:30-11:00 ET  →  07:30-10:00 Ecuador (ago)
+- **New York PM**: 13:00-16:00 ET  →  12:00-15:00 Ecuador (ago)
+- **Silver Bullet**: 10:00-11:00 ET / 14:00-15:00 ET  →  09:00-10:00 / 13:00-14:00 Ecuador (ago)
+
+### Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS)
+- Sesgo alcista pero precio en PREMIUM: NO comprar aquí. Esperar retracción a DISCOUNT antes de buscar long.
+
+*sección generada en 10.5s*
+
+## XAUUSD
+
+- **Precio actual (M15 cierre):** `4614.48000`
+- **Datos hasta:** D1 2026-08-21 00:00 · H4 2026-08-21 16:00 · H1 2026-08-21 19:00 · M15 2026-08-21 19:00
+
+- **Context State:** `BULLISH` · location=`PREMIUM` · fuente=`engine.mtf_navigation.MTFNavigator`
+- **Sesgo diagnóstico legacy:** `BULLISH` (fuente D1+H4) · D1=BULLISH H4=BULLISH H1=BEARISH
+- **Wyckoff:** fase=`DISTRIBUTION` · estado=`COUNTERTREND` · authority_tf=`D1` · alignment=`CONFLICT`
+- Wyckoff conflicto: `True` · `Wyckoff opuesto al contexto ICT con evidencia inicial de transición`
+### Semana en curso (OHLC del mismo feed MT5)
+- Ventana: `2026-08-17T00:00:00+00:00` → `2026-08-21T19:00:00+00:00` · barras M15=`425`
+- Open `4375.27000` · High `4617.70000` · Low `4276.43000` · Close `4614.48000`
+- Lectura: rango y posición semanal; no es PnL ni una instrucción de entrada.
+### LTF / exec M15 (motor diario)
+- Estado: `OBSERVABLE_SETUP`
+- Dirección heredada del contexto: `BULLISH`
+- Contexto permitido: `True` · razón: `context_state_constraints_allow`
+- Sequence canónica: disponible=`True` · refs=`401` · depth=`7`
+- Estructura a favor: `True` · zonas canónicas: `472` · retest: `OBSERVED`
+- Marcadores legacy de DataFrame (no promocionan estado): zona=`True` · retest=`False`
+- Política: `OBSERVE_ONLY_NO_ORDER` — no es entry ni autorización de operación.
+
+### Zona (dealing range H4)
+- Zona premium/discount: `PREMIUM`
+- Rango H4: high `4629.13000` · low `4450.54000` · mid `4539.83500`
+
+### Liquidez objetivo (BSL/SSL H4)
+- BSL: `2527.73750` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)
+- SSL: `2350.84250` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)
+
+### PD arrays activos (M15 — zonas de reacción)
+- FVG LONG: mid `4598.77000` tier=T2 · fill=bullish_unfilled (1.5 ATR del precio)
+- FVG SHORT: mid `4581.38000` tier=T2 · fill=bearish_unfilled (3.1 ATR del precio)
+
+### Sweeps recientes (M15)
+
+### Killzones a vigilar (sesión NY)
+- **London Open**: 02:00-05:00 ET  →  01:00-04:00 Ecuador (ago)
+- **New York AM**: 08:30-11:00 ET  →  07:30-10:00 Ecuador (ago)
+- **New York PM**: 13:00-16:00 ET  →  12:00-15:00 Ecuador (ago)
+- **Silver Bullet**: 10:00-11:00 ET / 14:00-15:00 ET  →  09:00-10:00 / 13:00-14:00 Ecuador (ago)
+
+### Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS)
+- Sesgo alcista pero precio en PREMIUM: NO comprar aquí. Esperar retracción a DISCOUNT antes de buscar long.
+
+*sección generada en 16.2s*
+
+## USDJPY
+
+- **Precio actual (M15 cierre):** `158.94900`
+- **Datos hasta:** D1 2026-08-21 00:00 · H4 2026-08-21 16:00 · H1 2026-08-21 19:00 · M15 2026-08-21 19:00
+
+- **Context State:** `BEARISH` · location=`MID` · fuente=`engine.mtf_navigation.MTFNavigator`
+- **Sesgo diagnóstico legacy:** `BULLISH` (fuente D1+H4) · D1=BULLISH H4=BULLISH H1=BULLISH
+- **Wyckoff:** fase=`DISTRIBUTION` · estado=`PRO_TREND` · authority_tf=`D1` · alignment=`ALIGNED`
+- Wyckoff conflicto: `False` · `proceso Wyckoff y dirección ICT compatibles`
+### Semana en curso (OHLC del mismo feed MT5)
+- Ventana: `2026-08-17T00:00:00+00:00` → `2026-08-21T19:00:00+00:00` · barras M15=`461`
+- Open `159.25900` · High `159.77900` · Low `158.02600` · Close `158.94900`
+- Lectura: rango y posición semanal; no es PnL ni una instrucción de entrada.
+### LTF / exec M15 (motor diario)
+- Estado: `WAIT_LTF_CONFIRMATION`
+- Dirección heredada del contexto: `BEARISH`
+- Contexto permitido: `True` · razón: `context_state_constraints_allow`
+- Sequence canónica: disponible=`True` · refs=`449` · depth=`4`
+- Estructura a favor: `False` · zonas canónicas: `409` · retest: `OBSERVED`
+- Marcadores legacy de DataFrame (no promocionan estado): zona=`True` · retest=`False`
+- Política: `OBSERVE_ONLY_NO_ORDER` — no es entry ni autorización de operación.
+
+### Zona (dealing range H4)
+- Zona premium/discount: `MID`
+- Rango H4: high `159.18300` · low `158.20100` · mid `158.69200`
+
+### Liquidez objetivo (BSL/SSL H4)
+- BSL: `153.77550` — **NO FIAR** (fuera de rango del precio actual; dato de origen inconsistente)
+
+### PD arrays activos (M15 — zonas de reacción)
+- FVG LONG: mid `158.89950` tier=T2 · fill=bullish_unfilled (0.5 ATR del precio)
+- FVG SHORT: mid `158.67550` tier=T2 · fill=bearish_unfilled (2.7 ATR del precio)
+
+### Sweeps recientes (M15)
+- SSL (bear sweep / liquida largos): nivel `158.76400`
+
+### Killzones a vigilar (sesión NY)
+- **London Open**: 02:00-05:00 ET  →  01:00-04:00 Ecuador (ago)
+- **New York AM**: 08:30-11:00 ET  →  07:30-10:00 Ecuador (ago)
+- **New York PM**: 13:00-16:00 ET  →  12:00-15:00 Ecuador (ago)
+- **Silver Bullet**: 10:00-11:00 ET / 14:00-15:00 ET  →  09:00-10:00 / 13:00-14:00 Ecuador (ago)
+
+### Setups a VIGILAR (regla dura: entry en retorno a zona, no close del BOS)
+- Sesgo bajista, precio neutro: vigilar reacción en premium para buscar short.
+
+*sección generada en 9.9s*
+
+---
+*Generado por scripts/brief_lunes.py en 76.5s. La capa de ejecución (entry/SL/TP) está fuera del alcance de esta lectura; ver docs/tesis/PLAN_LTF_ENTRY_LAYER.md para el límite de responsabilidad.*

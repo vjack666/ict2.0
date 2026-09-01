@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C5",
+  "role": "AGENTE_C_FALSACION",
+  "hypothesis": "H_C: el edge de expectancy positiva depth>=4 es ROBUSTO fuera de muestra EURUSD 2019-2024",
+  "generated_at": "2026-08-21T16:12:03.534480+00:00",
+  "elapsed_s": 3.49,
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "min_depth": 4,
+    "horizon_bars": 200,
+    "sl_buffer": 0.0001,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "min_n_gate": 30,
+    "costs": false
+  },
+  "metrics_treatment": {
+    "note": "see walk_forward.windows",
+    "n_closed_total": 208
+  },
+  "metrics_baseline": null,
+  "gross_reference": null,
+  "delta_win_rate_vs_random": null,
+  "delta_mean_r_vs_random": null,
+  "delta_mean_r_gross_vs_net": null,
+  "cost_model": null,
+  "walk_forward": {
+    "windows": [
+      {
+        "window": "W1",
+        "range": [
+          "2019-01-01",
+          "2020-06-30"
+        ],
+        "bars": 9324,
+        "n_trades": 68,
+        "n_closed": 67,
+        "win_rate": 0.5522,
+        "mean_r": 0.2458,
+        "mean_r_ci": [
+          -0.017887958623073803,
+          0.535684554892522
+        ],
+        "gate": "FAIL"
+      },
+      {
+        "window": "W2",
+        "range": [
+          "2020-07-01",
+          "2021-12-31"
+        ],
+        "bars": 9391,
+        "n_trades": 57,
+        "n_closed": 55,
+        "win_rate": 0.5273,
+        "mean_r": 0.2503,
+        "mean_r_ci": [
+          -0.05496973854468501,
+          0.5697857963073483
+        ],
+        "gate": "FAIL"
+      },
+      {
+        "window": "W3",
+        "range": [
+          "2022-01-01",
+          "2023-06-30"
+        ],
+        "bars": 8877,
+        "n_trades": 41,
+        "n_closed": 38,
+        "win_rate": 0.5789,
+        "mean_r": 0.4134,
+        "mean_r_ci": [
+          0.01139882613798106,
+          0.7977925818821087
+        ],
+        "gate": "PASS"
+      },
+      {
+        "window": "W4",
+        "range": [
+          "2023-07-01",
+          "2024-12-31"
+        ],
+        "bars": 9342,
+        "n_trades": 50,
+        "n_closed": 48,
+        "win_rate": 0.6875,
+        "mean_r": 0.6165,
+        "mean_r_ci": [
+          0.2810171785096474,
+          0.9393543746061286
+        ],
+        "gate": "PASS"
+      }
+    ],
+    "trend_slope_mean_r_per_window": 0.12752,
+    "temporal_decay_detected": false,
+    "any_window_broken": true,
+    "n_closed_total": 208
+  },
+  "motor_summary": null,
+  "chains_depth_ge4": null,
+  "gate": "FAIL",
+  "verdict": "Walk-forward: 2/4 ventanas con edge positivo. Pendiente de tiempo slope=0.12752. INESTABILIDAD TEMPORAL: alguna ventana cae (edge roto OOS)."
+}

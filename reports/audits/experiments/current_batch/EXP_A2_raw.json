@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A2",
+  "component_isolated": "TP de liquidez HTF real (vs measured_projection fallback)",
+  "status": "BLOCKED",
+  "executed": false,
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": "Definido sobre EURUSD H1 depth>=4; el componente AUSENTE es el TP de liquidez HTF real (no el dataset)."
+  },
+  "config": {
+    "depth_min": 4,
+    "tp_source_intended": "HTF liquidity (BLOCKED: unavailable)",
+    "tp_rule_applied_in_lite": "measured_projection (fallback sancionado)",
+    "sl_rule": "min(mecha sweep, swing roto)-buffer",
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42
+    }
+  },
+  "reason": "No existe capa navigator HTF->LTF limpia para fijar TP de liquidez HTF real; deuda PIT FULL-vs-PREFIX documentada en .hermes-worklog/2026-08-20_2049_EXP_SEQXCONTEXT_INVALIDATED.md. detect_liquidity_htf() seul calcula extremos LTF rolling (left=3), NO pools HTF reales; mapearlos a LTF requiere el navigator con la deuda citada. No se inventa TP.",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-21T16:17:39.758016+00:00"
+}

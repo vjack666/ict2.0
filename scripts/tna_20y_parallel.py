@@ -1,0 +1,11 @@
+"""Compatibility entrypoint.
+
+Canonical implementation: scripts/audit/tna_20y_parallel.py
+"""
+from pathlib import Path
+import runpy
+
+_TARGET = Path(__file__).resolve().parent / "audit" /  "tna_20y_parallel.py"
+
+if __name__ == "__main__":
+    runpy.run_path(str(_TARGET), run_name="__main__")

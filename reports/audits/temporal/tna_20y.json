@@ -1,0 +1,45 @@
+{
+  "audit": "TNA_20Y",
+  "generated_at": "2026-08-25T14:40:58.660878+00:00",
+  "policy": "CONTEXT_STATE_NOT_ENTRY",
+  "n_bars": 124377,
+  "cores": 20,
+  "elapsed_s": 3680.1,
+  "gates": {
+    "TNA_TRACE_INTEGRITY": "PASS",
+    "TNA_BEHAVIORAL": "PASS"
+  },
+  "trace_integrity": {
+    "asof_violations": 0,
+    "asof_ok_rate": 1.0
+  },
+  "behavioral": {
+    "status_distribution": {
+      "OK": 124377
+    },
+    "bias_d1_distribution": {
+      "UNKNOWN": 387,
+      "MIXED": 46870,
+      "BULLISH": 39773,
+      "BEARISH": 37347
+    },
+    "bias_h1_distribution": {
+      "UNKNOWN": 20,
+      "MIXED": 54904,
+      "BULLISH": 34875,
+      "BEARISH": 34578
+    },
+    "layer_combinations": {
+      "('D1', 'H1', 'H4')": 124377
+    },
+    "avg_zones_per_state": 1562.44,
+    "avg_path_steps": 4.0,
+    "generator_commit": "05bdecee143df80617e66de327f18754be4a55c7",
+    "generator_worktree": "DIRTY",
+    "generator_source_hashes": {
+      "engine/mtf_navigation.py": "2905f8f88ef9ac372622eaa5ec90e7508dd9a4ce853e0ba6b82ee9be84007921",
+      "engine/sequential_events.py": "dc56cc6ae10b1860a8bc76d205287a69db741bc6225850ae4f0a7ecee61323ff",
+      "audits/codigo/mtf_seq_funnel.py": "a11feb2e3c77b940260664c56ade9b3d02af521d1e852dbf147f11fd8b092be1"
+    }
+  }
+}

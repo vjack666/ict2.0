@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C2",
+  "role": "AGENTE_C_FALSACION",
+  "hypothesis_under_test": "H_C (robustez OOS del edge depth>=4)",
+  "gate_mechanical_logic": "n_closed<30 -> BLOCKED; mean_r>0 y CI95_low>0 -> PASS (edge robusto OOS); sino -> FAIL (edge roto OOS, falsacion exitosa).",
+  "gate": "FAIL",
+  "verdict": "EDGE ROTO OOS: mean_R=0.1365 (CI95 [-0.06188225754569033, 0.3401381091952801]), n_closed=142. Expectancy NO positiva fuera de muestra (falsacion exitosa).",
+  "protocol": {
+    "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+    "engine": "run_sequential(structure_mode='lite', max_active_chains=4096, swing_left=3)",
+    "invariants_held": true,
+    "no_param_change_post_hoc": true,
+    "config": {
+      "min_depth": 4,
+      "horizon_bars": 200,
+      "sl_buffer": 0.0001,
+      "tie_policy": "pessimistic",
+      "warmup_bars": 20,
+      "bootstrap_resamples": 2000,
+      "bootstrap_seed": 42,
+      "baseline_seed": 42,
+      "min_n_gate": 30,
+      "costs_applied": false
+    },
+    "data_integrity": {
+      "symbol": "XAUUSD",
+      "source": "data\\raw\\XAUUSD\\XAUUSD_H1.parquet",
+      "source_kind": "parquet",
+      "data_origin": "MT5 parquet",
+      "declared_hash": "89bdf3c62286bff0",
+      "actual_file_sha256": "89bdf3c62286bff0b047affa777f874e17328a8443816f005516ecdc23488feb",
+      "range": [
+        "2019-01-01",
+        "2024-12-31"
+      ],
+      "bars": 37245,
+      "cross_origin_caveat": true,
+      "canonical_dataset_note": "Parquet MT5 NO es el dataset canonico (EURUSD Dukascopy 20Y CSV). Se usa por unica fuente disponible para GBPUSD/XAUUSD; comparacion cross-origin debe interpretarse con reserva."
+    },
+    "date": "2026-08-21T16:11:45.950054+00:00"
+  },
+  "metrics": {
+    "treatment": {
+      "n_trades": 149,
+      "n_closed": 142,
+      "n_open": 7,
+      "n_invalid_levels": 0,
+      "wins": 68,
+      "losses": 74,
+      "win_rate": 0.4789,
+      "win_rate_wilson95": [
+        0.3984,
+        0.5605
+      ],
+      "mean_r": 0.1365,
+      "median_r": -1.0,
+      "std_r": 1.2231,
+      "min_r": -1.0,
+      "max_r": 2.8966,
+      "bootstrap_clustered": {
+        "n_closed": 142,
+        "mean_r_ci": [
+          -0.06188225754569033,
+          0.3401381091952801
+        ],
+        "win_rate_ci": [
+          0.4014084507042254,
+          0.5633802816901409
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 142
+      }
+    },
+    "baseline": {
+      "n_trades": 149,
+      "n_closed": 145,
+      "n_open": 1,
+      "n_invalid_levels": 3,
+      "wins": 76,
+      "losses": 69,
+      "win_rate": 0.5241,
+      "win_rate_wilson95": [
+        0.4433,
+        0.6037
+      ],
+      "mean_r": 0.1651,
+      "median_r": 0.4495,
+      "std_r": 1.1979,
+      "min_r": -1.0,
+      "max_r": 3.6356,
+      "bootstrap_clustered": {
+        "n_closed": 145,
+        "mean_r_ci": [
+          -0.03436326021275296,
+          0.36366002920181195
+        ],
+        "win_rate_ci": [
+          0.4413793103448276,
+          0.6068965517241379
+        ],
+        "n_resamples": 2000,
+        "seed": 42,
+        "n_clusters": 145
+      }
+    },
+    "gross_reference": null,
+    "delta_mean_r_gross_vs_net": null,
+    "walk_forward": null
+  },
+  "result_raw_file": "reports\\audits\\EXP_C2_raw.json"
+}

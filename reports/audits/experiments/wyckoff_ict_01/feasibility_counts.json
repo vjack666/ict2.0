@@ -1,0 +1,195 @@
+{
+  "experiment": "EXP-WYCKOFF-ICT-01_FEASIBILITY_COUNTS",
+  "generated_at": "2026-08-26T00:07:54.923895+00:00",
+  "symbol": "EURUSD",
+  "dataset": "datasets/eurusd_dukascopy_20y",
+  "structure_mode": "canonical_bos",
+  "n_required_per_group": 389,
+  "blocks": {
+    "DESIGN": [
+      "2006-01-01",
+      "2015-12-31"
+    ],
+    "VALIDATION": [
+      "2016-01-01",
+      "2020-12-31"
+    ],
+    "HOLDOUT": [
+      "2021-01-01",
+      "2025-12-31"
+    ]
+  },
+  "timeframes": [
+    "H1",
+    "H4",
+    "D1"
+  ],
+  "observational_unit": "SequentialChain.structure_bar (created_bar)",
+  "counts": {
+    "H1": {
+      "DESIGN": {
+        "NEUTRAL": {
+          "NEUTRAL": 838,
+          "TRANSITION": 1
+        },
+        "ALIGNED": {
+          "PRO_TREND": 1153,
+          "NEUTRAL": 222,
+          "COUNTERTREND": 608,
+          "TRANSITION": 717
+        },
+        "AGAINST": {
+          "TRANSITION": 634,
+          "COUNTERTREND": 520,
+          "PRO_TREND": 1141,
+          "NEUTRAL": 177
+        }
+      },
+      "VALIDATION": {
+        "ALIGNED": {
+          "TRANSITION": 367,
+          "PRO_TREND": 561,
+          "NEUTRAL": 107,
+          "COUNTERTREND": 291
+        },
+        "NEUTRAL": {
+          "NEUTRAL": 435,
+          "TRANSITION": 1
+        },
+        "AGAINST": {
+          "PRO_TREND": 531,
+          "NEUTRAL": 116,
+          "TRANSITION": 364,
+          "COUNTERTREND": 302
+        }
+      },
+      "HOLDOUT": {
+        "ALIGNED": {
+          "PRO_TREND": 584,
+          "TRANSITION": 294,
+          "COUNTERTREND": 295,
+          "NEUTRAL": 114
+        },
+        "AGAINST": {
+          "NEUTRAL": 109,
+          "PRO_TREND": 599,
+          "COUNTERTREND": 333,
+          "TRANSITION": 343
+        },
+        "NEUTRAL": {
+          "NEUTRAL": 339,
+          "TRANSITION": 1
+        }
+      }
+    },
+    "H4": {
+      "DESIGN": {
+        "NEUTRAL": {
+          "NEUTRAL": 226
+        },
+        "AGAINST": {
+          "COUNTERTREND": 153,
+          "TRANSITION": 160,
+          "PRO_TREND": 304,
+          "NEUTRAL": 49
+        },
+        "ALIGNED": {
+          "PRO_TREND": 307,
+          "COUNTERTREND": 158,
+          "TRANSITION": 180,
+          "NEUTRAL": 44
+        }
+      },
+      "VALIDATION": {
+        "ALIGNED": {
+          "TRANSITION": 102,
+          "PRO_TREND": 147,
+          "COUNTERTREND": 72,
+          "NEUTRAL": 26
+        },
+        "NEUTRAL": {
+          "NEUTRAL": 142
+        },
+        "AGAINST": {
+          "PRO_TREND": 143,
+          "NEUTRAL": 24,
+          "COUNTERTREND": 82,
+          "TRANSITION": 92
+        }
+      },
+      "HOLDOUT": {
+        "ALIGNED": {
+          "PRO_TREND": 165,
+          "COUNTERTREND": 78,
+          "NEUTRAL": 33,
+          "TRANSITION": 81
+        },
+        "AGAINST": {
+          "COUNTERTREND": 80,
+          "PRO_TREND": 188,
+          "TRANSITION": 87,
+          "NEUTRAL": 21
+        },
+        "NEUTRAL": {
+          "NEUTRAL": 104
+        }
+      }
+    },
+    "D1": {
+      "DESIGN": {
+        "NEUTRAL": {
+          "NEUTRAL": 34
+        },
+        "ALIGNED": {
+          "TRANSITION": 42,
+          "PRO_TREND": 37,
+          "COUNTERTREND": 13,
+          "NEUTRAL": 6
+        },
+        "AGAINST": {
+          "COUNTERTREND": 16,
+          "PRO_TREND": 54,
+          "TRANSITION": 37,
+          "NEUTRAL": 3
+        }
+      },
+      "VALIDATION": {
+        "ALIGNED": {
+          "PRO_TREND": 14,
+          "TRANSITION": 32,
+          "NEUTRAL": 6,
+          "COUNTERTREND": 6
+        },
+        "NEUTRAL": {
+          "NEUTRAL": 20
+        },
+        "AGAINST": {
+          "COUNTERTREND": 9,
+          "TRANSITION": 23,
+          "PRO_TREND": 28,
+          "NEUTRAL": 2
+        }
+      },
+      "HOLDOUT": {
+        "ALIGNED": {
+          "PRO_TREND": 26,
+          "COUNTERTREND": 10,
+          "NEUTRAL": 5,
+          "TRANSITION": 20
+        },
+        "AGAINST": {
+          "PRO_TREND": 33,
+          "TRANSITION": 30,
+          "COUNTERTREND": 7,
+          "NEUTRAL": 3
+        },
+        "NEUTRAL": {
+          "NEUTRAL": 18
+        }
+      }
+    }
+  },
+  "generator_commit": "a20c66aaf5d56126850701b93296cd651d04b993",
+  "generator_worktree": "CLEAN",
+  "elapsed_s": 1950.4
+}

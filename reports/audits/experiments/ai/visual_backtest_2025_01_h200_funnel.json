@@ -1,0 +1,186 @@
+{
+  "aggregated_status": "PASS",
+  "backtest_linkage": {
+    "artifact_kind": "canonical_replay_signal_trade_link",
+    "outcome_not_copied_into_features": true,
+    "trade_key": "signal_index"
+  },
+  "checksum": "619bd42772f054cb0cd431f4c41bf8ef5609e7ba8c0a720527b516d583c13c63",
+  "contract_version": "EPISODES_FUNNEL_V1",
+  "episodes": [
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2025-01-29 09:00:00+00:00",
+      "direction": -1,
+      "episode_id": "EP_SIGNAL_000001",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e3de1d3d-022a-46f5-980f-b702eee67839",
+        "CONTRACT": "04c18a6b-f2ab-4549-84eb-6549665d64e5",
+        "DISPLACE": "0f18a6e2-5540-4557-9659-40add3952aee",
+        "LIQUIDITY": "463f68b9-f5ad-472c-8cd1-6ee0bc9a109d",
+        "REFINEMENT": "6097318f-7ba9-484d-aa81-f9c04007ea00",
+        "RETURN": "2a396b45-80de-446c-82d0-7e82448baa48",
+        "SWEEP": "98908d31-ca4c-4835-9c7c-c02ae6f954b6"
+      },
+      "meta": {
+        "backtest_signal_index": 0
+      },
+      "object_refs": [
+        "04c18a6b-f2ab-4549-84eb-6549665d64e5",
+        "0f18a6e2-5540-4557-9659-40add3952aee",
+        "2a396b45-80de-446c-82d0-7e82448baa48",
+        "463f68b9-f5ad-472c-8cd1-6ee0bc9a109d",
+        "6097318f-7ba9-484d-aa81-f9c04007ea00",
+        "98908d31-ca4c-4835-9c7c-c02ae6f954b6",
+        "e3de1d3d-022a-46f5-980f-b702eee67839"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    }
+  ],
+  "full_prefix": {
+    "prefix_matches_full": true
+  },
+  "gates": {
+    "E0": "PASS",
+    "E1": "PASS",
+    "causal_full_vs_prefix": "PASS"
+  },
+  "generator_commit": "6c03d0509ac9851eff7431cb217eff7aa5097368",
+  "provenance": {
+    "acquired_at_utc": null,
+    "blocking_reasons": [
+      "SOURCE_LICENSE_OR_PERMITTED_USE_UNKNOWN",
+      "ACQUISITION_EXECUTION_LOG_NOT_ESTABLISHED_BY_CSV_BYTES",
+      "GENERATOR_WORKTREE_NOT_CLEAN"
+    ],
+    "contract_or_continuous_policy": "spot FX; no futures contract or rollover",
+    "dataset_id": "eurusd_dukascopy_20y",
+    "files": {
+      "D1": {
+        "bytes": 265598,
+        "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_D1.csv",
+        "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+        "rows_after_filter": 313,
+        "rows_before_filter": 6258,
+        "sha256": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+        "timeframe": "D1",
+        "timestamp_field": "time",
+        "timezone_policy": "naive CSV timestamps interpreted as UTC",
+        "window_end": "2025-12-31T00:00:00+00:00",
+        "window_start": "2025-01-01T00:00:00+00:00"
+      },
+      "H1": {
+        "bytes": 6399327,
+        "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+        "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+        "rows_after_filter": 6205,
+        "rows_before_filter": 124377,
+        "sha256": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+        "timeframe": "H1",
+        "timestamp_field": "time",
+        "timezone_policy": "naive CSV timestamps interpreted as UTC",
+        "window_end": "2025-12-31T00:00:00+00:00",
+        "window_start": "2025-01-01T22:00:00+00:00"
+      },
+      "H4": {
+        "bytes": 1653194,
+        "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H4.csv",
+        "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+        "rows_after_filter": 1605,
+        "rows_before_filter": 32133,
+        "sha256": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+        "timeframe": "H4",
+        "timestamp_field": "time",
+        "timezone_policy": "naive CSV timestamps interpreted as UTC",
+        "window_end": "2025-12-31T00:00:00+00:00",
+        "window_start": "2025-01-01T20:00:00+00:00"
+      }
+    },
+    "instrument": "EURUSD spot bid",
+    "license_and_permitted_use": "UNKNOWN",
+    "open_interest_semantics": "UNAVAILABLE",
+    "provider": "Dukascopy",
+    "request_parameters": "not read from a sidecar; CSV-only input boundary",
+    "rollover_rule": "not applicable",
+    "source_documentation_refs": [
+      "datasets/eurusd_dukascopy_20y/README.md"
+    ],
+    "status": "BLOCKED",
+    "symbol": "EURUSD",
+    "venue": "spot/OTC",
+    "volume_semantics": "UNAVAILABLE"
+  },
+  "records": [
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2025-01-29 09:00:00+00:00",
+      "direction": -1,
+      "episode_id": "EP_SIGNAL_000001",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e3de1d3d-022a-46f5-980f-b702eee67839",
+        "CONTRACT": "04c18a6b-f2ab-4549-84eb-6549665d64e5",
+        "DISPLACE": "0f18a6e2-5540-4557-9659-40add3952aee",
+        "LIQUIDITY": "463f68b9-f5ad-472c-8cd1-6ee0bc9a109d",
+        "REFINEMENT": "6097318f-7ba9-484d-aa81-f9c04007ea00",
+        "RETURN": "2a396b45-80de-446c-82d0-7e82448baa48",
+        "SWEEP": "98908d31-ca4c-4835-9c7c-c02ae6f954b6"
+      },
+      "meta": {
+        "backtest_signal_index": 0
+      },
+      "object_refs": [
+        "04c18a6b-f2ab-4549-84eb-6549665d64e5",
+        "0f18a6e2-5540-4557-9659-40add3952aee",
+        "2a396b45-80de-446c-82d0-7e82448baa48",
+        "463f68b9-f5ad-472c-8cd1-6ee0bc9a109d",
+        "6097318f-7ba9-484d-aa81-f9c04007ea00",
+        "98908d31-ca4c-4835-9c7c-c02ae6f954b6",
+        "e3de1d3d-022a-46f5-980f-b702eee67839"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    }
+  ],
+  "rejections": []
+}

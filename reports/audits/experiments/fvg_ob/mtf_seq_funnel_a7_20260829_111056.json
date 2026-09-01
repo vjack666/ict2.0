@@ -1,0 +1,566 @@
+{
+  "contract_version": "CONTRATO_FUNNEL_AUDIT.md#A7",
+  "gate": "A7",
+  "generated_at": "2026-08-29T16:10:56.169242+00:00",
+  "commit": "03953e8def39dda677841ff6292a5c9c1685b488",
+  "git_status": "DIRTY",
+  "dataset": "dukascopy EURUSD 20Y (canonico)",
+  "provenance": {
+    "EURUSD_H1.csv": {
+      "expected": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "actual": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "match": true
+    },
+    "EURUSD_H4.csv": {
+      "expected": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "actual": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "match": true
+    },
+    "EURUSD_D1.csv": {
+      "expected": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+      "actual": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+      "match": true
+    }
+  },
+  "provenance_ok": true,
+  "config": {
+    "sample_every": 2500,
+    "precompute_sequences": true,
+    "relation_rule": "STRICT FVG_OB_CAUSAL",
+    "causal_mode": "strict",
+    "prefix_ratio": 0.6
+  },
+  "symbol": "EURUSD",
+  "policy": "AUDIT_FUNNEL_NO_PNL_NO_ENTRY",
+  "bars_by_tf": {
+    "H1": {
+      "raw_bars": 124377,
+      "valid_bars": 124377
+    },
+    "H4": {
+      "raw_bars": 32133,
+      "valid_bars": 32133
+    },
+    "D1": {
+      "raw_bars": 6258,
+      "valid_bars": 6258
+    }
+  },
+  "funnel_by_tf": {
+    "H1": {
+      "audit_status": "PASS",
+      "input_count": 62642,
+      "accepted_count": 28772,
+      "rejected_count": 33870,
+      "audit_score": 0.7190734356552538,
+      "n_findings": 0,
+      "findings": [],
+      "stages": [
+        {
+          "stage": "RAW_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 534,
+          "accepted_count": 534,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 1465,
+          "accepted_count": 1465,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 22506,
+          "accepted_count": 22506,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 2835,
+          "accepted_count": 2835,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 22500,
+          "accepted_count": 702,
+          "rejected_count": 21798,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 702,
+          "accepted_count": 702,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SEQUENCE",
+          "input_count": 12100,
+          "accepted_count": 28,
+          "rejected_count": 12072,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "MTF_NAVIGATION",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        }
+      ]
+    },
+    "H4": {
+      "audit_status": "PASS",
+      "input_count": 17807,
+      "accepted_count": 8274,
+      "rejected_count": 9533,
+      "audit_score": 0.7192096096120963,
+      "n_findings": 0,
+      "findings": [],
+      "stages": [
+        {
+          "stage": "RAW_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 145,
+          "accepted_count": 145,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 329,
+          "accepted_count": 329,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 6506,
+          "accepted_count": 6506,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 873,
+          "accepted_count": 873,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 6499,
+          "accepted_count": 206,
+          "rejected_count": 6293,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 206,
+          "accepted_count": 206,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SEQUENCE",
+          "input_count": 3249,
+          "accepted_count": 9,
+          "rejected_count": 3240,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "MTF_NAVIGATION",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        }
+      ]
+    },
+    "D1": {
+      "audit_status": "PASS",
+      "input_count": 3936,
+      "accepted_count": 1917,
+      "rejected_count": 2019,
+      "audit_score": 0.7201836816323562,
+      "n_findings": 0,
+      "findings": [],
+      "stages": [
+        {
+          "stage": "RAW_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 12,
+          "accepted_count": 12,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 26,
+          "accepted_count": 26,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 1545,
+          "accepted_count": 1545,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 216,
+          "accepted_count": 216,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 1545,
+          "accepted_count": 58,
+          "rejected_count": 1487,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 58,
+          "accepted_count": 58,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SEQUENCE",
+          "input_count": 534,
+          "accepted_count": 2,
+          "rejected_count": 532,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "MTF_NAVIGATION",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0,
+          "duplicate_count": 0,
+          "orphan_count": 0,
+          "temporal_violation_count": 0
+        }
+      ]
+    }
+  },
+  "mtf_navigation": {
+    "audit_status": "PASS",
+    "input_count": 50,
+    "accepted_count": 50,
+    "rejected_count": 0,
+    "audit_score": 1.0,
+    "n_findings": 0,
+    "findings": [],
+    "stages": [
+      {
+        "stage": "RAW_BARS",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "VALID_BARS",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "STRUCTURE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "BOS_CHOCH",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "DISPLACEMENT",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "FVG",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "OB",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "CONFLUENCE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "LINEAGE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "SEQUENCE",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "MTF_NAVIGATION",
+        "input_count": 50,
+        "accepted_count": 50,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      },
+      {
+        "stage": "SETUP",
+        "input_count": 0,
+        "accepted_count": 0,
+        "rejected_count": 0,
+        "duplicate_count": 0,
+        "orphan_count": 0,
+        "temporal_violation_count": 0
+      }
+    ]
+  },
+  "aggregated_status": "PASS",
+  "aggregated_findings": 0,
+  "prefix_invariance": {
+    "prefix_ratio": 0.6,
+    "by_timeframe": {
+      "H1": {
+        "full_events": 82291,
+        "full_in_window": 47590,
+        "prefix_events": 47592,
+        "missing_in_prefix": 0,
+        "missing_by_stage": {},
+        "prefix_invariant": true
+      },
+      "H4": {
+        "full_events": 23103,
+        "full_in_window": 13384,
+        "prefix_events": 13384,
+        "missing_in_prefix": 0,
+        "missing_by_stage": {},
+        "prefix_invariant": true
+      },
+      "D1": {
+        "full_events": 4809,
+        "full_in_window": 2811,
+        "prefix_events": 2814,
+        "missing_in_prefix": 0,
+        "missing_by_stage": {},
+        "prefix_invariant": true
+      }
+    },
+    "sequence": {
+      "full_events": 33813,
+      "full_in_window": 20002,
+      "prefix_events": 20002,
+      "missing_in_prefix": 0,
+      "prefix_invariant": true
+    }
+  },
+  "report_checksum_sha256": "9ef59481504f3a5f6286b6bf34a3a158be0520ae49ecf56668895950fb6868b3"
+}

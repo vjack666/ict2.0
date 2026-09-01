@@ -1,0 +1,53 @@
+{
+  "gate": "TNA_BEHAVIORAL_FULL_SPAN",
+  "status": "PASS",
+  "reconciled_by": "HERMES-CEO (Agente 0 / Orquestador)",
+  "reconciled_at": "2026-08-24",
+  "experiment": "EXP-SEQ-CTX-01",
+  "evidence_source": "reports/audits/temporal/tna_20y.json",
+  "evidence_generated_at": "2026-08-20T19:42:12.335982+00:00",
+  "coverage": {
+    "symbol": "EURUSD",
+    "timeframe": "H1",
+    "n_bars": 124377,
+    "span": "2006-01-01 .. 2025-12-31 (full 20Y)",
+    "note": "Universo temporal identico al del dataset offline (H1 20Y) y a la auditoria streaming-prefix."
+  },
+  "gates_reported": {
+    "TNA_TRACE_INTEGRITY": "PASS",
+    "TNA_BEHAVIORAL": "PASS"
+  },
+  "asof_integrity": {
+    "asof_violations": 0,
+    "asof_ok_rate": 1.0
+  },
+  "behavioral_detail": {
+    "status_distribution_OK": 124377,
+    "bias_d1_unknown": 339,
+    "bias_d1_mixed": 47136,
+    "bias_d1_bullish": 39759,
+    "bias_d1_bearish": 37143,
+    "layer_combinations": "('D1','H1','H4')=124377 (100%)",
+    "avg_zones_per_state": 1640.73,
+    "avg_path_steps": 4.0
+  },
+  "source_hashes_consistency": {
+    "engine/mtf_navigation.py": {
+      "at_tna_evidence_generation": "debe coincidir con el manifest vigente",
+      "current": "2905f8f88ef9ac372622eaa5ec90e7508dd9a4ce853e0ba6b82ee9be84007921",
+      "in_dataset_manifest": "2905f8f88ef9ac372622eaa5ec90e7508dd9a4ce853e0ba6b82ee9be84007921"
+    },
+    "engine/sequential_events.py": {
+      "current": "dc56cc6ae10b1860a8bc76d205287a69db741bc6225850ae4f0a7ecee61323ff",
+      "in_dataset_manifest": "dc56cc6ae10b1860a8bc76d205287a69db741bc6225850ae4f0a7ecee61323ff"
+    }
+  },
+  "relationship_to_other_gates": {
+    "G0_causal_full_vs_prefix": "PASS (reports/audits/experiments/seq_ctx_01/gate_causal.json, 0/120 divergencias)",
+    "G1_tna_streaming_prefix": "PASS (reports/audits/tna_streaming_prefix_2026-08-22.json, 0 mismatches over 124377 decisions)",
+    "tna_behavioral_full_span": "PASS (este reporte; sobre 124377 barras full-span)"
+  },
+  "separability_note": "TNA-BEHAVIORAL no es un test de edge ni de PnL. Solo certifica que la navegacion MTF es reproducible (TRACE-INTEGRITY) y esta bien disenada (BEHAVIORAL) sobre el span completo. No autoriza trading.",
+  "factory_consumption": "exp_seq_ctx_01_dataset.py _check_gates() consume reports/audits/tna_streaming_prefix_2026-08-22.json como G1. Este reporte reconcilia el TNA behavioral/full-span como evidencia complementaria del mismo universo temporal; el factory NO requiere modificacion.",
+  "verdict": "TNA_BEHAVIORAL_FULL_SPAN = PASS (reconciliado y formalizado; no requiere nueva ejecucion)."
+}

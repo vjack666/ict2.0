@@ -1,0 +1,83 @@
+{
+  "n_required": 389,
+  "per_tf": {
+    "H1": {
+      "ALIGNED": {
+        "NON_CONFLICT": 29,
+        "CONFLICT": 17
+      },
+      "AGAINST": {
+        "NON_CONFLICT": 85,
+        "CONFLICT": 23
+      },
+      "NEUTRAL": {
+        "NON_CONFLICT": 205,
+        "CONFLICT": 156
+      }
+    },
+    "H4": {
+      "ALIGNED": {
+        "NON_CONFLICT": 2,
+        "CONFLICT": 1
+      },
+      "AGAINST": {
+        "CONFLICT": 6,
+        "NON_CONFLICT": 21
+      },
+      "NEUTRAL": {
+        "CONFLICT": 55,
+        "NON_CONFLICT": 59
+      }
+    },
+    "D1": {
+      "ALIGNED": {
+        "NON_CONFLICT": 1
+      },
+      "AGAINST": {
+        "CONFLICT": 1
+      },
+      "NEUTRAL": {
+        "NON_CONFLICT": 11,
+        "CONFLICT": 5
+      }
+    }
+  },
+  "primary_cells": {
+    "H1|ALIGNED": {
+      "CONFLICT": 17,
+      "NON_CONFLICT": 29,
+      "n_primary_sum": 46
+    },
+    "H1|AGAINST": {
+      "CONFLICT": 23,
+      "NON_CONFLICT": 85,
+      "n_primary_sum": 108
+    },
+    "H4|ALIGNED": {
+      "CONFLICT": 1,
+      "NON_CONFLICT": 2,
+      "n_primary_sum": 3
+    },
+    "H4|AGAINST": {
+      "CONFLICT": 6,
+      "NON_CONFLICT": 21,
+      "n_primary_sum": 27
+    },
+    "D1|ALIGNED": {
+      "CONFLICT": 0,
+      "NON_CONFLICT": 1,
+      "n_primary_sum": 1
+    },
+    "D1|AGAINST": {
+      "CONFLICT": 1,
+      "NON_CONFLICT": 0,
+      "n_primary_sum": 1
+    }
+  },
+  "gates": {
+    "pit": "PASS",
+    "provenance": "CLEAN",
+    "generator_commit": "a7ccd75ad49a85bc2cefc479c81c12f86b083914"
+  },
+  "verdict": "INSUFFICIENT_N"
+}

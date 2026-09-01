@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B2",
+  "role": "INCREMENTAL_D1_BIAS_FILTER (subconjunto filtrado de B1)",
+  "hypothesis": "H_B2: Anadir filtro de sesgo D1 (entra solo si sesgo D1 alinea direccion con la estructura) incrementa la expectancy del baseline LTF (B1) en R por operacion, bajo protocolo identico. Metrica: expectancy (mean_R). Gate: n_closed>=30. Comparador: B1.",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": "Dataset canonico H1 2019-2024 (mismo que B1)."
+  },
+  "htf_input": {
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+    "tf": "D1",
+    "rows": 6258,
+    "dataset_hash": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+    "bias_column": "trend (engine.market_features.build_features)",
+    "pit_safe_full_vs_prefix_violations": 0,
+    "note": "Sesgo D1 por columna trend de build_features; PIT-verificado (0 violaciones)."
+  },
+  "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "depth_min": 4,
+    "anchor": "STRUCTURE_bar_close (depth>=4)",
+    "sl_rule": "min(sweep_wick, broken_swing)-buffer (defensa pareja, 2 terminos)",
+    "tp_rule": "measured_projection (fallback sancionado)",
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "htf_context": true,
+    "htf_filter": "keep iff (dir==1 and D1 BULLISH) or (dir==-1 and D1 BEARISH); RANGING/counter dropped"
+  },
+  "fecha": "2026-08-21T23:56:11.534049+00:00",
+  "treatment": {
+    "n_closed": 97,
+    "n_trades": 101,
+    "n_open": 4,
+    "mean_R": 0.1438,
+    "median_R": 0.6328,
+    "win_rate": 0.5052,
+    "profit_factor": 1.2906,
+    "expectancy": 0.1438,
+    "drawdown": 10.7091,
+    "wilson_95": [
+      0.4074,
+      0.6025
+    ],
+    "bootstrap_ci_95": [
+      -0.08682988752775446,
+      0.36809955640561753
+    ]
+  },
+  "baseline": null,
+  "baseline_note": "El comparador de B2 es B1 (control LTF en disco). No se genera baseline propio.",
+  "filter": {
+    "method": "D1 trend alignment via engine.market_features.build_features(D1)['trend']",
+    "total_treatment_trades": 215,
+    "kept": 101,
+    "dropped": 114,
+    "dropped_ranging": 0,
+    "dropped_counter_trend": 114
+  },
+  "delta_vs_B1": {
+    "b1_expectancy": 0.2499,
+    "b2_expectancy": 0.1438,
+    "delta_expectancy": -0.1061,
+    "delta_expectancy_ci95": [
+      -0.2769,
+      0.0491
+    ],
+    "b1_win_rate": 0.5498,
+    "b2_win_rate": 0.5052,
+    "delta_win_rate": -0.0446,
+    "delta_win_rate_ci95": [
+      -0.1182,
+      0.0231
+    ],
+    "htf_contributes": false,
+    "note": "Delta CI por bootstrap por pares agrupado por chain_id (B2 subconjunto de B1)."
+  },
+  "motor_summary": {
+    "n_chains": 3478,
+    "by_depth": {
+      "1": 1312,
+      "2": 1697,
+      "3": 213,
+      "4": 229,
+      "5": 3,
+      "6": 2,
+      "7": 22
+    },
+    "by_status": {
+      "EXPIRED": 3456,
+      "COMPLETE": 22
+    },
+    "complete_bull": 9,
+    "complete_bear": 13,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "depth_min": 4,
+    "n": 256,
+    "by_status": {
+      "EXPIRED": 234,
+      "COMPLETE": 22
+    }
+  },
+  "protocol": {
+    "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado 2019-2024 (PIT-estable DENTRO del rango). El sesgo D1 se obtiene de build_features(D1)['trend'], columna PIT-verificada (FULL==PREFIX, 0 violaciones): se lee el valor en la ultima vela D1 cerrada <= t del anchor H1. Sin leakage futuro.",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true,
+      "origin": "csv",
+      "htf_source": "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+      "htf_dataset_hash": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+      "note": "Dataset canonico H1 verificado por SHA256; mismo motor/commit que B1."
+    }
+  },
+  "elapsed_s": 24.82
+}

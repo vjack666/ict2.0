@@ -1,0 +1,193 @@
+{
+  "checkpoints": [
+    {
+      "checkpoint_hash": "7b7f71714f385637661435cf8f59b67dcc52c08582169e8788f0592c446ce139",
+      "checkpoint_id": "SEQ_CTX_01_CANONICAL_BOS-v1-skeleton-83c8894b544a2bad",
+      "checkpoint_path": "bdfa1951e8c7223fc6d8032e309e775e43a6fe197c0ad861449e58a50f9ac90a.bin",
+      "created_at": "2026-08-24T16:08:49+00:00",
+      "metadata": {
+        "config": {
+          "can_trade": false,
+          "contract_version": "v2",
+          "shadow_mode": true,
+          "structure_mode": "canonical_bos"
+        },
+        "dataset_hash": "cf0e5a2e9f7060fc491dbcca4a86e4875b7f1052da26b7441208429fe9f49ec9",
+        "features": [
+          "context_bucket",
+          "direction",
+          "sequence_depth",
+          "split"
+        ],
+        "labels": [
+          "label_end_6",
+          "label_end_12",
+          "label_end_24",
+          "label_end_48"
+        ],
+        "metrics": {
+          "data_digest": "1a2e0a85fdb33f8b0a88874b0e405e7260ad07ab037f63611067a33a9020b13a",
+          "model_training_executed": false,
+          "oos_scope": "test",
+          "oos_test_rows": 20,
+          "pipeline_schema_version": "1.0",
+          "selection_rows": 80,
+          "selection_scope": "train+validation",
+          "test_rows": 20,
+          "train_rows": 60,
+          "validation_rows": 20
+        },
+        "model_id": "SEQ_CTX_01_CANONICAL_BOS",
+        "model_training": {
+          "executed": false,
+          "kind": "contract-skeleton"
+        },
+        "model_version": "v1-skeleton",
+        "pipeline_schema_version": "1.0",
+        "run_id": "83c8894b544a2bad57b1774a8bb8e029a675bab269b6c82fba689d1c75020a6e",
+        "schema_hash": "ce906f27096ae17a1ef7dba404eecc7e0f333997142ee16b3630bdfb1181ef63",
+        "seed": 20260823,
+        "snapshot_id": "720b16a56e41a139317ba7687fe2b28e6345c7a6634f6183e2b5aef7321926d6",
+        "split": {
+          "oos_scope": "test",
+          "oos_test_rows": 20,
+          "selection_rows": 80,
+          "selection_scope": "train+validation",
+          "test_rows": 20,
+          "time_column": "event_time",
+          "train_end": "2018-06-05T20:00:00+00:00",
+          "train_rows": 60,
+          "validation_end": "2020-04-02T04:00:00+00:00",
+          "validation_rows": 20
+        }
+      },
+      "model_id": "SEQ_CTX_01_CANONICAL_BOS",
+      "version": "v1-skeleton"
+    },
+    {
+      "checkpoint_hash": "63824ea020be6d20c80096157ade0f9f9f1a306870e2f56c1e591a5bbb8a06ac",
+      "checkpoint_id": "SEQ_CTX_01_LITE-v1-skeleton-08dc0f4af14327b8",
+      "checkpoint_path": "668500ffa8394a7dadf0c35567884d636fdb9b24f2b02fe8c71bffd0f4b329eb.bin",
+      "created_at": "2026-08-24T16:08:49+00:00",
+      "metadata": {
+        "config": {
+          "can_trade": false,
+          "contract_version": "v2",
+          "shadow_mode": true,
+          "structure_mode": "lite"
+        },
+        "dataset_hash": "555f26e5cea7166dbf8838deaf38d36a30ac0ab48b9ff589e2fd86fdc39203bc",
+        "features": [
+          "context_bucket",
+          "direction",
+          "sequence_depth",
+          "split"
+        ],
+        "labels": [
+          "label_end_6",
+          "label_end_12",
+          "label_end_24",
+          "label_end_48"
+        ],
+        "metrics": {
+          "data_digest": "fdaee19bf9ed7a23366241f8283d80e9f7c086803a782eae0e031fc1a6cfd30d",
+          "model_training_executed": false,
+          "oos_scope": "test",
+          "oos_test_rows": 39,
+          "pipeline_schema_version": "1.0",
+          "selection_rows": 153,
+          "selection_scope": "train+validation",
+          "test_rows": 39,
+          "train_rows": 115,
+          "validation_rows": 38
+        },
+        "model_id": "SEQ_CTX_01_LITE",
+        "model_training": {
+          "executed": false,
+          "kind": "contract-skeleton"
+        },
+        "model_version": "v1-skeleton",
+        "pipeline_schema_version": "1.0",
+        "run_id": "08dc0f4af14327b8fffdc404f3f00100e1ac9ce10335a1c9981758740d33a54a",
+        "schema_hash": "ce906f27096ae17a1ef7dba404eecc7e0f333997142ee16b3630bdfb1181ef63",
+        "seed": 20260823,
+        "snapshot_id": "56016621e075859e33abfa7c92feca86d7ad52d27a7ad9d5cd080fa853091f70",
+        "split": {
+          "oos_scope": "test",
+          "oos_test_rows": 39,
+          "selection_rows": 153,
+          "selection_scope": "train+validation",
+          "test_rows": 39,
+          "time_column": "event_time",
+          "train_end": "2019-06-14T15:00:00+00:00",
+          "train_rows": 115,
+          "validation_end": "2021-10-11T19:00:00+00:00",
+          "validation_rows": 38
+        }
+      },
+      "model_id": "SEQ_CTX_01_LITE",
+      "version": "v1-skeleton"
+    }
+  ],
+  "models": [
+    {
+      "config": {
+        "can_trade": false,
+        "contract_version": "v2",
+        "shadow_mode": true,
+        "structure_mode": "canonical_bos"
+      },
+      "created_at": "2026-08-24T16:08:49+00:00",
+      "dataset_hash": "cf0e5a2e9f7060fc491dbcca4a86e4875b7f1052da26b7441208429fe9f49ec9",
+      "experiment_id": "EXP-SEQ-CTX-01",
+      "features": [
+        "context_bucket",
+        "direction",
+        "sequence_depth",
+        "split"
+      ],
+      "git_commit": "33fb73d5303b322d35ca16d05700f3ae8540584a",
+      "labels": [
+        "label_end_6",
+        "label_end_12",
+        "label_end_24",
+        "label_end_48"
+      ],
+      "model_id": "SEQ_CTX_01_CANONICAL_BOS",
+      "schema_hash": "ce906f27096ae17a1ef7dba404eecc7e0f333997142ee16b3630bdfb1181ef63",
+      "seed": 20260823,
+      "snapshot_id": "720b16a56e41a139317ba7687fe2b28e6345c7a6634f6183e2b5aef7321926d6",
+      "version": "v1-skeleton"
+    },
+    {
+      "config": {
+        "can_trade": false,
+        "contract_version": "v2",
+        "shadow_mode": true,
+        "structure_mode": "lite"
+      },
+      "created_at": "2026-08-24T16:08:49+00:00",
+      "dataset_hash": "555f26e5cea7166dbf8838deaf38d36a30ac0ab48b9ff589e2fd86fdc39203bc",
+      "experiment_id": "EXP-SEQ-CTX-01",
+      "features": [
+        "context_bucket",
+        "direction",
+        "sequence_depth",
+        "split"
+      ],
+      "git_commit": "33fb73d5303b322d35ca16d05700f3ae8540584a",
+      "labels": [
+        "label_end_6",
+        "label_end_12",
+        "label_end_24",
+        "label_end_48"
+      ],
+      "model_id": "SEQ_CTX_01_LITE",
+      "schema_hash": "ce906f27096ae17a1ef7dba404eecc7e0f333997142ee16b3630bdfb1181ef63",
+      "seed": 20260823,
+      "snapshot_id": "56016621e075859e33abfa7c92feca86d7ad52d27a7ad9d5cd080fa853091f70",
+      "version": "v1-skeleton"
+    }
+  ],
+  "schema_version": "1.0"
+}

@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_C3FIX",
+  "role": "MICRO_AGENTE_C3FIX",
+  "hypothesis_under_test": "El edge LTF depth>=4 sobrevive fuera de muestra (EURUSD post-2024). Metrica: expectancy (mean_R). Gate: n_closed>=30.",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "data\\raw\\EURUSD\\EURUSD_H1.parquet",
+    "source_kind": "parquet",
+    "data_origin": "NO-canonico (parquet data/raw, origen distinto al CSV Dukascopy canonico)",
+    "range_start": "2025-01-01",
+    "range_end": "2026-08-14",
+    "range_label": "OOS EXTENDIDO 2025-01-01..2026-08-14 (no solo 2025)",
+    "bars": 10245,
+    "parquet_sha256": "ac028d7d8a6cd977a7d40ed632642a9bb3f60410d05971a05169cb8f3d380cc7"
+  },
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "min_depth": 4,
+    "anchor": "STRUCTURE_bar_close",
+    "sl_rule": "long=min(sweep_wick_low,broken_swing_low)-buffer; short=mirror (NUNCA ATR)",
+    "tp_rule": "measured projection of sequence range (v1 sanctioned fallback)",
+    "tp_baseline_window_bars": 7,
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic_intrabar_SL",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "baseline_seed": 42,
+    "min_n_gate": 30
+  },
+  "motor_summary": {
+    "n_chains": 899,
+    "by_depth": {
+      "1": 377,
+      "2": 444,
+      "3": 38,
+      "4": 38,
+      "7": 2
+    },
+    "by_status": {
+      "EXPIRED": 897,
+      "COMPLETE": 2
+    },
+    "complete_bull": 1,
+    "complete_bear": 1,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "n": 40,
+    "by_status": {
+      "EXPIRED": 38,
+      "COMPLETE": 2
+    },
+    "dedup_or_warmup_skipped": 5
+  },
+  "treatment": {
+    "n_trades": 35,
+    "n_closed": 34,
+    "n_open": 1,
+    "n_invalid_levels": 0,
+    "wins": 16,
+    "losses": 18,
+    "win_rate": 0.4706,
+    "win_rate_wilson95": [
+      0.3145,
+      0.6326
+    ],
+    "mean_R": 0.111,
+    "median_R": -1.0,
+    "std_R": 1.2509,
+    "min_R": -1.0,
+    "max_R": 2.8028,
+    "expectancy": 0.111,
+    "profit_factor": 1.2096,
+    "drawdown": -6.4741,
+    "bootstrap_mean_r_ci": [
+      -0.29500911201928226,
+      0.5325471318735835
+    ],
+    "bootstrap_win_rate_ci": [
+      0.29411764705882354,
+      0.6470588235294118
+    ]
+  },
+  "baseline_fvg_random": {
+    "n_trades": 35,
+    "n_closed": 34,
+    "n_open": 0,
+    "win_rate": 0.3235,
+    "win_rate_wilson95": [
+      0.1913,
+      0.4916
+    ],
+    "mean_R": -0.2579,
+    "median_R": -1.0,
+    "expectancy": -0.2579,
+    "profit_factor": 0.6187,
+    "drawdown": -9.8513,
+    "bootstrap_mean_r_ci": [
+      -0.6098790080589934,
+      0.14400460435651904
+    ]
+  },
+  "comparison_to_in_sample": {
+    "in_sample_A1_B1_mean_R": 0.25,
+    "oos_mean_R": 0.111,
+    "delta_oos_minus_is": -0.139,
+    "note": "In-sample A1/B1 reporta +0.250 mean_R. El OOS extendido se compara contra esa referencia (mismo motor/protocolo)."
+  },
+  "elapsed_s": 0.88,
+  "generated_at": "2026-08-22T01:06:14.892920+00:00"
+}

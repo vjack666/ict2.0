@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "gates": {
+    "A0_DATA_INTEGRITY": "PASS",
+    "A1_SCHEMA": "PASS",
+    "A2_POINT_IN_TIME": "PASS",
+    "A3_SEMANTICS": "PASS",
+    "A4_DETECTOR_METAMORPHIC": "PASS",
+    "A5_CROSS_TIMEFRAME": "PASS",
+    "A6_LINEAGE": "PASS",
+    "A7_FUNNEL": "PASS",
+    "A8_COVERAGE_REGIME": "PASS",
+    "A9_GOVERNANCE": "PASS"
+  },
+  "findings": [],
+  "fingerprint": "ab1bb627d668f52d74f44b6a587c8799394b9c6f8581dc3b439bda21cc5cb538",
+  "timestamp": "2026-08-18T20:58:58.017543+00:00",
+  "scope": "contract-smoke + existing historical Funnel evidence",
+  "historical_funnel_report": "/home/workdir/artifacts/ict_audit_run/docs/AUDITORIA_FUNNEL_EURUSD_H1_H4_D1.md"
+}

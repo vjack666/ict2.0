@@ -1,0 +1,70 @@
+{
+  "audit": "AHF_TEMPORAL_NAVIGATION_SANDBOX",
+  "coverage": "STRATIFIED_MULTI_WINDOW_MINI",
+  "dataset": "datasets/eurusd_dukascopy_20y",
+  "policy": "AHF_STATE_NOT_ENTRY",
+  "precompute_sequences": false,
+  "step": 4,
+  "generated_at": "2026-08-20T16:41:59.484919+00:00",
+  "runner": "scripts/tna_sandbox_runner.py",
+  "note": "Corrida sandbox mini. Valida fix rollback_depth. NO es full-span 20Y.",
+  "aggregate": {
+    "windows_pass_trace": 3,
+    "windows_total": 3,
+    "total_bars": 170,
+    "total_invalidations": 51,
+    "rollback_depth_max_observed": 2.0,
+    "rollback_fix_validated": true,
+    "gates": {
+      "TNA-TRACE-INTEGRITY": "PASS",
+      "ROLLBACK_DEPTH_INSTRUMENTATION": "PASS"
+    },
+    "overall": "PASS"
+  },
+  "windows": [
+    {
+      "window": "2017-smoke",
+      "bars": 55,
+      "status": "PASS_TRACE_INTEGRITY",
+      "invalidations": 18,
+      "rollback_depth_bars": {
+        "n": 18,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "downward_switches": 4,
+      "upward_switches": 2
+    },
+    {
+      "window": "2020-covid",
+      "bars": 60,
+      "status": "PASS_TRACE_INTEGRITY",
+      "invalidations": 18,
+      "rollback_depth_bars": {
+        "n": 18,
+        "median": 1.0,
+        "max": 2.0
+      },
+      "downward_switches": 20,
+      "upward_switches": 17
+    },
+    {
+      "window": "2024-recent",
+      "bars": 55,
+      "status": "PASS_TRACE_INTEGRITY",
+      "invalidations": 15,
+      "rollback_depth_bars": {
+        "n": 15,
+        "min": 0.0,
+        "median": 0.0,
+        "mean": 0.4666666666666667,
+        "p75": 1.0,
+        "p90": 1.0,
+        "p95": 1.0,
+        "max": 1.0
+      },
+      "downward_switches": 9,
+      "upward_switches": 7
+    }
+  ]
+}

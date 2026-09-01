@@ -1,0 +1,26 @@
+flowchart TB
+    CLIENTE([Cliente / autoridad final])
+    CEO[Codex<br/>CEO operativo]
+    CLIENTE --> CEO
+
+    CEO --> D0[D0 · Dirección y gobierno<br/>COO · Compliance · Alertas]
+    CEO --> D1[D1 · Operaciones y conocimiento<br/>PMO · KM · Repo Steward]
+    CEO --> D2[D2 · CTO / motor diario<br/>Engineer · Integration Agent]
+    CEO --> D3[D3 · CAIO / infraestructura IA<br/>ML Scientist · Model Evaluator]
+    CEO --> D4[D4 · CDO / datos y lineage<br/>Data Engineer · Dataset Steward]
+    CEO --> D5[D5 · CRO / assurance independiente<br/>QA · Auditor · Reproducibility]
+    CEO --> D6[D6 · Research y laboratorio<br/>Hermes · Scientist · Research Engineer]
+    CEO --> D7[D7 · Delivery y releases<br/>Release Manager · Operator]
+
+    D6 -->|propone y evalúa| D5
+    D5 -->|certifica evidencia| CEO
+    D4 -->|artefactos certificados| D3
+    D2 -->|motor diario, can_trade=false| D3
+    D1 -->|worklog y documentación| CEO
+
+    classDef authority fill:#17324d,color:#fff,stroke:#0b1f33;
+    classDef department fill:#e8f1f8,color:#102a43,stroke:#477ea8;
+    classDef assurance fill:#fff3cd,color:#5c4300,stroke:#c99a00;
+    class CLIENTE,CEO authority;
+    class D0,D1,D2,D3,D4,D6,D7 department;
+    class D5 assurance;

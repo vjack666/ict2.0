@@ -1,0 +1,231 @@
+{
+  "dataset": "dukascopy-node EURUSD 2006-01-01..2026-01-01 (20Y) + FVG_OB relation",
+  "symbol": "EURUSD",
+  "timeframes": {
+    "H1": {
+      "timeframe": "H1",
+      "bars": 124377,
+      "fvg_count": 22477,
+      "ob_count": 2799,
+      "fvg_bull": 11251,
+      "fvg_bear": 11226,
+      "ob_bull": 1346,
+      "ob_bear": 1453,
+      "relation_count": 702,
+      "relation_bull": 347,
+      "relation_bear": 355,
+      "relation_rate_vs_fvg": 0.031231925968768073,
+      "relation_rate_vs_ob": 0.2508038585209003,
+      "causal_links": 702,
+      "audit_status": "PASS",
+      "findings": [],
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 22477,
+          "accepted_count": 22477,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 2799,
+          "accepted_count": 2799,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 24711,
+          "accepted_count": 702,
+          "rejected_count": 24009
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "relation_rule": "STRICT: same_direction + price_overlap + OB_before_FVG + lag<=20 + CausalLink parent=OB"
+    },
+    "H4": {
+      "timeframe": "H4",
+      "bars": 32133,
+      "fvg_count": 6497,
+      "ob_count": 862,
+      "fvg_bull": 3218,
+      "fvg_bear": 3279,
+      "ob_bull": 436,
+      "ob_bear": 426,
+      "relation_count": 206,
+      "relation_bull": 105,
+      "relation_bear": 101,
+      "relation_rate_vs_fvg": 0.03170694166538402,
+      "relation_rate_vs_ob": 0.23897911832946636,
+      "causal_links": 206,
+      "audit_status": "PASS",
+      "findings": [],
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 6497,
+          "accepted_count": 6497,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 862,
+          "accepted_count": 862,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 7178,
+          "accepted_count": 206,
+          "rejected_count": 6972
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "relation_rule": "STRICT: same_direction + price_overlap + OB_before_FVG + lag<=20 + CausalLink parent=OB"
+    },
+    "D1": {
+      "timeframe": "D1",
+      "bars": 6258,
+      "fvg_count": 1543,
+      "ob_count": 214,
+      "fvg_bull": 757,
+      "fvg_bear": 786,
+      "ob_bull": 85,
+      "ob_bear": 129,
+      "relation_count": 58,
+      "relation_bull": 23,
+      "relation_bear": 35,
+      "relation_rate_vs_fvg": 0.037589112119248216,
+      "relation_rate_vs_ob": 0.27102803738317754,
+      "causal_links": 58,
+      "audit_status": "PASS",
+      "findings": [],
+      "stages": [
+        {
+          "stage": "VALID_BARS",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "STRUCTURE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "BOS_CHOCH",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "DISPLACEMENT",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "FVG",
+          "input_count": 1543,
+          "accepted_count": 1543,
+          "rejected_count": 0
+        },
+        {
+          "stage": "OB",
+          "input_count": 214,
+          "accepted_count": 214,
+          "rejected_count": 0
+        },
+        {
+          "stage": "CONFLUENCE",
+          "input_count": 1713,
+          "accepted_count": 58,
+          "rejected_count": 1655
+        },
+        {
+          "stage": "LINEAGE",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        },
+        {
+          "stage": "SETUP",
+          "input_count": 0,
+          "accepted_count": 0,
+          "rejected_count": 0
+        }
+      ],
+      "relation_rule": "STRICT: same_direction + price_overlap + OB_before_FVG + lag<=20 + CausalLink parent=OB"
+    }
+  }
+}

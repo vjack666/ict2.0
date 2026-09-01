@@ -1,0 +1,131 @@
+{
+  "checks": [
+    {
+      "details": "status=READY; missing=[]; objects=8",
+      "evidence_refs": [],
+      "id": "ASSEMBLY",
+      "status": "PASS"
+    },
+    {
+      "details": "no execution fields are authorized",
+      "evidence_refs": [],
+      "id": "POLICY",
+      "status": "PASS"
+    },
+    {
+      "details": "future rows do not alter the snapshot at decision_time",
+      "evidence_refs": [],
+      "id": "FULL_PREFIX",
+      "status": "PASS"
+    },
+    {
+      "details": "projected_objects=8; authority_tf=origin_tf; creation<=T",
+      "evidence_refs": [],
+      "id": "AUTHORITY_AND_PIT",
+      "status": "PASS"
+    },
+    {
+      "details": "JSON safe",
+      "evidence_refs": [],
+      "id": "SERIALIZATION",
+      "status": "PASS"
+    },
+    {
+      "details": "no backtest authority and no true entry authorization",
+      "evidence_refs": [],
+      "id": "BOUNDARY",
+      "status": "PASS"
+    },
+    {
+      "details": "six local parquet hashes verified",
+      "evidence_refs": [],
+      "id": "PROVENANCE",
+      "status": "PASS"
+    },
+    {
+      "details": "not run: no MT5 refresh authorized in this audit",
+      "evidence_refs": [],
+      "id": "MT5_FRESHNESS",
+      "status": "REVIEW"
+    },
+    {
+      "details": "generator_commit=571d0b67c21657ac480e8dfe4e5ef22b94ba59b8; worktree_state=DIRTY",
+      "evidence_refs": [],
+      "id": "REPRODUCIBILITY",
+      "status": "REVIEW"
+    }
+  ],
+  "generator": {
+    "branch": "codex/audit-hermes-cert-20260826",
+    "commit": "571d0b67c21657ac480e8dfe4e5ef22b94ba59b8",
+    "script": "audits/codigo/mt5_operational_snapshot.py",
+    "worktree_state": "DIRTY"
+  },
+  "generator_commit": "571d0b67c21657ac480e8dfe4e5ef22b94ba59b8",
+  "mode": "AUDIT_ONLY",
+  "next_action": "Run the local MT5 freshness gate before operational use; then independent GO for publication.",
+  "operational_freshness": "REVIEW",
+  "schema_version": "MT5_OPERATIONAL_SNAPSHOT_AUDIT_V1",
+  "scope": {
+    "dukascopy_used": false,
+    "orders_or_backtest": false,
+    "refresh_executed": false,
+    "source": "MT5_LOCAL_PARQUET",
+    "symbol": "EURUSD",
+    "timeframes": [
+      "D1",
+      "H4",
+      "H1",
+      "M15",
+      "M5",
+      "M1"
+    ]
+  },
+  "source_artifacts": [
+    {
+      "bytes": 90228,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_D1.parquet",
+      "sha256": "c92269b6b2f1157347730bd7d77cc6610de0ceaade4ebb0aba38c5d1df6c9699",
+      "tf": "D1"
+    },
+    {
+      "bytes": 4289232,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H1.parquet",
+      "sha256": "5b750f85514e4689e4577b7a2e0b61d74f19d34da547eb5fa66a70c4796d9b7e",
+      "tf": "H1"
+    },
+    {
+      "bytes": 456651,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H4.parquet",
+      "sha256": "ef29c8916e8d99b7f66894a9b0cadf9383beb1ffa080a0cb4bf2c577398b479c",
+      "tf": "H4"
+    },
+    {
+      "bytes": 91760952,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M1.parquet",
+      "sha256": "c0d689cb5fbd6b6678a2c0e139b1748c42c656ed8483a9216d1554117484ffd3",
+      "tf": "M1"
+    },
+    {
+      "bytes": 2552986,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M15.parquet",
+      "sha256": "49773c106f70a332ad80f2c4bf69b83e1ed0a62a54249f3d6f752570451750b9",
+      "tf": "M15"
+    },
+    {
+      "bytes": 5578394,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M5.parquet",
+      "sha256": "40e3b47592e1abccb3a3d2c06a919d14d448a52614f026aceb33fc0ddcd03743",
+      "tf": "M5"
+    }
+  ],
+  "source_hashes": {
+    "D1": "c92269b6b2f1157347730bd7d77cc6610de0ceaade4ebb0aba38c5d1df6c9699",
+    "H1": "5b750f85514e4689e4577b7a2e0b61d74f19d34da547eb5fa66a70c4796d9b7e",
+    "H4": "ef29c8916e8d99b7f66894a9b0cadf9383beb1ffa080a0cb4bf2c577398b479c",
+    "M1": "c0d689cb5fbd6b6678a2c0e139b1748c42c656ed8483a9216d1554117484ffd3",
+    "M15": "49773c106f70a332ad80f2c4bf69b83e1ed0a62a54249f3d6f752570451750b9",
+    "M5": "40e3b47592e1abccb3a3d2c06a919d14d448a52614f026aceb33fc0ddcd03743"
+  },
+  "status": "PASS"
+}

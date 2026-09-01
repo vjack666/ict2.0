@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A3",
+  "component_isolated": "Anclaje secuencial depth>=4 en H4 (mismo m\u00e9todo A1, defensa pareja)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-21T16:15:27.661951+00:00",
+  "gate": {
+    "n_ge_30": true,
+    "expectancy_gt_0": true,
+    "ci_lower_gt_0": false
+  },
+  "protocol": {
+    "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado; PIT-estable DENTRO del rango (deuda FULL-vs-PREFIX afecta al indice HTF del navigator, NO a este diseno mono-TF de una pasada).",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H4",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 9545,
+      "dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "is_canonical": true,
+      "origin": "csv",
+      "note": null
+    }
+  },
+  "verdict": "FAIL",
+  "rationale": "mecanico: PASS iff n_closed>=30 AND expectancy(mean_r)>0 AND bootstrap CI95 lower>0."
+}

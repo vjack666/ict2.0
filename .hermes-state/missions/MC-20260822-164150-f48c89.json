@@ -1,0 +1,158 @@
+{
+  "authority": {
+    "autonomy_policy": "technical_subordinate_decisions",
+    "ceo": "codex",
+    "escalation_boundaries": [
+      "OBJECTIVE",
+      "SCOPE",
+      "AUTHORITY",
+      "SECURITY",
+      "BUDGET",
+      "IRREVERSIBLE_DATA"
+    ],
+    "owner": "user"
+  },
+  "blockers": [],
+  "completion_state": {
+    "artifacts_consistent": true,
+    "evidence_recorded": true,
+    "mission_complete": true,
+    "no_unresolved_blockers": true,
+    "objective_satisfied": true,
+    "required_tests_pass": true
+  },
+  "controller_version": "MC-0/MC-3-local-1.1",
+  "created_at": "2026-08-22T16:41:50.209397+00:00",
+  "decisions": [],
+  "delegation": {
+    "agent_key": "conductor",
+    "delegation_id": "delegation-0319973afd324193ab14d2b774bc0d01",
+    "provider": "opencode",
+    "session_id": "local-41cdf1635aba43e2a8a480e49b23c5a7",
+    "status": "PLANNED"
+  },
+  "evidence": [
+    "pytest:16 passed",
+    "architecture_guard:PASS",
+    "delegation_mode:dry-run",
+    {
+      "gate": "objective_satisfied",
+      "passed": true,
+      "ref": "mission:MC-20260822-164150-f48c89:objective_satisfied"
+    },
+    {
+      "gate": "required_tests_pass",
+      "passed": true,
+      "ref": "mission:MC-20260822-164150-f48c89:required_tests_pass"
+    },
+    {
+      "gate": "evidence_recorded",
+      "passed": true,
+      "ref": "mission:MC-20260822-164150-f48c89:evidence_recorded"
+    },
+    {
+      "gate": "no_unresolved_blockers",
+      "passed": true,
+      "ref": "mission:MC-20260822-164150-f48c89:no_unresolved_blockers"
+    },
+    {
+      "gate": "artifacts_consistent",
+      "passed": true,
+      "ref": "mission:MC-20260822-164150-f48c89:artifacts_consistent"
+    },
+    "closeout:MC-20260822-164150-f48c89:end-to-end-safe-flow"
+  ],
+  "git_head": "7e69a0c743e185de2b134852dfe5bff44bcd0286",
+  "memory": {
+    "detail": null,
+    "project": "ict2.0",
+    "provider": "engram",
+    "status": "RECORDED"
+  },
+  "mission_id": "MC-20260822-164150-f48c89",
+  "objective": "certifica el circuito operativo del Mission Controller y documenta su cierre",
+  "phase": "COMPLETE",
+  "plan": [
+    {
+      "department": "D0",
+      "status": "COMPLETED",
+      "step": "route"
+    }
+  ],
+  "resume": {
+    "active_task_id": null,
+    "attempts": 0,
+    "last_checkpoint": null,
+    "opencode_session_ids": [
+      "local-41cdf1635aba43e2a8a480e49b23c5a7"
+    ]
+  },
+  "route": {
+    "agent_key": "conductor",
+    "assigned_role": "COO",
+    "department_id": "D0",
+    "department_name": "direction_governance",
+    "reason": "la intención no es suficientemente específica y requiere planificación ejecutiva",
+    "required_controls": [
+      "context_discovery",
+      "no_unapproved_promotion",
+      "single_owner"
+    ],
+    "required_reviews": [
+      "CEO_scope_check"
+    ],
+    "task_kind": "PLAN"
+  },
+  "schema_version": "1.0",
+  "scope": {
+    "allowed_roots": [
+      "D0"
+    ],
+    "excluded_roots": [
+      "secrets/"
+    ],
+    "workspace": "ICT SYSTEM"
+  },
+  "status": "COMPLETE",
+  "tasks": [
+    {
+      "agent_key": "conductor",
+      "assigned_agent": "COO",
+      "attempt": 0,
+      "blocker_refs": [],
+      "completed_at": "2026-08-22T16:41:50.348939+00:00",
+      "delegation_id": "delegation-0319973afd324193ab14d2b774bc0d01",
+      "delegation_status": "PLANNED",
+      "department_id": "D0",
+      "depends_on": [],
+      "evidence_refs": [
+        "pytest:16 passed",
+        "architecture_guard:PASS",
+        "delegation_mode:dry-run"
+      ],
+      "inputs": [],
+      "kind": "PLAN",
+      "mission_id": "MC-20260822-164150-f48c89",
+      "next_action": "collect_outputs_and_evidence",
+      "opencode_session_id": "local-41cdf1635aba43e2a8a480e49b23c5a7",
+      "outputs": [
+        "tests/test_mission_controller.py",
+        "orchestration/mission_controller/",
+        "graphify-out/GRAPH_REPORT.md"
+      ],
+      "provider_snapshot": {
+        "mode": "dry-run",
+        "provider_session_id": null,
+        "session_id": "local-41cdf1635aba43e2a8a480e49b23c5a7",
+        "status": "IDLE"
+      },
+      "provider_status": "IDLE",
+      "started_at": null,
+      "status": "COMPLETE",
+      "task_id": "MC-20260822-164150-f48c89-T01",
+      "title": "certifica el circuito operativo del Mission Controller y documenta su cierre"
+    }
+  ],
+  "updated_at": "2026-08-22T16:41:51.130294+00:00",
+  "worklog_path": ".hermes-worklog\\HERMES_MISSION_MC-20260822-164150-f48c89.md"
+}

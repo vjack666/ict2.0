@@ -1,0 +1,81 @@
+{
+  "experiment": "FASE5_LIFECYCLE_AUDIT",
+  "method": "reusa detect_fvg/ob (canonicos); acumulado vela-a-vela igual build_market_state (sin terminales FVG/OB)",
+  "window_bars_per_tf": 1500,
+  "can_train": false,
+  "can_trade": false,
+  "results": {
+    "D1": {
+      "tf": "D1",
+      "window_bars": 1500,
+      "created": 357,
+      "by_type": {
+        "FVG": 323,
+        "ORDER_BLOCK": 34
+      },
+      "active_per_candle_p50": 188,
+      "active_per_candle_p95": 336,
+      "active_per_candle_max": 357,
+      "age_bars_p50": 778,
+      "age_bars_p95": 1438,
+      "age_bars_max": 1495,
+      "pct_reached_PARTIAL": 98.0,
+      "pct_terminal": 0.0,
+      "overlapping_fvg_pairs": 1474
+    },
+    "H4": {
+      "tf": "H4",
+      "window_bars": 1500,
+      "created": 356,
+      "by_type": {
+        "FVG": 315,
+        "ORDER_BLOCK": 41
+      },
+      "active_per_candle_p50": 178,
+      "active_per_candle_p95": 341,
+      "active_per_candle_max": 356,
+      "age_bars_p50": 748,
+      "age_bars_p95": 1416,
+      "age_bars_max": 1494,
+      "pct_reached_PARTIAL": 97.2,
+      "pct_terminal": 0.0,
+      "overlapping_fvg_pairs": 1383
+    },
+    "H1": {
+      "tf": "H1",
+      "window_bars": 1500,
+      "created": 279,
+      "by_type": {
+        "FVG": 242,
+        "ORDER_BLOCK": 37
+      },
+      "active_per_candle_p50": 134,
+      "active_per_candle_p95": 265,
+      "active_per_candle_max": 279,
+      "age_bars_p50": 723,
+      "age_bars_p95": 1424,
+      "age_bars_max": 1473,
+      "pct_reached_PARTIAL": 98.2,
+      "pct_terminal": 0.0,
+      "overlapping_fvg_pairs": 1206
+    },
+    "M15": {
+      "tf": "M15",
+      "window_bars": 1500,
+      "created": 352,
+      "by_type": {
+        "FVG": 304,
+        "ORDER_BLOCK": 48
+      },
+      "active_per_candle_p50": 180,
+      "active_per_candle_p95": 340,
+      "active_per_candle_max": 352,
+      "age_bars_p50": 774,
+      "age_bars_p95": 1415,
+      "age_bars_max": 1496,
+      "pct_reached_PARTIAL": 98.0,
+      "pct_terminal": 0.0,
+      "overlapping_fvg_pairs": 1562
+    }
+  }
+}

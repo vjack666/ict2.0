@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_A2",
+  "component_isolated": "TP de liquidez HTF real (vs measured_projection fallback)",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "date": "2026-08-21T16:17:39.758027+00:00",
+  "gate": {
+    "n_ge_30": false,
+    "expectancy_gt_0": false,
+    "ci_lower_gt_0": false,
+    "note": "no ejecutado"
+  },
+  "protocol": {
+    "leakage_check": "BLOCKED: TP HTF real requiere navigator HTF->LTF con deuda PIT FULL-vs-PREFIX no resuelta (ver bitacora 2026-08-20).",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true,
+      "origin": "csv",
+      "note": "Dataset canonico valido; componente TP HTF real ausente."
+    }
+  },
+  "verdict": "BLOCKED",
+  "rationale": "mecanico: experimento no puede ejecutarse EXACTAMENTE (componente TP HTF real ausente / no limpio); se declara BLOCKED, no se inventa el TP."
+}

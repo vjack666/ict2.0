@@ -1,0 +1,21 @@
+{
+  "checkpoint_id": "SEQ_CTX_01_CANONICAL_BOS-v1-skeleton-83c8894b544a2bad",
+  "checkpoint_schema_version": "1.0",
+  "created_at": "2026-08-24T16:08:49.136777+00:00",
+  "dataset_hash": "cf0e5a2e9f7060fc491dbcca4a86e4875b7f1052da26b7441208429fe9f49ec9",
+  "features": [
+    "context_bucket",
+    "direction",
+    "sequence_depth",
+    "split"
+  ],
+  "labels": [
+    "label_end_6",
+    "label_end_12",
+    "label_end_24",
+    "label_end_48"
+  ],
+  "model_id": "SEQ_CTX_01_CANONICAL_BOS",
+  "model_version": "v1-skeleton",
+  "seed": 20260823
+}

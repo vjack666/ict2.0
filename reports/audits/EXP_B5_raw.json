@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "experiment": "EXP_B5",
+  "role": "PAIRED_COMPARISON_HTF_FILTER (mismo set de anchors LTF depth>=4, con vs sin filtro HTF)",
+  "hypothesis": "H_B5: Bajo el MISMO set de anchors LTF depth>=4, anadir el filtro de sesgo HTF (D1 y/o H4 que alineen direccion, via build_features trend) mejora la expectancy respecto a correr sin filtro HTF, bajo protocolo identico. Metrica: delta expectancy (mean_R). Gate: n_closed>=30. Comparador: misma corrida sin filtro.",
+  "dataset": {
+    "symbol": "EURUSD",
+    "exec_tf": "H1",
+    "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+    "range_start": "2019-01-01",
+    "range_end": "2024-12-31",
+    "bars": 36934,
+    "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+    "is_canonical": true,
+    "origin": "csv",
+    "note": "Dataset canonico H1 2019-2024 (mismo que B1-B4)."
+  },
+  "htf_input": {
+    "d1": {
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+      "tf": "D1",
+      "rows": 6258,
+      "dataset_hash": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+      "bias_column": "trend (engine.market_features.build_features)",
+      "pit_safe_full_vs_prefix_violations": 0,
+      "note": "Sesgo D1 por columna trend de build_features; PIT-verificado (0 violaciones)."
+    },
+    "h4": {
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+      "tf": "H4",
+      "rows": 32133,
+      "dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "bias_column": "trend (engine.market_features.build_features)",
+      "pit_safe_full_vs_prefix_violations": 0,
+      "note": "Sesgo H4 por columna trend de build_features; PIT-verificado (0 violaciones)."
+    },
+    "filter_logic": "keep iff (dir==1 and (D1 BULLISH or H4 BULLISH)) or (dir==-1 and (D1 BEARISH or H4 BEARISH)); RANGING/counter en ambos descarta (D1 OR H4)."
+  },
+  "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+  "code_commit": "daef67cf212c4432c6e5e3a2b7c6cd404982059b",
+  "config": {
+    "structure_mode": "lite",
+    "max_active_chains": 4096,
+    "swing_left": 3,
+    "depth_min": 4,
+    "anchor": "STRUCTURE_bar_close (depth>=4)",
+    "sl_rule": "min(sweep_wick, broken_swing)-buffer (defensa pareja, 2 terminos)",
+    "tp_rule": "measured_projection (fallback sancionado)",
+    "sl_buffer": 0.0001,
+    "horizon_bars": 200,
+    "tie_policy": "pessimistic",
+    "warmup_bars": 20,
+    "bootstrap": {
+      "resamples": 2000,
+      "seed": 42,
+      "cluster": "chain_id"
+    },
+    "htf_context": true,
+    "htf_filter": "keep iff (dir==1 and (D1 BULLISH or H4 BULLISH)) or (dir==-1 and (D1 BEARISH or H4 BEARISH)); RANGING/counter dropped (D1 OR H4); SL/TP IDENTICOS al control",
+    "paired_design": true,
+    "note": "Mismo set de anchors resuelto DOS veces con EXACTAMENTE la misma SL/TP; solo cambia si se aplica el filtro HTF."
+  },
+  "fecha": "2026-08-22T00:22:33.170304+00:00",
+  "treatment": {
+    "n_closed": 132,
+    "n_trades": 136,
+    "n_open": 4,
+    "mean_R": 0.1796,
+    "median_R": 0.9418,
+    "win_rate": 0.5227,
+    "profit_factor": 1.3763,
+    "expectancy": 0.1796,
+    "drawdown": 8.938,
+    "wilson_95": [
+      0.4381,
+      0.6061
+    ],
+    "bootstrap_ci_95": [
+      -0.0158446731191602,
+      0.3788305138410022
+    ]
+  },
+  "control": {
+    "n_closed": 211,
+    "n_trades": 215,
+    "n_open": 4,
+    "mean_R": 0.2499,
+    "median_R": 1.0,
+    "win_rate": 0.5498,
+    "profit_factor": 1.555,
+    "expectancy": 0.2499,
+    "drawdown": 6.233,
+    "wilson_95": [
+      0.4823,
+      0.6154
+    ],
+    "bootstrap_ci_95": [
+      0.09397479969551131,
+      0.4078114120711996
+    ]
+  },
+  "paired_delta": {
+    "delta_expectancy": -0.0703,
+    "delta_expectancy_ci95": [
+      -0.1986,
+      0.0527
+    ],
+    "delta_win_rate": -0.0271,
+    "delta_win_rate_ci95": [
+      -0.0808,
+      0.026
+    ],
+    "htf_contributes": false,
+    "comparison": "treatment (con-HTF D1 OR H4) minus control (sin-HTF, todos los anchors); mismo set, SL/TP identicos.",
+    "note": "Delta CI por bootstrap por pares agrupado por chain_id (B5 subconjunto del control, mismo set de anchors)."
+  },
+  "filter": {
+    "method": "D1 OR H4 trend alignment via engine.market_features.build_features(D1/H4)['trend']",
+    "total_anchors": 215,
+    "kept": 136,
+    "dropped": 79,
+    "kept_d1_only": 55,
+    "kept_h4_only": 35,
+    "kept_both": 46,
+    "dropped_none": 79
+  },
+  "motor_summary": {
+    "n_chains": 3478,
+    "by_depth": {
+      "1": 1312,
+      "2": 1697,
+      "3": 213,
+      "4": 229,
+      "5": 3,
+      "6": 2,
+      "7": 22
+    },
+    "by_status": {
+      "EXPIRED": 3456,
+      "COMPLETE": 22
+    },
+    "complete_bull": 9,
+    "complete_bear": 13,
+    "stage_order": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "chains_depth_ge4": {
+    "depth_min": 4,
+    "n": 256,
+    "by_status": {
+      "EXPIRED": 234,
+      "COMPLETE": 22
+    }
+  },
+  "protocol": {
+    "leakage_check": "OK: run_sequential en una sola pasada sobre rango acotado 2019-2024 (PIT-estable DENTRO del rango). Los sesgos D1/H4 se obtienen de build_features(D1/H4)['trend'], columna PIT-verificada (FULL==PREFIX, 0 violaciones en ambos): se lee el valor en la ultima vela cerrada <= t del anchor H1. Sin leakage futuro. Mismo set de anchors resuelto con EXACTAMENTE la misma SL/TP en ambos grupos; la unica diferencia es la mascara del filtro HTF (D1 OR H4).",
+    "parameter_change": false,
+    "data_integrity": {
+      "symbol": "EURUSD",
+      "exec_tf": "H1",
+      "source": "datasets/eurusd_dukascopy_20y/EURUSD_H1.csv",
+      "range_start": "2019-01-01",
+      "range_end": "2024-12-31",
+      "bars": 36934,
+      "dataset_hash": "2dbb5757895e52218f0e6be6fa761b0944b32005f72a3ad896899cd3e2bca022",
+      "is_canonical": true,
+      "origin": "csv",
+      "htf_d1_source": "datasets/eurusd_dukascopy_20y/EURUSD_D1.csv",
+      "htf_d1_dataset_hash": "ff119f55b0224f75aa3b75f7a6773e5b75c21d2251f1b3b3954d5ae1f27db23e",
+      "htf_h4_source": "datasets/eurusd_dukascopy_20y/EURUSD_H4.csv",
+      "htf_h4_dataset_hash": "46a950e087ed57cf2cc20ed13f3cfc7d2b7862d33f77b4a4f9cce1a40729efde",
+      "note": "Dataset canonico H1 verificado por SHA256; mismo motor/commit que B1-B4; SL/TP no cambian.",
+      "reproduction_vs_B1": {
+        "n_closed": 211,
+        "mean_R": 0.2499
+      }
+    }
+  },
+  "elapsed_s": 237.65
+}

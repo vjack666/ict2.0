@@ -1,0 +1,77 @@
+{
+  "artifact_checksum": "9bebed22426f5cd43cdda46049ae529df41e3453550adc7d2a9d825067e62674",
+  "chunks": [
+    {
+      "checksum": "ffaae340b2e5d3af95099c6971814960928cbc1e789eb5025acef32b7db58648",
+      "end": 499,
+      "end_time": "2024-12-15T22:15:00+00:00",
+      "id": "CHUNK-000000",
+      "path": "chunks/CHUNK-000000.json",
+      "start": 0,
+      "start_time": "2024-12-01T22:15:00+00:00"
+    },
+    {
+      "checksum": "598184111cbcbc859ee654e1d9163ba1bd0d6229fad21c5fffd1d4c27c585983",
+      "end": 999,
+      "end_time": "2024-12-23T03:00:00+00:00",
+      "id": "CHUNK-000001",
+      "path": "chunks/CHUNK-000001.json",
+      "start": 500,
+      "start_time": "2024-12-15T22:30:00+00:00"
+    },
+    {
+      "checksum": "b2874980303b060532491a983134a55c5762a40e2ebd2d322002b6c39d47386e",
+      "end": 1499,
+      "end_time": "2024-12-30T22:15:00+00:00",
+      "id": "CHUNK-000002",
+      "path": "chunks/CHUNK-000002.json",
+      "start": 1000,
+      "start_time": "2024-12-23T03:15:00+00:00"
+    },
+    {
+      "checksum": "1961a67151131856d71b8a4e3e7923776c961b6e64555e795d6cbcc6aace09ed",
+      "end": 1999,
+      "end_time": "2025-01-08T02:45:00+00:00",
+      "id": "CHUNK-000003",
+      "path": "chunks/CHUNK-000003.json",
+      "start": 1500,
+      "start_time": "2024-12-30T22:30:00+00:00"
+    },
+    {
+      "checksum": "78c3585f8c9154e144c4ec1b339d9ba79e09cde4ef52c46a21fff087067213a7",
+      "end": 2499,
+      "end_time": "2025-01-15T07:30:00+00:00",
+      "id": "CHUNK-000004",
+      "path": "chunks/CHUNK-000004.json",
+      "start": 2000,
+      "start_time": "2025-01-08T03:00:00+00:00"
+    },
+    {
+      "checksum": "32b4ad3ab7843993731f9fc2a5dea3ae60a1e2937321eda5bcbafd893bde15ec",
+      "end": 2999,
+      "end_time": "2025-01-22T12:15:00+00:00",
+      "id": "CHUNK-000005",
+      "path": "chunks/CHUNK-000005.json",
+      "start": 2500,
+      "start_time": "2025-01-15T07:45:00+00:00"
+    },
+    {
+      "checksum": "2f804a50ab4f7f4a6c530c2b92a8ddd7e698867c8d72e6abbf75c65adc69c1bb",
+      "end": 3499,
+      "end_time": "2025-01-29T17:00:00+00:00",
+      "id": "CHUNK-000006",
+      "path": "chunks/CHUNK-000006.json",
+      "start": 3000,
+      "start_time": "2025-01-22T12:30:00+00:00"
+    },
+    {
+      "checksum": "a1a11ce8532656bc280f164ff90478e83fd388ea8560ec47249b3dfe1556570e",
+      "end": 3712,
+      "end_time": "2025-02-01T00:00:00+00:00",
+      "id": "CHUNK-000007",
+      "path": "chunks/CHUNK-000007.json",
+      "start": 3500,
+      "start_time": "2025-01-29T17:15:00+00:00"
+    }
+  ]
+}

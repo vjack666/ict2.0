@@ -1,0 +1,92 @@
+{
+  "gate": "A7",
+  "generated_at": "2026-08-30T01:01:24.478336+00:00",
+  "reports": [
+    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_192637.json",
+    "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_200059.json"
+  ],
+  "report_commits": [
+    "25d0e32e9a6ceee0c056a73b874b86da466dc4b1",
+    "25d0e32e9a6ceee0c056a73b874b86da466dc4b1"
+  ],
+  "matrix": [
+    {
+      "id": "OE-A7.1",
+      "status": "PASS",
+      "evidence": "A7 sections with zero findings; FunnelAudit temporal contract"
+    },
+    {
+      "id": "OE-A7.2",
+      "status": "PASS",
+      "evidence": "All configured FULL/PREFIX cuts, missing=0 and extra=0"
+    },
+    {
+      "id": "OE-A7.3",
+      "status": "PASS",
+      "evidence": "No duplicate findings and identical logical reports"
+    },
+    {
+      "id": "OE-A7.4",
+      "status": "PASS",
+      "evidence": "No lineage findings in both reports"
+    },
+    {
+      "id": "OE-A7.5",
+      "status": "PASS",
+      "evidence": "STRICT FVG_OB_CAUSAL plus zero audit findings"
+    },
+    {
+      "id": "OE-A7.6",
+      "status": "PASS",
+      "evidence": "Per-section rejection and timeframe metrics serialized"
+    },
+    {
+      "id": "OE-A7.7",
+      "status": "PASS",
+      "evidence": "H1/H4/D1 sections remain isolated by timeframe"
+    },
+    {
+      "id": "OE-A7.8",
+      "status": "PASS",
+      "evidence": "Two independent reports have equal logical payload and checksum"
+    },
+    {
+      "id": "OE-A7.9",
+      "status": "PASS",
+      "evidence": "Exact dataset bytes/hashes, metadata hash, configuration and generator commit are linked; source authorization is outside technical A7 scope"
+    },
+    {
+      "id": "OE-A7.10",
+      "status": "PASS",
+      "evidence": "375 passed in 6.80s"
+    },
+    {
+      "id": "OE-A7.11",
+      "status": "PASS",
+      "evidence": "Both reports declare CLEAN worktrees"
+    },
+    {
+      "id": "OE-A7.12",
+      "status": "PASS",
+      "evidence": "CRO independent review recorded in worklog"
+    }
+  ],
+  "tests": {
+    "command": "python -B -m pytest -q",
+    "returncode": 0,
+    "summary": "375 passed in 6.80s",
+    "passed": 375,
+    "status": "PASS"
+  },
+  "source_provenance": {
+    "declared_status": "BLOCKED",
+    "license_and_permitted_use": "UNKNOWN",
+    "execution_verified": false,
+    "mechanical_ok": true,
+    "technical_ok": true,
+    "scope_status": "OUT_OF_SCOPE_FOR_A7_TECHNICAL_CERTIFICATION",
+    "source_certification_outside_a7": true
+  },
+  "overall_status": "PASS",
+  "next_action": "A7 complete; proceed only under the next frozen phase contract."
+}

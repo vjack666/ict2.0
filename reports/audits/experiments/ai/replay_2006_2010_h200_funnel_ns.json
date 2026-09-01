@@ -1,0 +1,1852 @@
+{
+  "aggregated_status": "BLOCKED",
+  "backtest_linkage": {
+    "artifact_kind": "canonical_replay_signal_trade_link",
+    "outcome_not_copied_into_features": true,
+    "trade_key": "signal_index"
+  },
+  "checksum": "8478a3c1a03a30976f1c4588bdbeee5b346d3b337387a52ae42826166cf2e1bc",
+  "contract_version": "EPISODES_FUNNEL_V1",
+  "episodes": [
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-01-17 13:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000001",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "f04b93f7-a5c0-4b65-bf06-99f3926db2b7",
+        "CONTRACT": "2c1d8283-19cc-4c17-93eb-0891231764f3",
+        "DISPLACE": "3997f1f9-9012-48d9-8e81-8facf9a70f71",
+        "LIQUIDITY": "d69df92d-e7ad-44bd-b89f-d1844004295b",
+        "REFINEMENT": "d71e15d9-51d9-4087-a076-1b26c37bcf82",
+        "RETURN": "0d3f4a9c-3203-4921-abfb-366629338d48",
+        "SWEEP": "0ce35d1d-4ad9-43f8-8686-53fd87c47c72"
+      },
+      "meta": {
+        "backtest_signal_index": 0
+      },
+      "object_refs": [
+        "0ce35d1d-4ad9-43f8-8686-53fd87c47c72",
+        "0d3f4a9c-3203-4921-abfb-366629338d48",
+        "2c1d8283-19cc-4c17-93eb-0891231764f3",
+        "3997f1f9-9012-48d9-8e81-8facf9a70f71",
+        "d69df92d-e7ad-44bd-b89f-d1844004295b",
+        "d71e15d9-51d9-4087-a076-1b26c37bcf82",
+        "f04b93f7-a5c0-4b65-bf06-99f3926db2b7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-02-10 17:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000002",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "539b16ac-1605-447c-a92b-b2aed77251e3",
+        "CONTRACT": "cf26ffd7-6b19-46d3-aaee-e756bf22e624",
+        "DISPLACE": "c1aed51b-4513-4c1e-8211-41393b8b2480",
+        "LIQUIDITY": "5bedd1c1-f520-444b-8640-fc3d412a395e",
+        "REFINEMENT": "21db35fe-32fa-4ed0-a4ca-1f7cae064606",
+        "RETURN": "723688cb-aa72-4bb7-b47e-3a2f4b4e643b",
+        "SWEEP": "8057d90a-8692-4d6d-8c81-f26ea91a5e69"
+      },
+      "meta": {
+        "backtest_signal_index": 1
+      },
+      "object_refs": [
+        "21db35fe-32fa-4ed0-a4ca-1f7cae064606",
+        "539b16ac-1605-447c-a92b-b2aed77251e3",
+        "5bedd1c1-f520-444b-8640-fc3d412a395e",
+        "723688cb-aa72-4bb7-b47e-3a2f4b4e643b",
+        "8057d90a-8692-4d6d-8c81-f26ea91a5e69",
+        "c1aed51b-4513-4c1e-8211-41393b8b2480",
+        "cf26ffd7-6b19-46d3-aaee-e756bf22e624"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-03-24 17:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000003",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e8bb678a-43cf-45aa-85bf-4166a7730f06",
+        "CONTRACT": "a9a0919b-f329-4183-bafc-e22453deda3b",
+        "DISPLACE": "165bfba0-d3d9-466f-8551-5708b05793b7",
+        "LIQUIDITY": "399e0b9b-305c-431d-9f49-c746ff838b34",
+        "REFINEMENT": "955d409c-5c2e-4216-b661-db034739dda5",
+        "RETURN": "c7a7edf5-98cf-4646-a7c3-a887ee3d03ca",
+        "SWEEP": "e19f8693-7906-41bd-8678-85d29a2d7cb9"
+      },
+      "meta": {
+        "backtest_signal_index": 2
+      },
+      "object_refs": [
+        "165bfba0-d3d9-466f-8551-5708b05793b7",
+        "399e0b9b-305c-431d-9f49-c746ff838b34",
+        "955d409c-5c2e-4216-b661-db034739dda5",
+        "a9a0919b-f329-4183-bafc-e22453deda3b",
+        "c7a7edf5-98cf-4646-a7c3-a887ee3d03ca",
+        "e19f8693-7906-41bd-8678-85d29a2d7cb9",
+        "e8bb678a-43cf-45aa-85bf-4166a7730f06"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-07-05 09:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000004",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "031da781-b37a-4472-8fbb-0c0158c593c5",
+        "CONTRACT": "b0b47469-fe7b-4cc4-aaf3-a1d022548370",
+        "DISPLACE": "15c3402a-61c9-4d0d-88b6-9178a1e09bb7",
+        "LIQUIDITY": "8dec8a18-5ee2-4fa7-aab7-5e29220a9b7a",
+        "REFINEMENT": "7097dfce-0209-4977-ac3f-9373ecf7d50b",
+        "RETURN": "31cc49ed-b2dd-43b1-b499-e8c49f324fa3",
+        "SWEEP": "db1da277-0b1d-44a1-8e36-2630c8776e00"
+      },
+      "meta": {
+        "backtest_signal_index": 3
+      },
+      "object_refs": [
+        "031da781-b37a-4472-8fbb-0c0158c593c5",
+        "15c3402a-61c9-4d0d-88b6-9178a1e09bb7",
+        "31cc49ed-b2dd-43b1-b499-e8c49f324fa3",
+        "7097dfce-0209-4977-ac3f-9373ecf7d50b",
+        "8dec8a18-5ee2-4fa7-aab7-5e29220a9b7a",
+        "b0b47469-fe7b-4cc4-aaf3-a1d022548370",
+        "db1da277-0b1d-44a1-8e36-2630c8776e00"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-12-08 18:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000005",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "4e655a6d-d7e2-4b72-94ad-e609e48382d1",
+        "CONTRACT": "6aab1fbc-7430-49ba-b3b6-efd40ae6b626",
+        "DISPLACE": "f5d5a700-7605-4edb-ab71-866387595559",
+        "LIQUIDITY": "fef28446-0c25-46d1-97fd-720dacfa773e",
+        "REFINEMENT": "fa72821e-f5c2-49ce-b37d-4a5d061a57ec",
+        "RETURN": "c873e701-f969-4ae0-8d56-f70b2c360632",
+        "SWEEP": "81fd1f54-46ed-4816-98bf-5c1a6275fc30"
+      },
+      "meta": {
+        "backtest_signal_index": 4
+      },
+      "object_refs": [
+        "4e655a6d-d7e2-4b72-94ad-e609e48382d1",
+        "6aab1fbc-7430-49ba-b3b6-efd40ae6b626",
+        "81fd1f54-46ed-4816-98bf-5c1a6275fc30",
+        "c873e701-f969-4ae0-8d56-f70b2c360632",
+        "f5d5a700-7605-4edb-ab71-866387595559",
+        "fa72821e-f5c2-49ce-b37d-4a5d061a57ec",
+        "fef28446-0c25-46d1-97fd-720dacfa773e"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2007-05-01 16:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000006",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e4afe66d-911c-4ac8-b1c0-f516b037220f",
+        "CONTRACT": "24e4c48a-a9ee-4375-9d7b-f3ebc6f3f34e",
+        "DISPLACE": "d6272e20-98b5-4ab5-afd9-08b53b6f9573",
+        "LIQUIDITY": "a2c2d90d-4412-4a88-836b-bc5a18da4bbe",
+        "REFINEMENT": "657a3f82-db49-4091-bfc6-6a21cb253207",
+        "RETURN": "24927293-cd08-4ff8-9336-fe6a27720219",
+        "SWEEP": "a59661f5-04ec-469b-8b78-1521a0debfbb"
+      },
+      "meta": {
+        "backtest_signal_index": 5
+      },
+      "object_refs": [
+        "24927293-cd08-4ff8-9336-fe6a27720219",
+        "24e4c48a-a9ee-4375-9d7b-f3ebc6f3f34e",
+        "657a3f82-db49-4091-bfc6-6a21cb253207",
+        "a2c2d90d-4412-4a88-836b-bc5a18da4bbe",
+        "a59661f5-04ec-469b-8b78-1521a0debfbb",
+        "d6272e20-98b5-4ab5-afd9-08b53b6f9573",
+        "e4afe66d-911c-4ac8-b1c0-f516b037220f"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-01-04 15:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000007",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "9a0217fe-6d8f-4556-91f1-94b45ee31751",
+        "CONTRACT": "f9f2fe14-0575-4e0a-b624-bcaf380511d7",
+        "DISPLACE": "40fbf39c-599b-4477-b3d5-34616b9c3096",
+        "LIQUIDITY": "8dc0ee44-21fa-4b24-a150-213023137210",
+        "REFINEMENT": "a1b5dfbb-95ce-4002-b5aa-dc6bb3252d85",
+        "RETURN": "2caa9243-9367-46d3-b37c-7003a315533b",
+        "SWEEP": "66ed4b80-9b45-403d-b324-69288779fcab"
+      },
+      "meta": {
+        "backtest_signal_index": 6
+      },
+      "object_refs": [
+        "2caa9243-9367-46d3-b37c-7003a315533b",
+        "40fbf39c-599b-4477-b3d5-34616b9c3096",
+        "66ed4b80-9b45-403d-b324-69288779fcab",
+        "8dc0ee44-21fa-4b24-a150-213023137210",
+        "9a0217fe-6d8f-4556-91f1-94b45ee31751",
+        "a1b5dfbb-95ce-4002-b5aa-dc6bb3252d85",
+        "f9f2fe14-0575-4e0a-b624-bcaf380511d7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-03-16 23:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000008",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "57a47a19-b36c-43d1-92d9-482ec84e1a27",
+        "CONTRACT": "ebfc853e-a5a1-4369-b908-5dadff060464",
+        "DISPLACE": "62dcd256-79f8-4056-b368-98d8e2b70685",
+        "LIQUIDITY": "e43f9b34-909a-45fb-9359-7c67732c2e4a",
+        "REFINEMENT": "65e2ff36-bd85-4bf5-ac4c-96fbec1790dd",
+        "RETURN": "2e120e2c-3f5f-4085-888d-3b0722e3bc6a",
+        "SWEEP": "2612256d-dbfb-40b7-9544-b6a841b87c39"
+      },
+      "meta": {
+        "backtest_signal_index": 7
+      },
+      "object_refs": [
+        "2612256d-dbfb-40b7-9544-b6a841b87c39",
+        "2e120e2c-3f5f-4085-888d-3b0722e3bc6a",
+        "57a47a19-b36c-43d1-92d9-482ec84e1a27",
+        "62dcd256-79f8-4056-b368-98d8e2b70685",
+        "65e2ff36-bd85-4bf5-ac4c-96fbec1790dd",
+        "e43f9b34-909a-45fb-9359-7c67732c2e4a",
+        "ebfc853e-a5a1-4369-b908-5dadff060464"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-04-18 11:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000009",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "76a8648c-1939-4e61-b9d7-a808e15fa5c1",
+        "CONTRACT": "1fc736f1-9165-4237-a9e4-d1a1537977d2",
+        "DISPLACE": "b1ecb38e-49ad-45cc-a373-4fa2251f59a2",
+        "LIQUIDITY": "dad3af7b-aa9f-416e-879e-a7a44b78e867",
+        "REFINEMENT": "e007b03f-25db-415d-a5b0-a7631551fb22",
+        "RETURN": "b02185aa-48b3-4ac6-b088-b11a8fc75091",
+        "SWEEP": "24d9eb57-08de-4927-92ec-5fc0915c9178"
+      },
+      "meta": {
+        "backtest_signal_index": 8
+      },
+      "object_refs": [
+        "1fc736f1-9165-4237-a9e4-d1a1537977d2",
+        "24d9eb57-08de-4927-92ec-5fc0915c9178",
+        "76a8648c-1939-4e61-b9d7-a808e15fa5c1",
+        "b02185aa-48b3-4ac6-b088-b11a8fc75091",
+        "b1ecb38e-49ad-45cc-a373-4fa2251f59a2",
+        "dad3af7b-aa9f-416e-879e-a7a44b78e867",
+        "e007b03f-25db-415d-a5b0-a7631551fb22"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-11-25 15:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000010",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "6ef40380-3f52-4535-9b42-b7adcdbe9eb9",
+        "CONTRACT": "82a3866a-f4a1-4c73-bb11-5d290bf5c5bd",
+        "DISPLACE": "9e000092-63bd-4893-a9a5-a6a565711769",
+        "LIQUIDITY": "66628b2b-6932-4d6f-bcaf-d47acda6641c",
+        "REFINEMENT": "cffacabb-5b6b-4eaf-8237-5d6f0c834d28",
+        "RETURN": "f3cbd61d-e39d-496d-9b1d-1498c290bdfc",
+        "SWEEP": "0465b12c-840b-47db-9656-23081975c689"
+      },
+      "meta": {
+        "backtest_signal_index": 9
+      },
+      "object_refs": [
+        "0465b12c-840b-47db-9656-23081975c689",
+        "66628b2b-6932-4d6f-bcaf-d47acda6641c",
+        "6ef40380-3f52-4535-9b42-b7adcdbe9eb9",
+        "82a3866a-f4a1-4c73-bb11-5d290bf5c5bd",
+        "9e000092-63bd-4893-a9a5-a6a565711769",
+        "cffacabb-5b6b-4eaf-8237-5d6f0c834d28",
+        "f3cbd61d-e39d-496d-9b1d-1498c290bdfc"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-11-28 11:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000011",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "12f5aa00-8bde-4c74-9564-68882cbf987c",
+        "CONTRACT": "3bec3ed3-8df3-4651-a409-83629bdd9d9d",
+        "DISPLACE": "097cba46-3f04-4cbb-8271-5498d4293f8c",
+        "LIQUIDITY": "b3ef71a8-df41-4c5b-aed6-dbdcef3d6365",
+        "REFINEMENT": "1752d345-4402-4621-bd6c-e8d048c1615e",
+        "RETURN": "2f75c210-8042-46d2-a7c5-c711e81c5d43",
+        "SWEEP": "2be3176f-4894-44ca-9976-aa3648fba83b"
+      },
+      "meta": {
+        "backtest_signal_index": 10
+      },
+      "object_refs": [
+        "097cba46-3f04-4cbb-8271-5498d4293f8c",
+        "12f5aa00-8bde-4c74-9564-68882cbf987c",
+        "1752d345-4402-4621-bd6c-e8d048c1615e",
+        "2be3176f-4894-44ca-9976-aa3648fba83b",
+        "2f75c210-8042-46d2-a7c5-c711e81c5d43",
+        "3bec3ed3-8df3-4651-a409-83629bdd9d9d",
+        "b3ef71a8-df41-4c5b-aed6-dbdcef3d6365"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-05-21 18:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000012",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "8d47d819-f0e8-4f21-96a7-c4bf3c061877",
+        "CONTRACT": "1554fa6f-115b-4082-9eba-25c57883fe8c",
+        "DISPLACE": "735c6c4d-2b79-4164-9cb8-0ae547845690",
+        "LIQUIDITY": "d2f6720b-bea0-4f83-bee9-141c87df58c2",
+        "REFINEMENT": "781f8af7-3b64-4349-8099-e240bd433151",
+        "RETURN": "5230415b-95dd-40e0-af3e-4b8239ea05f2",
+        "SWEEP": "393c7a83-bb50-44aa-a359-0624399dad68"
+      },
+      "meta": {
+        "backtest_signal_index": 11
+      },
+      "object_refs": [
+        "1554fa6f-115b-4082-9eba-25c57883fe8c",
+        "393c7a83-bb50-44aa-a359-0624399dad68",
+        "5230415b-95dd-40e0-af3e-4b8239ea05f2",
+        "735c6c4d-2b79-4164-9cb8-0ae547845690",
+        "781f8af7-3b64-4349-8099-e240bd433151",
+        "8d47d819-f0e8-4f21-96a7-c4bf3c061877",
+        "d2f6720b-bea0-4f83-bee9-141c87df58c2"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-06-04 13:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000013",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "0831944b-f16d-446b-b93a-77d8a89ff956",
+        "CONTRACT": "a800f711-5c7b-4167-8038-139f05901ada",
+        "DISPLACE": "fb678102-f84b-4f67-ba15-fd0c62f0c418",
+        "LIQUIDITY": "f4232977-7f8e-4c5f-acd5-f97a511d0ad8",
+        "REFINEMENT": "a5b4dc23-2460-4e94-a154-28fbb16b9b11",
+        "RETURN": "62ba8370-8a25-47e0-982a-56c8809324a2",
+        "SWEEP": "b5bd3f1e-72f8-4c9e-a9bb-d7e695102dc4"
+      },
+      "meta": {
+        "backtest_signal_index": 12
+      },
+      "object_refs": [
+        "0831944b-f16d-446b-b93a-77d8a89ff956",
+        "62ba8370-8a25-47e0-982a-56c8809324a2",
+        "a5b4dc23-2460-4e94-a154-28fbb16b9b11",
+        "a800f711-5c7b-4167-8038-139f05901ada",
+        "b5bd3f1e-72f8-4c9e-a9bb-d7e695102dc4",
+        "f4232977-7f8e-4c5f-acd5-f97a511d0ad8",
+        "fb678102-f84b-4f67-ba15-fd0c62f0c418"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-09-23 23:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000014",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "41a62c39-e4eb-4cad-b466-29bf17d72331",
+        "CONTRACT": "15ac3d99-5367-4c3a-9832-b02f6e48ec88",
+        "DISPLACE": "658dcc0d-6891-43d9-a9f7-ebee1c9addac",
+        "LIQUIDITY": "73c1443c-d825-4218-8cf3-a130470dec80",
+        "REFINEMENT": "65cedb60-10bb-4a38-969d-49e2ac3cb57c",
+        "RETURN": "833fc51e-2c85-4af4-845c-20df0ab483fb",
+        "SWEEP": "463a73ce-a072-4f56-aa80-6e6c9f14fd44"
+      },
+      "meta": {
+        "backtest_signal_index": 13
+      },
+      "object_refs": [
+        "15ac3d99-5367-4c3a-9832-b02f6e48ec88",
+        "41a62c39-e4eb-4cad-b466-29bf17d72331",
+        "463a73ce-a072-4f56-aa80-6e6c9f14fd44",
+        "658dcc0d-6891-43d9-a9f7-ebee1c9addac",
+        "65cedb60-10bb-4a38-969d-49e2ac3cb57c",
+        "73c1443c-d825-4218-8cf3-a130470dec80",
+        "833fc51e-2c85-4af4-845c-20df0ab483fb"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-12-11 15:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000015",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "dcedb9ea-6027-410d-b708-f30b7cb4cd2d",
+        "CONTRACT": "dcf9d74b-3c0a-4abc-b965-f54cd0b578c7",
+        "DISPLACE": "1c8cebd0-ae14-4a62-a436-0f3e2c5187a5",
+        "LIQUIDITY": "8b747b5a-942e-4cad-934d-e376165b0fa6",
+        "REFINEMENT": "1a27b8eb-bfed-4868-a899-45bfc676152a",
+        "RETURN": "3070ce55-e4a8-4d4e-955b-0b3e3b0a29b1",
+        "SWEEP": "b5271028-13bf-4695-be38-c3c47908e3d9"
+      },
+      "meta": {
+        "backtest_signal_index": 14
+      },
+      "object_refs": [
+        "1a27b8eb-bfed-4868-a899-45bfc676152a",
+        "1c8cebd0-ae14-4a62-a436-0f3e2c5187a5",
+        "3070ce55-e4a8-4d4e-955b-0b3e3b0a29b1",
+        "8b747b5a-942e-4cad-934d-e376165b0fa6",
+        "b5271028-13bf-4695-be38-c3c47908e3d9",
+        "dcedb9ea-6027-410d-b708-f30b7cb4cd2d",
+        "dcf9d74b-3c0a-4abc-b965-f54cd0b578c7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2010-02-23 11:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000016",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "a8765536-9cc6-4bf2-82ff-5aec31375eae",
+        "CONTRACT": "41024413-e7ad-4103-be26-6a97b6fa0050",
+        "DISPLACE": "133690f4-a583-4bdd-914e-924d2fb6bb5f",
+        "LIQUIDITY": "0ab338a5-a7bf-4edf-b811-57181232d2b7",
+        "REFINEMENT": "bf3c548c-2add-4ef3-b2dc-339274578adf",
+        "RETURN": "01f6f1b0-fd1e-475a-a3e8-39a9af156ff5",
+        "SWEEP": "ba6d99c6-f9d8-4810-a307-d71f566e2f05"
+      },
+      "meta": {
+        "backtest_signal_index": 15
+      },
+      "object_refs": [
+        "01f6f1b0-fd1e-475a-a3e8-39a9af156ff5",
+        "0ab338a5-a7bf-4edf-b811-57181232d2b7",
+        "133690f4-a583-4bdd-914e-924d2fb6bb5f",
+        "41024413-e7ad-4103-be26-6a97b6fa0050",
+        "a8765536-9cc6-4bf2-82ff-5aec31375eae",
+        "ba6d99c6-f9d8-4810-a307-d71f566e2f05",
+        "bf3c548c-2add-4ef3-b2dc-339274578adf"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2010-05-20 19:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000017",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "2d41d53b-1a1d-4654-96c4-e0b5e61ff40d",
+        "CONTRACT": "b52de616-d9d5-42e3-9e7b-1e9febd460a6",
+        "DISPLACE": "77870525-6664-44f7-94eb-47c2a7271198",
+        "LIQUIDITY": "1292ddc6-7b63-4135-b66c-df3ce3d07e69",
+        "REFINEMENT": "90f61d6e-42ca-411f-bb71-710f15b0a4a4",
+        "RETURN": "80787759-d12f-4a43-bc68-aba9b54dcae4",
+        "SWEEP": "4c6d5c1f-0f12-4925-a5ed-74f50d2f8803"
+      },
+      "meta": {
+        "backtest_signal_index": 16
+      },
+      "object_refs": [
+        "1292ddc6-7b63-4135-b66c-df3ce3d07e69",
+        "2d41d53b-1a1d-4654-96c4-e0b5e61ff40d",
+        "4c6d5c1f-0f12-4925-a5ed-74f50d2f8803",
+        "77870525-6664-44f7-94eb-47c2a7271198",
+        "80787759-d12f-4a43-bc68-aba9b54dcae4",
+        "90f61d6e-42ca-411f-bb71-710f15b0a4a4",
+        "b52de616-d9d5-42e3-9e7b-1e9febd460a6"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2010-09-09 14:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000018",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "ff417cf4-8327-416e-bb6f-a456275e62d5",
+        "CONTRACT": "f88151e1-f24d-4cca-b6c1-d73035de03a2",
+        "DISPLACE": "8b053bce-7f83-4cea-82d3-c31bd4f91be3",
+        "LIQUIDITY": "a9d97b41-6cd3-4544-b2b7-637e2a06835d",
+        "REFINEMENT": "558fa4fd-76cf-46e4-a90e-7d41923eee4f",
+        "RETURN": "ff9fb003-1be4-469c-976a-a6ef85fea984",
+        "SWEEP": "6a041dee-2cc1-4c7e-aea0-5a2608f9726a"
+      },
+      "meta": {
+        "backtest_signal_index": 17
+      },
+      "object_refs": [
+        "558fa4fd-76cf-46e4-a90e-7d41923eee4f",
+        "6a041dee-2cc1-4c7e-aea0-5a2608f9726a",
+        "8b053bce-7f83-4cea-82d3-c31bd4f91be3",
+        "a9d97b41-6cd3-4544-b2b7-637e2a06835d",
+        "f88151e1-f24d-4cca-b6c1-d73035de03a2",
+        "ff417cf4-8327-416e-bb6f-a456275e62d5",
+        "ff9fb003-1be4-469c-976a-a6ef85fea984"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    }
+  ],
+  "full_prefix": {
+    "prefix_matches_full": false
+  },
+  "gates": {
+    "E0": "PASS",
+    "E1": "PASS",
+    "causal_full_vs_prefix": "BLOCKED"
+  },
+  "generator_commit": "c4c9c774edc3f8843831b61daa259f23eafe534f",
+  "provenance": {
+    "acquired_at_utc": null,
+    "blocking_reasons": [
+      "SOURCE_LICENSE_OR_PERMITTED_USE_UNKNOWN",
+      "ACQUISITION_EXECUTION_LOG_NOT_ESTABLISHED_BY_CSV_BYTES",
+      "GENERATOR_WORKTREE_NOT_CLEAN"
+    ],
+    "contract_or_continuous_policy": "spot FX; no futures contract or rollover",
+    "dataset_id": "eurusd_dukascopy_20y",
+    "files": {
+      "D1": {
+        "bytes": 265598,
+        "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_D1.csv",
+        "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+        "rows_after_filter": 1578,
+        "rows_before_filter": 6258,
+        "sha256": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+        "timeframe": "D1",
+        "timestamp_field": "time",
+        "timezone_policy": "naive CSV timestamps interpreted as UTC",
+        "window_end": "2011-01-14T00:00:00+00:00",
+        "window_start": "2006-01-01T00:00:00+00:00"
+      },
+      "H1": {
+        "bytes": 6399327,
+        "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+        "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+        "rows_after_filter": 31582,
+        "rows_before_filter": 124377,
+        "sha256": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+        "timeframe": "H1",
+        "timestamp_field": "time",
+        "timezone_policy": "naive CSV timestamps interpreted as UTC",
+        "window_end": "2011-01-14T21:00:00+00:00",
+        "window_start": "2006-01-01T21:00:00+00:00"
+      },
+      "H4": {
+        "bytes": 1653194,
+        "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H4.csv",
+        "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+        "rows_after_filter": 8149,
+        "rows_before_filter": 32133,
+        "sha256": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+        "timeframe": "H4",
+        "timestamp_field": "time",
+        "timezone_policy": "naive CSV timestamps interpreted as UTC",
+        "window_end": "2011-01-14T20:00:00+00:00",
+        "window_start": "2006-01-01T20:00:00+00:00"
+      }
+    },
+    "instrument": "EURUSD spot bid",
+    "license_and_permitted_use": "UNKNOWN",
+    "open_interest_semantics": "UNAVAILABLE",
+    "provider": "Dukascopy",
+    "request_parameters": "not read from a sidecar; CSV-only input boundary",
+    "rollover_rule": "not applicable",
+    "source_documentation_refs": [
+      "datasets/eurusd_dukascopy_20y/README.md"
+    ],
+    "status": "BLOCKED",
+    "symbol": "EURUSD",
+    "venue": "spot/OTC",
+    "volume_semantics": "UNAVAILABLE"
+  },
+  "records": [
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-01-17 13:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000001",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "f04b93f7-a5c0-4b65-bf06-99f3926db2b7",
+        "CONTRACT": "2c1d8283-19cc-4c17-93eb-0891231764f3",
+        "DISPLACE": "3997f1f9-9012-48d9-8e81-8facf9a70f71",
+        "LIQUIDITY": "d69df92d-e7ad-44bd-b89f-d1844004295b",
+        "REFINEMENT": "d71e15d9-51d9-4087-a076-1b26c37bcf82",
+        "RETURN": "0d3f4a9c-3203-4921-abfb-366629338d48",
+        "SWEEP": "0ce35d1d-4ad9-43f8-8686-53fd87c47c72"
+      },
+      "meta": {
+        "backtest_signal_index": 0
+      },
+      "object_refs": [
+        "0ce35d1d-4ad9-43f8-8686-53fd87c47c72",
+        "0d3f4a9c-3203-4921-abfb-366629338d48",
+        "2c1d8283-19cc-4c17-93eb-0891231764f3",
+        "3997f1f9-9012-48d9-8e81-8facf9a70f71",
+        "d69df92d-e7ad-44bd-b89f-d1844004295b",
+        "d71e15d9-51d9-4087-a076-1b26c37bcf82",
+        "f04b93f7-a5c0-4b65-bf06-99f3926db2b7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-02-10 17:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000002",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "539b16ac-1605-447c-a92b-b2aed77251e3",
+        "CONTRACT": "cf26ffd7-6b19-46d3-aaee-e756bf22e624",
+        "DISPLACE": "c1aed51b-4513-4c1e-8211-41393b8b2480",
+        "LIQUIDITY": "5bedd1c1-f520-444b-8640-fc3d412a395e",
+        "REFINEMENT": "21db35fe-32fa-4ed0-a4ca-1f7cae064606",
+        "RETURN": "723688cb-aa72-4bb7-b47e-3a2f4b4e643b",
+        "SWEEP": "8057d90a-8692-4d6d-8c81-f26ea91a5e69"
+      },
+      "meta": {
+        "backtest_signal_index": 1
+      },
+      "object_refs": [
+        "21db35fe-32fa-4ed0-a4ca-1f7cae064606",
+        "539b16ac-1605-447c-a92b-b2aed77251e3",
+        "5bedd1c1-f520-444b-8640-fc3d412a395e",
+        "723688cb-aa72-4bb7-b47e-3a2f4b4e643b",
+        "8057d90a-8692-4d6d-8c81-f26ea91a5e69",
+        "c1aed51b-4513-4c1e-8211-41393b8b2480",
+        "cf26ffd7-6b19-46d3-aaee-e756bf22e624"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-03-24 17:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000003",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e8bb678a-43cf-45aa-85bf-4166a7730f06",
+        "CONTRACT": "a9a0919b-f329-4183-bafc-e22453deda3b",
+        "DISPLACE": "165bfba0-d3d9-466f-8551-5708b05793b7",
+        "LIQUIDITY": "399e0b9b-305c-431d-9f49-c746ff838b34",
+        "REFINEMENT": "955d409c-5c2e-4216-b661-db034739dda5",
+        "RETURN": "c7a7edf5-98cf-4646-a7c3-a887ee3d03ca",
+        "SWEEP": "e19f8693-7906-41bd-8678-85d29a2d7cb9"
+      },
+      "meta": {
+        "backtest_signal_index": 2
+      },
+      "object_refs": [
+        "165bfba0-d3d9-466f-8551-5708b05793b7",
+        "399e0b9b-305c-431d-9f49-c746ff838b34",
+        "955d409c-5c2e-4216-b661-db034739dda5",
+        "a9a0919b-f329-4183-bafc-e22453deda3b",
+        "c7a7edf5-98cf-4646-a7c3-a887ee3d03ca",
+        "e19f8693-7906-41bd-8678-85d29a2d7cb9",
+        "e8bb678a-43cf-45aa-85bf-4166a7730f06"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-07-05 09:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000004",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "031da781-b37a-4472-8fbb-0c0158c593c5",
+        "CONTRACT": "b0b47469-fe7b-4cc4-aaf3-a1d022548370",
+        "DISPLACE": "15c3402a-61c9-4d0d-88b6-9178a1e09bb7",
+        "LIQUIDITY": "8dec8a18-5ee2-4fa7-aab7-5e29220a9b7a",
+        "REFINEMENT": "7097dfce-0209-4977-ac3f-9373ecf7d50b",
+        "RETURN": "31cc49ed-b2dd-43b1-b499-e8c49f324fa3",
+        "SWEEP": "db1da277-0b1d-44a1-8e36-2630c8776e00"
+      },
+      "meta": {
+        "backtest_signal_index": 3
+      },
+      "object_refs": [
+        "031da781-b37a-4472-8fbb-0c0158c593c5",
+        "15c3402a-61c9-4d0d-88b6-9178a1e09bb7",
+        "31cc49ed-b2dd-43b1-b499-e8c49f324fa3",
+        "7097dfce-0209-4977-ac3f-9373ecf7d50b",
+        "8dec8a18-5ee2-4fa7-aab7-5e29220a9b7a",
+        "b0b47469-fe7b-4cc4-aaf3-a1d022548370",
+        "db1da277-0b1d-44a1-8e36-2630c8776e00"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2006-12-08 18:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000005",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "4e655a6d-d7e2-4b72-94ad-e609e48382d1",
+        "CONTRACT": "6aab1fbc-7430-49ba-b3b6-efd40ae6b626",
+        "DISPLACE": "f5d5a700-7605-4edb-ab71-866387595559",
+        "LIQUIDITY": "fef28446-0c25-46d1-97fd-720dacfa773e",
+        "REFINEMENT": "fa72821e-f5c2-49ce-b37d-4a5d061a57ec",
+        "RETURN": "c873e701-f969-4ae0-8d56-f70b2c360632",
+        "SWEEP": "81fd1f54-46ed-4816-98bf-5c1a6275fc30"
+      },
+      "meta": {
+        "backtest_signal_index": 4
+      },
+      "object_refs": [
+        "4e655a6d-d7e2-4b72-94ad-e609e48382d1",
+        "6aab1fbc-7430-49ba-b3b6-efd40ae6b626",
+        "81fd1f54-46ed-4816-98bf-5c1a6275fc30",
+        "c873e701-f969-4ae0-8d56-f70b2c360632",
+        "f5d5a700-7605-4edb-ab71-866387595559",
+        "fa72821e-f5c2-49ce-b37d-4a5d061a57ec",
+        "fef28446-0c25-46d1-97fd-720dacfa773e"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2007-05-01 16:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000006",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e4afe66d-911c-4ac8-b1c0-f516b037220f",
+        "CONTRACT": "24e4c48a-a9ee-4375-9d7b-f3ebc6f3f34e",
+        "DISPLACE": "d6272e20-98b5-4ab5-afd9-08b53b6f9573",
+        "LIQUIDITY": "a2c2d90d-4412-4a88-836b-bc5a18da4bbe",
+        "REFINEMENT": "657a3f82-db49-4091-bfc6-6a21cb253207",
+        "RETURN": "24927293-cd08-4ff8-9336-fe6a27720219",
+        "SWEEP": "a59661f5-04ec-469b-8b78-1521a0debfbb"
+      },
+      "meta": {
+        "backtest_signal_index": 5
+      },
+      "object_refs": [
+        "24927293-cd08-4ff8-9336-fe6a27720219",
+        "24e4c48a-a9ee-4375-9d7b-f3ebc6f3f34e",
+        "657a3f82-db49-4091-bfc6-6a21cb253207",
+        "a2c2d90d-4412-4a88-836b-bc5a18da4bbe",
+        "a59661f5-04ec-469b-8b78-1521a0debfbb",
+        "d6272e20-98b5-4ab5-afd9-08b53b6f9573",
+        "e4afe66d-911c-4ac8-b1c0-f516b037220f"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-01-04 15:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000007",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "9a0217fe-6d8f-4556-91f1-94b45ee31751",
+        "CONTRACT": "f9f2fe14-0575-4e0a-b624-bcaf380511d7",
+        "DISPLACE": "40fbf39c-599b-4477-b3d5-34616b9c3096",
+        "LIQUIDITY": "8dc0ee44-21fa-4b24-a150-213023137210",
+        "REFINEMENT": "a1b5dfbb-95ce-4002-b5aa-dc6bb3252d85",
+        "RETURN": "2caa9243-9367-46d3-b37c-7003a315533b",
+        "SWEEP": "66ed4b80-9b45-403d-b324-69288779fcab"
+      },
+      "meta": {
+        "backtest_signal_index": 6
+      },
+      "object_refs": [
+        "2caa9243-9367-46d3-b37c-7003a315533b",
+        "40fbf39c-599b-4477-b3d5-34616b9c3096",
+        "66ed4b80-9b45-403d-b324-69288779fcab",
+        "8dc0ee44-21fa-4b24-a150-213023137210",
+        "9a0217fe-6d8f-4556-91f1-94b45ee31751",
+        "a1b5dfbb-95ce-4002-b5aa-dc6bb3252d85",
+        "f9f2fe14-0575-4e0a-b624-bcaf380511d7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-03-16 23:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000008",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "57a47a19-b36c-43d1-92d9-482ec84e1a27",
+        "CONTRACT": "ebfc853e-a5a1-4369-b908-5dadff060464",
+        "DISPLACE": "62dcd256-79f8-4056-b368-98d8e2b70685",
+        "LIQUIDITY": "e43f9b34-909a-45fb-9359-7c67732c2e4a",
+        "REFINEMENT": "65e2ff36-bd85-4bf5-ac4c-96fbec1790dd",
+        "RETURN": "2e120e2c-3f5f-4085-888d-3b0722e3bc6a",
+        "SWEEP": "2612256d-dbfb-40b7-9544-b6a841b87c39"
+      },
+      "meta": {
+        "backtest_signal_index": 7
+      },
+      "object_refs": [
+        "2612256d-dbfb-40b7-9544-b6a841b87c39",
+        "2e120e2c-3f5f-4085-888d-3b0722e3bc6a",
+        "57a47a19-b36c-43d1-92d9-482ec84e1a27",
+        "62dcd256-79f8-4056-b368-98d8e2b70685",
+        "65e2ff36-bd85-4bf5-ac4c-96fbec1790dd",
+        "e43f9b34-909a-45fb-9359-7c67732c2e4a",
+        "ebfc853e-a5a1-4369-b908-5dadff060464"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-04-18 11:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000009",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "76a8648c-1939-4e61-b9d7-a808e15fa5c1",
+        "CONTRACT": "1fc736f1-9165-4237-a9e4-d1a1537977d2",
+        "DISPLACE": "b1ecb38e-49ad-45cc-a373-4fa2251f59a2",
+        "LIQUIDITY": "dad3af7b-aa9f-416e-879e-a7a44b78e867",
+        "REFINEMENT": "e007b03f-25db-415d-a5b0-a7631551fb22",
+        "RETURN": "b02185aa-48b3-4ac6-b088-b11a8fc75091",
+        "SWEEP": "24d9eb57-08de-4927-92ec-5fc0915c9178"
+      },
+      "meta": {
+        "backtest_signal_index": 8
+      },
+      "object_refs": [
+        "1fc736f1-9165-4237-a9e4-d1a1537977d2",
+        "24d9eb57-08de-4927-92ec-5fc0915c9178",
+        "76a8648c-1939-4e61-b9d7-a808e15fa5c1",
+        "b02185aa-48b3-4ac6-b088-b11a8fc75091",
+        "b1ecb38e-49ad-45cc-a373-4fa2251f59a2",
+        "dad3af7b-aa9f-416e-879e-a7a44b78e867",
+        "e007b03f-25db-415d-a5b0-a7631551fb22"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-11-25 15:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000010",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "6ef40380-3f52-4535-9b42-b7adcdbe9eb9",
+        "CONTRACT": "82a3866a-f4a1-4c73-bb11-5d290bf5c5bd",
+        "DISPLACE": "9e000092-63bd-4893-a9a5-a6a565711769",
+        "LIQUIDITY": "66628b2b-6932-4d6f-bcaf-d47acda6641c",
+        "REFINEMENT": "cffacabb-5b6b-4eaf-8237-5d6f0c834d28",
+        "RETURN": "f3cbd61d-e39d-496d-9b1d-1498c290bdfc",
+        "SWEEP": "0465b12c-840b-47db-9656-23081975c689"
+      },
+      "meta": {
+        "backtest_signal_index": 9
+      },
+      "object_refs": [
+        "0465b12c-840b-47db-9656-23081975c689",
+        "66628b2b-6932-4d6f-bcaf-d47acda6641c",
+        "6ef40380-3f52-4535-9b42-b7adcdbe9eb9",
+        "82a3866a-f4a1-4c73-bb11-5d290bf5c5bd",
+        "9e000092-63bd-4893-a9a5-a6a565711769",
+        "cffacabb-5b6b-4eaf-8237-5d6f0c834d28",
+        "f3cbd61d-e39d-496d-9b1d-1498c290bdfc"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2008-11-28 11:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000011",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "12f5aa00-8bde-4c74-9564-68882cbf987c",
+        "CONTRACT": "3bec3ed3-8df3-4651-a409-83629bdd9d9d",
+        "DISPLACE": "097cba46-3f04-4cbb-8271-5498d4293f8c",
+        "LIQUIDITY": "b3ef71a8-df41-4c5b-aed6-dbdcef3d6365",
+        "REFINEMENT": "1752d345-4402-4621-bd6c-e8d048c1615e",
+        "RETURN": "2f75c210-8042-46d2-a7c5-c711e81c5d43",
+        "SWEEP": "2be3176f-4894-44ca-9976-aa3648fba83b"
+      },
+      "meta": {
+        "backtest_signal_index": 10
+      },
+      "object_refs": [
+        "097cba46-3f04-4cbb-8271-5498d4293f8c",
+        "12f5aa00-8bde-4c74-9564-68882cbf987c",
+        "1752d345-4402-4621-bd6c-e8d048c1615e",
+        "2be3176f-4894-44ca-9976-aa3648fba83b",
+        "2f75c210-8042-46d2-a7c5-c711e81c5d43",
+        "3bec3ed3-8df3-4651-a409-83629bdd9d9d",
+        "b3ef71a8-df41-4c5b-aed6-dbdcef3d6365"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-05-21 18:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000012",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "8d47d819-f0e8-4f21-96a7-c4bf3c061877",
+        "CONTRACT": "1554fa6f-115b-4082-9eba-25c57883fe8c",
+        "DISPLACE": "735c6c4d-2b79-4164-9cb8-0ae547845690",
+        "LIQUIDITY": "d2f6720b-bea0-4f83-bee9-141c87df58c2",
+        "REFINEMENT": "781f8af7-3b64-4349-8099-e240bd433151",
+        "RETURN": "5230415b-95dd-40e0-af3e-4b8239ea05f2",
+        "SWEEP": "393c7a83-bb50-44aa-a359-0624399dad68"
+      },
+      "meta": {
+        "backtest_signal_index": 11
+      },
+      "object_refs": [
+        "1554fa6f-115b-4082-9eba-25c57883fe8c",
+        "393c7a83-bb50-44aa-a359-0624399dad68",
+        "5230415b-95dd-40e0-af3e-4b8239ea05f2",
+        "735c6c4d-2b79-4164-9cb8-0ae547845690",
+        "781f8af7-3b64-4349-8099-e240bd433151",
+        "8d47d819-f0e8-4f21-96a7-c4bf3c061877",
+        "d2f6720b-bea0-4f83-bee9-141c87df58c2"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-06-04 13:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000013",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "0831944b-f16d-446b-b93a-77d8a89ff956",
+        "CONTRACT": "a800f711-5c7b-4167-8038-139f05901ada",
+        "DISPLACE": "fb678102-f84b-4f67-ba15-fd0c62f0c418",
+        "LIQUIDITY": "f4232977-7f8e-4c5f-acd5-f97a511d0ad8",
+        "REFINEMENT": "a5b4dc23-2460-4e94-a154-28fbb16b9b11",
+        "RETURN": "62ba8370-8a25-47e0-982a-56c8809324a2",
+        "SWEEP": "b5bd3f1e-72f8-4c9e-a9bb-d7e695102dc4"
+      },
+      "meta": {
+        "backtest_signal_index": 12
+      },
+      "object_refs": [
+        "0831944b-f16d-446b-b93a-77d8a89ff956",
+        "62ba8370-8a25-47e0-982a-56c8809324a2",
+        "a5b4dc23-2460-4e94-a154-28fbb16b9b11",
+        "a800f711-5c7b-4167-8038-139f05901ada",
+        "b5bd3f1e-72f8-4c9e-a9bb-d7e695102dc4",
+        "f4232977-7f8e-4c5f-acd5-f97a511d0ad8",
+        "fb678102-f84b-4f67-ba15-fd0c62f0c418"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-09-23 23:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000014",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "41a62c39-e4eb-4cad-b466-29bf17d72331",
+        "CONTRACT": "15ac3d99-5367-4c3a-9832-b02f6e48ec88",
+        "DISPLACE": "658dcc0d-6891-43d9-a9f7-ebee1c9addac",
+        "LIQUIDITY": "73c1443c-d825-4218-8cf3-a130470dec80",
+        "REFINEMENT": "65cedb60-10bb-4a38-969d-49e2ac3cb57c",
+        "RETURN": "833fc51e-2c85-4af4-845c-20df0ab483fb",
+        "SWEEP": "463a73ce-a072-4f56-aa80-6e6c9f14fd44"
+      },
+      "meta": {
+        "backtest_signal_index": 13
+      },
+      "object_refs": [
+        "15ac3d99-5367-4c3a-9832-b02f6e48ec88",
+        "41a62c39-e4eb-4cad-b466-29bf17d72331",
+        "463a73ce-a072-4f56-aa80-6e6c9f14fd44",
+        "658dcc0d-6891-43d9-a9f7-ebee1c9addac",
+        "65cedb60-10bb-4a38-969d-49e2ac3cb57c",
+        "73c1443c-d825-4218-8cf3-a130470dec80",
+        "833fc51e-2c85-4af4-845c-20df0ab483fb"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2009-12-11 15:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000015",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "dcedb9ea-6027-410d-b708-f30b7cb4cd2d",
+        "CONTRACT": "dcf9d74b-3c0a-4abc-b965-f54cd0b578c7",
+        "DISPLACE": "1c8cebd0-ae14-4a62-a436-0f3e2c5187a5",
+        "LIQUIDITY": "8b747b5a-942e-4cad-934d-e376165b0fa6",
+        "REFINEMENT": "1a27b8eb-bfed-4868-a899-45bfc676152a",
+        "RETURN": "3070ce55-e4a8-4d4e-955b-0b3e3b0a29b1",
+        "SWEEP": "b5271028-13bf-4695-be38-c3c47908e3d9"
+      },
+      "meta": {
+        "backtest_signal_index": 14
+      },
+      "object_refs": [
+        "1a27b8eb-bfed-4868-a899-45bfc676152a",
+        "1c8cebd0-ae14-4a62-a436-0f3e2c5187a5",
+        "3070ce55-e4a8-4d4e-955b-0b3e3b0a29b1",
+        "8b747b5a-942e-4cad-934d-e376165b0fa6",
+        "b5271028-13bf-4695-be38-c3c47908e3d9",
+        "dcedb9ea-6027-410d-b708-f30b7cb4cd2d",
+        "dcf9d74b-3c0a-4abc-b965-f54cd0b578c7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2010-02-23 11:00:00+00:00",
+      "direction": -1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000016",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "a8765536-9cc6-4bf2-82ff-5aec31375eae",
+        "CONTRACT": "41024413-e7ad-4103-be26-6a97b6fa0050",
+        "DISPLACE": "133690f4-a583-4bdd-914e-924d2fb6bb5f",
+        "LIQUIDITY": "0ab338a5-a7bf-4edf-b811-57181232d2b7",
+        "REFINEMENT": "bf3c548c-2add-4ef3-b2dc-339274578adf",
+        "RETURN": "01f6f1b0-fd1e-475a-a3e8-39a9af156ff5",
+        "SWEEP": "ba6d99c6-f9d8-4810-a307-d71f566e2f05"
+      },
+      "meta": {
+        "backtest_signal_index": 15
+      },
+      "object_refs": [
+        "01f6f1b0-fd1e-475a-a3e8-39a9af156ff5",
+        "0ab338a5-a7bf-4edf-b811-57181232d2b7",
+        "133690f4-a583-4bdd-914e-924d2fb6bb5f",
+        "41024413-e7ad-4103-be26-6a97b6fa0050",
+        "a8765536-9cc6-4bf2-82ff-5aec31375eae",
+        "ba6d99c6-f9d8-4810-a307-d71f566e2f05",
+        "bf3c548c-2add-4ef3-b2dc-339274578adf"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2010-05-20 19:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000017",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "2d41d53b-1a1d-4654-96c4-e0b5e61ff40d",
+        "CONTRACT": "b52de616-d9d5-42e3-9e7b-1e9febd460a6",
+        "DISPLACE": "77870525-6664-44f7-94eb-47c2a7271198",
+        "LIQUIDITY": "1292ddc6-7b63-4135-b66c-df3ce3d07e69",
+        "REFINEMENT": "90f61d6e-42ca-411f-bb71-710f15b0a4a4",
+        "RETURN": "80787759-d12f-4a43-bc68-aba9b54dcae4",
+        "SWEEP": "4c6d5c1f-0f12-4925-a5ed-74f50d2f8803"
+      },
+      "meta": {
+        "backtest_signal_index": 16
+      },
+      "object_refs": [
+        "1292ddc6-7b63-4135-b66c-df3ce3d07e69",
+        "2d41d53b-1a1d-4654-96c4-e0b5e61ff40d",
+        "4c6d5c1f-0f12-4925-a5ed-74f50d2f8803",
+        "77870525-6664-44f7-94eb-47c2a7271198",
+        "80787759-d12f-4a43-bc68-aba9b54dcae4",
+        "90f61d6e-42ca-411f-bb71-710f15b0a4a4",
+        "b52de616-d9d5-42e3-9e7b-1e9febd460a6"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2010-09-09 14:00:00+00:00",
+      "direction": 1,
+      "episode_id": "Y2006_2010__EP_SIGNAL_000018",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "ff417cf4-8327-416e-bb6f-a456275e62d5",
+        "CONTRACT": "f88151e1-f24d-4cca-b6c1-d73035de03a2",
+        "DISPLACE": "8b053bce-7f83-4cea-82d3-c31bd4f91be3",
+        "LIQUIDITY": "a9d97b41-6cd3-4544-b2b7-637e2a06835d",
+        "REFINEMENT": "558fa4fd-76cf-46e4-a90e-7d41923eee4f",
+        "RETURN": "ff9fb003-1be4-469c-976a-a6ef85fea984",
+        "SWEEP": "6a041dee-2cc1-4c7e-aea0-5a2608f9726a"
+      },
+      "meta": {
+        "backtest_signal_index": 17
+      },
+      "object_refs": [
+        "558fa4fd-76cf-46e4-a90e-7d41923eee4f",
+        "6a041dee-2cc1-4c7e-aea0-5a2608f9726a",
+        "8b053bce-7f83-4cea-82d3-c31bd4f91be3",
+        "a9d97b41-6cd3-4544-b2b7-637e2a06835d",
+        "f88151e1-f24d-4cca-b6c1-d73035de03a2",
+        "ff417cf4-8327-416e-bb6f-a456275e62d5",
+        "ff9fb003-1be4-469c-976a-a6ef85fea984"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    }
+  ],
+  "rejections": []
+}

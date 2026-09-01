@@ -15,8 +15,11 @@ schemas 1.1/1.2 y su proyección histórica son compatibilidad, no autoridad del
 motor. El port debe conservar el cursor causal y los carriles TF, eliminar toda
 reconstrucción de decisiones y consumir exclusivamente el artefacto 2.0.
 
-Esta extensión no autoriza aún la implementación ni una corrida científica;
-el orden y los gates están en el plan MTF Replay v1.
+La extensión 2.0 fue implementada el 2026-09-01. La UI vigente vive en
+`backtest/viewer/`, conserva compatibilidad histórica rotulada y filtra por
+`observation_time`. Su aceptación técnica M7 está en
+`reports/audits/mtf_replay/mtf_replay_audit.json`. Esto no autoriza una corrida
+científica ni una operación real.
 
 ## Objetivo
 

@@ -6,5 +6,12 @@ their causal observability for ICT Structure Lab.
 """
 
 from backtest.replay import ReplayConfig, load_raw_frames, run_visual_replay
+from backtest.mtf_replay import MTFReplayOrchestrator, ReplayConfig as MTFReplayConfig
 
-__all__ = ["ReplayConfig", "load_raw_frames", "run_visual_replay"]
+__all__ = [
+    "ReplayConfig",
+    "load_raw_frames",
+    "run_visual_replay",
+    "MTFReplayConfig",
+    "MTFReplayOrchestrator",
+]

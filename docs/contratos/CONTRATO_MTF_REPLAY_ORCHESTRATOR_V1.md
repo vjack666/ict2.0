@@ -1,6 +1,6 @@
 # Contrato — MTF Replay Orchestrator v1
 
-**Estado:** NORMATIVO PARA IMPLEMENTACIÓN LOCAL
+**Estado:** IMPLEMENTADO — M0–M9 PASS TÉCNICO SINTÉTICO
 
 **Fecha:** 2026-09-01
 
@@ -143,3 +143,14 @@ RESOURCE_LIMIT
 
 `M0–M9 PASS` no equivale a edge, rentabilidad, entrenamiento IA, promoción ni
 autorización MT5. Cada una pertenece a su gate científico u operativo.
+
+## 10. Evidencia de implementación 2026-09-01
+
+- Auditoría: `reports/audits/mtf_replay/mtf_replay_audit.json`.
+- Dos perfiles: `INTRADAY_H4_M15` y
+  `INTRADAY_H4_M15_M5_REFINEMENT`.
+- FULL/PREFIX: 10/25/50/75/90 % PASS en ambos perfiles.
+- Determinismo, checkpoint/resume y chunk-size invariance: PASS.
+- Suite Python: 464 pruebas PASS tras la última autoauditoría.
+- Visor: 3 pruebas PASS, build Vite PASS y `npm audit` con 0 vulnerabilidades.
+- Alcance: fixture sintético únicamente; T7 real permanece sin autorización.

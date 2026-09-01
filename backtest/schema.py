@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
+import hashlib
+import json
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +14,15 @@ import pandas as pd
 
 
 SCHEMA_VERSION = "1.0"
+MTF_SCHEMA_VERSION = "2.0"
+MTF_ARTIFACT_KIND = "MTF_REPLAY"
+MTF_REQUIRED_POLICY = {
+    "diagnostic_only": True,
+    "entry_authorized": False,
+    "can_trade": False,
+    "can_train": False,
+    "promotion_authorized": False,
+}
 
 
 def json_safe(value: Any) -> Any:
@@ -62,6 +73,55 @@ class VisualBacktest:
         return json_safe(payload)
 
 
+def logical_checksum(payload: dict[str, Any]) -> str:
+    """Stable SHA-256 excluding volatile/storage-only fields."""
+
+    excluded = {"checksum", "generated_at", "chunks"}
+    core = {key: value for key, value in payload.items() if key not in excluded}
+    encoded = json.dumps(json_safe(core), sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+@dataclass
+class MTFReplayArtifact:
+    """Canonical schema 2.0 artifact; a consumer projection, never an engine."""
+
+    run_metadata: dict[str, Any]
+    profiles: list[dict[str, Any]]
+    candles_by_tf: dict[str, list[dict[str, Any]]]
+    timeline: list[dict[str, Any]]
+    market_state_checkpoints: list[dict[str, Any]] = field(default_factory=list)
+    state_deltas: list[dict[str, Any]] = field(default_factory=list)
+    setups: list[dict[str, Any]] = field(default_factory=list)
+    episodes: list[dict[str, Any]] = field(default_factory=list)
+    invalidations: list[dict[str, Any]] = field(default_factory=list)
+    trades: list[dict[str, Any]] = field(default_factory=list)
+    rejections: list[dict[str, Any]] = field(default_factory=list)
+    policy: dict[str, Any] = field(default_factory=lambda: dict(MTF_REQUIRED_POLICY))
+
+    def to_dict(self) -> dict[str, Any]:
+        payload = json_safe(
+            {
+                "schema_version": MTF_SCHEMA_VERSION,
+                "artifact_kind": MTF_ARTIFACT_KIND,
+                "run_metadata": self.run_metadata,
+                "policy": self.policy,
+                "profiles": self.profiles,
+                "candles_by_tf": self.candles_by_tf,
+                "timeline": self.timeline,
+                "market_state_checkpoints": self.market_state_checkpoints,
+                "state_deltas": self.state_deltas,
+                "setups": self.setups,
+                "episodes": self.episodes,
+                "invalidations": self.invalidations,
+                "trades": self.trades,
+                "rejections": self.rejections,
+            }
+        )
+        payload["checksum"] = logical_checksum(payload)
+        return payload
+
+
 def validate_visual_backtest(payload: dict[str, Any]) -> None:
     """Fail closed when an exporter emits an incomplete or non-causal artifact."""
 
@@ -104,6 +164,93 @@ def validate_visual_backtest(payload: dict[str, Any]) -> None:
             raise ValueError("trade exit precedes entry")
 
 
+def _record_time(record: dict[str, Any], collection: str) -> pd.Timestamp:
+    raw = record.get("observation_time")
+    if raw is None:
+        raise ValueError(f"{collection} record missing observation_time")
+    value = pd.to_datetime(raw, utc=True, errors="coerce")
+    if pd.isna(value):
+        raise ValueError(f"{collection} record has invalid observation_time")
+    confirmation = record.get("confirmation_time")
+    if confirmation is not None:
+        confirmed = pd.to_datetime(confirmation, utc=True, errors="coerce")
+        if pd.isna(confirmed) or confirmed > value:
+            raise ValueError(f"{collection} confirmation is future data")
+    return value
+
+
+def validate_mtf_replay(payload: dict[str, Any]) -> None:
+    """Validate schema 2.0 identity, time, lineage, policy and checksum."""
+
+    required = {
+        "schema_version", "artifact_kind", "run_metadata", "policy", "profiles",
+        "candles_by_tf", "timeline", "market_state_checkpoints", "state_deltas",
+        "setups", "episodes", "invalidations", "trades", "rejections", "checksum",
+    }
+    missing = required - set(payload)
+    if missing:
+        raise ValueError(f"mtf replay missing keys: {sorted(missing)}")
+    if payload["schema_version"] != MTF_SCHEMA_VERSION or payload["artifact_kind"] != MTF_ARTIFACT_KIND:
+        raise ValueError("unsupported MTF replay schema or artifact kind")
+    for key, expected in MTF_REQUIRED_POLICY.items():
+        if payload["policy"].get(key) is not expected:
+            raise ValueError(f"unsafe policy flag: {key}")
+    if not isinstance(payload["candles_by_tf"], dict) or not payload["candles_by_tf"]:
+        raise ValueError("candles_by_tf must be a non-empty mapping")
+    for tf, candles in payload["candles_by_tf"].items():
+        last_time: pd.Timestamp | None = None
+        for index, candle in enumerate(candles):
+            if candle.get("index") != index or candle.get("tf") != tf:
+                raise ValueError(f"non-contiguous or mismatched candle in {tf}")
+            now = _record_time(candle, f"candles_by_tf.{tf}")
+            if last_time is not None and now <= last_time:
+                raise ValueError(f"out-of-order candle in {tf}")
+            last_time = now
+
+    collections = ("timeline", "state_deltas", "setups", "episodes", "invalidations", "trades", "rejections")
+    known_ids: set[str] = set()
+    record_times: dict[str, pd.Timestamp] = {}
+    all_records: list[tuple[str, dict[str, Any]]] = []
+    for collection in collections:
+        rows = payload[collection]
+        if not isinstance(rows, list):
+            raise ValueError(f"{collection} must be a list")
+        for record in rows:
+            record_time = _record_time(record, collection)
+            record_id = str(record.get("id", ""))
+            if not record_id or record_id in known_ids:
+                raise ValueError(f"invalid or duplicate record id: {record_id!r}")
+            known_ids.add(record_id)
+            record_times[record_id] = record_time
+            all_records.append((collection, record))
+    graph: dict[str, list[str]] = {}
+    for collection, record in all_records:
+        graph[record["id"]] = list(record.get("parent_ids", []))
+        for parent_id in record.get("parent_ids", []):
+            if parent_id not in known_ids:
+                raise ValueError(f"broken lineage in {collection}: {parent_id}")
+            if record_times[parent_id] > record_times[record["id"]]:
+                raise ValueError(f"future lineage in {collection}: {parent_id}")
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(node: str) -> None:
+        if node in visiting:
+            raise ValueError(f"cyclic lineage: {node}")
+        if node in visited:
+            return
+        visiting.add(node)
+        for parent in graph.get(node, []):
+            visit(parent)
+        visiting.remove(node)
+        visited.add(node)
+
+    for node in graph:
+        visit(node)
+    if logical_checksum(payload) != payload["checksum"]:
+        raise ValueError("MTF replay checksum mismatch")
+
+
 def write_visual_backtest(payload: dict[str, Any], output: Path) -> None:
     """Write a validated artifact atomically."""
 
@@ -116,4 +263,14 @@ def write_visual_backtest(payload: dict[str, Any], output: Path) -> None:
         json.dumps(payload, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
         encoding="utf-8",
     )
+    temporary.replace(output)
+
+
+def write_mtf_replay(payload: dict[str, Any], output: Path) -> None:
+    """Validate and atomically write one canonical schema 2.0 artifact."""
+
+    validate_mtf_replay(payload)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_suffix(output.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     temporary.replace(output)

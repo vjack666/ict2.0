@@ -1,6 +1,6 @@
 # SDD — MTF Replay Orchestrator v1
 
-**Estado:** DISEÑO AUTORIZADO; implementación pendiente
+**Estado:** IMPLEMENTADO — READY_FOR_REAL_MONTH_PREREGISTRATION
 
 **Contrato:** `docs/contratos/CONTRATO_MTF_REPLAY_ORCHESTRATOR_V1.md`
 
@@ -111,3 +111,21 @@ separado, será un mes; veinte años no son criterio de aceptación del software
 Implementación completa significa M0–M9 PASS, suite sin regresiones, artefacto
 sintético reproducible, visor local funcional, bitácora e índice sincronizados
 y commit local selectivo. No requiere ni permite declarar edge.
+
+## 10. Cierre de implementación
+
+El orquestador quedó en `backtest/mtf_replay.py`; extiende schema 2.0 sin romper
+1.0, consume las APIs públicas del motor y usa un callback pre-registrado para
+niveles de ejecución. El callback no introduce reglas: entrega `TradeLevels` y
+el outcome se resuelve con `engine.sequential_outcome`.
+
+La identidad efímera de `Setup` se normaliza en el consumidor mediante lineage
+canónico. Se implementaron manifest/chunks físicos, checkpoint/resume y visor
+local con ocultamiento de outcomes futuros. El siguiente gate no es código:
+T7 exige preregistro y GO explícito para una corrida real de un mes.
+
+Límite explícito: el reloj fusiona iteradores sin materializar la lista de
+batches ni todos los prefijos, pero `run()` devuelve el artefacto canónico
+completo en memoria. `write_chunks()` materializa la salida lazy-load; una API
+totalmente sink-streaming se evaluará solo si T7 mensual demuestra que hace
+falta. M8 certifica el run sintético acotado, no veinte años en RAM constante.

@@ -106,9 +106,10 @@ MarketState, Setup Builder ni Episodes.
 | Archivo | Rol | Estado |
 |---|---|---|
 | `docs/planificacion/AUDITORIA_COBERTURA_MTF_REPLAY_V1.md` | Inventario y matriz REUSE/EXTEND/NEW del motor, backtest y visor. | **CERRADA — PASS DOCUMENTAL** |
-| `docs/contratos/CONTRATO_MTF_REPLAY_ORCHESTRATOR_V1.md` | Reloj causal, perfiles HTF/ITF/EXEC, invalidación, schema 2.0 y gates M0–M9. | **NORMATIVO PARA IMPLEMENTACIÓN LOCAL** |
-| `docs/planificacion/SDD_MTF_REPLAY_ORCHESTRATOR_V1.md` | Arquitectura consumidora y optimización de recursos. | **DISEÑO AUTORIZADO; CÓDIGO PENDIENTE** |
-| `.hermes/plans/2026-09-01_MTF_REPLAY_ORCHESTRATOR_V1.md` | Lista ejecutable, subtareas autónomas y departamentos. | **READY_FOR_IMPLEMENTATION** |
+| `docs/contratos/CONTRATO_MTF_REPLAY_ORCHESTRATOR_V1.md` | Reloj causal, perfiles HTF/ITF/EXEC, invalidación, schema 2.0 y gates M0–M9. | **IMPLEMENTADO — M0–M9 PASS SINTÉTICO** |
+| `docs/planificacion/SDD_MTF_REPLAY_ORCHESTRATOR_V1.md` | Arquitectura consumidora y optimización de recursos. | **IMPLEMENTADO; T7 REAL PENDIENTE DE GO** |
+| `.hermes/plans/2026-09-01_MTF_REPLAY_ORCHESTRATOR_V1.md` | Lista ejecutable, subtareas autónomas y departamentos. | **T0–T6 COMPLETOS; T7 NO AUTORIZADO; T8 CERRADO** |
+| `reports/audits/mtf_replay/mtf_replay_audit.json` | Evidencia independiente de schema, reloj, causalidad, autoridad, viewer y recursos. | **PASS M0–M9** |
 
 El visor del worktree `codex/visual-replay-wyckoff-v1-1` es un candidato de UI,
 no autoridad del motor. Solo puede portarse mediante auditoría mínima de

@@ -215,6 +215,10 @@ class MTFReplayOrchestrator:
         }
         transitions: list[dict[str, Any]] = []
         for obj in list(self.market_state.all_objects()):
+            # Terminal lifecycle states are immutable. Skipping them avoids
+            # replaying and serializing irrelevant dedupe events.
+            if obj.is_terminal:
+                continue
             if obj.creation_time is not None and _utc(obj.creation_time) > _utc(bar["observation_time"]):
                 continue
             before = obj.state.value

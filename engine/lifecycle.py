@@ -239,7 +239,21 @@ def evaluate(
             ce_touched=bool(obj.meta.get("CE_TOUCHED", False)), changed=False,
         )
 
-    # Idempotencia: esta vela ya fue procesada por la autoridad.
+    # Una vela geométricamente irrelevante no puede cambiar el lifecycle y no
+    # necesita ocupar memoria en el dedupe. Reprocesarla sigue siendo NO_CHANGE,
+    # por lo que la idempotencia observable se conserva sin crecimiento
+    # O(objetos x barras) durante replays largos.
+    touched = (low <= obj.zone_high) and (high >= obj.zone_low)
+    reached_far = (low <= far) if obj.direction >= 0 else (high >= far)
+    if not touched and not reached_far:
+        return LifecycleDecision(
+            previous_state=prev.value, new_state=prev.value, reason="NO_CHANGE",
+            decision_time=decision_time, source_bar=bar_index, penetration=0.0,
+            first_touch_bar=obj.first_touch_bar, invalidated_bar=obj.invalidated_bar,
+            ce_touched=bool(obj.meta.get("CE_TOUCHED", False)), changed=False,
+        )
+
+    # Idempotencia: esta vela relevante ya fue procesada por la autoridad.
     ev_key = _event_key(authority_tf, bar_time, bar_index, "EVALUATE")
     if _already_seen(obj, ev_key):
         return LifecycleDecision(
@@ -251,7 +265,6 @@ def evaluate(
 
     # Penetración máxima dentro de la zona (0 si no toca). Metadatos OFICIALES.
     penetration = 0.0
-    touched = (low <= obj.zone_high) and (high >= obj.zone_low)
     if touched:
         if obj.first_touch_time is None or obj.first_touch_bar is None:
             obj.first_touch_time = bar_time
@@ -288,7 +301,6 @@ def evaluate(
     # FVG/OB: misma geometría, dirección invertida para simetría.
     # MITIGATED: la vela recorre completamente hasta el far_side (low/high lo cruza).
     # INVALIDATED: el cierre queda más allá del far_side.
-    reached_far = (low <= far) if obj.direction >= 0 else (high >= far)
     close_beyond = (close < far) if obj.direction >= 0 else (close > far)
 
     new_state = prev
@@ -378,7 +390,16 @@ def observe_lower_tf(
             ce_touched=bool(obj.meta.get("CE_TOUCHED", False)), changed=False,
         )
 
-    # Idempotencia de observación (separada de la del lifecycle oficial).
+    touched = (low <= obj.zone_high) and (high >= obj.zone_low)
+    if not touched:
+        return LifecycleDecision(
+            previous_state=obj.state.value, new_state=obj.state.value, reason="OBSERVED_ONLY",
+            decision_time=decision_time, source_bar=bar_index, penetration=0.0,
+            first_touch_bar=obj.first_touch_bar, invalidated_bar=obj.invalidated_bar,
+            ce_touched=bool(obj.meta.get("CE_TOUCHED", False)), changed=False,
+        )
+
+    # Idempotencia de observación relevante (separada de la oficial).
     ev_key = _event_key(observed_tf, bar_time, bar_index, "OBSERVE")
     if _already_seen(obj, ev_key):
         return LifecycleDecision(
@@ -388,7 +409,6 @@ def observe_lower_tf(
             ce_touched=bool(obj.meta.get("CE_TOUCHED", False)), changed=False,
         )
 
-    touched = (low <= obj.zone_high) and (high >= obj.zone_low)
     penetration = 0.0
     if touched:
         span = obj.zone_high - obj.zone_low

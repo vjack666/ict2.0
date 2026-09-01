@@ -399,3 +399,23 @@ def test_double_observation_same_bar_idempotent():
     assert d1.changed is False and d2.changed is False
     assert len(ob_h4.meta["observations"]["M15"]) == 1
     assert len(ob_h4.meta.get("_seen_events", set())) >= 1
+
+
+def test_irrelevant_bars_do_not_grow_lifecycle_dedupe():
+    obj = _fvg_bull(10, 1.0995, 1.1005)
+    far_away = _bar(11, 1.2, 1.201, 1.199, 1.2, tf="M15")
+    first = evaluate(obj, far_away, authority_tf="M15")
+    second = evaluate(obj, far_away, authority_tf="M15")
+    assert first.reason == second.reason == "NO_CHANGE"
+    assert obj.meta.get("_seen_events", set()) == set()
+    assert obj.state is ObjectState.ACTIVE
+
+
+def test_irrelevant_ltf_observations_do_not_grow_dedupe():
+    obj = _ob_bull(10, 1.0995, 1.1005, origin_tf="H4")
+    far_away = _bar(11, 1.2, 1.201, 1.199, 1.2, tf="M15")
+    first = observe_lower_tf(obj, far_away, observed_tf="M15")
+    second = observe_lower_tf(obj, far_away, observed_tf="M15")
+    assert first.reason == second.reason == "OBSERVED_ONLY"
+    assert obj.meta.get("_seen_events", set()) == set()
+    assert obj.meta.get("observations", {}) == {}

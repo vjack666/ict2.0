@@ -94,9 +94,10 @@ def _bos_h4(refines: str = "OB_H4_1") -> MarketObject:
 def _disp_m15(refines: str = "FVG_M15_1", ob: str = "OB_H4_1") -> MarketObject:
     """DISPLACEMENT (ObjectType.DISPLACEMENT) bullish, trigger canónico del setup.
 
-    Relacionado con el FVG LTF y el OB HTF. Bajo la ley causal congelada de la
-    Tesis 1 (POI <= refinement <= confirmation <= trigger), el DISPLACEMENT debe
-    ocurrir DESPUES de la confirmation (BOS, _ts(120)): se fija en _ts(130).
+    Relacionado con el FVG LTF y el OB HTF. Bajo la enmienda H6, BOS
+    (confirmation) y displacement (trigger) son evidencias hermanas: el
+    displacement puede preceder o seguir al BOS. Aquí se fija en _ts(130),
+    posterior al BOS (_ts(120)), que es un orden válido.
     """
     return MarketObject(
         id="DISP_M15_1", symbol="EURUSD", type=ObjectType.DISPLACEMENT,

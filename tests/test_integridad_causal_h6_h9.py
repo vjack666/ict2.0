@@ -154,9 +154,10 @@ def test_H6_confirmation_anterior_al_refinement_bloqueado():
     assert elig.value == "BLOCKED", f"H6 roto: confirmation anterior al refinement = {elig.value}"
 
 
-def test_H6_trigger_anterior_al_confirmation_bloqueado():
-    """OE-02 (Tesis 1): trigger (DISPLACEMENT) debe ser >= confirmation (BOS).
-    trigger previo al confirmation es causalmente imposible => BLOCKED."""
+def test_H6_trigger_anterior_al_confirmation_es_valido():
+    """Enmienda H6 (preregistrada): BOS (confirmation) y displacement (trigger)
+    son EVIDENCIAS HERMANAS del mismo POI. El displacement puede preceder al BOS
+    (crea la estructura y deja el FVG); el setup es ELIGIBLE, no BLOCKED."""
     base = datetime(2026, 1, 1, 0, 0, tzinfo=UTC)
     ob = _ob(anchor=100, confirm=101, tradable=101)
     ob.candidate_time = base + timedelta(hours=100)
@@ -167,13 +168,15 @@ def test_H6_trigger_anterior_al_confirmation_bloqueado():
     bos = _bos(bar=107)                               # confirmation T+107h
     bos.candidate_time = base + timedelta(hours=107)
     bos.confirmation_time = base + timedelta(hours=107)
-    # trigger en T+103h: despues de refinement(105)? no; antes de confirmation(107)
+    # trigger (displacement) en T+103h: ANTES del confirmation (BOS, T+107h)
+    # pero DESPUÉS del refinement (FVG, T+105h). Evidencias hermanas => válido.
     trig = _bos(bar=103)
+    trig.type = ObjectType.DISPLACEMENT
     trig.candidate_time = base + timedelta(hours=103)
     trig.confirmation_time = base + timedelta(hours=103)
     setup = Setup(symbol="EURUSD", direction=1, context_htf=None, poi=ob, refinement=fvg, confirmation=bos, trigger=trig)
     elig = classify_eligibility(setup, _ctx(aligned=True, bias=1), require_complete=True)
-    assert elig.value == "BLOCKED", f"H6 roto: trigger anterior al confirmation = {elig.value}"
+    assert elig.value == "ELIGIBLE", f"H6 enmienda rota: displacement previo al BOS debería ser ELIGIBLE = {elig.value}"
 
 
 def test_H6_relacion_cross_tf_usa_tiempo_no_bar_index():

@@ -615,19 +615,22 @@ def classify_eligibility(setup: "Setup", ctx, *, require_complete: bool = False)
             )
             return SetupEligibility.BLOCKED
 
-    # OE-02 / H6 + OE-03 (Tesis 1, ley congelada): orden causal estricto de los
-    # componentes del setup por tiempo operativo (no bar_index cross-TF):
-    #     t_POI <= t_REFINEMENT <= t_CONFIRMATION <= t_TRIGGER <= t_DECISION
-    # POI=OB (HTF), refinement=FVG (LTF), confirmation=BOS, trigger=DISPLACEMENT.
-    # Setup no lleva decision_time => la cota superior del trigger es la propia
-    # cadena (trigger debe ser >= confirmation, que ya es >= refinement >= POI).
-    # Cualquier inversión es causalmente imposible en T => BLOCKED (no se inventa
-    # causalidad hacia atrás). El DISPLACEMENT "crea la estructura" pero AÚN así
-    # debe ocurrir DESPUÉS de la confirmación (BOS) en el tiempo real.
+    # OE-02 / H6 + OE-03 (enmienda H6, preregistrada): orden causal estricto de
+    # la cadena de anclaje del setup por tiempo operativo (no bar_index cross-TF):
+    #     t_POI <= t_REFINEMENT <= t_DECISION
+    # POI=OB (HTF), refinement=FVG (LTF). BOS (confirmation) y displacement
+    # (trigger) son EVIDENCIAS HERMANAS del mismo POI: pueden publicarse en
+    # cualquier orden entre ellas. El displacement puede preceder al BOS (crea
+    # la estructura y deja el FVG) o seguirlo (confirma la ruptura); ambos son
+    # válidos. No se impone BOS -> displacement.
+    # El displacement (trigger) no puede preceder al POI: es una evidencia del
+    # POI, así que debe ser posterior a él. Cualquier inversión en la cadena de
+    # anclaje o del trigger respecto al POI es causalmente imposible en T
+    # => BLOCKED (no se inventa causalidad hacia atrás).
     _pairs = [
         ("POI", "refinement", setup.poi, setup.refinement),
         ("refinement", "confirmation", setup.refinement, setup.confirmation),
-        ("confirmation", "trigger", setup.confirmation, setup.trigger),
+        ("POI", "trigger", setup.poi, setup.trigger),
     ]
     for name_a, name_b, a, b in _pairs:
         if a is not None and b is not None:

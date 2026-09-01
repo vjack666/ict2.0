@@ -1,6 +1,6 @@
 # Plan ejecutable — MTF Replay Orchestrator v1
 
-**Estado:** COMPLETED T0–T6/T8 — T7 IN PROGRESS (GO 2026-09-01)
+**Estado:** COMPLETED T0–T8 — T7 PASS TÉCNICO / BLOCKED_PROVENANCE
 
 **Owner:** D2 Ingeniería; D1 PMO integra; D5 audita independientemente
 
@@ -84,9 +84,10 @@ presupuesto/seguridad.
 ### T7 — Corrida real acotada — requiere GO explícito posterior
 
 - [x] `T7.1` Pre-registrar dataset, mes, perfil, hashes y criterios; no optimizar.
-- [ ] `T7.2` Ejecutar un mes local y generar chunks/visor.
-- [ ] `T7.3` Auditar causalidad, recursos y completitud; no medir edge como gate del software.
-- [ ] `T7.4` Solo después decidir si ampliar ventana o abrir protocolo científico de edge.
+- [x] `T7.2` Ejecutar un mes local y generar chunks/visor.
+- [x] `T7.3` Auditar causalidad, recursos y completitud; no medir edge como gate del software.
+- [x] `T7.4` Decisión: no ampliar ventana ni abrir edge todavía; primero materializar
+  una población histórica canónica BOS/displacement para setups completos.
 
 ### T8 — Cierre empresarial — D1/D7
 
@@ -101,3 +102,13 @@ presupuesto/seguridad.
 No queda ninguna tarea ni subtarea abierta de T0–T6 y T8, M0–M9 están PASS y
 la evidencia es reproducible. T7 es una autorización separada y no bloquea la
 terminación del software si aún no ha recibido GO.
+
+## Cierre T7 real — 2026-09-01
+
+Enero de 2025 con warmup diciembre, perfil `INTRADAY_H4_M15`, terminó
+`PASS_TECHNICAL_BLOCKED_PROVENANCE`. Hashes preregistrados verificados,
+determinismo y FULL/PREFIX 25/50/75/90 PASS, chunks 500/257 invariantes, pico
+159.43 MB y primera pasada 71.97 s. No hubo setups/episodes/trades porque T7
+cargó la autoridad H4 observada desde M15 y el adaptador histórico público no
+materializa todavía BOS/displacement como `MarketObject`; no se fabricó esa
+población. Evidencia en `reports/audits/mtf_replay/t7_2025_01/`.

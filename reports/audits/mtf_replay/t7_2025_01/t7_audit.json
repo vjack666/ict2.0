@@ -1,0 +1,175 @@
+{
+  "ai_training_executed": false,
+  "artifact": "mtf_replay_t7_2025_01.json",
+  "can_trade": false,
+  "chunk_invariance": {
+    "chunk_257_count": 15,
+    "chunk_500_count": 8,
+    "pass": true
+  },
+  "commit": "4b10815b6ced219eafadf8d29be787ef180b8cb0",
+  "counts": {
+    "H4": 59,
+    "M15": 881,
+    "episodes": 0,
+    "h4_total_with_warmup": 246,
+    "january_close_batches": 2117,
+    "m15_total_with_warmup": 3699,
+    "objects_loaded_h4_authority": 59,
+    "rejections": 0,
+    "relations_same_tf": 47,
+    "setups": 0,
+    "trades": 0
+  },
+  "dataset_hash": "145229219abea0abca63734b28ed65e17afbb809661ef966afa2b79c31e1a25c",
+  "determinism": {
+    "pass": true,
+    "run_1_checksum": "9bebed22426f5cd43cdda46049ae529df41e3453550adc7d2a9d825067e62674",
+    "run_2_checksum": "9bebed22426f5cd43cdda46049ae529df41e3453550adc7d2a9d825067e62674"
+  },
+  "edge_measured": false,
+  "full_prefix": [
+    {
+      "cutoff": "2025-01-09T10:00:00+00:00",
+      "full_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 2125,
+        "timeline": 2125,
+        "trades": 0
+      },
+      "pass": true,
+      "prefix_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 2125,
+        "timeline": 2125,
+        "trades": 0
+      },
+      "ratio": 0.25
+    },
+    {
+      "cutoff": "2025-01-16T22:00:00+00:00",
+      "full_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 2654,
+        "timeline": 2654,
+        "trades": 0
+      },
+      "pass": true,
+      "prefix_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 2654,
+        "timeline": 2654,
+        "trades": 0
+      },
+      "ratio": 0.5
+    },
+    {
+      "cutoff": "2025-01-24T10:00:00+00:00",
+      "full_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 3183,
+        "timeline": 3183,
+        "trades": 0
+      },
+      "pass": true,
+      "prefix_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 3183,
+        "timeline": 3183,
+        "trades": 0
+      },
+      "ratio": 0.75
+    },
+    {
+      "cutoff": "2025-01-29T17:00:00+00:00",
+      "full_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 3500,
+        "timeline": 3500,
+        "trades": 0
+      },
+      "pass": true,
+      "prefix_counts": {
+        "episodes": 0,
+        "invalidations": 0,
+        "rejections": 0,
+        "setups": 0,
+        "state_deltas": 3500,
+        "timeline": 3500,
+        "trades": 0
+      },
+      "ratio": 0.9
+    }
+  ],
+  "objective": "T7 real one-month technical replay; no edge, optimization, AI, MT5, or orders",
+  "optimization_executed": false,
+  "population_note": "NO_COMPLETE_SETUP_POPULATION_H4_AUTHORITY_REPLAY",
+  "profile": {
+    "exec_tf": "M15",
+    "htf": "H4",
+    "itf": "M15",
+    "profile_id": "INTRADAY_H4_M15",
+    "refine_tf": null
+  },
+  "promotion_authorized": false,
+  "provenance": {
+    "acquired_at_utc": null,
+    "formal_status": "BLOCKED_PROVENANCE",
+    "license_permitted_use": "UNKNOWN",
+    "mechanical_integrity": "PASS",
+    "mt5_used": false,
+    "raw_source_modified": false
+  },
+  "resources": {
+    "elapsed_seconds_run_1": 71.96752090001246,
+    "peak_working_set_mb_run_1": 159.4296875
+  },
+  "source_manifest": [
+    {
+      "bytes": 89241,
+      "gaps_gt_15m": 12,
+      "open_time_max": "2024-12-31T21:45:00+00:00",
+      "open_time_min": "2024-12-01T22:00:00+00:00",
+      "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-12-01-2025-01-01.csv",
+      "rows": 1587,
+      "sha256": "bce883373218e4ca20ac7092422d9893edbe346b96c44cbe5a3d13c172c80c6e"
+    },
+    {
+      "bytes": 118858,
+      "gaps_gt_15m": 4,
+      "open_time_max": "2025-01-31T21:45:00+00:00",
+      "open_time_min": "2025-01-01T22:00:00+00:00",
+      "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-01-01-2025-02-01.csv",
+      "rows": 2112,
+      "sha256": "c62b93557bb0a61b69c63af6618368b51878a1aa7299d99e06abafd815fe0cf6"
+    }
+  ],
+  "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+  "viewer_manifest": "viewer/manifest.json",
+  "window": {
+    "end": "2025-02-01T00:00:00+00:00",
+    "start": "2025-01-01T00:00:00+00:00",
+    "warmup": "2024-12"
+  }
+}

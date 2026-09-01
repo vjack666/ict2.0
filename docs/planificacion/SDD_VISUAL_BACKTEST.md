@@ -2,6 +2,22 @@
 
 Estado: nuevo componente implementado; consumidor observacional, sin autoridad de promoción.
 
+## Extensión MTF Replay 2.0 (2026-09-01)
+
+El schema 1.0 permanece compatible para el exportador visual simple. La próxima
+salida normativa multitemporal será schema 2.0, definida por
+`CONTRATO_MTF_REPLAY_ORCHESTRATOR_V1.md` y
+`SDD_MTF_REPLAY_ORCHESTRATOR_V1.md`.
+
+El visor React/Vite existente en el worktree
+`codex/visual-replay-wyckoff-v1-1` es candidato a portarse como interfaz. Sus
+schemas 1.1/1.2 y su proyección histórica son compatibilidad, no autoridad del
+motor. El port debe conservar el cursor causal y los carriles TF, eliminar toda
+reconstrucción de decisiones y consumir exclusivamente el artefacto 2.0.
+
+Esta extensión no autoriza aún la implementación ni una corrida científica;
+el orden y los gates están en el plan MTF Replay v1.
+
 ## Objetivo
 
 Producir un visual_backtest.json para ICT Structure Lab usando exclusivamente

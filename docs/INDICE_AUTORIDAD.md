@@ -97,8 +97,22 @@ ejecutiva y las reglas de delegación están en
 | `.hermes/plans/2026-08-30_EPISODES_FUNNEL_V1.md` | Lista de tareas, subtareas dinámicas, responsables y criterio de cierre para Hermes. | **READY_FOR_INDEPENDENT_AUDIT** |
 | `.hermes-worklog/2026-08-30_AUDITORIA_PRE_EPISODES_FUNNEL.md` | Auditoría de entrada y decisión de alcance. | **CERRADO — IMPLEMENTACIÓN EJECUTADA Y REVISADA** |
 
-La siguiente capa es Episodes/Funnel. Debe tener contrato y SDD propios antes de
-crear código; no se deben reimplementar Lifecycle, MarketState ni Setup Builder.
+Episodes/Funnel ya está implementado y revisado. La siguiente capa autorizada
+documentalmente es MTF Replay Orchestrator; no debe reimplementar Lifecycle,
+MarketState, Setup Builder ni Episodes.
+
+### MTF Replay Orchestrator
+
+| Archivo | Rol | Estado |
+|---|---|---|
+| `docs/planificacion/AUDITORIA_COBERTURA_MTF_REPLAY_V1.md` | Inventario y matriz REUSE/EXTEND/NEW del motor, backtest y visor. | **CERRADA — PASS DOCUMENTAL** |
+| `docs/contratos/CONTRATO_MTF_REPLAY_ORCHESTRATOR_V1.md` | Reloj causal, perfiles HTF/ITF/EXEC, invalidación, schema 2.0 y gates M0–M9. | **NORMATIVO PARA IMPLEMENTACIÓN LOCAL** |
+| `docs/planificacion/SDD_MTF_REPLAY_ORCHESTRATOR_V1.md` | Arquitectura consumidora y optimización de recursos. | **DISEÑO AUTORIZADO; CÓDIGO PENDIENTE** |
+| `.hermes/plans/2026-09-01_MTF_REPLAY_ORCHESTRATOR_V1.md` | Lista ejecutable, subtareas autónomas y departamentos. | **READY_FOR_IMPLEMENTATION** |
+
+El visor del worktree `codex/visual-replay-wyckoff-v1-1` es un candidato de UI,
+no autoridad del motor. Solo puede portarse mediante auditoría mínima de
+dependencias y nunca junto a sus proyecciones históricas duplicadas.
 
 ### Contratos con ruta canónica
 

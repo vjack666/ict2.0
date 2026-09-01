@@ -34,10 +34,13 @@ Lee y respeta, en este orden:
 8. `docs/contratos/CONTRATO_EPISODES_FUNNEL_V1.md` — contrato de la siguiente capa.
 9. `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md` — diseño técnico de Episodes/Funnel.
 10. `.hermes/plans/2026-08-30_EPISODES_FUNNEL_V1.md` — lista ejecutable con subtareas dinámicas.
-11. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
-12. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
-13. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
-14. `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
+11. `docs/contratos/CONTRATO_MTF_REPLAY_ORCHESTRATOR_V1.md` — contrato de la capa consumidora posterior a Episodes.
+12. `docs/planificacion/SDD_MTF_REPLAY_ORCHESTRATOR_V1.md` — diseño técnico del reloj causal MTF.
+13. `.hermes/plans/2026-09-01_MTF_REPLAY_ORCHESTRATOR_V1.md` — lista ejecutable y gates M0–M9.
+14. `docs/INDICE_AUTORIDAD.md` — jerarquía documental de la tesis.
+15. `docs/DATA_INVENTARIO.md` — datos disponibles y procedencia.
+16. `docs/UMBRALES_CONFIRMACION.md` — umbrales vigentes.
+17. `docs/auditoria/AUDITORIA_FASE0_FVG_OB.md` — auditoría inicial vigente y blockers de entrada.
 
 La tesis ICT vigente y sus enmiendas tienen autoridad superior sobre cualquier documento de implementación. **OTE queda fuera del alcance.**
 
@@ -52,9 +55,10 @@ el SDD de `Lifecycle → MarketState → Setup Builder` y su plan operativo asoc
 La implementación canónica está en `engine/`. El SDD histórico del visor en otra
 rama no autoriza cambios en `engine/` ni la creación de un segundo motor.
 
-El siguiente objetivo es `Episodes/Funnel`. Ya tiene contrato, SDD y plan; la
-implementación queda bloqueada hasta la revisión D5 del contrato. Si falta
-evidencia, el estado es `REVIEW` o `BLOCKED`, nunca `COMPLETED`.
+`Episodes/Funnel` ya está implementado y revisado. La misión posterior es
+`MTF Replay Orchestrator`: consumidor aislado en `backtest/`, con schema 2.0 y
+visor local. Su implementación comienza por T0/M0 del plan 2026-09-01 y no
+autoriza edge, entrenamiento, MT5 ni órdenes.
 
 ## 3. OBJETIVO
 

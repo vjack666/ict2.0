@@ -58,7 +58,7 @@ def _run(frames, dataset_hash, commit, *, measure=False):
     return artifact, population, elapsed, _peak_working_set_mb() if measure else None
 
 
-def execute(output_dir: Path) -> dict[str, Any]:
+def execute(output_dir: Path, *, run_id: str = "t7b") -> dict[str, Any]:
     m15, source_manifest, dataset_hash = load_source()
     frames = {"M15": m15, "H4": derive_h4(m15)}
     commit = _commit()
@@ -92,7 +92,7 @@ def execute(output_dir: Path) -> dict[str, Any]:
     )
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    write_mtf_replay(first, output_dir / "mtf_replay_t7b_2025_01.json")
+    write_mtf_replay(first, output_dir / f"mtf_replay_{run_id}_2025_01.json")
     manifest = write_chunks(first, output_dir / "viewer", 500)
     gates = {
         "producer_population": bool(population["counts"]["bos_m15_linked"] and population["counts"]["displacement_m15_linked"]),
@@ -106,6 +106,7 @@ def execute(output_dir: Path) -> dict[str, Any]:
         "chunk_manifest": manifest["artifact_checksum"] == checksum,
     }
     report = {
+        "run_id": run_id,
         "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE" if all(gates.values()) else "FAIL",
         "commit": commit, "dataset_hash": dataset_hash, "source_manifest": source_manifest,
         "profile": INTRADAY_H4_M15.to_dict(), "producer": population["counts"],
@@ -121,7 +122,7 @@ def execute(output_dir: Path) -> dict[str, Any]:
         "edge_measured": False, "optimization_executed": False, "ai_training_executed": False,
         "can_trade": False, "promotion_authorized": False,
     }
-    (output_dir / "t7b_audit.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (output_dir / f"{run_id}_audit.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2, sort_keys=True))
     return report
 

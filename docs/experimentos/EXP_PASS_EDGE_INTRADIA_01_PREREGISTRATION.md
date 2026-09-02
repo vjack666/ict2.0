@@ -142,6 +142,12 @@ es `US$10 por lote` (entrada + salida). La fuente y el tipo de cuenta deberán
 quedar fijados en el manifest final; no se mezclará esta comisión con otro
 broker o modelo.
 
+Por autorización del cliente, el primer escenario `PROXY_PILOT` congela además
+spread `1 pip`, slippage `0,3 pip`, timeout `12` velas M15 y prioridad
+`SL_FIRST` en toques simultáneos. La salida al timeout usa el precio de la
+última barra del horizonte. Estos parámetros son una hipótesis de investigación
+local y no una certificación de condiciones reales FundedNext.
+
 ## 6. Particiones temporales congeladas
 
 Las ventanas son UTC y tienen límite final exclusivo:

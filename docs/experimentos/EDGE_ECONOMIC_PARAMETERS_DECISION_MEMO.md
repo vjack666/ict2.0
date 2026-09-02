@@ -1,7 +1,7 @@
 # Decisión pendiente — parámetros económicos del baseline Edge intradía
 
 **Fecha:** 2026-09-02  
-**Estado:** `PROXY_AUTHORIZED_FOR_PILOT`  
+**Estado:** `PROXY_PILOT_FROZEN`  
 **Experimento:** `EXP-PASS-EDGE-INTRADIA-01`  
 **Alcance:** investigación local; sin IA, órdenes ni promoción
 
@@ -47,25 +47,25 @@ Usar un único contrato primario conservador y congelarlo antes de ejecutar:
 | Salida | `FIRST_TOUCH_TIMEOUT`: TP/SL por toque; timeout fijo preregistrado; sin cierre parcial |
 | TP y SL en la misma vela | prioridad conservadora `SL_FIRST` cuando OHLC no permite ordenar intrabar |
 | Coste primario | proxy local observado de 0,1 pip cuando no exista spread histórico; reportarlo separadamente |
-| Slippage | valor fijo preregistrado, separado del spread |
-| Comisión | valor explícito por lote; nunca asumir cero sin declararlo como escenario |
+| Slippage | `0,3 pip` fijo, separado del spread |
+| Comisión | `US$5 por lote por lado` = `US$10` por trade completo |
 
 ## Decisiones que todavía requieren congelación
 
 La tesis fija la mecánica ICT, pero no fija los valores económicos universales.
 Antes de correr el baseline hay que completar exactamente:
 
-1. número de barras del timeout;
+1. número de barras del timeout: **12 velas M15**;
 2. unidad monetaria, tamaño de lote y conversión EUR/USD;
-3. spread primario para los años sin columna `spread`;
-4. slippage primario;
-5. comisión por lote;
-6. regla de cierre al timeout.
+3. spread primario para los años sin columna `spread`: **1 pip**;
+4. slippage primario: **0,3 pip**;
+5. comisión por lote: **US$5 por lado**;
+6. regla de cierre al timeout: **cierre al precio de la última barra del horizonte**.
 
-Con los datos actuales queda completada la evidencia mecánica del símbolo y la
-comisión, pero no la certificación de condiciones FundedNext ni el slippage
-histórico. El baseline debe publicar ambos como limitaciones y conservar una
-sensibilidad con costes mayores.
+Con autorización del cliente, estos parámetros quedan congelados para el
+`PROXY_PILOT`. No certifican condiciones FundedNext ni sustituyen una
+distribución histórica de slippage; el baseline debe publicar estas
+limitaciones y conservar una sensibilidad con costes mayores.
 
 ## Aporte del cliente y verificación FundedNext
 

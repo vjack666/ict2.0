@@ -180,3 +180,13 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 - Es una lectura diagnóstica del proxy, no una prueba confirmatoria de edge;
   faltan los demás periodos, intervalos/robustez y la auditoría completa de
   procedencia.
+
+### Baseline económico proxy — 2022 consolidado
+
+- Q1–Q4: 75 trades técnicos y 19 outcomes resueltos.
+- Media ponderada de los 19 `net_R`: `-1,025420R`; las cuatro particiones
+  trimestrales fueron negativas.
+- Evidencia: `reports/audits/experiments/pass_edge_proxy_pilot_2022_summary.md`
+  y los cuatro JSON trimestrales.
+- No se declara `NO_EDGE` global: faltan cobertura completa, análisis de
+  robustez y cierre de procedencia; el gate de certificación sigue `BLOCKED`.

@@ -99,5 +99,16 @@ entonces no ejecutar backtest, entrenamiento, paper/demo, broker u órdenes.
   conservan `tick_volume` y `spread`.
 - Esta evidencia identifica una segunda lectura local coherente, pero no prueba
   que sea la fuente del CSV histórico ni que las copias sean independientes.
-  Por el contrato de separación de feeds, no se mezclan ni se usa MT5 para
-  corregir Dukascopy. El gate histórico permanece `BLOCKED`.
+Por el contrato de separación de feeds, no se mezclan ni se usa MT5 para
+corregir Dukascopy. El gate histórico permanece `BLOCKED`.
+
+### Corrección de la auditoría en worktree limpio
+
+- La primera versión del auditor trataba números de línea física como índices
+  de datos y desplazaba las nueve observaciones. Se corrigió el productor para
+  leer explícitamente líneas físicas incluyendo el encabezado.
+- El rerun reproducible en `cert/edge-roadmap-clean-worktree` confirma `241`
+  CSV, manifiestos `180 + 61` con `bad_count=0` y las `9/9` anomalías en las
+  líneas físicas `689, 692, 693, 696, 707, 712, 737, 750, 765`.
+- Commit del arreglo: `19ae150` (`fix: audit intraday anomalies by physical CSV line`).
+  El resultado sigue siendo `BLOCKED`; se corrigió la medición, no los datos.

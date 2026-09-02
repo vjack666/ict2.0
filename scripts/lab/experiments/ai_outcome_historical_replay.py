@@ -288,6 +288,7 @@ def _verify_full_prefix(
     for percent in (10, 25, 50, 75, 90):
         cutoff_index = max(1, int(len(main) * percent / 100) - 1)
         cutoff = main.iloc[cutoff_index]["time"]
+        cutoff_utc = _timestamp(cutoff, "prefix.cutoff_time")
         prefix_frames = {
             tf: frame[frame["time"] <= cutoff].reset_index(drop=True)
             for tf, frame in frames.items()
@@ -303,10 +304,14 @@ def _verify_full_prefix(
                 for tf, feature in featured.items()
             },
         ).to_dict()
+        # `decision_time` is serialized by different engine paths with either
+        # a space or `T` between date and time.  Lexicographic comparison can
+        # therefore include a later same-day signal (space sorts before `T`).
+        # Compare normalized UTC instants, never their textual rendering.
         full_at_cut = [
             item for item in full_signals
             if isinstance(item, Mapping) and item.get("decision_time") is not None
-            and item["decision_time"] <= cutoff.isoformat()
+            and _timestamp(item["decision_time"], "signal.decision_time") <= cutoff_utc
         ]
         prefix_signals = prefix.get("signals") or []
         left = [_prefix_signature(item) for item in full_at_cut if isinstance(item, Mapping)]

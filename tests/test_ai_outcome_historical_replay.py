@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
@@ -155,3 +156,29 @@ def test_decision_window_requires_both_bounds(tmp_path):
     root = _dataset(tmp_path)
     with pytest.raises(exporter.HistoricalReplayError, match="DECISION_WINDOW_INVALID"):
         exporter.build_historical_replay(dataset_dir=root, decision_start="2006-01-01")
+
+
+def test_prefix_check_compares_decision_instants_not_timestamp_text(monkeypatch):
+    frames = {timeframe: _frame(timeframe, rows=10) for timeframe in exporter.TIMEFRAMES}
+    featured = {timeframe: frame.copy() for timeframe, frame in frames.items()}
+
+    def fake_replay(current_frames, _config, **_kwargs):
+        # The second record is after the 90% H1 cut but serializes with a
+        # space, which was previously (and incorrectly) less than `T` text.
+        signals = [{"decision_time": "2006-01-01T01:00:00+00:00", "direction": 1, "features_at_t": {}}]
+        if len(current_frames["H1"]) == 10:
+            signals.append({"decision_time": "2006-01-01 19:00:00+00:00", "direction": 1, "features_at_t": {}})
+        return SimpleNamespace(to_dict=lambda: {"signals": signals})
+
+    monkeypatch.setattr(exporter, "run_visual_replay", fake_replay)
+    full = fake_replay(frames, exporter._replay_config(full_mtf=False, horizon_bars=6)).to_dict()
+    result = exporter._verify_full_prefix(
+        frames,
+        full,
+        full_mtf=False,
+        horizon_bars=6,
+        featured=featured,
+    )
+
+    assert result["prefix_matches_full"] is True
+    assert all(cut["status"] == "PASS" for cut in result["cuts"])

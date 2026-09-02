@@ -235,3 +235,11 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 - El intervalo permanece por debajo de cero, pero el dictamen global sigue
   `BLOCKED` por proxy, cobertura y procedencia.
 - Evidencia: `reports/audits/experiments/pass_edge_proxy_statistical_2022_2025.md`.
+
+### Auditoría independiente del baseline
+
+- Dictamen: `BLOCKED` global; diagnóstico económico del proxy: `NO_EDGE_PROXY`.
+- La auditoría confirma baseline negativo, pero mantiene bloqueos por cobertura,
+  procedencia/licencia/adquisición y worktree DIRTY.
+- IA, holdout confirmatorio y trading permanecen `NOT_RUN`/no autorizados.
+- Evidencia: `reports/audits/experiments/PASS_EDGE_BASELINE_INDEPENDENT_AUDIT_2022_2025.md`.

@@ -226,3 +226,12 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 - No hubo outcomes RANGING resueltos; ambos regímenes presentes fueron
   negativos.
 - Evidencia: `reports/audits/experiments/pass_edge_robustness_2022_2025.md`.
+
+### Estadística clusterizada
+
+- Bootstrap por 16 clusters trimestrales, 20.000 remuestras, semilla
+  `20260902`: media de clusters `-0,978358R`, IC 95% `[-1,348208R,
+  -0,604024R]`.
+- El intervalo permanece por debajo de cero, pero el dictamen global sigue
+  `BLOCKED` por proxy, cobertura y procedencia.
+- Evidencia: `reports/audits/experiments/pass_edge_proxy_statistical_2022_2025.md`.

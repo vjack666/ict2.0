@@ -173,10 +173,16 @@ La futura ejecución debe producir `PASS` en todos los gates duros:
 | `REPRODUCIBILITY` | manifest completo, commits resolubles y worktree limpio | `BLOCKED` |
 | `AUTHORIZATION` | preregistro completado y GO independiente antes de ejecutar | `BLOCKED` |
 
-Las nueve anomalías OHLC ya observadas en el holdout tienen tratamiento
-`UNKNOWN/BLOCKED` en este preregistro. No se borran, corrigen, imputan ni
-excluyen silenciosamente. Su tratamiento exige evidencia de fuente y una regla
-explícita antes de cualquier evaluación.
+Las nueve anomalías OHLC ya observadas en el holdout se clasifican, por decisión
+del cliente, como `DOWNLOAD_SERIALIZATION_ERROR`: un salto aislado de descarga,
+no un trade completo. Los bytes y las filas originales permanecen intactos y
+visibles. Para construir trades, las filas se excluyen mediante una regla
+explícita y reproducible, nunca por borrado, corrección, imputación o exclusión
+silenciosa. La evaluación económica debe reportar una sensibilidad con las
+filas presentes y otra excluyéndolas; si no cambia el resultado, se documentará
+el impacto como nulo/materialmente irrelevante. Esta decisión resuelve el
+tratamiento metodológico, pero no certifica la procedencia del feed ni convierte
+el gate `PROVENANCE` en `PASS`.
 
 La provenance de la fuente histórica candidata permanece `BLOCKED`: proveedor,
 licencia/permitted-use, `acquired_at_utc`, documentación, lineage completo y
@@ -232,6 +238,6 @@ nulo, IC, bootstrap, clustering, potencia, estabilidad y decisión.
 ## 12. Decisión de cierre del preregistro
 
 No ejecutar. Antes de solicitar un GO independiente se debe completar el fill
-económico M15, costes, horizonte, tratamiento de las nueve anomalías y
+económico M15, costes, horizonte, sensibilidad con/sin las nueve anomalías y
 provenance/reproducibilidad. Ningún resultado de clasificación IA o diagnóstico
 histórico puede sustituir esos requisitos ni producir `PASS_EDGE`.

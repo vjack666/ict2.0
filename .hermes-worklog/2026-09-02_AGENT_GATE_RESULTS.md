@@ -40,6 +40,7 @@ del contrato `PASS_EDGE` sin modificar datos ni ejecutar ciencia.
   documentación operativa lo etiqueta `MT5_LOCAL_PARQUET`, no hay lineage
   reproducible suficiente para usarlo como corrección certificada.
 - El gate de datos permanece `BLOCKED`; no se sustituyó ninguna fila.
+- Decisión operativa del cliente: las 9 filas se marcan como `DOWNLOAD_SERIALIZATION_ERROR` y como salto aislado, no como trade. Se mantienen intactas en el raw y se excluyen únicamente de la construcción de trades mediante regla documentada; queda pendiente sensibilidad con/sin las 9 filas. Esta decisión permite continuar el sistema sin ocultar la anomalía, pero no convierte el gate de procedencia en `PASS`.
 
 ### Búsqueda de lineage adicional
 

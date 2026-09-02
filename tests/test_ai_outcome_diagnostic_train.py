@@ -11,6 +11,10 @@ from runtime.ai_learning.diagnostic_training import (
     run_diagnostic_training,
     write_diagnostic_artifact,
 )
+from runtime.ai_learning.diagnostic_calibration import (
+    DiagnosticCalibrationError,
+    calibrate_diagnostic_artifact,
+)
 
 
 def _row(index: int, *, label: str | None = None) -> dict:
@@ -135,3 +139,19 @@ def test_can_trade_true_is_rejected(tmp_path):
 
     with pytest.raises(DiagnosticTrainingError, match="can_trade"):
         run_diagnostic_training(source)
+
+
+def test_diagnostic_calibration_fits_validation_only_and_pins_input_hash(tmp_path):
+    source = _write_rows(tmp_path, 60)
+    training = run_diagnostic_training(source, code_commit="c" * 40)
+    first = calibrate_diagnostic_artifact(training, jsonl_path=str(source))
+    second = calibrate_diagnostic_artifact(training, jsonl_path=str(source))
+
+    assert first == second
+    assert first["fit_partition"] == "VALIDATION_ONLY"
+    assert first["test_partition"] == "TEST_OOS_NEVER_USED_FOR_FIT"
+    assert first["shadow_mode"] is True
+    assert first["can_trade"] is False
+    source.write_text(source.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+    with pytest.raises(DiagnosticCalibrationError, match="JSONL_SOURCE_HASH_MISMATCH"):
+        calibrate_diagnostic_artifact(training, jsonl_path=str(source))

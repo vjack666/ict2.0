@@ -95,10 +95,13 @@ entonces no ejecutar backtest, entrenamiento, paper/demo, broker u órdenes.
 
 - Se compararon tres parquets locales: el operativo actual y dos copias del
   backup histórico (`data_raw` y `data_mt5`). Los tres contienen las nueve
-  marcas temporales y coinciden en sus OHLC válidos; las copias antiguas además
-  conservan `tick_volume` y `spread`.
+  marcas temporales con OHLC válido. `data_raw` coincide con el operativo en sus
+  `50.296` timestamps comunes; `data_mt5` presenta `432` filas con OHLC
+  diferente en su solapamiento. Las copias antiguas además conservan
+  `tick_volume` y `spread`.
 - Esta evidencia identifica una segunda lectura local coherente, pero no prueba
-  que sea la fuente del CSV histórico ni que las copias sean independientes.
+  que sea la fuente del CSV histórico ni que las copias sean independientes;
+  tampoco deben describirse como tres fuentes plenamente concordantes.
 Por el contrato de separación de feeds, no se mezclan ni se usa MT5 para
 corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 

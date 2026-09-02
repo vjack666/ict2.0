@@ -169,3 +169,14 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 - La decisión quedó congelada en el preregistro antes de ejecutar DESIGN,
   VALIDATION o HOLDOUT; no se resolverá post-hoc.
 - Evidencia: `docs/experimentos/AMENDMENT_STOP_GEOMETRY_PRE_RUN.md`.
+
+### Baseline económico proxy — 2022 Q1
+
+- Corrida completa del trimestre con el runner económico: 6.168 velas M15,
+  6.604 eventos, 19 señales/trades técnicos, 7 outcomes resueltos y 12
+  abiertos/no resolubles al horizonte.
+- Media de los 7 `net_R` resueltos: `-0,618815R`.
+- Evidencia: `reports/audits/experiments/pass_edge_proxy_pilot_2022_Q1.json`.
+- Es una lectura diagnóstica del proxy, no una prueba confirmatoria de edge;
+  faltan los demás periodos, intervalos/robustez y la auditoría completa de
+  procedencia.

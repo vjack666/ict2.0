@@ -1,0 +1,30 @@
+{
+  "artifact": "MT5_PROXY_SYMBOL_SPEC",
+  "status": "PROXY_PILOT",
+  "observed_at_utc": "2026-09-02T18:29:28.148079+00:00",
+  "terminal_path": "C:\\Program Files\\FundedNext MT5 Terminal\\terminal64.exe",
+  "server": "MetaQuotes-Demo",
+  "company": "MetaQuotes Ltd.",
+  "account_currency": "USD",
+  "symbol": "EURUSD",
+  "digits": 5,
+  "contract_size": 100000.0,
+  "tick_size": 0.00001,
+  "tick_value": 1.0,
+  "bid": 1.15858,
+  "ask": 1.15858,
+  "spread_points": 0,
+  "spread_pips": 0.0,
+  "commission": {
+    "source": "FundedNext official CFD conditions",
+    "usd_per_lot_per_side": 5.0,
+    "usd_per_lot_round_turn": 10.0,
+    "applies_to": "FundedNext Stellar 1-Step/2-Step Forex; not verified on active MetaQuotes-Demo session"
+  },
+  "limitations": [
+    "MetaQuotes-Demo is a local proxy, not a FundedNext account.",
+    "The spread is an instantaneous observation, not a historical distribution.",
+    "No slippage value was exposed by this symbol specification.",
+    "This artifact authorizes technical pilot work only; it does not authorize orders or can_trade=true."
+  ]
+}

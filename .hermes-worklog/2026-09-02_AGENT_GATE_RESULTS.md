@@ -41,6 +41,14 @@ del contrato `PASS_EDGE` sin modificar datos ni ejecutar ciencia.
   reproducible suficiente para usarlo como corrección certificada.
 - El gate de datos permanece `BLOCKED`; no se sustituyó ninguna fila.
 
+### Búsqueda de lineage adicional
+
+- La búsqueda local de los nueve timestamps en manifests, logs, informes y
+  scripts no encontró un tercer registro de origen.
+- El conjunto de evidencia local queda limitado al CSV Dukascopy y al parquet
+  M15 discrepante; no existe respaldo local que permita resolver cuál de los
+  dos valores es correcto.
+
 ### Contrato científico
 
 - El contrato `CONTRATO_PASS_EDGE_INTRADIA_V1.md` ya está integrado.

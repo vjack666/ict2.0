@@ -190,3 +190,11 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
   y los cuatro JSON trimestrales.
 - No se declara `NO_EDGE` global: faltan cobertura completa, análisis de
   robustez y cierre de procedencia; el gate de certificación sigue `BLOCKED`.
+
+### Baseline económico proxy — 2023 y consolidado 2022–2023
+
+- 2023 Q1–Q4: 94 trades, 24 outcomes resueltos; todos los trimestres fueron
+  negativos.
+- Consolidado 2022–2023: 169 trades, 43 outcomes resueltos, media `-1,114712R`.
+- Evidencia: `reports/audits/experiments/pass_edge_proxy_pilot_2022_2023_summary.md`
+  y los ocho JSON trimestrales.

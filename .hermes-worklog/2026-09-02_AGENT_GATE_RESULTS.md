@@ -73,3 +73,20 @@ excluir o imputar sin evidencia de fuente rompería la reproducibilidad.
 Obtener evidencia de fuente para las 9 filas y abrir MT5 conectado para la
 lectura operativa. Después repetir la auditoría en un worktree limpio. Hasta
 entonces no ejecutar backtest, entrenamiento, paper/demo, broker u órdenes.
+
+### Reauditoría coordinada posterior a los commits 564f8a1 y 5d5958f
+
+- Datos/CRO reprodujo `241/241` entradas, `499.864` filas, y cero faltantes,
+  extras, duplicados, errores de bytes o SHA-256. El CSV afectado mide
+  `124.272` bytes y coincide con su manifiesto.
+- La búsqueda adicional solo encontró referencias H1/H4/D1 o reportes derivados;
+  no existe un log local que vincule las nueve filas M15 con una adquisición,
+  exportación, proveedor o commit generador concreto.
+- El script local que declara Dukascopy genera H1/H4/D1 y no constituye evidencia
+  primaria para las filas M15. La discrepancia con el parquet MT5 sigue sin
+  resolverse y no se usa como corrección.
+- Operaciones confirmó `NO_MT5_PROCESS`; no hay evidencia verificable de
+  comisión, fill mode, stops ni ticks M15. No se ejecutaron órdenes.
+- CRO mantiene `BLOCKED / NO-GO`: no procede `NO_EDGE` porque aún no se midió
+  `net_R`, y no procede `PASS_EDGE` porque faltan calidad/procedencia, costes,
+  fill, horizonte y reproducibilidad limpia.

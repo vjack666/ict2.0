@@ -108,6 +108,16 @@ Antes de ejecutar deben quedar congelados:
 6. spread, comisión y slippage por sesión/condición;
 7. timezone, frontera de vela, calendario y sesiones.
 
+La especificación normativa existente de ejecución ICT ya fija, para el perfil
+intradía, la siguiente mecánica de señal: `HTF H1/H4 → ITF M15 → EXEC M15`;
+entrada únicamente en el retorno a FVG/OB después de sweep y BOS/CHOCH;
+stop en la mecha del sweep M15 con buffer de `0,3 ATR`; TP en la liquidez
+opuesta M15 más cercana; y RR mínimo `1:3`. Las operaciones solo pueden
+considerarse dentro de las killzones intradía London/NY. Esta incorporación
+resuelve documentalmente `entry`, `stop`, `TP`, `R` y el umbral de RR usando
+`docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md`; no autoriza todavía una corrida
+económica.
+
 El contrato ICT respalda la entrada en retorno a FVG/OB, pero el **fill
 económico M15** está actualmente `UNKNOWN/BLOCKED`. También están
 `UNKNOWN/BLOCKED` el spread, comisión, slippage M15 y el horizonte económico

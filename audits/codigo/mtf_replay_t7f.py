@@ -102,8 +102,21 @@ def execute_year(year: int, manifest: list[dict[str, Any]], output_dir: Path) ->
     start = pd.Timestamp(f"{year}-01-01T00:00:00Z")
     end = pd.Timestamp(f"{year + 1}-01-01T00:00:00Z")
     commit = _commit()
-    first, population, elapsed, peak = _run(frames, dataset_hash, commit, measure=True)
-    second, _, _, _ = _run(frames, dataset_hash, commit)
+    # T7f evaluates only causal snapshot changes.  Every close is still
+    # emitted; repeated no-change composition is intentionally skipped.
+    from audits.codigo.mtf_replay_t7b import _state_and_context
+    from backtest.mtf_replay import INTRADAY_H4_M15, MTFReplayOrchestrator, ReplayConfig
+    import time
+    def run_event_driven(measure: bool = False):
+        state, context, population = _state_and_context(frames)
+        config = ReplayConfig(symbol="EURUSD", profile=INTRADAY_H4_M15, checkpoint_every=250,
+                              chunk_size=500, dataset_hash=dataset_hash, code_commit=commit,
+                              event_driven_decisions=True)
+        started = time.perf_counter()
+        artifact = MTFReplayOrchestrator(config, state, context_provider=context).run(frames)
+        return artifact, population, time.perf_counter() - started, _peak_working_set_mb() if measure else None
+    first, population, elapsed, peak = run_event_driven(measure=True)
+    second, _, _, _ = run_event_driven()
     validate_mtf_replay(first)
     checksum = logical_checksum(first)
     year_times = m15.loc[(m15["time"] >= start) & (m15["time"] < end), "time"]
@@ -111,7 +124,10 @@ def execute_year(year: int, manifest: list[dict[str, Any]], output_dir: Path) ->
     for ratio in RATIOS:
         cutoff = year_times.iloc[max(0, int(len(year_times) * ratio) - 1)]
         prefix_frames = {tf: frame.loc[frame["time"] <= cutoff].copy() for tf, frame in frames.items()}
-        prefix, _, _, _ = _run(prefix_frames, dataset_hash, commit)
+        original = frames
+        frames = prefix_frames
+        prefix, _, _, _ = run_event_driven()
+        frames = original
         cuts.append({
             "ratio": ratio,
             "cutoff": cutoff.isoformat(),

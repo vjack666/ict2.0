@@ -70,6 +70,7 @@ class ReplayConfig:
     chunk_size: int = 1000
     dataset_hash: str = "SYNTHETIC"
     code_commit: str = "UNKNOWN"
+    event_driven_decisions: bool = False
 
     def __post_init__(self) -> None:
         if self.checkpoint_every <= 0 or self.chunk_size <= 0:
@@ -82,6 +83,7 @@ class ReplayConfig:
             "checkpoint_every": self.checkpoint_every,
             "dataset_hash": self.dataset_hash,
             "code_commit": self.code_commit,
+            "event_driven_decisions": self.event_driven_decisions,
         }
 
     @property
@@ -282,6 +284,35 @@ class MTFReplayOrchestrator:
             transition_rows: list[dict[str, Any]] = []
             for bar in batch:
                 transition_rows.extend(self._apply_bar(bar))
+            births = any(
+                obj.creation_time is not None and _utc(obj.creation_time) == _utc(now)
+                for obj in self.market_state.all_objects()
+            )
+            # T7f has no execution plans.  Between births and authority-state
+            # transitions the causal snapshot is identical, so recomposing the
+            # same setup/funnel is pure duplicate work.  We still emit every
+            # closed-bar tick, delta and checkpoint for exact replay topology.
+            if self.config.event_driven_decisions and not births and not transition_rows and not self._pending_plans:
+                delta_id = f"DELTA-{cursor}"
+                deltas.append({
+                    "id": delta_id, "observation_time": now.isoformat(),
+                    "authority_tf": batch[0]["tf"], "transitions": [], "parent_ids": [],
+                })
+                timeline.append({
+                    "id": f"TICK-{cursor}", "index": cursor,
+                    "observation_time": now.isoformat(), "authority_tf": batch[0]["tf"],
+                    "closed_tfs": [row["tf"] for row in batch],
+                    "phases": ["CLOSE_BATCH", "APPLY_AUTHORITY", "SNAPSHOT", "EMIT"],
+                    "parent_ids": [delta_id],
+                })
+                if cursor % self.config.checkpoint_every == 0:
+                    checkpoints.append(ReplayCheckpoint(
+                        cursor=cursor, observation_time=now.isoformat(),
+                        config_hash=self.config.config_hash, dataset_hash=self.config.dataset_hash,
+                        market_state=self.market_state.to_dict(),
+                        seen_setup_ids=sorted(self._seen_setups),
+                    ).to_dict())
+                continue
             ctx = self.context_provider(now)
             setups = self.setup_provider(self.market_state, now, ctx)
             current: dict[str, Setup] = {canonical_setup_id(setup): setup for setup in setups}

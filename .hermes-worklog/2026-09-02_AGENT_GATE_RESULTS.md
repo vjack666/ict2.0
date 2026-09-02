@@ -28,6 +28,19 @@ del contrato `PASS_EDGE` sin modificar datos ni ejecutar ciencia.
 - No fue posible observar spread, comisión, fill mode, stops ni ticks.
 - No se abrieron órdenes y no se escribieron archivos.
 
+### Corroboración local M15
+
+- `data/raw/EURUSD/EURUSD_M15.parquet` contiene las mismas 9 marcas temporales
+  del `2024-10-10` y sus OHLC cumplen las invariantes.
+- Las 9 filas difieren de los valores del CSV Dukascopy; esto prueba una
+  discrepancia entre fuentes, no que el parquet corrija al CSV.
+- El parquet mide `2.552.986` bytes y su SHA-256 actual es
+  `49773c106f70a332ad80f2c4bf69b83e1ed0a62a54249f3d6f752570451750b9`.
+- Está ignorado por Git, sin historial ni manifiesto de adquisición. Aunque
+  documentación operativa lo etiqueta `MT5_LOCAL_PARQUET`, no hay lineage
+  reproducible suficiente para usarlo como corrección certificada.
+- El gate de datos permanece `BLOCKED`; no se sustituyó ninguna fila.
+
 ### Contrato científico
 
 - El contrato `CONTRATO_PASS_EDGE_INTRADIA_V1.md` ya está integrado.

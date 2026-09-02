@@ -5,6 +5,29 @@
 **Experimento:** `EXP-PASS-EDGE-INTRADIA-01`  
 **Alcance:** investigación local; sin IA, órdenes ni promoción
 
+## Datos MT5 locales incorporados
+
+La instancia configurada del terminal es
+`C:\Program Files\FundedNext MT5 Terminal\terminal64.exe`, pero la sesión
+observada estaba conectada a `MetaQuotes-Demo`, no a un servidor FundedNext.
+Por eso estos valores se incorporan como **proxy local observado**, no como
+condiciones certificadas del broker:
+
+| Campo | Valor observado |
+|---|---|
+| Símbolo | EURUSD |
+| Contract size | 100.000 |
+| Dígitos | 5 |
+| Tick size/value | 0,00001 / US$1 |
+| Spread instantáneo | 1 punto = 0,1 pip |
+| Swap long/short | -0,7 / -1,0 |
+| Volumen mínimo/paso | 0,01 / 0,01 |
+
+El spread es una observación puntual y no representa toda la distribución
+histórica. La comisión de US$5 por lado proviene de las condiciones oficiales
+del modelo FundedNext elegido y no de esta sesión MetaQuotes-Demo; ambas
+fuentes no se mezclan sin declararlo.
+
 ## Recomendación ejecutiva
 
 Usar un único contrato primario conservador y congelarlo antes de ejecutar:
@@ -17,7 +40,7 @@ Usar un único contrato primario conservador y congelarlo antes de ejecutar:
 | Fill | primer toque observable de la zona en una barra EXEC posterior; precio de toque, no cierre de barra |
 | Salida | `FIRST_TOUCH_TIMEOUT`: TP/SL por toque; timeout fijo preregistrado; sin cierre parcial |
 | TP y SL en la misma vela | prioridad conservadora `SL_FIRST` cuando OHLC no permite ordenar intrabar |
-| Coste primario | usar spread observable cuando exista; donde no exista, declarar proxy fijo y reportarlo separadamente |
+| Coste primario | proxy local observado de 0,1 pip cuando no exista spread histórico; reportarlo separadamente |
 | Slippage | valor fijo preregistrado, separado del spread |
 | Comisión | valor explícito por lote; nunca asumir cero sin declararlo como escenario |
 
@@ -32,6 +55,11 @@ Antes de correr el baseline hay que completar exactamente:
 4. slippage primario;
 5. comisión por lote;
 6. regla de cierre al timeout.
+
+Con los datos actuales queda completada la evidencia mecánica del símbolo y la
+comisión, pero no la certificación de condiciones FundedNext ni el slippage
+histórico. El baseline debe publicar ambos como limitaciones y conservar una
+sensibilidad con costes mayores.
 
 ## Aporte del cliente y verificación FundedNext
 

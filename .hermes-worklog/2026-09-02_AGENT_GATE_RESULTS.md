@@ -129,6 +129,16 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
   ejecución fechado que vincule este export con el dataset histórico. El gate
   histórico continúa `BLOCKED`.
 
+### Cierre de búsqueda de cobertura local alternativa
+
+- `GRID SCAPL 2/data/market_ohlc/curated` solo contiene cinco archivos EURUSD
+  M15 de 2026; no existe allí una cobertura M15 2006–2025 alternativa.
+- Sumado a la búsqueda del repositorio, backups y exports locales, no queda una
+  fuente local con cobertura completa, lineage verificable y valores
+  reconciliados que permita cerrar Paso 1.
+- Se cierra la investigación local como `BLOCKED_EXTERNAL_EVIDENCE`: no se
+  descarga, rescata, repara ni sustituye ningún dato.
+
 ### Corrección de la auditoría en worktree limpio
 
 - La primera versión del auditor trataba números de línea física como índices

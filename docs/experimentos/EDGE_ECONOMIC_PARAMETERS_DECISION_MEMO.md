@@ -33,12 +33,13 @@ Antes de correr el baseline hay que completar exactamente:
 5. comisión por lote;
 6. regla de cierre al timeout.
 
-## Aporte del cliente
+## Aporte del cliente y verificación FundedNext
 
-La comisión indicada por el cliente es **US$5 por lote por operación**. Se
-incorporará como coste de ida y vuelta según la convención que se congele en el
-manifest; no se interpretará como cero ni se aplicará a una unidad distinta de
-la declarada.
+La comisión indicada por el cliente es **US$5 por lote por lado**. La tabla
+oficial de condiciones de FundedNext confirma que la comisión Forex se cobra
+`per side`; por tanto, el coste de comisión de un trade completo es **US$10 por
+lote** (entrada + salida). La fuente queda registrada en
+`fundednext.com/general-rules/cfds/symbols-and-conditions`.
 
 ## Escenarios obligatorios
 

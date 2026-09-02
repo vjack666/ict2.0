@@ -136,9 +136,11 @@ El horizonte futuro debe ser uno de `FIXED_BARS`, `SESSION_CLOSE` o
 `FIRST_TOUCH_TIMEOUT`, con parámetros completos pre-registrados antes de la
 ejecución. Hasta entonces el gate económico es `BLOCKED`.
 
-La comisión propuesta por el cliente es `US$5 por lote por operación`; queda
-registrada como entrada del contrato, pendiente de fijar si la convención
-operativa la expresa por lado o como ida y vuelta en el manifest final.
+La comisión de FundedNext para Forex está verificada como `US$5 por lote por
+lado` en sus condiciones oficiales; el coste de comisión de un trade completo
+es `US$10 por lote` (entrada + salida). La fuente y el tipo de cuenta deberán
+quedar fijados en el manifest final; no se mezclará esta comisión con otro
+broker o modelo.
 
 ## 6. Particiones temporales congeladas
 

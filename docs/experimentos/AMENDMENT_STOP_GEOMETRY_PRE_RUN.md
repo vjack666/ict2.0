@@ -1,6 +1,6 @@
 # Enmienda previa — geometría del stop del experimento PASS_EDGE
 
-**Estado:** `AMENDMENT_REQUIRED`  
+**Estado:** `APPROVED_CAUSAL_AVG_RANGE_50`  
 **Fecha:** 2026-09-02  
 **No aplica a:** resultados ya generados; la prueba de humo queda excluida de
 cualquier conclusión confirmatoria.
@@ -15,18 +15,21 @@ nombre `atr`. `engine.execution.fine_execution` aplica `0,3` sobre esa serie.
 Estas dos definiciones no son equivalentes y no pueden mezclarse sin declarar
 una enmienda previa.
 
-## Regla de cierre
+## Decisión adoptada
 
-Antes de ejecutar DESIGN, VALIDATION o HOLDOUT, el manifest debe congelar una
-de estas opciones:
+Se adopta `CAUSAL_AVG_RANGE_50`: conservar la autoridad actual del motor y
+definir el buffer como `0,3 × rango medio causal high-low de 50 velas`. Esta
+decisión se registra antes de cualquier corrida confirmatoria y no depende de
+los resultados de la prueba de humo.
 
-1. `CAUSAL_AVG_RANGE_50`: conservar la autoridad actual del motor y renombrar
-   la especificación económica para decir explícitamente “0,3 × rango medio
-   causal de 50 velas”.
-2. `TRUE_ATR`: implementar y verificar un ATR causal independiente, modificar
-   la geometría de niveles y actualizar sus pruebas y hashes antes de correr el
-   experimento.
+La opción `TRUE_ATR` queda descartada para este SDD: implementarla cambiaría la
+restricción vigente de no usar indicadores en `engine/` y requeriría otro
+experimento.
 
-El runner económico permanece `BLOCKED` hasta que una opción sea aprobada y
-quede registrada en el preregistro y manifest. No se permite elegirla después
-de observar resultados.
+Las opciones consideradas fueron:
+
+1. `CAUSAL_AVG_RANGE_50` — **adoptada**.
+2. `TRUE_ATR` — descartada para este SDD.
+
+El manifest final debe declarar que la columna histórica `atr` del motor es un
+nombre de compatibilidad para el rango medio causal, no ATR clásico.

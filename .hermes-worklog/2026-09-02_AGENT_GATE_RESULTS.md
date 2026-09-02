@@ -162,10 +162,10 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
   económico exacto del SDD aún debe implementarse y verificarse; el gate global
   continúa `BLOCKED`, con `can_trade=false` y `can_train=false`.
 
-### Enmienda requerida antes de la corrida confirmatoria
+### Enmienda de geometría resuelta antes de la corrida confirmatoria
 
-- Se documentó el conflicto entre `0,3 ATR` del preregistro y el rango medio
-  causal de 50 velas usado por el motor canónico.
-- La decisión debe congelarse antes de ejecutar DESIGN, VALIDATION o HOLDOUT;
-  no se permite resolverla post-hoc.
+- Se adoptó `CAUSAL_AVG_RANGE_50`: `0,3 × rango medio causal high-low de 50
+  velas`, preservando el motor sin indicadores.
+- La decisión quedó congelada en el preregistro antes de ejecutar DESIGN,
+  VALIDATION o HOLDOUT; no se resolverá post-hoc.
 - Evidencia: `docs/experimentos/AMENDMENT_STOP_GEOMETRY_PRE_RUN.md`.

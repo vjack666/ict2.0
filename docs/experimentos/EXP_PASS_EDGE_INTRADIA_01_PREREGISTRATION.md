@@ -148,6 +148,14 @@ spread `1 pip`, slippage `0,3 pip`, timeout `12` velas M15 y prioridad
 última barra del horizonte. Estos parámetros son una hipótesis de investigación
 local y no una certificación de condiciones reales FundedNext.
 
+### Enmienda de geometría del stop
+
+Se adopta `CAUSAL_AVG_RANGE_50`: el buffer del stop es `0,3 × rango medio
+causal high-low de 50 velas`, que es la volatilidad autorizada por el motor sin
+indicadores. La columna interna `atr` es un nombre de compatibilidad para esa
+serie y no ATR clásico. `TRUE_ATR` queda fuera de este SDD y requeriría otro
+experimento.
+
 ## 6. Particiones temporales congeladas
 
 Las ventanas son UTC y tienen límite final exclusivo:

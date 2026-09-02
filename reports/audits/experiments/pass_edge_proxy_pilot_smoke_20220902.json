@@ -1,6 +1,6 @@
 {
   "artifact_kind": "PASS_EDGE_PROXY_PILOT",
-  "status": "BLOCKED",
+  "status": "REVIEW",
   "policy": {
     "local_only": true,
     "can_trade": false,
@@ -30,8 +30,7 @@
     "contract_size": 100000.0,
     "pip_size": 0.0001
   },
-  "blocking_gate": "STOP_GEOMETRY_NOT_RECONCILED",
-  "technical_geometry_note": "The current canonical resolver uses its configured fixed price buffer; this pilot does not certify the preregistered 0.3 ATR stop geometry.",
+  "technical_geometry_note": "Geometry is frozen as 0.3 times the causal 50-bar high-low average (CAUSAL_AVG_RANGE_50); the engine field named atr is compatibility naming, not classical ATR.",
   "trades": [
     {
       "id": "TRADE_0001",

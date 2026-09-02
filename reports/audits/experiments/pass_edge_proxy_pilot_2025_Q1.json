@@ -22,6 +22,12 @@
     "unresolved": 11
   },
   "mean_net_R": -1.441031013492727,
+  "by_regime_h4": {
+    "BULLISH": {
+      "resolved": 2,
+      "mean_net_R": -1.441031013492727
+    }
+  },
   "scenario": {
     "spread_pips": 1.0,
     "slippage_pips": 0.3,
@@ -61,6 +67,7 @@
         "RETURN": "RETURN_0001",
         "CONTRACT": "CONTRACT_0001"
       },
+      "regime_h4_at_entry": "BEARISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -96,6 +103,7 @@
         "RETURN": "RETURN_0002",
         "CONTRACT": "CONTRACT_0002"
       },
+      "regime_h4_at_entry": "BULLISH",
       "gross_pnl_cash": -503.30000000000655,
       "initial_risk_cash": 503.30000000000655,
       "spread_cash": 10.0,
@@ -142,6 +150,7 @@
         "RETURN": "RETURN_0003",
         "CONTRACT": "CONTRACT_0003"
       },
+      "regime_h4_at_entry": "BEARISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -177,6 +186,7 @@
         "RETURN": "RETURN_0004",
         "CONTRACT": "CONTRACT_0004"
       },
+      "regime_h4_at_entry": "BEARISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -212,6 +222,7 @@
         "RETURN": "RETURN_0005",
         "CONTRACT": "CONTRACT_0005"
       },
+      "regime_h4_at_entry": "BEARISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -247,6 +258,7 @@
         "RETURN": "RETURN_0006",
         "CONTRACT": "CONTRACT_0006"
       },
+      "regime_h4_at_entry": "BULLISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -282,6 +294,7 @@
         "RETURN": "RETURN_0007",
         "CONTRACT": "CONTRACT_0007"
       },
+      "regime_h4_at_entry": "BEARISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -317,6 +330,7 @@
         "RETURN": "RETURN_0008",
         "CONTRACT": "CONTRACT_0008"
       },
+      "regime_h4_at_entry": "BULLISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -352,6 +366,7 @@
         "RETURN": "RETURN_0009",
         "CONTRACT": "CONTRACT_0009"
       },
+      "regime_h4_at_entry": "BULLISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -387,6 +402,7 @@
         "RETURN": "RETURN_0010",
         "CONTRACT": "CONTRACT_0010"
       },
+      "regime_h4_at_entry": "BULLISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -422,6 +438,7 @@
         "RETURN": "RETURN_0011",
         "CONTRACT": "CONTRACT_0011"
       },
+      "regime_h4_at_entry": "BEARISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -457,6 +474,7 @@
         "RETURN": "RETURN_0012",
         "CONTRACT": "CONTRACT_0012"
       },
+      "regime_h4_at_entry": "BEARISH",
       "gross_pnl_cash": null,
       "initial_risk_cash": null,
       "cost_cash": null,
@@ -492,6 +510,7 @@
         "RETURN": "RETURN_0013",
         "CONTRACT": "CONTRACT_0013"
       },
+      "regime_h4_at_entry": "BULLISH",
       "gross_pnl_cash": -27.500000000002522,
       "initial_risk_cash": 27.500000000002522,
       "spread_cash": 10.0,

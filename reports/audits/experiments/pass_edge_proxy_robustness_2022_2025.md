@@ -30,3 +30,16 @@ estable. El análisis cumple como diagnóstico; no sustituye el análisis
 clusterizado exigido por el contrato ni certifica procedencia.
 
 **Estado:** `REVIEW` diagnóstico / `BLOCKED` para certificación global.
+
+## Régimen H4 al momento de entrada
+
+Asignación causal: último H4 cerrado en o antes de cada entrada; el régimen no
+participa en la selección de trades.
+
+| Régimen | Outcomes | Media net_R |
+|---|---:|---:|
+| BULLISH | 43 | -1,096718 |
+| BEARISH | 38 | -1,055892 |
+
+No hubo outcomes resueltos con etiqueta `RANGING` en los artefactos observados.
+Ambos regímenes presentes fueron negativos.

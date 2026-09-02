@@ -221,6 +221,8 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 - Outcomes por sesión UTC: London 11 (`-0,489994R`), NY 3 (`-1,239506R`) y
   otras horas 67 (`-1,166782R`).
 - Outcomes resueltos: 71 SL y 10 TP.
-- Los artefactos no contienen una etiqueta de régimen congelada; la dimensión
-  de régimen queda `MISSING`, no se reconstruye post-hoc.
+- La etiqueta de régimen usa el último H4 cerrado al entrar y no altera la
+  selección: BULLISH 43 outcomes (`-1,096718R`) y BEARISH 38 (`-1,055892R`).
+- No hubo outcomes RANGING resueltos; ambos regímenes presentes fueron
+  negativos.
 - Evidencia: `reports/audits/experiments/pass_edge_robustness_2022_2025.md`.

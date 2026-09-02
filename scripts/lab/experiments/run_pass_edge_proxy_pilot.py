@@ -11,12 +11,15 @@ import json
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from backtest.economics import EconomicScenario, account_trade_economics
 from backtest.replay import ReplayConfig, load_raw_frames, run_visual_replay
+from engine.market_features import build_features
 from engine.sequential_outcome import OutcomeConfig
 
 
@@ -43,7 +46,18 @@ def main() -> None:
         spread_pips=1.0, slippage_pips=0.3,
         commission_per_lot_side=5.0,
     )
-    economic_trades = [account_trade_economics(t, scenario) for t in technical.trades]
+    h4 = frames["H4"].sort_values("time").reset_index(drop=True)
+    # Regime is a descriptive, point-in-time label from the last H4 bar closed
+    # at entry. It is never used to select or alter a trade.
+    h4_featured = build_features(h4)
+    economic_trades = []
+    for trade in technical.trades:
+        entry_ts = pd.Timestamp(trade.get("entry_time"))
+        closed = h4_featured[h4_featured["time"] <= entry_ts]
+        regime = str(closed.iloc[-1].get("trend", "UNKNOWN")) if not closed.empty else "UNKNOWN"
+        enriched = dict(trade)
+        enriched["regime_h4_at_entry"] = regime
+        economic_trades.append(account_trade_economics(enriched, scenario))
     resolved = [t for t in economic_trades if t["net_R"] is not None]
     summary = {
         "artifact_kind": "PASS_EDGE_PROXY_PILOT",
@@ -59,6 +73,15 @@ def main() -> None:
                             "unresolved": len(economic_trades) - len(resolved)},
         "mean_net_R": (sum(t["net_R"] for t in resolved) / len(resolved)
                        if resolved else None),
+        "by_regime_h4": {
+            regime: {
+                "resolved": len(group),
+                "mean_net_R": sum(t["net_R"] for t in group) / len(group),
+            }
+            for regime in sorted({t["regime_h4_at_entry"] for t in resolved})
+            for group in [[t for t in resolved if t["regime_h4_at_entry"] == regime]]
+            if group
+        },
         "scenario": economic_trades[0].get("economic_scenario", {
             "spread_pips": 1.0, "slippage_pips": 0.3,
             "commission_per_lot_side": 5.0, "lot_size": 1.0,

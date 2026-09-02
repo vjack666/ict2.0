@@ -40,7 +40,8 @@
       "rows": [689, 692, 693, 696, 707, 712, 737, 750, 765],
       "issue": "open or close falls outside the candle high-low interval",
       "impact": "invalid OHLC can alter range, displacement, liquidity and downstream setup/label calculations",
-      "remediation": "trace the source export and document a source-level correction or exclusion rule; do not edit or silently drop rows in place"
+      "remediation": "trace the source export and document a source-level correction or exclusion rule; do not edit or silently drop rows in place",
+      "corroboration": "three local MT5 parquet copies agree on valid OHLC for the nine timestamps, but they are a separate operational feed and do not establish the Dukascopy M15 source-level correction"
     },
     {
       "id": "DQ-002",

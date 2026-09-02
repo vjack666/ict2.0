@@ -90,3 +90,14 @@ entonces no ejecutar backtest, entrenamiento, paper/demo, broker u órdenes.
 - CRO mantiene `BLOCKED / NO-GO`: no procede `NO_EDGE` porque aún no se midió
   `net_R`, y no procede `PASS_EDGE` porque faltan calidad/procedencia, costes,
   fill, horizonte y reproducibilidad limpia.
+
+### Nueva evidencia local: copias MT5 concordantes
+
+- Se compararon tres parquets locales: el operativo actual y dos copias del
+  backup histórico (`data_raw` y `data_mt5`). Los tres contienen las nueve
+  marcas temporales y coinciden en sus OHLC válidos; las copias antiguas además
+  conservan `tick_volume` y `spread`.
+- Esta evidencia identifica una segunda lectura local coherente, pero no prueba
+  que sea la fuente del CSV histórico ni que las copias sean independientes.
+  Por el contrato de separación de feeds, no se mezclan ni se usa MT5 para
+  corregir Dukascopy. El gate histórico permanece `BLOCKED`.

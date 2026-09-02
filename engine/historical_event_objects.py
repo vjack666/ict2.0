@@ -6,7 +6,6 @@ never exposes a future child in an as-of projection.
 """
 from __future__ import annotations
 
-from copy import deepcopy
 from dataclasses import dataclass
 from math import isfinite
 from typing import Any, Mapping
@@ -46,18 +45,39 @@ def _overlaps(a: MarketObject, b: MarketObject) -> bool:
     return max(float(a.zone_low), float(b.zone_low)) < min(float(a.zone_high), float(b.zone_high))
 
 
-def _active_at(obj: MarketObject, frame: pd.DataFrame, event_time: Any) -> bool:
-    """Return the authority-time state without mutating the birth object."""
-    projected = deepcopy(obj)
-    start, end = _utc(projected.tradable_time), _utc(event_time)
-    for index, row in frame.loc[(frame["time"] > start) & (frame["time"] <= end)].iterrows():
-        bar = row.to_dict()
-        bar["tf"] = projected.origin_tf
-        bar["__index__"] = int(index)
-        evaluate(projected, bar, authority_tf=projected.origin_tf)
-        if projected.is_terminal:
-            break
-    return projected.state is ObjectState.ACTIVE
+def _active_window_checker(
+    objects: list[MarketObject], frame: pd.DataFrame, window: pd.Timedelta
+):
+    """Memoize each POI's first non-ACTIVE authority close within its window.
+
+    This is equivalent to replaying an OB up to every M15 candidate: lifecycle
+    never returns a zonal object to ACTIVE, so its first non-ACTIVE close is a
+    sufficient point-in-time boundary.  It keeps T7f feasible on local hardware.
+    """
+    inactive_at: dict[str, pd.Timestamp | None] = {}
+
+    def is_active(obj: MarketObject, event_time: Any) -> bool:
+        start = _utc(obj.tradable_time)
+        event = _utc(event_time)
+        if event < start or event - start > window:
+            return False
+        if obj.id not in inactive_at:
+            projected = MarketObject.from_dict(obj.to_dict())
+            limit = start + window
+            boundary: pd.Timestamp | None = None
+            for index, row in frame.loc[(frame["time"] > start) & (frame["time"] <= limit)].iterrows():
+                bar = row.to_dict()
+                bar["tf"] = projected.origin_tf
+                bar["__index__"] = int(index)
+                evaluate(projected, bar, authority_tf=projected.origin_tf)
+                if projected.state is not ObjectState.ACTIVE:
+                    boundary = _utc(row["time"])
+                    break
+            inactive_at[obj.id] = boundary
+        boundary = inactive_at[obj.id]
+        return boundary is None or event < boundary
+
+    return is_active
 
 
 def build_historical_event_objects(
@@ -84,6 +104,7 @@ def build_historical_event_objects(
     for ob in obs:
         ob.role = Role.POI
     poi_window = pd.Timedelta(hours=cfg.poi_to_child_max_hours)
+    is_active = _active_window_checker(obs, h4, poi_window)
     structure = detect_market_structure(m15, cfg.structure).frame
     bos_objects: list[MarketObject] = []
     bos_parent: dict[str, MarketObject] = {}
@@ -95,7 +116,7 @@ def build_historical_event_objects(
             if ob.direction == direction
             and _utc(ob.tradable_time) <= event_time
             and event_time - _utc(ob.tradable_time) <= poi_window
-            and _active_at(ob, h4, event_time)
+            and is_active(ob, event_time)
         ]
         if not candidates:
             continue
@@ -130,7 +151,7 @@ def build_historical_event_objects(
             if ob.direction == direction
             and _utc(ob.tradable_time) <= event_time
             and event_time - _utc(ob.tradable_time) <= poi_window
-            and _active_at(ob, h4, event_time)
+            and is_active(ob, event_time)
         ]
         if not candidates:
             continue
@@ -159,7 +180,7 @@ def build_historical_event_objects(
             and _utc(ob.tradable_time) <= event_time
             and event_time - _utc(ob.tradable_time) <= poi_window
             and _overlaps(ob, fvg)
-            and _active_at(ob, h4, event_time)
+            and is_active(ob, event_time)
         ]
         if not candidates:
             continue

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
+from functools import lru_cache
 import hashlib
 import heapq
 import json
@@ -99,7 +100,25 @@ SetupProvider = Callable[[MarketState, pd.Timestamp, Any], list[Setup]]
 ExecutionPlanProvider = Callable[[Setup, pd.Timestamp], TradeLevels | None]
 
 
+@lru_cache(maxsize=100_000)
+def _utc_text(value: str) -> pd.Timestamp:
+    """Parse a serialized replay time once; close batches reuse it heavily."""
+
+    result = pd.to_datetime(value, utc=True, errors="coerce")
+    if pd.isna(result):
+        raise ValueError(f"invalid close time: {value!r}")
+    return result
+
+
 def _utc(value: Any) -> pd.Timestamp:
+    """Normalize supported replay times without reparsing existing UTC stamps."""
+
+    if isinstance(value, pd.Timestamp):
+        if value.tzinfo is None:
+            return value.tz_localize("UTC")
+        return value.tz_convert("UTC")
+    if isinstance(value, str):
+        return _utc_text(value)
     result = pd.to_datetime(value, utc=True, errors="coerce")
     if pd.isna(result):
         raise ValueError(f"invalid close time: {value!r}")

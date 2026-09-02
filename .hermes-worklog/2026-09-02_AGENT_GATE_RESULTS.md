@@ -115,6 +115,20 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
   CSV actuales. La procedencia M15 queda `PARTIAL/BLOCKED`; no se infiere desde
   el paquete H1/H4/D1 ni se presenta como `PASS`.
 
+### Búsqueda amplia: export MT5 de GRID SCAPL 2
+
+- Se encontró `GRID SCAPL 2/exports/candles_export_full.csv`, generado por un
+  script que usa `MetaTrader5.copy_rates_from_pos`.
+- Hash SHA-256: `29f0f60ffdb61865d36ea9984ddfea31b0713b86eb1c37ebd13dab2f22a2ad97`;
+  tamaño `17.411.179` bytes; 50.000 velas EURUSD M15, rango
+  `2024-04-19` a `2026-04-24`.
+- Bajo la regla aprobada `low <= open/close <= high`, sus M15 no tienen OHLC
+  inválidos. Sus nueve valores de `2024-10-10`, sin embargo, difieren del CSV
+  histórico Dukascopy y no cubren 2006–2025; no son sustituto ni corrección.
+- El README y el script prueban el mecanismo MT5, pero no aportan un log de
+  ejecución fechado que vincule este export con el dataset histórico. El gate
+  histórico continúa `BLOCKED`.
+
 ### Corrección de la auditoría en worktree limpio
 
 - La primera versión del auditor trataba números de línea física como índices

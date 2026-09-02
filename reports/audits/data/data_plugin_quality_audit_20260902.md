@@ -21,6 +21,7 @@
 - `datasets/eurusd_dukascopy_20y/metadata.json` identifica proveedor e instrumento y registra fecha/comando de adquisición para H1/H4/D1.
 - `docs/experimentos/EXP_MTF_REPLAY_T7F_2006_2020_PREREGISTRATION.md` documenta la fuente M15, el comando mensual y la autorización histórica, pero declara que no existe log de ejecución verificable.
 - Ningún artefacto local vincula de forma máquina-verificable ese comando M15 con los 241 CSV actuales. Por tanto, la procedencia M15 es **PARCIAL**, no `PASS`.
+- Se inspeccionó además `C:\Users\v_jac\Desktop\GRID SCAPL 2\exports\candles_export_full.csv`: hash SHA-256 `29f0f60ffdb61865d36ea9984ddfea31b0713b86eb1c37ebd13dab2f22a2ad97`, 17.411.179 bytes, 50.000 velas EURUSD M15 desde 2024-04-19 hasta 2026-04-24. Bajo la regla no estricta aprobada no tiene OHLC inválidos, pero no cubre 2006-2025 completo, difiere del CSV histórico y su exportación MT5 no aporta un log de adquisición reproducible para el conjunto histórico.
 
 ## Riesgos
 

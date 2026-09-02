@@ -1,0 +1,72 @@
+{
+  "audit": "DATA_PLUGIN_QUALITY_AND_PROVENANCE",
+  "mode": "AUDIT_ONLY",
+  "generated_at": "2026-09-02",
+  "scope": {
+    "repository": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM",
+    "datasets": [
+      "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/**/*.csv",
+      "datasets/eurusd_dukascopy_intraday_2011_2020/raw_monthly/**/*.csv",
+      "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/**/*.csv"
+    ],
+    "intended_use": "research evidence and holdout evaluation",
+    "grain": "one EURUSD M15 bid candle per timestamp"
+  },
+  "status": "BLOCKED",
+  "checks": {
+    "csv_files": 241,
+    "rows": 499864,
+    "schema_consistent": true,
+    "headers": ["timestamp", "open", "high", "low", "close", "volume"],
+    "duplicate_timestamps_within_file": 0,
+    "manifest_entries_checked": 180,
+    "manifest_missing": 0,
+    "manifest_bad_bytes": 0,
+    "manifest_bad_sha256": 0,
+    "ohlc_invalid_rows": 9
+  },
+  "findings": [
+    {
+      "id": "DQ-001",
+      "severity": "HIGH",
+      "confidence": "HIGH",
+      "status": "BLOCKED",
+      "file": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-10-01-2024-11-01.csv",
+      "rows": [689, 692, 693, 696, 707, 712, 737, 750, 765],
+      "issue": "open or close falls outside the candle high-low interval",
+      "impact": "invalid OHLC can alter range, displacement, liquidity and downstream setup/label calculations",
+      "remediation": "trace the source export and document a source-level correction or exclusion rule; do not edit or silently drop rows in place"
+    },
+    {
+      "id": "DQ-002",
+      "severity": "HIGH",
+      "confidence": "HIGH",
+      "status": "BLOCKED",
+      "issue": "the manifest covers 180 files while the audited intraday tree contains 241 CSV files",
+      "impact": "the complete dataset lineage and reproducibility cannot be established",
+      "remediation": "create and verify a complete manifest for all files before scientific reuse"
+    },
+    {
+      "id": "PROV-001",
+      "severity": "CRITICAL",
+      "confidence": "HIGH",
+      "status": "BLOCKED",
+      "issue": "provider authorization/license and complete acquisition lineage are not established for the operational research source",
+      "impact": "technical hashes do not support legal provenance, certification, promotion or trading authorization",
+      "remediation": "record provider, permitted use, acquisition timestamp, source documentation, generator commit and clean-worktree evidence"
+    }
+  ],
+  "existing_evidence_reconciled": {
+    "a7_technical_report": "PASS technical funnel; source authorization explicitly out of scope",
+    "t7d": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+    "holdout_2021_2025": "REVIEW / BLOCKED_PROVENANCE / NO_EDGE_DEMONSTRATED",
+    "can_trade": false
+  },
+  "decision": "NO-GO for scientific certification or promotion; data remains available only for controlled diagnostic review after the blockers are resolved",
+  "next_action": [
+    "obtain or reconstruct source-level evidence for the nine invalid candles",
+    "generate a complete manifest covering all 241 CSV files and verify hashes",
+    "complete license/permitted-use and acquisition lineage fields",
+    "repeat this audit on a clean, explicitly scoped worktree"
+  ]
+}

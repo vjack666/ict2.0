@@ -47,7 +47,7 @@ def main() -> None:
     resolved = [t for t in economic_trades if t["net_R"] is not None]
     summary = {
         "artifact_kind": "PASS_EDGE_PROXY_PILOT",
-        "status": "REVIEW",
+        "status": "BLOCKED",
         "policy": {"local_only": True, "can_trade": False, "can_train": False,
                    "promotion_authorized": False},
         "period": {"start": args.start, "end": args.end},
@@ -64,6 +64,7 @@ def main() -> None:
             "commission_per_lot_side": 5.0, "lot_size": 1.0,
             "contract_size": 100000.0, "pip_size": 0.0001,
         }),
+        "blocking_gate": "STOP_GEOMETRY_NOT_RECONCILED",
         "technical_geometry_note": (
             "The current canonical resolver uses its configured fixed price "
             "buffer; this pilot does not certify the preregistered 0.3 ATR "

@@ -109,6 +109,43 @@ def test_lower_tf_observation_cannot_kill_h4_object():
     assert len(state.all_objects()[0].meta["observations"]["M15"]) == 1
 
 
+def test_event_driven_decisions_skip_only_duplicate_recomposition():
+    """The T7f optimization must preserve causal state and replay topology."""
+    created = datetime(2024, 1, 1, tzinfo=timezone.utc)
+
+    def state_with_poi() -> MarketState:
+        state = MarketState()
+        state.ingest(MarketObject(
+            id="OB-H4-event-driven", symbol="EURUSD", type=ObjectType.ORDER_BLOCK,
+            origin_tf="H4", role=Role.POI, direction=1, zone_low=1.0, zone_high=1.2,
+            creation_time=created, state=ObjectState.ACTIVE, bar_index=0,
+            candidate_bar=0, candidate_time=created, confirmation_bar=0,
+            confirmation_time=created, tradable_bar=0, tradable_time=created,
+        ))
+        return state
+
+    ordinary_calls: list[datetime] = []
+    event_calls: list[datetime] = []
+    ordinary = MTFReplayOrchestrator(
+        _config(), state_with_poi(),
+        setup_provider=lambda _state, now, _ctx: ordinary_calls.append(now) or [],
+    ).run(_frames())
+    event_driven = MTFReplayOrchestrator(
+        _config(event_driven_decisions=True), state_with_poi(),
+        setup_provider=lambda _state, now, _ctx: event_calls.append(now) or [],
+    ).run(_frames())
+
+    assert len(ordinary_calls) == len(ordinary["timeline"])
+    assert len(event_calls) < len(ordinary_calls)
+    assert [row["observation_time"] for row in event_driven["timeline"]] == [
+        row["observation_time"] for row in ordinary["timeline"]
+    ]
+    assert event_driven["state_deltas"] == ordinary["state_deltas"]
+    assert event_driven["market_state_checkpoints"][-1]["market_state"] == ordinary[
+        "market_state_checkpoints"
+    ][-1]["market_state"]
+
+
 def test_checkpoint_resume_preserves_market_state_and_rejects_hash_mismatch():
     import pytest
 

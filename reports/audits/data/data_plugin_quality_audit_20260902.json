@@ -46,10 +46,10 @@
       "id": "DQ-002",
       "severity": "HIGH",
       "confidence": "HIGH",
-      "status": "BLOCKED",
-      "issue": "the original manifest covered 180 files; a second manifest was created for the remaining 61 files",
-      "impact": "the complete tree is now mechanically covered, but the new manifest still requires independent review and does not resolve invalid OHLC or legal provenance",
-      "remediation": "independently review both manifests and repeat hash verification on a clean worktree"
+      "status": "RESOLVED_TECHNICAL",
+      "issue": "the original manifest covered 180 files and a second manifest covers the remaining 61 files",
+      "impact": "the complete tree is mechanically covered and the two manifests were independently checked; clean-worktree reproduction remains required by the certification contract",
+      "remediation": "repeat the same hash verification on the explicitly scoped clean certification worktree"
     },
     {
       "id": "PROV-001",

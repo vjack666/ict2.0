@@ -111,7 +111,7 @@ def execute_year(year: int, manifest: list[dict[str, Any]], output_dir: Path) ->
         state, context, population = _state_and_context(frames)
         config = ReplayConfig(symbol="EURUSD", profile=INTRADAY_H4_M15, checkpoint_every=250,
                               chunk_size=500, dataset_hash=dataset_hash, code_commit=commit,
-                              event_driven_decisions=True)
+                              event_driven_decisions=True, record_lower_tf_observations=False)
         started = time.perf_counter()
         artifact = MTFReplayOrchestrator(config, state, context_provider=context).run(frames)
         return artifact, population, time.perf_counter() - started, _peak_working_set_mb() if measure else None

@@ -22,7 +22,7 @@ from engine.episodes import build_episodes
 from engine.market_state import MarketState
 from engine.sequential_outcome import OutcomeConfig, TradeLevels, resolve_outcome
 from engine.setup_builder import Setup, SetupEligibility, build_setups_at
-from engine.market_object import ObjectType
+from engine.market_object import MarketObject, ObjectType
 
 
 TF_RANK = {"D1": 0, "H4": 1, "H1": 2, "M15": 3, "M5": 4, "M1": 5}
@@ -71,6 +71,7 @@ class ReplayConfig:
     dataset_hash: str = "SYNTHETIC"
     code_commit: str = "UNKNOWN"
     event_driven_decisions: bool = False
+    record_lower_tf_observations: bool = True
 
     def __post_init__(self) -> None:
         if self.checkpoint_every <= 0 or self.chunk_size <= 0:
@@ -84,6 +85,7 @@ class ReplayConfig:
             "dataset_hash": self.dataset_hash,
             "code_commit": self.code_commit,
             "event_driven_decisions": self.event_driven_decisions,
+            "record_lower_tf_observations": self.record_lower_tf_observations,
         }
 
     @property
@@ -212,7 +214,9 @@ class MTFReplayOrchestrator:
         self._filled_setups: set[str] = set()
         self._pending_plans: dict[str, dict[str, Any]] = {}
 
-    def _apply_bar(self, bar: dict[str, Any]) -> list[dict[str, Any]]:
+    def _apply_bar(
+        self, bar: dict[str, Any], objects: Iterable[MarketObject] | None = None
+    ) -> list[dict[str, Any]]:
         tf = bar["tf"]
         engine_bar = {
             **bar,
@@ -220,7 +224,7 @@ class MTFReplayOrchestrator:
             "__index__": bar["index"],
         }
         transitions: list[dict[str, Any]] = []
-        for obj in list(self.market_state.all_objects()):
+        for obj in list(objects if objects is not None else self.market_state.all_objects()):
             # Terminal lifecycle states are immutable. Skipping them avoids
             # replaying and serializing irrelevant dedupe events.
             if obj.is_terminal:
@@ -235,7 +239,7 @@ class MTFReplayOrchestrator:
             try:
                 if tf == obj.authority_tf:
                     self.market_state.advance_bar(obj.id, engine_bar)
-                elif TF_RANK[tf] > TF_RANK.get(obj.authority_tf, -1):
+                elif self.config.record_lower_tf_observations and TF_RANK[tf] > TF_RANK.get(obj.authority_tf, -1):
                     self.market_state.observe(obj.id, engine_bar, observed_tf=tf)
                 else:
                     continue
@@ -275,15 +279,27 @@ class MTFReplayOrchestrator:
         rejections: list[dict[str, Any]] = []
         trades: list[dict[str, Any]] = []
         exec_rows = candles_by_tf[self.config.profile.exec_tf]
+        lifecycle_by_birth = sorted(
+            (
+                obj for obj in self.market_state.all_objects()
+                if obj.type in LIFECYCLE_MANAGED_TYPES and obj.creation_time is not None
+            ),
+            key=lambda obj: _utc(obj.creation_time),
+        )
+        known_lifecycle: list[MarketObject] = []
+        birth_cursor = 0
 
         for cursor, (now, batch) in enumerate(iter_close_batches(candles_by_tf)):
             if cursor < start_cursor:
                 continue
             if stop_after_batches is not None and len(timeline) >= stop_after_batches:
                 break
+            while birth_cursor < len(lifecycle_by_birth) and _utc(lifecycle_by_birth[birth_cursor].creation_time) <= _utc(now):
+                known_lifecycle.append(lifecycle_by_birth[birth_cursor])
+                birth_cursor += 1
             transition_rows: list[dict[str, Any]] = []
             for bar in batch:
-                transition_rows.extend(self._apply_bar(bar))
+                transition_rows.extend(self._apply_bar(bar, known_lifecycle))
             births = any(
                 obj.creation_time is not None and _utc(obj.creation_time) == _utc(now)
                 for obj in self.market_state.all_objects()

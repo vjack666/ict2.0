@@ -1,0 +1,15 @@
+{
+  "artifact_kind": "ai_outcome_label_policy_audit",
+  "status": "BLOCKED_INSUFFICIENT_CLASS_SUPPORT",
+  "mode": "LOCAL_ONLY",
+  "can_trade": false,
+  "selection_rule": "shortest predeclared horizon satisfying causal gates and at least five rows per class in chronological TRAIN",
+  "window": "2006-01-01 through 2015-12-31; forward bars retained through 2016-01-15",
+  "candidates": [
+    {"label":"label_end_6","artifact":"replay_2006_2015_h6_policy_ref_utcfix_20260902.json","sha256":"20c8251e42aac7ebe22b60d676ca0bc9e85f84b80e0fcf7e6af99a137aaffeae","full_prefix":"PASS","labels":{"continuation":0,"reversal":6,"failure":47}},
+    {"label":"label_end_24","artifact":"replay_2006_2015_h24_policy_utcfix_20260902.json","sha256":"791e3aceb76efc5cc8cb1eba4db1a743de30f1cc53c8509e9686a21761c15953","full_prefix":"PASS","labels":{"continuation":2,"reversal":14,"failure":37}},
+    {"label":"label_end_48","artifact":"replay_2006_2015_h48_policy_utcfix_20260902.json","sha256":"ca4d3118b7d72a31004e60a4002d1ae80e6ce8fe366a8eef07ec2e63bd49adc1","full_prefix":"PASS","labels":{"continuation":3,"reversal":19,"failure":31}}
+  ],
+  "decision": "No candidate may enter diagnostic fitting: even H48 has only three continuation rows in the full design population, below the required five in TRAIN.",
+  "provenance": "BLOCKED: Dukascopy license/permitted-use and acquisition execution record remain unestablished."
+}

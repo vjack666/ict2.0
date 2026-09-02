@@ -47,3 +47,17 @@ ver los resultados. Se congeló una selección mecánica separada en
 Ejecutar los tres candidatos congelados en una población cronológica mayor,
 auditar sus gates y, solo si alguno cumple soporte mecánico, usarlo para un
 diagnóstico Shadow-only.
+
+## Addendum — ejecución de política 2006--2015
+
+Se ejecutaron `label_end_6`, `label_end_24` y `label_end_48` con la misma
+población de 53 episodios y FULL/PREFIX PASS en todos los cortes. El bug de
+comparar timestamps como texto fue corregido en `b5fd076`; la comparación ahora
+normaliza instantes UTC antes de compararlos.
+
+El resultado fue bloqueo concluyente de soporte: H6=0, H24=2 y H48=3
+continuaciones. El materializador canónico mapea TP/SL/OPEN a
+continuation/reversal/failure, respectivamente; por tanto ninguna variante
+cumple las cinco continuaciones mínimas en TRAIN. No hubo fit de IA, cambio de
+SL/TP, trading ni promoción. El resumen con hashes está en
+`reports/audits/experiments/ai/label_policy_v1_20260902.json`.

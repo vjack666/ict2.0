@@ -39,3 +39,19 @@ es `BLOCKED`; no se inventan clases, no se reponderan filas y no se entrena.
   no queda `TRAINING_ELIGIBLE` ni autoriza promoción, MT5 u órdenes.
 - El TEST/OOS solo evalúa un candidato congelado: no participa en la elección
   de horizonte, features, hiperparámetros ni calibración.
+
+## Resultado de ejecución 2026-09-02
+
+Los tres candidatos aprobaron FULL/PREFIX en 10/25/50/75/90% sobre el mismo
+período de diseño 2006--2015. Sin embargo, los conteos fueron:
+
+| Etiqueta | Continuation | Reversal | Failure | Dictamen |
+|---|---:|---:|---:|---|
+| `label_end_6` | 0 | 6 | 47 | BLOCKED |
+| `label_end_24` | 2 | 14 | 37 | BLOCKED |
+| `label_end_48` | 3 | 19 | 31 | BLOCKED |
+
+Ninguno alcanza cinco ejemplos `continuation` siquiera en toda la población;
+por lo tanto ninguno puede alcanzar el mínimo de cinco en TRAIN. El resultado
+es `BLOCKED_INSUFFICIENT_CLASS_SUPPORT`, no una autorización para retocar
+horizontalmente los contratos ni para entrenar.

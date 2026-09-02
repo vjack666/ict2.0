@@ -205,3 +205,13 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 - Consolidado 2022–2024: 253 trades, 68 outcomes resueltos, media `-1,098611R`.
 - Evidencia: `reports/audits/experiments/pass_edge_proxy_pilot_2022_2024_summary.md`
   y los doce JSON trimestrales.
+
+### Baseline económico proxy — 2025 y consolidado 2022–2025
+
+- 2025: 62 trades, 13 outcomes resueltos; solo Q3 fue positivo y tuvo 2
+  outcomes resueltos.
+- Consolidado: 315 trades, 81 outcomes resueltos, media `-1,077566R`.
+- Bootstrap iid exploratorio (10.000, semilla `20260902`): IC aproximado
+  `[-1,476154R, -0,696710R]`; no sustituye el análisis clusterizado del SDD.
+- Evidencia: `reports/audits/experiments/pass_edge_proxy_pilot_2022_2025_summary.md`
+  y los dieciséis JSON trimestrales.

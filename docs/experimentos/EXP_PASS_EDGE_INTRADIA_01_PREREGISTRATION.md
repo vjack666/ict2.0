@@ -136,6 +136,10 @@ El horizonte futuro debe ser uno de `FIXED_BARS`, `SESSION_CLOSE` o
 `FIRST_TOUCH_TIMEOUT`, con parámetros completos pre-registrados antes de la
 ejecución. Hasta entonces el gate económico es `BLOCKED`.
 
+La comisión propuesta por el cliente es `US$5 por lote por operación`; queda
+registrada como entrada del contrato, pendiente de fijar si la convención
+operativa la expresa por lado o como ida y vuelta en el manifest final.
+
 ## 6. Particiones temporales congeladas
 
 Las ventanas son UTC y tienen límite final exclusivo:

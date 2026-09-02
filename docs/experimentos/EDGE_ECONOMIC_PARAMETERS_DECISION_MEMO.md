@@ -33,6 +33,13 @@ Antes de correr el baseline hay que completar exactamente:
 5. comisión por lote;
 6. regla de cierre al timeout.
 
+## Aporte del cliente
+
+La comisión indicada por el cliente es **US$5 por lote por operación**. Se
+incorporará como coste de ida y vuelta según la convención que se congele en el
+manifest; no se interpretará como cero ni se aplicará a una unidad distinta de
+la declarada.
+
 ## Escenarios obligatorios
 
 El resultado primario usará un solo escenario congelado. Como control de

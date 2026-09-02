@@ -1,7 +1,7 @@
 # Decisión pendiente — parámetros económicos del baseline Edge intradía
 
 **Fecha:** 2026-09-02  
-**Estado:** `DRAFT_FOR_CLIENT_FREEZE`  
+**Estado:** `PROXY_AUTHORIZED_FOR_PILOT`  
 **Experimento:** `EXP-PASS-EDGE-INTRADIA-01`  
 **Alcance:** investigación local; sin IA, órdenes ni promoción
 
@@ -10,8 +10,10 @@
 La instancia configurada del terminal es
 `C:\Program Files\FundedNext MT5 Terminal\terminal64.exe`, pero la sesión
 observada estaba conectada a `MetaQuotes-Demo`, no a un servidor FundedNext.
-Por eso estos valores se incorporan como **proxy local observado**, no como
-condiciones certificadas del broker:
+El cliente autoriza usar esta cuenta demo para los primeros pasos técnicos y de
+investigación local, sin abrir todavía una cuenta FundedNext. Por eso estos
+valores se incorporan como **proxy local observado**, no como condiciones
+certificadas del broker:
 
 | Campo | Valor observado |
 |---|---|
@@ -27,6 +29,10 @@ El spread es una observación puntual y no representa toda la distribución
 histórica. La comisión de US$5 por lado proviene de las condiciones oficiales
 del modelo FundedNext elegido y no de esta sesión MetaQuotes-Demo; ambas
 fuentes no se mezclan sin declararlo.
+
+La cuenta demo no permite inferir cumplimiento de reglas FundedNext, costes
+reales, ejecución real ni `can_trade=true`. Todo resultado de esta fase se
+etiquetará `PROXY_PILOT`.
 
 ## Recomendación ejecutiva
 

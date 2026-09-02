@@ -150,3 +150,14 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
   líneas físicas `689, 692, 693, 696, 707, 712, 737, 750, 765`.
 - Commit del arreglo: `19ae150` (`fix: audit intraday anomalies by physical CSV line`).
   El resultado sigue siendo `BLOCKED`; se corrigió la medición, no los datos.
+
+### Corrida técnica PROXY_PILOT
+
+- Se ejecutó una prueba de humo local sobre EURUSD M15, 2022-01-01 a
+  2022-01-15 UTC, con contexto D1/H1/H4 y horizonte de 12 velas.
+- Resultado: 960 velas, 1.033 eventos estructurales, 3 señales y 3 registros
+  técnicos de trade; se observaron `SWEEP`, `DISPLACE`, `BOS` y `ENTRY`.
+- Evidencia: `reports/audits/edge_proxy_pilot_smoke_20260902.md`.
+- Estado: `REVIEW` técnico de preparación; no es evidencia de edge. El runner
+  económico exacto del SDD aún debe implementarse y verificarse; el gate global
+  continúa `BLOCKED`, con `can_trade=false` y `can_train=false`.

@@ -1,0 +1,152 @@
+{
+  "artifact_kind": "PASS_EDGE_PROXY_PILOT",
+  "status": "REVIEW",
+  "policy": {
+    "local_only": true,
+    "can_trade": false,
+    "can_train": false,
+    "promotion_authorized": false
+  },
+  "period": {
+    "start": "2022-01-01",
+    "end": "2022-01-15 23:59:59"
+  },
+  "technical_counts": {
+    "candles": 960,
+    "events": 1033,
+    "signals": 3,
+    "trades": 3
+  },
+  "economic_counts": {
+    "resolved": 1,
+    "unresolved": 2
+  },
+  "mean_net_R": -1.4752066115705358,
+  "scenario": {
+    "spread_pips": 1.0,
+    "slippage_pips": 0.3,
+    "commission_per_lot_side": 5.0,
+    "lot_size": 1.0,
+    "contract_size": 100000.0,
+    "pip_size": 0.0001
+  },
+  "technical_geometry_note": "The current canonical resolver uses its configured fixed price buffer; this pilot does not certify the preregistered 0.3 ATR stop geometry.",
+  "trades": [
+    {
+      "id": "TRADE_0001",
+      "signal_index": 0,
+      "signal_id": "RETURN_0001",
+      "chain_id": "CHAIN_0001",
+      "direction": "bullish",
+      "entry_index": 553,
+      "entry_time": "2022-01-10 11:15:00+00:00",
+      "execution_tf": "M15",
+      "entry": 1.13254,
+      "sl": 1.1282210000000001,
+      "tp": 1.145497,
+      "exit_index": null,
+      "exit_time": null,
+      "exit_price": null,
+      "outcome": "OPEN",
+      "exit_r": null,
+      "bars_held": null,
+      "result_confirmed_index": null,
+      "event_ids": {
+        "LIQUIDITY": "LIQUIDITY_0001",
+        "SWEEP": "SWEEP_0001",
+        "DISPLACE": "DISPLACE_0001",
+        "BOS": "BOS_0001",
+        "POI": "",
+        "REFINEMENT": "REFINEMENT_0001",
+        "RETURN": "RETURN_0001",
+        "CONTRACT": "CONTRACT_0001"
+      },
+      "gross_pnl_cash": null,
+      "initial_risk_cash": null,
+      "cost_cash": null,
+      "net_R": null,
+      "economic_status": "UNRESOLVED_TECHNICAL_OUTCOME"
+    },
+    {
+      "id": "TRADE_0002",
+      "signal_index": 1,
+      "signal_id": "RETURN_0002",
+      "chain_id": "CHAIN_0002",
+      "direction": "bearish",
+      "entry_index": 612,
+      "entry_time": "2022-01-11 02:00:00+00:00",
+      "execution_tf": "M15",
+      "entry": 1.1341,
+      "sl": 1.1345839999999998,
+      "tp": 1.132648000000001,
+      "exit_index": 616,
+      "exit_time": "2022-01-11T03:00:00+00:00",
+      "exit_price": 1.1345839999999998,
+      "outcome": "SL",
+      "exit_r": -1.0,
+      "bars_held": 4,
+      "result_confirmed_index": 616,
+      "event_ids": {
+        "LIQUIDITY": "LIQUIDITY_0002",
+        "SWEEP": "SWEEP_0002",
+        "DISPLACE": "DISPLACE_0002",
+        "BOS": "BOS_0002",
+        "POI": "",
+        "REFINEMENT": "REFINEMENT_0002",
+        "RETURN": "RETURN_0002",
+        "CONTRACT": "CONTRACT_0002"
+      },
+      "gross_pnl_cash": -48.39999999997069,
+      "initial_risk_cash": 48.39999999997069,
+      "spread_cash": 10.0,
+      "slippage_cash": 3.0,
+      "commission_cash": 10.0,
+      "cost_cash": 23.0,
+      "net_R": -1.4752066115705358,
+      "economic_status": "RESOLVED",
+      "economic_scenario": {
+        "spread_pips": 1.0,
+        "slippage_pips": 0.3,
+        "commission_per_lot_side": 5.0,
+        "lot_size": 1.0,
+        "contract_size": 100000.0,
+        "pip_size": 0.0001
+      }
+    },
+    {
+      "id": "TRADE_0003",
+      "signal_index": 2,
+      "signal_id": "RETURN_0003",
+      "chain_id": "CHAIN_0003",
+      "direction": "bearish",
+      "entry_index": 709,
+      "entry_time": "2022-01-12 02:15:00+00:00",
+      "execution_tf": "M15",
+      "entry": 1.13577,
+      "sl": 1.1378890000000002,
+      "tp": 1.1294129999999993,
+      "exit_index": null,
+      "exit_time": null,
+      "exit_price": null,
+      "outcome": "OPEN",
+      "exit_r": null,
+      "bars_held": null,
+      "result_confirmed_index": null,
+      "event_ids": {
+        "LIQUIDITY": "LIQUIDITY_0003",
+        "SWEEP": "SWEEP_0003",
+        "DISPLACE": "DISPLACE_0003",
+        "BOS": "BOS_0003",
+        "POI": "",
+        "REFINEMENT": "REFINEMENT_0003",
+        "RETURN": "RETURN_0003",
+        "CONTRACT": "CONTRACT_0003"
+      },
+      "gross_pnl_cash": null,
+      "initial_risk_cash": null,
+      "cost_cash": null,
+      "net_R": null,
+      "economic_status": "UNRESOLVED_TECHNICAL_OUTCOME"
+    }
+  ]
+}

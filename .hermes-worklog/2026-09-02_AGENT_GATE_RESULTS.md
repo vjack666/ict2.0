@@ -215,3 +215,12 @@ corregir Dukascopy. El gate histórico permanece `BLOCKED`.
   `[-1,476154R, -0,696710R]`; no sustituye el análisis clusterizado del SDD.
 - Evidencia: `reports/audits/experiments/pass_edge_proxy_pilot_2022_2025_summary.md`
   y los dieciséis JSON trimestrales.
+
+### Robustez por sesión y régimen
+
+- Outcomes por sesión UTC: London 11 (`-0,489994R`), NY 3 (`-1,239506R`) y
+  otras horas 67 (`-1,166782R`).
+- Outcomes resueltos: 71 SL y 10 TP.
+- Los artefactos no contienen una etiqueta de régimen congelada; la dimensión
+  de régimen queda `MISSING`, no se reconstruye post-hoc.
+- Evidencia: `reports/audits/experiments/pass_edge_robustness_2022_2025.md`.

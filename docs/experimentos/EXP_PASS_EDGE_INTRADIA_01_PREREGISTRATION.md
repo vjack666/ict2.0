@@ -118,6 +118,15 @@ resuelve documentalmente `entry`, `stop`, `TP`, `R` y el umbral de RR usando
 `docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md`; no autoriza todavía una corrida
 económica.
 
+No se heredan automáticamente los parámetros de experimentos históricos. En
+particular, `EXP_C4` usó como referencia `0,5 pip` de spread, `0,3 pip` de
+slippage, comisión `0` y horizonte de `200` barras, pero ese contrato no es el
+de este experimento. Además, algunos runners antiguos usan buffer fijo
+`0,0001`, en conflicto con el buffer normativo `0,3 ATR`. Esta discrepancia
+queda registrada como decisión pendiente: el baseline Edge debe elegir y
+congelar una única convención antes de ejecutarse, sin seleccionar la que dé
+mejor resultado.
+
 El contrato ICT respalda la entrada en retorno a FVG/OB, pero el **fill
 económico M15** está actualmente `UNKNOWN/BLOCKED`. También están
 `UNKNOWN/BLOCKED` el spread, comisión, slippage M15 y el horizonte económico

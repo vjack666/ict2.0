@@ -12,7 +12,7 @@
 - Esquema uniforme: `timestamp, open, high, low, close, volume`.
 - 0 duplicados de timestamp dentro de archivo.
 - El manifiesto de 180 archivos tiene 0 faltantes, 0 errores de tamaño y 0 hashes SHA-256 incorrectos.
-- El árbol completo contiene 241 archivos: 61 archivos no están cubiertos por ese manifiesto.
+- El manifiesto original cubría 180 archivos. Se creó `datasets/eurusd_dukascopy_intraday_2021_2025_manifest.json` con los 61 archivos restantes; la cobertura mecánica actual es 241/241, pendiente de revisión independiente en worktree limpio.
 - Se detectaron 9 filas OHLC inválidas, todas en `datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-10-01-2024-11-01.csv`, filas 689, 692, 693, 696, 707, 712, 737, 750 y 765.
 
 ## Riesgos
@@ -26,6 +26,6 @@ Se creó el dictamen machine-readable y su resumen Markdown. No se modificaron d
 ## Siguiente acción
 
 1. Resolver las nueve filas desde evidencia de fuente, sin corrección silenciosa.
-2. Completar y verificar el manifiesto de los 241 archivos.
+2. Revisar independientemente ambos manifiestos y sus hashes en un worktree limpio.
 3. Completar licencia, uso permitido, adquisición y commit generador.
-4. Repetir la auditoría en un worktree limpio.
+4. Repetir la auditoría completa.

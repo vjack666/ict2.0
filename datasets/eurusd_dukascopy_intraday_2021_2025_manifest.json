@@ -1,0 +1,307 @@
+[
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-01-01-2021-02-01.csv",
+    "sha256": "a341a51712d081bc6b9879cbab6d3dc851c33165e94dfa237e7229df0d56f0a4",
+    "bytes": 108511
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-02-01-2021-03-01.csv",
+    "sha256": "dff9fbc930b3076a099606f5300f42a8e95ba8bfa1cefdbbb4f6d0ba5a056708",
+    "bytes": 107756
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-03-01-2021-04-01.csv",
+    "sha256": "7282206c3a9c7e14f3cc0ae6fd5d293d055ea97207e2eeceea0b46d4b270b5d9",
+    "bytes": 124329
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-04-01-2021-05-01.csv",
+    "sha256": "0dfe2655b8cb6b69f956cf8f58a82a5def794c431fff69945673735f7443fe29",
+    "bytes": 117356
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-05-01-2021-06-01.csv",
+    "sha256": "49182074a2bf51934694b35e60e4dac3166c03806ea588d2e8c7ce25291d020a",
+    "bytes": 113469
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-06-01-2021-07-01.csv",
+    "sha256": "304f13f2612a4770877404ffcf152005845967adc1cdb3cf1f41feb6ec7a40e7",
+    "bytes": 118008
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-07-01-2021-08-01.csv",
+    "sha256": "ad9ba1563994e1cc3adc1f175938aa4b584c1f1b011f84f57e5d815594daaa02",
+    "bytes": 117379
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-08-01-2021-09-01.csv",
+    "sha256": "7705aff147ee0bbc373b43130dc04a7b9c8ae921d1feb1c2d5175d85bd9a15df",
+    "bytes": 118109
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-09-01-2021-10-01.csv",
+    "sha256": "ae31b12281af1e0aec2a95d3d7ee31db1ca062007f62d90d2ac58d95b7633c3f",
+    "bytes": 117716
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-10-01-2021-11-01.csv",
+    "sha256": "89d60e1be51a1c6271bedd0dfabfc4212f7a6ed22e92ade90906535774b88943",
+    "bytes": 112492
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-11-01-2021-12-01.csv",
+    "sha256": "5bfc898be84c23e6a7cf6ba6dbfb7557ddcdd66f67e063b911d6a5247c8b3f60",
+    "bytes": 117717
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2021/eurusd-m15-bid-2021-12-01-2022-01-01.csv",
+    "sha256": "5d2cb15221eeb9bf3693c5ce61a23148ae8be0aec4b1fbeb3a6cea7d7eef527e",
+    "bytes": 122748
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-01-01-2022-02-01.csv",
+    "sha256": "ed70034e50d724657571c60f81a94271c87d2f24f2018ad8314caf6940dc7db6",
+    "bytes": 113113
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-02-01-2022-03-01.csv",
+    "sha256": "f52ba5b86492716ce654bcb123760b0ce282db3725f60e2ded466aafd868fccd",
+    "bytes": 107544
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-03-01-2022-04-01.csv",
+    "sha256": "d998db515680237974cb56e18478e868c325a07160a0ebe1557e8cb938866fbf",
+    "bytes": 124424
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-04-01-2022-05-01.csv",
+    "sha256": "2f932d3cf0c53726e0fb49bad8b6674bd3a1eec0ce76da7e2cabff8b5935f63c",
+    "bytes": 112837
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-05-01-2022-06-01.csv",
+    "sha256": "0bbf560e6943588de98bb7b3d98d0034725b8d3ba554c0d8ed3dc3fb6c173aa0",
+    "bytes": 119645
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-06-01-2022-07-01.csv",
+    "sha256": "02a31aa81ce54b20e576b461367be55c6f46f68cd544a8d6596d9a4748843b24",
+    "bytes": 118854
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-07-01-2022-08-01.csv",
+    "sha256": "b9e4977b3c6c46341bc905108697a8831147fa748b9d16fd48830802c0c34dc6",
+    "bytes": 113575
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-08-01-2022-09-01.csv",
+    "sha256": "8a631ee4b4c74a03c92642bc0238f783dc207b430338277538840945e52ece98",
+    "bytes": 124692
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-09-01-2022-10-01.csv",
+    "sha256": "c62775d17bc6fe962095cca4bc31ed2e27e06739f3efab2701d3e4a5d9402a84",
+    "bytes": 118953
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-10-01-2022-11-01.csv",
+    "sha256": "ee11e048da58664ef9ffa3816cf7fff9007ca1987c077008940dc95b464a9ef1",
+    "bytes": 114990
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-11-01-2022-12-01.csv",
+    "sha256": "40e361a26257281a43807cc6f753ce2f356e9a0ebe57cd7e1726679b74f89a71",
+    "bytes": 119436
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2022/eurusd-m15-bid-2022-12-01-2023-01-01.csv",
+    "sha256": "bcf9ed8e97e63d58944567a89652a69c553339245df231f7bc103541cbf7a313",
+    "bytes": 118940
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-01-01-2023-02-01.csv",
+    "sha256": "cf859986887baf14e6d957c236d9827bad3ab1ffd3dbe3cabe37c6fe98f6b599",
+    "bytes": 119707
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-02-01-2023-03-01.csv",
+    "sha256": "353eb7437295f48bdad3486db03e8fb16907562539d61883eaaf7c693cdfda1b",
+    "bytes": 108486
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-03-01-2023-04-01.csv",
+    "sha256": "1ae601182b09f861d7fbe8431759f06baf9c2af9d3df3a6f32d7d069c92ad794",
+    "bytes": 124376
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-04-01-2023-05-01.csv",
+    "sha256": "cf571bb9a3f80ad200e73360737208390f76f4f86423c47d8e05c6f6a3384284",
+    "bytes": 108918
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-05-01-2023-06-01.csv",
+    "sha256": "b4bc8eefcb1d37a8d3b2238893124a28859fdfb6239ede8c5810003e57b6ba7b",
+    "bytes": 124640
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-06-01-2023-07-01.csv",
+    "sha256": "69e33ee6082968d8b1b7834b8babc42e905a8ec73d9d0b967d8472c83de74ff6",
+    "bytes": 118475
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-07-01-2023-08-01.csv",
+    "sha256": "feabfeb20d0834bcf96f316e2f62d1988f45edda1600338d618f5b4a492cb4ff",
+    "bytes": 114450
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-08-01-2023-09-01.csv",
+    "sha256": "26b8c3348aa4008777e4828ec7a20ad1bbaf2a1a152b4b3085bb84980c1db4cf",
+    "bytes": 124613
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-09-01-2023-10-01.csv",
+    "sha256": "27ae8b21a6b9a015def593f90e9f35fa7c330c49dba0e17235e0941edf06f071",
+    "bytes": 113000
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-10-01-2023-11-01.csv",
+    "sha256": "dc0fff7b82e9c5d507f806deb5f8045ee2fcd2b6680379d6da07b822d9b2245b",
+    "bytes": 119810
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-11-01-2023-12-01.csv",
+    "sha256": "c702048605e32a7c4e144157b23dd52929609e8d4767ef4ea3c2b17c5fadcb40",
+    "bytes": 118872
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2023/eurusd-m15-bid-2023-12-01-2024-01-01.csv",
+    "sha256": "58d8ede8da93ecf4a613e915b79cfba45a82ee5736975abacfe75df8c80402f7",
+    "bytes": 109876
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-01-01-2024-02-01.csv",
+    "sha256": "84c7a16f21564ffc4beb745494ddf86af9e1fe9fa0aaac4d0d9a11dcd696fda0",
+    "bytes": 119663
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-02-01-2024-03-01.csv",
+    "sha256": "99d7e350310cf13ff6fdd69aebf5b82d3fd1d5f6f02be6189e2eec3031a9b284",
+    "bytes": 113664
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-03-01-2024-04-01.csv",
+    "sha256": "5a29d329e3a8defb8f94cc9b72ceaebc3152c124a8c4fc8ed2f954f84744f6d4",
+    "bytes": 113680
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-04-01-2024-05-01.csv",
+    "sha256": "524526d4014169d0d3d7fb60a1590f7f54349ee3436ff6646448e464e5b66869",
+    "bytes": 118807
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-05-01-2024-06-01.csv",
+    "sha256": "d99d09e3f1cc453f04894845545165e9887e488bcec54dc02c65b1eda2eecbba",
+    "bytes": 123401
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-06-01-2024-07-01.csv",
+    "sha256": "4e86a5de06fbf18067a15545fc7405c6fc9bf6f46d183a02b87ebeefa565869d",
+    "bytes": 108596
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-07-01-2024-08-01.csv",
+    "sha256": "ddc82e629fe82079f8cfee98fb09ed062ed258ae6a758bf99038cb5d64d03751",
+    "bytes": 118892
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-08-01-2024-09-01.csv",
+    "sha256": "ea8ff5230f62ac4214b62a9d105dded57ed6021b32090993c90e7750c09654ed",
+    "bytes": 118261
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-09-01-2024-10-01.csv",
+    "sha256": "8e843f28700b4e95c6d30ffc5cc797e116a5e02d1f05c117215b3ac24dc1f9b1",
+    "bytes": 114213
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-10-01-2024-11-01.csv",
+    "sha256": "0cd041e7ea62ddfdcf8b54d530cd6014458757063c845e130802db471c56fd86",
+    "bytes": 124272
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-11-01-2024-12-01.csv",
+    "sha256": "d426c1548bf056cd8b9afa02a028301edcaca8231ff86820e370c46bc45ea15f",
+    "bytes": 113145
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-12-01-2025-01-01.csv",
+    "sha256": "bce883373218e4ca20ac7092422d9893edbe346b96c44cbe5a3d13c172c80c6e",
+    "bytes": 89241
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-01-01-2025-02-01.csv",
+    "sha256": "c62b93557bb0a61b69c63af6618368b51878a1aa7299d99e06abafd815fe0cf6",
+    "bytes": 118858
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-02-01-2025-03-01.csv",
+    "sha256": "55647c7922fdb9fac6f3cca471f1dd0e46b67bd0e0656c34f496588f4d46cd6e",
+    "bytes": 107527
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-03-01-2025-04-01.csv",
+    "sha256": "17b5385c095a3aabcc54f40fd7fbd45974a8e4f7c405ef2c0a6357fc6f4cfc46",
+    "bytes": 109186
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-04-01-2025-05-01.csv",
+    "sha256": "21cbbb321445afca11919609e3089c0f2604bd2d247716b092488ffd7485cc22",
+    "bytes": 119137
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-05-01-2025-06-01.csv",
+    "sha256": "05acaea8f06d2de16617cc0d24e96ea98183477aaed35b6b1f1a7e31e47f6604",
+    "bytes": 118270
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-06-01-2025-07-01.csv",
+    "sha256": "21c329c011e081f64cca43e62ca9d5d7b8d947b33adf8527bf63051dbca01a47",
+    "bytes": 113922
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-07-01-2025-08-01.csv",
+    "sha256": "c2004ca7d760b607c5472a36eb0b4e0b5702791b6b42dd7b67b16ccf417af519",
+    "bytes": 123524
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-08-01-2025-09-01.csv",
+    "sha256": "e8701ec0c332dd2f291eb7c56a316a3e79dcbb9bca6849bad8954fac052aeb6b",
+    "bytes": 112759
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-09-01-2025-10-01.csv",
+    "sha256": "82b411af8c214d6e211d634c96f4b8989fec7682020451821423b37f00970624",
+    "bytes": 118181
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-10-01-2025-11-01.csv",
+    "sha256": "ab8d654cba91eb0e3bfbe3880ce7afcd0f4ad29763a13c35c2d59f97a13f43a3",
+    "bytes": 122895
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-11-01-2025-12-01.csv",
+    "sha256": "355551b2375fdd29803cf12248697576a0f95eef2afe3d461f10a4b64be572a8",
+    "bytes": 107821
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2025/eurusd-m15-bid-2025-12-01-2026-01-01.csv",
+    "sha256": "4f538539f8c90f3a1faa9e198249b8e29d87948d29ed0807a1c2a676b80ac7d6",
+    "bytes": 119563
+  },
+  {
+    "path": "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2026/eurusd-m15-bid-2026-01-01-2026-02-01.csv",
+    "sha256": "8f641ae99e076ff0fb34cd5a0b58dac33272852460c807e190473a5d049753e2",
+    "bytes": 112966
+  }
+]

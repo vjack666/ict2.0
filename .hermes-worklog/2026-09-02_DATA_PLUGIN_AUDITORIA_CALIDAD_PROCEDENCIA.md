@@ -10,7 +10,7 @@ BLOCKED — NO-GO para certificación científica o promoción.
 
 ## Resultado
 
-Se inspeccionaron 241 CSV y 499.864 filas. El manifiesto existente cubre y valida 180 archivos, pero no cubre 61 archivos adicionales. Se localizaron 9 filas OHLC inválidas en un único archivo del holdout 2021–2025. La procedencia legal y de adquisición continúa incompleta.
+Se inspeccionaron 241 CSV y 499.864 filas. El manifiesto existente cubría 180 archivos; se creó un segundo manifiesto para los 61 restantes, dejando cobertura mecánica 241/241 pendiente de revisión independiente. Se localizaron 9 filas OHLC inválidas en un único archivo del holdout 2021–2025. La procedencia legal y de adquisición continúa incompleta.
 
 ## Decisión y límites
 
@@ -23,4 +23,4 @@ Se preservaron los datos y cambios locales existentes. No se ejecutaron backtest
 
 ## Siguiente acción
 
-Resolver las nueve filas, completar el manifiesto de 241 archivos y cerrar licencia/adquisición antes de repetir el gate en worktree limpio.
+Resolver las nueve filas, revisar ambos manifiestos y cerrar licencia/adquisición antes de repetir el gate en worktree limpio.

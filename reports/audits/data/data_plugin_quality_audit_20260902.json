@@ -19,7 +19,12 @@
     "schema_consistent": true,
     "headers": ["timestamp", "open", "high", "low", "close", "volume"],
     "duplicate_timestamps_within_file": 0,
-    "manifest_entries_checked": 180,
+    "manifest_entries_checked": 241,
+    "manifest_files": [
+      "datasets/eurusd_dukascopy_intraday_2006_2020_manifest.json",
+      "datasets/eurusd_dukascopy_intraday_2021_2025_manifest.json"
+    ],
+    "complete_manifest_coverage": true,
     "manifest_missing": 0,
     "manifest_bad_bytes": 0,
     "manifest_bad_sha256": 0,
@@ -42,9 +47,9 @@
       "severity": "HIGH",
       "confidence": "HIGH",
       "status": "BLOCKED",
-      "issue": "the manifest covers 180 files while the audited intraday tree contains 241 CSV files",
-      "impact": "the complete dataset lineage and reproducibility cannot be established",
-      "remediation": "create and verify a complete manifest for all files before scientific reuse"
+      "issue": "the original manifest covered 180 files; a second manifest was created for the remaining 61 files",
+      "impact": "the complete tree is now mechanically covered, but the new manifest still requires independent review and does not resolve invalid OHLC or legal provenance",
+      "remediation": "independently review both manifests and repeat hash verification on a clean worktree"
     },
     {
       "id": "PROV-001",

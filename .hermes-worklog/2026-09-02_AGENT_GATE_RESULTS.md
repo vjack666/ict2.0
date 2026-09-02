@@ -105,6 +105,16 @@ entonces no ejecutar backtest, entrenamiento, paper/demo, broker u órdenes.
 Por el contrato de separación de feeds, no se mezclan ni se usa MT5 para
 corregir Dukascopy. El gate histórico permanece `BLOCKED`.
 
+### Procedencia parcial del paquete histórico
+
+- La metadata local identifica Dukascopy EURUSD spot bid y registra fecha/comando
+  de adquisición para el paquete H1/H4/D1.
+- El preregistro T7f documenta el comando mensual M15 y la autorización
+  histórica, pero también declara que no existe log de ejecución verificable.
+- No existe vínculo máquina-verificable entre esa ejecución declarada y los 241
+  CSV actuales. La procedencia M15 queda `PARTIAL/BLOCKED`; no se infiere desde
+  el paquete H1/H4/D1 ni se presenta como `PASS`.
+
 ### Corrección de la auditoría en worktree limpio
 
 - La primera versión del auditor trataba números de línea física como índices

@@ -57,16 +57,17 @@
       "severity": "CRITICAL",
       "confidence": "HIGH",
       "status": "BLOCKED",
-      "issue": "provider authorization/license and complete acquisition lineage are not established for the operational research source",
-      "impact": "technical hashes do not support legal provenance, certification, promotion or trading authorization",
-      "remediation": "record provider, permitted use, acquisition timestamp, source documentation, generator commit and clean-worktree evidence"
+      "issue": "provider and instrument are documented, but M15 execution evidence and complete acquisition lineage are not established for the research source",
+      "impact": "technical hashes and a documented command do not prove that the 241 M15 files were produced by that execution or support certification/promotion",
+      "remediation": "preserve a machine-verifiable M15 acquisition log or explicitly keep the dataset as an uncertified local fixture; do not infer lineage from the H1/H4/D1 metadata"
     }
   ],
   "existing_evidence_reconciled": {
     "a7_technical_report": "PASS technical funnel; source authorization explicitly out of scope",
     "t7d": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
     "holdout_2021_2025": "REVIEW / BLOCKED_PROVENANCE / NO_EDGE_DEMONSTRATED",
-    "can_trade": false
+    "can_trade": false,
+    "source_metadata": "Dukascopy EURUSD spot bid is documented; the 20y metadata acquisition timestamp and command cover H1/H4/D1, while T7f documents the M15 command and authorization without a machine execution log"
   },
   "decision": "NO-GO for scientific certification or promotion; data remains available only for controlled diagnostic review after the blockers are resolved",
   "next_action": [

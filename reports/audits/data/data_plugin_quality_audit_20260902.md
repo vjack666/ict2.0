@@ -16,6 +16,12 @@
 - Se detectaron 9 filas OHLC inválidas, todas en `datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly/2024/eurusd-m15-bid-2024-10-01-2024-11-01.csv`, filas 689, 692, 693, 696, 707, 712, 737, 750 y 765.
 - Tres copias locales del feed MT5 contienen OHLC válido en las nueve marcas: `data/raw`, `legacy_smc_backup/data_raw` y `legacy_smc_backup/data_mt5`. La copia `data_raw` coincide con el parquet operativo en sus `50.296` timestamps comunes; `data_mt5` difiere en OHLC en `432` filas de su solapamiento. No son tres fuentes independientes plenamente concordantes y no constituyen una corrección certificada del CSV histórico Dukascopy.
 
+## Procedencia parcial demostrada
+
+- `datasets/eurusd_dukascopy_20y/metadata.json` identifica proveedor e instrumento y registra fecha/comando de adquisición para H1/H4/D1.
+- `docs/experimentos/EXP_MTF_REPLAY_T7F_2006_2020_PREREGISTRATION.md` documenta la fuente M15, el comando mensual y la autorización histórica, pero declara que no existe log de ejecución verificable.
+- Ningún artefacto local vincula de forma máquina-verificable ese comando M15 con los 241 CSV actuales. Por tanto, la procedencia M15 es **PARCIAL**, no `PASS`.
+
 ## Riesgos
 
 Las anomalías pueden cambiar rangos, displacement, liquidez y etiquetas o setups posteriores. La concordancia MT5 demuestra una segunda lectura local, pero no resuelve el conflicto de fuente ni autoriza mezclar feeds. Además, los hashes técnicos no prueban por sí solos la identidad de la fuente ni el lineage completo de adquisición.

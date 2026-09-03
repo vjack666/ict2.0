@@ -25,6 +25,7 @@ export default function App() {
   const [cursor, setCursor] = useState(0);
   const [tf, setTf] = useState("M15");
   const [ghost, setGhost] = useState(false);
+  useEffect(() => { let stopped = false; const refresh = async () => { try { const response = await fetch("http://127.0.0.1:8765/"); const live = await response.json(); if (!stopped && live.live_status === "READY_MT5_CLOSED_ONLY") { setArtifact(live); setCursor(Math.max(0, live.timeline.length - 1)); setError(""); } } catch { if (!stopped) setError("MT5 no disponible: mostrando lectura local hasta reconexión."); } }; refresh(); const id = setInterval(refresh, 5000); return () => { stopped = true; clearInterval(id); }; }, []);
   useEffect(() => { const id = setInterval(() => setCursor((value) => Math.min(value + 1, artifact.timeline.length - 1)), 5000); return () => clearInterval(id); }, [artifact.timeline.length]);
   const visible = useMemo(() => artifact ? visibleReplay(artifact, cursor) : null, [artifact, cursor]);
 

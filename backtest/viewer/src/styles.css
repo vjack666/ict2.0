@@ -21,6 +21,7 @@ select { background: #09121d; color: #e7edf4; border: 1px solid #385166; border-
 .empty-chart { min-height: 280px; display: grid; place-items: center; color: #91a4b4; }
 .ghost-label { position: absolute; right: 12px; top: 12px; color: #f0c56a; font-size: 11px; letter-spacing: .05em; }
 .explain { color: #f0c56a; font-size: 13px; margin: 10px 0 0; }
+.live-badge { color: #73d9bd; font-size: 11px; letter-spacing: .04em; white-space: nowrap; }
 .lanes { display: grid; gap: 8px; }
 .lane { padding: 12px 16px; display: grid; grid-template-columns: 70px 100px 1fr; gap: 12px; }
 .lane strong { color: #73d9bd; }

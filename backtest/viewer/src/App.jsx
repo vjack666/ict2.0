@@ -10,13 +10,18 @@ function Lane({ tf, rows }) {
 function Count({ label, value }) { return <div className="count"><b>{value}</b><span>{label}</span></div>; }
 
 function Chart({ rows, zones, ghost }) {
-  const data = rows.slice(-120);
+  const [zoom, setZoom] = useState(1); const [offset, setOffset] = useState(0); const [drag, setDrag] = useState(null);
+  const visibleCount = Math.max(18, Math.min(180, Math.round(120 / zoom)));
+  const end = Math.max(visibleCount, Math.min(rows.length, rows.length - offset)); const data = rows.slice(Math.max(0, end - visibleCount), end);
   if (!data.length) return <div className="chart empty-chart">Sin velas para este corte</div>;
   const lo = Math.min(...data.map((r) => Number(r.low))); const hi = Math.max(...data.map((r) => Number(r.high)));
   const pad = (hi - lo || 1) * .08; const min = lo - pad; const max = hi + pad;
-  const x = (i) => 20 + i * (860 / Math.max(1, data.length - 1)); const y = (v) => 250 - ((v - min) / (max - min)) * 220;
+  const chartWidth = 760; const rightMargin = 100; const x = (i) => 20 + i * (chartWidth / Math.max(1, data.length - 1)); const y = (v) => 250 - ((v - min) / (max - min)) * 220;
   const candle = (r, i, faded = false) => { const up = Number(r.close) >= Number(r.open); const color = up ? "#22c77a" : "#f05252"; return <g key={`${i}-${faded}`} opacity={faded ? .28 : 1}><line x1={x(i)} x2={x(i)} y1={y(r.high)} y2={y(r.low)} stroke="#aab8c7"/><rect x={x(i)-3.2} y={y(Math.max(r.open,r.close))} width="6.4" height={Math.max(2,y(Math.min(r.open,r.close))-y(Math.max(r.open,r.close)))} fill={color}/></g>; };
-  return <div className="chart"><svg viewBox="0 0 900 280" role="img" aria-label="Gráfico de velas y zonas"><rect width="900" height="280" fill="#09121d"/>{(zones || []).map((z, i) => { const top = y(Math.max(Number(z.high ?? z.top), Number(z.low ?? z.bottom))); const bottom = y(Math.min(Number(z.high ?? z.top), Number(z.low ?? z.bottom))); return <rect key={z.id || i} x="20" y={top} width="860" height={Math.max(3,bottom-top)} fill={z.direction === "BEARISH" ? "#ef5350" : "#18c996"} opacity=".16" stroke={z.direction === "BEARISH" ? "#ef5350" : "#18c996"}/>; })}{data.map(candle)}{ghost && [1,2,3,4].map((_, i) => candle({open:data.at(-1).close, close:data.at(-1).close + (i+1)*(max-min)*.025, high:data.at(-1).close + (i+1)*(max-min)*.04, low:data.at(-1).close - (max-min)*.01}, data.length+i, true))}</svg>{ghost && <div className="ghost-label">SIMULACIÓN TEÓRICA · NO OBSERVADA · NO ES SEÑAL</div>}</div>;
+  const onWheel = (event) => { event.preventDefault(); setZoom((value) => Math.max(.6, Math.min(5, value * (event.deltaY < 0 ? 1.15 : .87)))); };
+  const onPointerDown = (event) => { event.currentTarget.setPointerCapture(event.pointerId); setDrag(event.clientX); };
+  const onPointerMove = (event) => { if (drag === null) return; const delta = event.clientX - drag; if (Math.abs(delta) > 8) { setOffset((value) => Math.max(0, Math.min(Math.max(0, rows.length - visibleCount), value + (delta < 0 ? 2 : -2)))); setDrag(event.clientX); } };
+  return <div className="chart" onWheel={onWheel} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={() => setDrag(null)}><svg viewBox="0 0 900 280" role="img" aria-label="Gráfico de velas y zonas"><rect width="900" height="280" fill="#09121d"/>{(zones || []).map((z, i) => { const top = y(Math.max(Number(z.high ?? z.top), Number(z.low ?? z.bottom))); const bottom = y(Math.min(Number(z.high ?? z.top), Number(z.low ?? z.bottom))); return <rect key={z.id || i} x="20" y={top} width={chartWidth} height={Math.max(3,bottom-top)} fill={z.direction === "BEARISH" ? "#ef5350" : "#18c996"} opacity=".16" stroke={z.direction === "BEARISH" ? "#ef5350" : "#18c996"}/>; })}{data.map(candle)}{ghost && [1,2,3,4].map((_, i) => candle({open:data.at(-1).close, close:data.at(-1).close + (i+1)*(max-min)*.025, high:data.at(-1).close + (i+1)*(max-min)*.04, low:data.at(-1).close - (max-min)*.01}, data.length+i, true))}<line x1={chartWidth + 20} x2={chartWidth + 20} y1="18" y2="258" stroke="#294252" strokeDasharray="4 6"/><text x="790" y="270" fill="#668294" fontSize="10">margen</text></svg>{ghost && <div className="ghost-label">SIMULACIÓN TEÓRICA · NO OBSERVADA · NO ES SEÑAL</div>}<div className="chart-help">Rueda: zoom · Arrastra: mover · {Math.round(zoom * 100)}%</div></div>;
 }
 
 export default function App() {

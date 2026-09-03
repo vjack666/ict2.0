@@ -11,6 +11,13 @@ delegado que trabaje en este repositorio.
 - **Auditoría independiente:** valida evidencia, reproducibilidad, riesgo y gates.
 - **Fuente de verdad:** Git es la verdad del código; la bitácora es la verdad de lo ocurrido; Engram conserva decisiones y razonamiento reutilizable.
 
+## Enrutamiento de modelos y agentes
+
+- `ict_assurance` (`gpt-5.6-sol`, high, solo lectura): causalidad, procedencia, auditoría, gates, revisiones y riesgos.
+- `ict_viewer_builder` (`gpt-5.6-terra`, high): implementación local del visor MT5, caché, interfaz y pruebas.
+- `ict_monitor` (`gpt-5.6-luna`, low, solo lectura): checks rápidos, estado del bridge, frescura de velas y resúmenes repetitivos.
+- Para trabajo mixto o ambiguo, Codex principal conserva la dirección y delega solo partes independientes; los roles nunca autorizan trading ni sustituyen al motor determinista.
+
 Codex puede decidir los pasos técnicos intermedios cuando preservan el objetivo y las reglas del proyecto. Debe escalar únicamente si cambia el objetivo, la autoridad, el presupuesto, la seguridad o el alcance.
 
 ## Protocolo automático de cada misión

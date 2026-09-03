@@ -9,6 +9,12 @@ function Lane({ tf, rows }) {
 
 function Count({ label, value }) { return <div className="count"><b>{value}</b><span>{label}</span></div>; }
 
+function ScenarioPanel({ rows }) {
+  const last = rows.at(-1); const entry = last ? Number(last.close) : 1.16102; const stop = entry - 0.00030; const target = entry + 0.00201;
+  const pips = (target - entry) * 10000; const dollars = pips; const stopPips = (entry - stop) * 10000;
+  return <section className="scenario-panel"><div><b>ESCENARIO DE COMPRA · SIMULACIÓN</b><span>Entrada hipotética al cierre M1/M15 · no autoriza trading</span></div><div className="scenario-metric"><b>{entry.toFixed(5)}</b><span>Entrada</span></div><div className="scenario-metric risk"><b>{stop.toFixed(5)}</b><span>SL · −{stopPips.toFixed(0)} pips · −${stopPips.toFixed(2)} / 0.1 lot</span></div><div className="scenario-metric reward"><b>{target.toFixed(5)}</b><span>TP observado · +{pips.toFixed(1)} pips · +${dollars.toFixed(2)} / 0.1 lot</span></div></section>;
+}
+
 function Chart({ rows, zones, events = [], ghost, tf }) {
   const [zoom, setZoom] = useState(1); const [offset, setOffset] = useState(0); const [drag, setDrag] = useState(null);
   const visibleCount = Math.max(18, Math.min(180, Math.round(120 / zoom)));
@@ -32,7 +38,7 @@ export default function App() {
   const [tf, setTf] = useState("M15");
   const [ghost, setGhost] = useState(false);
   useEffect(() => { let stopped = false; const refresh = async () => { try { const response = await fetch("http://127.0.0.1:8765/"); const live = await response.json(); if (!stopped && live.live_status === "READY_MT5_CLOSED_ONLY") { setArtifact(live); setCursor(Math.max(0, live.timeline.length - 1)); setError(""); } } catch { if (!stopped) setError("MT5 no disponible: mostrando lectura local hasta reconexión."); } }; refresh(); const id = setInterval(refresh, 5000); return () => { stopped = true; clearInterval(id); }; }, []);
-  useEffect(() => { const id = setInterval(() => setCursor((value) => Math.min(value + 1, artifact.timeline.length - 1)), 5000); return () => clearInterval(id); }, [artifact.timeline.length]);
+  useEffect(() => { const id = setInterval(() => setCursor((value) => Math.min(value + 1, artifact.timeline.length - 1)), 60000); return () => clearInterval(id); }, [artifact.timeline.length]);
   const visible = useMemo(() => artifact ? visibleReplay(artifact, cursor) : null, [artifact, cursor]);
 
   async function openFile(event) {
@@ -47,8 +53,9 @@ export default function App() {
     <header><div><p className="eyebrow">ICT SYSTEM · LOCAL_ONLY</p><h1>MTF Replay Orchestrator</h1></div><label className="upload">Abrir artefacto<input type="file" accept="application/json" onChange={openFile} /></label></header>
     {error && <p className="error">{error}</p>}
     {!visible ? <section className="empty"><h2>Visor causal 2.0</h2><p>Generando lectura automática…</p></section> : <>
-      <section className="controls"><label>Temporalidad <select value={tf} onChange={(e) => setTf(e.target.value)}>{["H4","H1","M15","M5"].map((value) => <option key={value}>{value}</option>)}</select></label><button onClick={() => setCursor(Math.max(0, cursor - 1))}>←</button><input aria-label="cursor" type="range" min="0" max={artifact.timeline.length - 1} value={cursor} onChange={(e) => setCursor(Number(e.target.value))}/><button onClick={() => setCursor(Math.min(artifact.timeline.length - 1, cursor + 1))}>→</button><code>{visible.time} · {new Date(visible.time).toISOString()}</code><span className="live-badge">{artifact.live_status || "LOCAL"}</span><button className={ghost ? "active" : ""} onClick={() => setGhost((value) => !value)}>Velas fantasma</button></section>
+      <section className="controls"><label>Temporalidad <select value={tf} onChange={(e) => setTf(e.target.value)}>{["H4","H1","M15","M5","M1"].map((value) => <option key={value}>{value}</option>)}</select></label><button onClick={() => setCursor(Math.max(0, cursor - 1))}>←</button><input aria-label="cursor" type="range" min="0" max={artifact.timeline.length - 1} value={cursor} onChange={(e) => setCursor(Number(e.target.value))}/><button onClick={() => setCursor(Math.min(artifact.timeline.length - 1, cursor + 1))}>→</button><code>{visible.time} · {new Date(visible.time).toISOString()}</code><span className="live-badge">{artifact.live_status || "LOCAL"}</span><button className={ghost ? "active" : ""} onClick={() => setGhost((value) => !value)}>Velas fantasma</button></section>
       <section className="chart-wrap"><h2>{artifact.symbol} · {tf} · mapa causal</h2><Chart rows={visible.candlesByTf[tf] || visible.candlesByTf[artifact.timeframe] || []} zones={visible.setups} events={artifact.structure_events || []} tf={tf} ghost={ghost}/>{ghost && <p className="explain">Escenario esperado: barrido de liquidez → desplazamiento → CHoCH/BOS → retorno a la zona. La confirmación real solo la emite el motor.</p>}</section>
+      <ScenarioPanel rows={visible.candlesByTf.M1 || visible.candlesByTf.M5 || []}/>
       <section className="lanes">{Object.entries(visible.candlesByTf).sort().map(([tf, rows]) => <Lane key={tf} tf={tf} rows={rows}/>)}</section>
       <section className="counts"><Count label="Setups" value={visible.setups.length}/><Count label="Episodes" value={visible.episodes.length}/><Count label="Invalidaciones" value={visible.invalidations.length}/><Count label="Trades" value={visible.trades.length}/><Count label="Rechazos" value={visible.rejections.length}/></section>
       <section className="trace"><h2>Batch causal</h2><pre>{JSON.stringify(visible.tick, null, 2)}</pre></section>

@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from engine.mt5_operational_snapshot import build_mt5_operational_snapshot
 
 ROOT = r"C:\Program Files\FundedNext MT5 Terminal\terminal64.exe"
-TF_MAP = {"H4": mt5.TIMEFRAME_H4, "H1": mt5.TIMEFRAME_H1, "M15": mt5.TIMEFRAME_M15, "M5": mt5.TIMEFRAME_M5}
+TF_MAP = {"H4": mt5.TIMEFRAME_H4, "H1": mt5.TIMEFRAME_H1, "M15": mt5.TIMEFRAME_M15, "M5": mt5.TIMEFRAME_M5, "M1": mt5.TIMEFRAME_M1}
 
 def artifact(symbol="EURUSD", count=400):
     if not mt5.initialize(path=ROOT): raise RuntimeError(f"MT5_INIT_FAILED:{mt5.last_error()}")
@@ -28,7 +28,7 @@ def artifact(symbol="EURUSD", count=400):
         timeline = frames["M5"]
         frame_map = {tf: pd.DataFrame(rows) for tf, rows in frames.items()}
         decision_time = timeline[-1]["observation_time"]
-        engine_snapshot = build_mt5_operational_snapshot(frame_map, decision_time, symbol=symbol, required_tfs=tuple(TF_MAP))
+        engine_snapshot = build_mt5_operational_snapshot(frame_map, decision_time, symbol=symbol, required_tfs=("H4", "H1", "M15", "M5"))
         zones = []
         for tf, items in engine_snapshot.get("canonical_zones", {}).items():
             for item in items:

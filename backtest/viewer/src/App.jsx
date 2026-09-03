@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { validateArtifact, visibleReplay } from "./replayModel.js";
+import { useEffect, useMemo, useState } from "react";
+import { createAutoArtifact, validateArtifact, visibleReplay } from "./replayModel.js";
 import "./styles.css";
 
 function Lane({ tf, rows }) {
@@ -20,11 +20,12 @@ function Chart({ rows, zones, ghost }) {
 }
 
 export default function App() {
-  const [artifact, setArtifact] = useState(null);
+  const [artifact, setArtifact] = useState(() => createAutoArtifact({ days: 1 }));
   const [error, setError] = useState("");
   const [cursor, setCursor] = useState(0);
   const [tf, setTf] = useState("M15");
   const [ghost, setGhost] = useState(false);
+  useEffect(() => { const id = setInterval(() => setCursor((value) => Math.min(value + 1, artifact.timeline.length - 1)), 5000); return () => clearInterval(id); }, [artifact.timeline.length]);
   const visible = useMemo(() => artifact ? visibleReplay(artifact, cursor) : null, [artifact, cursor]);
 
   async function openFile(event) {
@@ -38,7 +39,7 @@ export default function App() {
   return <main>
     <header><div><p className="eyebrow">ICT SYSTEM · LOCAL_ONLY</p><h1>MTF Replay Orchestrator</h1></div><label className="upload">Abrir artefacto<input type="file" accept="application/json" onChange={openFile} /></label></header>
     {error && <p className="error">{error}</p>}
-    {!visible ? <section className="empty"><h2>Visor causal 2.0</h2><p>Carga un artefacto MTF_REPLAY. Esta interfaz observa; no calcula señales ni autoriza trading.</p></section> : <>
+    {!visible ? <section className="empty"><h2>Visor causal 2.0</h2><p>Generando lectura automática…</p></section> : <>
       <section className="controls"><label>Temporalidad <select value={tf} onChange={(e) => setTf(e.target.value)}>{["H4","H1","M15","M5"].map((value) => <option key={value}>{value}</option>)}</select></label><button onClick={() => setCursor(Math.max(0, cursor - 1))}>←</button><input aria-label="cursor" type="range" min="0" max={artifact.timeline.length - 1} value={cursor} onChange={(e) => setCursor(Number(e.target.value))}/><button onClick={() => setCursor(Math.min(artifact.timeline.length - 1, cursor + 1))}>→</button><code>{visible.time}</code><button className={ghost ? "active" : ""} onClick={() => setGhost((value) => !value)}>Velas fantasma</button></section>
       <section className="chart-wrap"><h2>{artifact.symbol} · {tf} · mapa causal</h2><Chart rows={visible.candlesByTf[tf] || visible.candlesByTf[artifact.timeframe] || []} zones={visible.setups} ghost={ghost}/>{ghost && <p className="explain">Escenario esperado: barrido de liquidez → desplazamiento → CHoCH/BOS → retorno a la zona. La confirmación real solo la emite el motor.</p>}</section>
       <section className="lanes">{Object.entries(visible.candlesByTf).sort().map(([tf, rows]) => <Lane key={tf} tf={tf} rows={rows}/>)}</section>

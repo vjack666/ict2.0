@@ -85,3 +85,22 @@ export async function loadChunk(manifest, chunkId, fetcher = fetch) {
   if (!response.ok) throw new Error(`No se pudo cargar ${chunk.path}`);
   return response.json();
 }
+
+export function createAutoArtifact({ symbol = "EURUSD", days = 1 } = {}) {
+  const start = Date.now() - days * 86400000;
+  const tfs = ["H4", "H1", "M15", "M5"];
+  const candles_by_tf = Object.fromEntries(tfs.map((tf) => {
+    const minutes = { H4: 240, H1: 60, M15: 15, M5: 5 }[tf];
+    const count = Math.min(160, Math.max(12, Math.ceil(days * 1440 / minutes)));
+    let price = 1.16;
+    const rows = Array.from({ length: count }, (_, index) => {
+      const observation_time = new Date(start + index * minutes * 60000).toISOString();
+      const open = price; const close = open + Math.sin(index / 4) * 0.00035 - 0.00003; price = close;
+      return { index, tf, observation_time, open, high: Math.max(open, close) + 0.00018, low: Math.min(open, close) - 0.00018, close };
+    });
+    return [tf, rows];
+  }));
+  const timeline = candles_by_tf.M5.map((row, index) => ({ id: `tick-${index}`, index, observation_time: row.observation_time }));
+  const setups = [{ id: "setup-demo", observation_time: timeline[Math.max(0, timeline.length - 40)].observation_time, high: 1.1612, low: 1.1598, direction: "BULLISH", status: "WAIT_RETRACE", authority_tf: "M15" }];
+  return { schema_version: "2.0", artifact_kind: "MTF_REPLAY", symbol, run_metadata: { source: "LOCAL_AUTO_FIXTURE", generated_for: "viewer_start" }, policy: { diagnostic_only: true, entry_authorized: false, can_trade: false, can_train: false, promotion_authorized: false }, profiles: [], candles_by_tf, timeline, market_state_checkpoints: [], state_deltas: [], setups, episodes: [], invalidations: [], trades: [], rejections: [] };
+}

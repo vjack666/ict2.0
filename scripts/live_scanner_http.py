@@ -22,7 +22,8 @@ def artifact(symbol="EURUSD", count=400):
             if rates is None or len(rates) == 0: raise RuntimeError(f"MT5_NO_DATA:{symbol}:{tf}:{mt5.last_error()}")
             rows = []
             for i, row in enumerate(rates):
-                rows.append({"index": i, "tf": tf, "observation_time": datetime.fromtimestamp(int(row["time"]), timezone.utc).isoformat(), "open": float(row["open"]), "high": float(row["high"]), "low": float(row["low"]), "close": float(row["close"])})
+                stamp = datetime.fromtimestamp(int(row["time"]), timezone.utc).isoformat()
+                rows.append({"index": i, "tf": tf, "time": stamp, "observation_time": stamp, "open": float(row["open"]), "high": float(row["high"]), "low": float(row["low"]), "close": float(row["close"])})
             frames[tf] = rows
         timeline = frames["M5"]
         frame_map = {tf: pd.DataFrame(rows) for tf, rows in frames.items()}
@@ -34,7 +35,11 @@ def artifact(symbol="EURUSD", count=400):
                 if isinstance(item, dict):
                     item = {**item, "tf": tf, "authority_tf": item.get("authority_tf", tf)}
                     if "high" in item and "low" in item: zones.append(item)
-        return {"schema_version":"2.0", "artifact_kind":"MTF_REPLAY", "symbol":symbol, "run_metadata":{"source":"MT5_LOCAL","engine":"MT5_OPERATIONAL_SNAPSHOT_V1","generated_at":datetime.now(timezone.utc).isoformat()}, "policy":{"diagnostic_only":True,"entry_authorized":False,"can_trade":False,"can_train":False,"promotion_authorized":False}, "profiles":[], "candles_by_tf":frames, "timeline":timeline, "market_state_checkpoints":[],"state_deltas":[],"setups":zones,"episodes":[],"invalidations":[],"trades":[],"rejections":[], "engine_snapshot":engine_snapshot, "live_status":"READY_MT5_CLOSED_ONLY"}
+        structure = []
+        for tf, layer in (engine_snapshot.get("context_state") or {}).get("layers", {}).items():
+            if layer.get("last_bos_bar") is not None:
+                structure.append({"id": f"bos-{tf}", "tf": tf, "kind": "BOS", "bar": int(layer["last_bos_bar"]), "direction": layer.get("last_bos_direction"), "observation_time": layer.get("asof_time")})
+        return {"schema_version":"2.0", "artifact_kind":"MTF_REPLAY", "symbol":symbol, "run_metadata":{"source":"MT5_LOCAL","engine":"MT5_OPERATIONAL_SNAPSHOT_V1","generated_at":datetime.now(timezone.utc).isoformat()}, "policy":{"diagnostic_only":True,"entry_authorized":False,"can_trade":False,"can_train":False,"promotion_authorized":False}, "profiles":[], "candles_by_tf":frames, "timeline":timeline, "market_state_checkpoints":[],"state_deltas":[],"setups":zones,"structure_events":structure,"episodes":[],"invalidations":[],"trades":[],"rejections":[], "engine_snapshot":engine_snapshot, "live_status":"READY_MT5_CLOSED_ONLY"}
     finally: mt5.shutdown()
 
 class Handler(BaseHTTPRequestHandler):

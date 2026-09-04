@@ -228,6 +228,59 @@ def dealing_range_pd(d1: pd.DataFrame, t: Any, lookback: int = 20,
 LTF_TFS: tuple[str, ...] = ("M5", "M1")
 
 
+def build_event_sequence(
+    ms: dict[str, pd.DataFrame],
+    decision_time: Any,
+    *,
+    tfs: tuple[str, ...] = ("D1", "H4", "H1", "M15", "M5", "M1"),
+    lookback: int = 4000,
+) -> dict[str, Any]:
+    """Construye una secuencia cerrada de hechos observables hasta ``T``.
+
+    La lectura diaria no debe tratar un setup como una sola vela. Este
+    expediente conserva CHOCH/BOS y, cuando el frame ya los trae anotados,
+    FVG/OB/retests posteriores. El ultimo CHOCH de cada TF abre una ventana
+    causal ``search_from``: solo los hechos posteriores pueden completar el
+    setup. No usa velas futuras ni autoriza operaciones.
+    """
+    tt = pd.to_datetime(decision_time, utc=True, errors="coerce")
+    if pd.isna(tt):
+        return {"asof": None, "events": [], "active_choch": {}, "search_windows": {}}
+    events: list[dict[str, Any]] = []
+    active_choch: dict[str, dict[str, Any]] = {}
+    for tf in tfs:
+        df = ms.get(tf)
+        if df is None or df.empty or "time" not in df.columns:
+            continue
+        times = pd.to_datetime(df["time"], utc=True, errors="coerce")
+        sub = df.loc[times <= tt].tail(int(max(5, lookback))).reset_index(drop=True)
+        if sub.empty:
+            continue
+        try:
+            annotated = detect_market_structure(sub, StructureConfig()).frame
+        except Exception:
+            annotated = sub
+        for i, row in annotated.iterrows():
+            ts = pd.to_datetime(row.get("time"), utc=True, errors="coerce")
+            if pd.isna(ts):
+                continue
+            for kind, col, direction_col in (("CHOCH", "choch_status", "choch_dir"), ("BOS", "bos_status", "bos_dir")):
+                direction = int(row.get(direction_col, 0) or 0)
+                status = str(row.get(col, "none"))
+                if direction and status in {"active", "confirmed"}:
+                    ev = {"type": kind, "tf": tf, "time": ts.isoformat(), "bar_index": int(i), "direction": direction, "status": status}
+                    events.append(ev)
+                    if kind == "CHOCH":
+                        active_choch[tf] = ev
+            for kind, candidates in (("FVG", ("fvg_state", "fvg_direction", "fvg_dir")), ("OB", ("ob_state", "ob_direction", "ob_dir"))):
+                present = next((row.get(c) for c in candidates if c in row.index), None)
+                if present is not None and str(present).upper() not in {"", "NONE", "NAN", "NULL", "-"}:
+                    events.append({"type": kind, "tf": tf, "time": ts.isoformat(), "bar_index": int(i), "value": str(present)})
+    events.sort(key=lambda e: (e["time"], e["tf"], e["type"], e["bar_index"]))
+    windows = {tf: {"search_from": ev["time"], "choch": ev} for tf, ev in active_choch.items()}
+    return {"asof": tt.isoformat(), "events": events, "active_choch": active_choch, "search_windows": windows}
+
+
 def ltf_structure_at(
     ms: dict[str, pd.DataFrame],
     tf: str,

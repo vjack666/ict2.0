@@ -13,7 +13,7 @@ from typing import Any, Mapping, Sequence
 import pandas as pd
 
 from engine.market_object import MarketObject, ObjectState, ObjectType
-from engine.plan import build_context_stack, ltf_structure_at, top_down_allows_trade
+from engine.plan import build_context_stack, build_event_sequence, ltf_structure_at, top_down_allows_trade
 
 
 _TERMINAL_ZONE_STATES = {
@@ -363,6 +363,7 @@ def build_daily_motor_snapshot(
     context_snapshot: Mapping[str, Any] | None = None,
     context_state: Any = None,
     wyckoff_snapshot: Any = None,
+    event_sequence: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build a closed-only, canonical daily context + LTF snapshot.
 
@@ -489,6 +490,10 @@ def build_daily_motor_snapshot(
     )
     poi_refs = sorted({str(ref) for ref in supplied_context.get("poi_refs", []) or []})
     sequence = _sequence_payload(sequence_snapshot or supplied_context.get("sequence"))
+    # Exponer el expediente temporal para que la presentación no reduzca el
+    # setup al último snapshot. Si el caller no lo entrega, se reconstruye
+    # closed-only desde los frames canónicos hasta T.
+    event_history = dict(event_sequence or supplied_context.get("event_sequence") or build_event_sequence(frames, tt))
     lineage_refs = sorted(set(zone["lineage_refs"]) | {str(ref) for ref in supplied_context.get("lineage_refs", []) or []})
     confirmation_state = "NO_DATA" if not ltf_available else "CONFIRMED" if structure_confirmed else "WAITING"
     ltf = {
@@ -540,6 +545,7 @@ def build_daily_motor_snapshot(
             "stack": stack,
         },
         "sequence": sequence,
+        "event_history": event_history,
         "lineage_refs": lineage_refs,
         "ltf": ltf,
     }

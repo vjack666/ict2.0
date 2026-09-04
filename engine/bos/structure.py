@@ -176,6 +176,23 @@ def _consecutive_break(break_mask: pd.Series, confirm_bars: int) -> pd.Series:
     return pd.Series(out, index=break_mask.index)
 
 
+def _collapse_bos_impulse(bos_dir: pd.Series) -> pd.Series:
+    """Publica un solo BOS por impulso direccional.
+
+    Un nuevo swing interno puede cambiar ``bos_level`` mientras el precio
+    sigue avanzando en la misma dirección. Eso no es un nuevo BOS estructural;
+    es continuación del impulso vigente. El siguiente BOS se permite solo
+    después de que la dirección cambie.
+    """
+    out = np.zeros(len(bos_dir), dtype=int)
+    last_direction = 0
+    for i, value in enumerate(bos_dir.to_numpy(dtype=int)):
+        if value and value != last_direction:
+            out[i] = int(value)
+            last_direction = int(value)
+    return pd.Series(out, index=bos_dir.index, dtype=int)
+
+
 def _track_structure(
     d: pd.DataFrame,
     config: StructureConfig,
@@ -484,7 +501,9 @@ def detect_market_structure(
     bear_break = d["close"] < sl.shift(1)
     bull_conf = _consecutive_break(bull_break, config.confirm_bars)
     bear_conf = _consecutive_break(bear_break, config.confirm_bars)
-    d["bos_dir"] = np.select([bull_conf, bear_conf], [1, -1], default=0)
+    d["bos_dir"] = _collapse_bos_impulse(
+        pd.Series(np.select([bull_conf, bear_conf], [1, -1], default=0), index=d.index)
+    )
     d["bos_level"] = np.where(
         d["bos_dir"] == 1,
         sh.shift(1),

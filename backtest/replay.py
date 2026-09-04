@@ -20,6 +20,7 @@ from engine.market_features import build_features
 from engine.multitf_context import build_multitf_context
 from engine.sequence import SequenceConfig, run_sequence
 from engine.sequential_outcome import OutcomeConfig, TradeLevels, resolve_outcome
+from engine.plan import build_event_sequence
 
 from backtest.schema import VisualBacktest, json_safe
 
@@ -500,6 +501,11 @@ def run_visual_replay(
             "config": json_safe(config.sequence.__dict__),
             "legacy_backtest": False,
             "promotion_authorized": False,
+            "setup_sequence": build_event_sequence(
+                featured,
+                main_raw["time"].iloc[-1],
+                tfs=tuple(frames),
+            ),
         },
     )
     return artifact

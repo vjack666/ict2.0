@@ -260,6 +260,7 @@ def build_event_sequence(
             annotated = detect_market_structure(sub, StructureConfig()).frame
         except Exception:
             annotated = sub
+        prior_markers: dict[str, tuple[Any, ...] | None] = {"CHOCH": None, "BOS": None, "FVG": None, "OB": None}
         for i, row in annotated.iterrows():
             ts = pd.to_datetime(row.get("time"), utc=True, errors="coerce")
             if pd.isna(ts):
@@ -268,14 +269,32 @@ def build_event_sequence(
                 direction = int(row.get(direction_col, 0) or 0)
                 status = str(row.get(col, "none"))
                 if direction and status in {"active", "confirmed"}:
-                    ev = {"type": kind, "tf": tf, "time": ts.isoformat(), "bar_index": int(i), "direction": direction, "status": status}
-                    events.append(ev)
-                    if kind == "CHOCH":
-                        active_choch[tf] = ev
+                    level = row.get("choch_proj_level" if kind == "CHOCH" else "bos_level")
+                    marker = (direction, status, None if pd.isna(level) else float(level))
+                    # CHOCH es un evento de giro, no un estado que se repite
+                    # mientras permanece activo. Publicarlo solo al aparecer
+                    # evita inflar su frecuencia y abre una sola ventana causal.
+                    is_new_event = marker != prior_markers[kind]
+                    if kind == "CHOCH" and prior_markers[kind] is not None:
+                        is_new_event = False
+                    if is_new_event:
+                        ev = {"type": kind, "tf": tf, "time": ts.isoformat(), "bar_index": int(i), "direction": direction, "status": status}
+                        events.append(ev)
+                        if kind == "CHOCH":
+                            active_choch[tf] = ev
+                    prior_markers[kind] = marker
+                elif kind in prior_markers:
+                    prior_markers[kind] = None
             for kind, candidates in (("FVG", ("fvg_state", "fvg_direction", "fvg_dir")), ("OB", ("ob_state", "ob_direction", "ob_dir"))):
                 present = next((row.get(c) for c in candidates if c in row.index), None)
-                if present is not None and str(present).upper() not in {"", "NONE", "NAN", "NULL", "-"}:
-                    events.append({"type": kind, "tf": tf, "time": ts.isoformat(), "bar_index": int(i), "value": str(present)})
+                value = None if present is None else str(present)
+                if value is not None and value.upper() not in {"", "NONE", "NAN", "NULL", "-"}:
+                    marker = (value.upper(),)
+                    if marker != prior_markers[kind]:
+                        events.append({"type": kind, "tf": tf, "time": ts.isoformat(), "bar_index": int(i), "value": value})
+                    prior_markers[kind] = marker
+                else:
+                    prior_markers[kind] = None
     events.sort(key=lambda e: (e["time"], e["tf"], e["type"], e["bar_index"]))
     windows = {tf: {"search_from": ev["time"], "choch": ev} for tf, ev in active_choch.items()}
     return {"asof": tt.isoformat(), "events": events, "active_choch": active_choch, "search_windows": windows}

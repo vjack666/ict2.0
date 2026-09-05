@@ -24,3 +24,7 @@ vela), el funnel debe conservarla sin resumirla a una sola vela y el backtest
 debe consumir el mismo snapshot. Cualquier etapa que pierda la secuencia debe
 detenerse antes de entrenar y registrar `TEMPORAL_FEATURES_NEAR_CONSTANT` o
 `TEMPORAL_SEQUENCE_DEPTH_ZERO`.
+
+El extractor canónico calcula ahora `sequence_depth` desde una ventana M15
+cerrada de hasta ocho velas, contando la continuidad direccional reciente. El
+smoke de dos días produjo profundidades de 1 a 8, en lugar de cero constante.

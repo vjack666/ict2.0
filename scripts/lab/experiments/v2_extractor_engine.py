@@ -57,7 +57,22 @@ def _label(rows: pd.DataFrame, index: int, horizon: int = 6):
     return label, rows.iloc[end].time.isoformat()
 
 
-def _features(state: Any, stack: dict[str, Any], direction: int) -> dict[str, Any]:
+def _sequence_depth(frame: pd.DataFrame, index: int, width: int = 8) -> int:
+    """Return causal structural depth: consecutive same-sign closes in M15."""
+    start = max(0, index - width + 1)
+    closes = frame.iloc[start:index + 1]["close"].astype(float).to_numpy()
+    if len(closes) < 2:
+        return 1
+    signs = [1 if closes[i] > closes[i - 1] else -1 if closes[i] < closes[i - 1] else 0 for i in range(1, len(closes))]
+    depth = 1
+    for sign in reversed(signs):
+        if sign == 0 or (depth > 1 and sign != signs[-1]):
+            break
+        depth += 1
+    return min(depth, width)
+
+
+def _features(state: Any, stack: dict[str, Any], direction: int, sequence_depth: int) -> dict[str, Any]:
     raw = state.to_dict()
     constraints = raw.get("constraints") or {}
     layers = raw.get("layers") or {}
@@ -84,7 +99,7 @@ def _features(state: Any, stack: dict[str, Any], direction: int) -> dict[str, An
     return {
         "schema_group": "engine_v2",
         "direction": direction,
-        "sequence_depth": 0,
+        "sequence_depth": sequence_depth,
         "context_state": {
             "status": raw.get("status"),
             "direction_hint": _enum(constraints.get("direction_hint")),
@@ -173,7 +188,8 @@ def extract(start: str, end: str, output: Path, data_dir: Path) -> dict[str, Any
             stack = _micro_stack(frames, t)
             direction = _enum((state.to_dict().get("constraints") or {}).get("direction_hint"))
             direction = 1 if direction in (1, "1", "BULLISH") else -1 if direction in (-1, "-1", "BEARISH") else 0
-            label, label_end_time = _label(m15, int(m15.index[m15.time == t][0]))
+            row_index = int(m15.index[m15.time == t][0])
+            label, label_end_time = _label(m15, row_index)
             if label is None:
                 rejected.append({"decision_time": key, "reason": "no_label_window"})
                 continue
@@ -183,7 +199,7 @@ def extract(start: str, end: str, output: Path, data_dir: Path) -> dict[str, Any
                 "label_end_time": label_end_time,
                 "label": label,
                 TARGET: label,
-                "features_at_t": _json(_features(state, stack, direction)),
+                "features_at_t": _json(_features(state, stack, direction, _sequence_depth(m15, row_index))),
                 "engine_snapshot": _json(state.to_dict()),
                 "can_trade": False,
                 "shadow_mode": True,

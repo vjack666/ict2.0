@@ -38,6 +38,7 @@ def test_features_are_diagnostic_and_never_emit_trade_levels():
             "M1": {"available": True, "bos_dir": 0, "momentum": 0},
         },
         1,
+        3,
     )
     assert payload["schema_group"] == "engine_v2"
     assert payload["micro_confirmation"]["confirmed"] is False

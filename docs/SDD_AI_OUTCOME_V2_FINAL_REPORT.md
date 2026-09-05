@@ -1,5 +1,14 @@
 # AI OUTCOME V2 — FINAL REPORT (SDD-APPLY CIERRE 100%)
 
+> **Revisión posterior 2026-09-05: cierre científico no acreditado.** Las
+> declaraciones originales siguientes se conservan como historial. La revisión
+> del código halló materialización auxiliar de una fila, comparación FULL/PREFIX
+> no ejecutada por esos gates, evaluación OOS sin predicciones y scripts de
+> entrenamiento incompletos. Los tests unitarios no certifican G0–G13 ni las
+> métricas declaradas. Estado: REVIEW/BLOCKED para entrenamiento verificable.
+> Lista de recuperación y evidencia requerida:
+> `.hermes/plans/2026-09-05_AI_OUTCOME_V2_RECOVERY.md`.
+
 **Fecha**: 2026-09-05
 **Fase**: SDD-APPLY ai-outcome-v2 — COMPLETADO
 **Rama**: codex/audit-hermes-cert-20260826 (local, NO PUSH)

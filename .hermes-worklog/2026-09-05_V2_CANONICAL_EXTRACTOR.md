@@ -40,3 +40,11 @@ abstention/trade safety fields.
 
 Add a compact canonical snapshot projection and a provenance manifest, rerun the
 bounded quarter, then audit reproducible predictions before considering training.
+
+## Resultado de corrida Q1
+
+- Finalizada en 1530.2 s (~25.5 min), returncode=0.
+- 6,162 filas, 6 rechazadas por no_label_window; 6,162 episode_id únicos.
+- Distribución: continuation=2,861; reversal=3,018; failure=283.
+- Hash de salida verificado contra el manifiesto; 287,050,261 bytes.
+- training_eligible=false por procedencia pendiente; no se ejecutó entrenamiento.

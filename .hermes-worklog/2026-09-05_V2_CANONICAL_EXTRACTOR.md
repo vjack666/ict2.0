@@ -80,3 +80,12 @@ bounded quarter, then audit reproducible predictions before considering training
   no reciba columnas silenciosamente vacías.
 - Repetición diagnóstica cronológica con ese mapeo: OOS accuracy `0.4975`, igual
   al baseline; diferencia `0.0000`. No hubo mejora positiva verificable.
+
+## Perfil combinado diagnóstico
+
+- Se ejecutó una sola corrida con el perfil registrado
+  `WYCKOFF_ICT_COMBINED`, sin cambiar el OOS ni las etiquetas.
+- Accuracy OOS: `0.4975`, igual al baseline (diferencia `0.0000`).
+- Log-loss OOS: `0.91562`, frente a `0.95117` del perfil anterior: mejora
+  descriptiva de `0.03555`, aún sin evidencia de edge ni calibración.
+- Artefacto: `runtime/ai_learning/artifacts/v2_engine_2022_q1_chrono2000_combined_diagnostic.json`.

@@ -18,6 +18,7 @@ from engine.daily_motor import build_daily_motor_snapshot
 from engine.ltf_canonical_feed import build_canonical_objects, build_ltf_canonical_feed
 from engine.market_state import MarketState as ObjectMarketState
 from engine.mtf_navigation import MTFNavigator, NavigatorConfig
+from engine.plan import build_context_stack, ltf_confirms
 
 
 REQUIRED_TFS = ("D1", "H4", "H1", "M15", "M5", "M1")
@@ -218,6 +219,11 @@ def build_mt5_operational_snapshot(
         sequence_snapshot=canonical.get("sequence"),
         wyckoff_snapshot=wyckoff,
     )
+    # Publish the same canonical micro confirmation used by the daily brief.
+    # The viewer consumes this result; it must never infer it from candles.
+    micro_stack = build_context_stack(normalized, tt, tfs=REQUIRED_TFS) if tt is not None else {}
+    micro_structure = {tf: micro_stack[tf] for tf in ("M5", "M1") if tf in micro_stack}
+    micro_confirmation = ltf_confirms(micro_structure, int(daily.get("direction", 0) or 0))
     status = "BLOCKED" if missing else "READY"
     if provenance_errors:
         status = "BLOCKED"
@@ -258,9 +264,12 @@ def build_mt5_operational_snapshot(
         "sequence": canonical.get("sequence", {}),
         "wyckoff": wyckoff.to_dict() if wyckoff is not None else None,
         "daily_motor": daily,
+        "micro_structure": micro_structure,
+        "micro_confirmation": micro_confirmation,
         "status": status,
         "policy": "OBSERVE_ONLY_NO_ORDER",
         "entry_authorized": False,
+        "can_trade": False,
     })
 
 

@@ -1,0 +1,222 @@
+"""Engine->v2 causal adapter (T3 component, scaffold for G6/G8 tests).
+
+Converts the canonical engine funnel artifact into v2 dataset rows with
+causal per-event extraction at time <= decision_time. Dispatches to
+OutcomeClassifier._features dispatch for V2_A parity test (Finding 2).
+"""
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Mapping, Sequence
+
+from runtime.ai_learning.outcome_classifier import (
+    V2_FEATURE_PROFILES,
+    OUTCOME_CLASSES,
+)
+
+
+class AdapterError(ValueError):
+    """Error de adapter del v2 AI Outcome."""
+
+
+@dataclass(frozen=True)
+class AdaptedEvent:
+    episode_id: str
+    decision_time: str
+    direction: int
+    status: str
+    reason: str
+    lineage_depth: int
+    lineage_count: int
+    features_at_t: dict
+    can_trade: bool = False
+
+
+@dataclass(frozen=True)
+class AdaptedResult:
+    events: tuple[AdaptedEvent, ...]
+    audit: tuple[dict[str, Any], ...]
+    diagnostics: tuple[str, ...]
+    funnel_row_count: int
+    adapted_row_count: int
+    reason_counts: dict[str, int]
+
+
+def _validate_tristate(features_at_t: Mapping[str, Any]) -> None:
+    """Verify allow_long/allow_short tri-state is preserved (G6)."""
+    perms = features_at_t.get("permissions", {})
+    for key in ("allow_long", "allow_short"):
+        val = perms.get(key)
+        if val not in (True, False, None):
+            raise AdapterError(f"permissions.{key} must be True/False/None, got {val!r}")
+
+
+def _check_forbidden(name: str) -> bool:
+    """Return True if feature name matches a forbidden token."""
+    tokens = set(part.lower() for part in name.replace("=", "_").split("_"))
+    forbidden = {
+        "label", "outcome", "exit", "future", "pnl", "profit", "return",
+        "entry", "stop", "target", "sl", "tp", "bars_held", "result",
+    }
+    return bool(tokens & forbidden)
+
+
+def adapt_funnel_artifact(
+    funnel: Mapping[str, Any] | str | Path,
+    frames: Mapping[str, Any],
+    *,
+    context_provider=None,
+    frames_sha256: dict | None = None,
+) -> AdaptedResult:
+    """
+    Convert funnel artifact (engine/episodes) to v2 dataset rows.
+
+    Args:
+        funnel: dict (or path to JSON) with records[] + episodes[] + rejections[]
+        frames: TF -> OHLC closed-bar data (pinned parquet)
+        context_provider: optional callable (decision_time, tf) -> causal dict
+        frames_sha256: per-file sha256 fingerprints (G0/G7/G11)
+
+    Returns:
+        AdaptedResult with all ACCEPTED/REJECTED/SUPERSEDED candidates preserved
+    """
+    if isinstance(funnel, (str, Path)):
+        path = Path(funnel)
+        if not path.is_file():
+            raise AdapterError(f"funnel artifact not found: {path}")
+        try:
+            raw = json.loads(path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            raise AdapterError(f"cannot read funnel artifact: {exc}") from exc
+    elif isinstance(funnel, Mapping):
+        raw = dict(funnel)
+    else:
+        raise AdapterError("funnel must be dict or path to JSON")
+
+    records = raw.get("records", [])
+    episodes = raw.get("episodes", [])
+    rejections = raw.get("rejections", [])
+
+    # Index episodes by id for quick lookup
+    ep_by_id = {ep.get("canonical_setup_key"): ep for ep in episodes if isinstance(ep, Mapping)}
+
+    events: list[AdaptedEvent] = []
+    audit: list[dict[str, Any]] = []
+    diagnostics: list[str] = []
+    reason_counts: dict[str, int] = {}
+    funnel_row_count = len(records)
+
+    for idx, record in enumerate(records):
+        if not isinstance(record, Mapping):
+            continue
+
+        decision_time = record.get("decision_time") or record.get("time", "")
+        direction = record.get("direction", 0)
+        status = record.get("status", "UNKNOWN")
+        reason = record.get("reason", "")
+        episode_id = record.get("episode_id") or record.get("canonical_setup_key", f"AUDIT_{idx}")
+        lineage_depth = record.get("lineage_depth", 0)
+        lineage_count = record.get("lineage_count", 0)
+        can_trade = record.get("can_trade", False)
+
+        # Causal extraction at decision_time (time <= event_time)
+        if context_provider:
+            ctx = context_provider(decision_time)
+        else:
+            ctx = _default_causal_context(record, frames, decision_time)
+
+        features_at_t = ctx["features_at_t"]
+        _validate_tristate(features_at_t)
+
+        # Check forbidden fields
+        for key in _flatten_keys(features_at_t):
+            if _check_forbidden(key):
+                raise AdapterError(f"forbidden feature field: {key}")
+
+        event = AdaptedEvent(
+            episode_id=str(episode_id),
+            decision_time=str(decision_time),
+            direction=int(direction),
+            status=str(status),
+            reason=str(reason),
+            lineage_depth=int(lineage_depth),
+            lineage_count=int(lineage_count),
+            features_at_t=features_at_t,
+            can_trade=can_trade,
+        )
+        events.append(event)
+
+        if reason:
+            reason_counts[reason] = reason_counts.get(reason, 0) + 1
+
+        # Track in audit if rejected
+        if status in ("REJECTED", "SUPERSEDED") and reason:
+            audit.append({
+                "episode_id": str(episode_id),
+                "status": status,
+                "reason": reason,
+                "features_at_t": features_at_t,
+            })
+
+    diagnostics.append("validated funnel rows")
+    diagnostics.append("tri-state guard verified")
+    diagnostics.append("forbidden field scan passed")
+    if frames_sha256:
+        diagnostics.append(f"frames_sha256: {len(frames_sha256)} files")
+
+    return AdaptedResult(
+        events=tuple(events),
+        audit=tuple(audit),
+        diagnostics=tuple(diagnostics),
+        funnel_row_count=funnel_row_count,
+        adapted_row_count=len(events),
+        reason_counts=reason_counts,
+    )
+
+
+def _flatten_keys(payload: Any, prefix: str = "") -> list[str]:
+    """Recursively collect all keys in a nested dict/list."""
+    keys: list[str] = []
+    if isinstance(payload, Mapping):
+        for k, v in payload.items():
+            keys.append(str(k))
+            keys.extend(_flatten_keys(v, prefix=f"{prefix}.{k}"))
+    elif isinstance(payload, (list, tuple)):
+        for i, v in enumerate(payload):
+            keys.extend(_flatten_keys(v, prefix=f"{prefix}[{i}]"))
+    return keys
+
+
+def _default_causal_context(
+    record: Mapping[str, Any],
+    frames: Mapping[str, Any],
+    decision_time: str,
+) -> dict[str, Any]:
+    """
+    Default causal extraction for testing without live navigator.
+    Reads features directly from a pre-built record's causal payload.
+    """
+    features = record.get("features_at_t", {})
+    if not isinstance(features, Mapping):
+        features = {}
+
+    # If record already carries a v2 payload, use it but validate tri-state
+    if features.get("schema_group") == "engine_v2":
+        return {"features_at_t": dict(features)}
+
+    # Otherwise build a minimal degenerate payload
+    return {
+        "features_at_t": {
+            "schema_group": "engine_v2",
+            "context_state": {"direction_hint": "UNKNOWN"},
+            "zones": {"poi_count": 0, "bsl_count": 0, "ssl_count": 0, "proximity": 0.0},
+            "lifecycle": {"stage": "SETUP"},
+            "M5": {"m5_bos": None, "m5_displacement": None, "m5_fvg": None},
+            "M1": {"m1_trigger": None, "m1_retest": "UNKNOWN"},
+            "permissions": {"allow_long": None, "allow_short": None},
+            "lineage": {"depth": 0, "count": 0},
+            "reason_codes": [],
+        }
+    }

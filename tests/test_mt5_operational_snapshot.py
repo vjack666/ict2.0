@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 import pandas as pd
+import pytest
 
 from engine.market_object import ObjectState
 from engine.mt5_operational_snapshot import build_mt5_operational_snapshot, build_object_market_state
@@ -90,10 +91,12 @@ def test_source_artifacts_populate_hashes_and_mismatch_blocks(tmp_path):
     assert "M15:hash_mismatch" in bad["provenance"]["errors"]
 
 
-def test_future_rows_do_not_change_operational_snapshot_at_t():
-    t = pd.Timestamp("2024-01-01 04:00", tz="UTC")
+@pytest.mark.parametrize("hour", [2, 4, 6])
+def test_future_rows_do_not_change_operational_snapshot_at_t(hour):
+    t = pd.Timestamp(f"2024-01-01 {hour:02d}:00", tz="UTC")
     base = _frames()
-    before = build_mt5_operational_snapshot(base, t, generator_commit="abc123")
+    prefix = {tf: df.loc[df["time"] <= t].copy() for tf, df in base.items()}
+    before = build_mt5_operational_snapshot(prefix, t, generator_commit="abc123")
     extended = {tf: pd.concat([df, _frame("2024-01-02", n=2)], ignore_index=True) for tf, df in base.items()}
     after = build_mt5_operational_snapshot(extended, t, generator_commit="abc123")
     assert before == after
@@ -107,3 +110,32 @@ def test_object_projection_is_frozen_at_decision_time():
     projection = state.objects_existing_at(t)
     assert all(obj.creation_time <= t for obj in projection)
     assert all(obj.state in set(ObjectState) for obj in projection)
+
+
+def test_micro_confirmation_is_canonical_and_observe_only(monkeypatch):
+    from engine import mt5_operational_snapshot as module
+    from engine.plan import build_context_stack, ltf_confirms
+
+    frames = _frames()
+    t = pd.Timestamp("2024-01-01 04:00", tz="UTC")
+    monkeypatch.setattr(module, "build_daily_motor_snapshot", lambda *a, **kw: {"direction": -1})
+    result = module.build_mt5_operational_snapshot(frames, t)
+    stack = build_context_stack(frames, t, tfs=module.REQUIRED_TFS)
+    expected = {tf: stack[tf] for tf in ("M5", "M1")}
+    assert result["micro_confirmation"] == ltf_confirms(expected, -1)
+    assert result["micro_structure"] == module._safe(expected)
+    assert result["can_trade"] is False
+    assert result["entry_authorized"] is False
+    assert not {"entry", "sl", "tp", "stop", "target"}.intersection(result)
+
+
+def test_missing_micro_data_and_invalid_time_never_confirm(monkeypatch):
+    from engine import mt5_operational_snapshot as module
+
+    frames = {tf: frame for tf, frame in _frames().items() if tf not in ("M5", "M1")}
+    monkeypatch.setattr(module, "build_daily_motor_snapshot", lambda *a, **kw: {"direction": 1})
+    for t in (pd.Timestamp("2024-01-01 04:00", tz="UTC"), "invalid"):
+        result = module.build_mt5_operational_snapshot(frames, t)
+        assert result["micro_confirmation"]["confirmed"] is False
+        assert result["micro_confirmation"]["available"] is False
+        assert result["can_trade"] is False

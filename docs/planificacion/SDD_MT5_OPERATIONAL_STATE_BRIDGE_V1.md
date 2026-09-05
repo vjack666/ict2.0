@@ -45,6 +45,12 @@ El puente no importa `backtest/`, no crea detectores, no crea otra FSM y no
 escribe sobre las entradas. Si una capa no tiene evidencia suficiente, devuelve
 `UNKNOWN`, `WAIT_*` o `BLOCKED` con razón explícita.
 
+Desde 2026-09-05, `engine/mt5_operational_snapshot.py` transporta también
+`micro_structure` M5/M1 y `micro_confirmation` de las funciones existentes en
+`engine.plan`, con la dirección de `daily_motor`. Se mantiene explícitamente
+`can_trade=false`. El consumidor visual está especificado en
+`docs/planificacion/SDD_VISUAL_BACKTEST.md`; no tiene autoridad de detección.
+
 ## 3. Orden de implementación
 
 ### M0 — preflight

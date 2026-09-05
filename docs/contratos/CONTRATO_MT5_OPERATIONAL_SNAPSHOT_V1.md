@@ -77,6 +77,21 @@ sus gates de seguridad; no se activa automáticamente al cerrar este puente.
 
 ## 5. Prohibiciones
 
+### Extensión descriptiva del visor live (2026-09-05)
+
+El ensamblador publica `micro_structure` (M5/M1) y `micro_confirmation`
+mediante `engine.plan.build_context_stack` y `ltf_confirms`, usando la dirección
+de `daily_motor` y el mismo corte temporal. No altera Context State ni zonas.
+`confirmed` es el resultado agregado canónico (`score > 0`); `detail` conserva
+`with`, `against`, `neutral` o `unavailable` por TF. No significa entrada ni
+requiere que ambos TF confirmen. `can_trade=false` y `entry_authorized=false`.
+
+La tarjeta consume exclusivamente `engine_snapshot`: Context State, zonas,
+BOS y confirmación publicada. Ante datos ausentes, confirmación no disponible,
+resultado no confirmado, contexto inválido, fallo live o corte incompatible,
+presenta abstención explícita. No reconstruye decisiones desde velas y no
+calcula entrada, SL, TP, pips ni beneficio hipotético.
+
 - No descargar ni modificar Dukascopy durante esta etapa operativa; el feed
   histórico permanece reservado al plano de investigación.
 - No sustituir MT5 por otra fuente ni mezclar feeds sin declarar contrato.

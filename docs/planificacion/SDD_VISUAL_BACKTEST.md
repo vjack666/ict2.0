@@ -23,6 +23,13 @@ científica ni una operación real.
 
 ## Objetivo
 
+La tarjeta live (2026-09-05) sustituye el escenario fijo de compra por una
+lectura de `engine_snapshot`, con Context State, zonas, BOS y detalle canónico
+M5/M1. Debe abstenerse si falta confirmación o el snapshot no corresponde al
+corte consultado, y ante error de conexión. No calcula entrada/SL/TP.
+La política permanece `can_trade=false`; rige la extensión descriptiva de
+`docs/contratos/CONTRATO_MT5_OPERATIONAL_SNAPSHOT_V1.md`.
+
 Producir un visual_backtest.json para ICT Structure Lab usando exclusivamente
 las decisiones emitidas por el motor canónico vigente. El visor debe poder
 avanzar vela por vela sin leer Swing/BOS/CHOCH simplificados ni reconstruir

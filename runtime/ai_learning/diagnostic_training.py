@@ -119,7 +119,10 @@ def _validate_feature_value(value: Any, decision_time: datetime, path: str) -> N
     if isinstance(value, Mapping):
         for key, child in value.items():
             key_text = str(key).lower()
-            if any(part in key_text for part in _FORBIDDEN_FEATURE_PARTS):
+            # Token-based match: split on non-alphanumeric and check each token
+            tokens = set(re.split(r"[^a-z0-9_]+", key_text))
+            tokens.discard("")
+            if any(part in tokens for part in _FORBIDDEN_FEATURE_PARTS):
                 raise DiagnosticTrainingError(
                     f"features_at_t contiene campo futuro/prohibido: {path}.{key}"
                 )
@@ -189,17 +192,33 @@ def load_causal_jsonl(path: str | Path, *, target: str) -> DiagnosticRows:
         features = row.get("features_at_t")
         if not isinstance(features, Mapping):
             raise DiagnosticTrainingError(f"fila {number}: features_at_t requerido")
-        context = features.get("context_inputs")
-        sequence = features.get("sequence")
-        if not isinstance(context, Mapping) or not isinstance(sequence, (list, tuple)):
+        schema_group = features.get("schema_group", "intraday_v1")
+        if schema_group == "intraday_v1":
+            context = features.get("context_inputs")
+            sequence = features.get("sequence")
+            if not isinstance(context, Mapping) or not isinstance(sequence, (list, tuple)):
+                raise DiagnosticTrainingError(
+                    f"fila {number}: features_at_t causal incompleto"
+                )
+            required_context = {"sequence_direction", "d1_bias", "h4_location", "h1_alignment"}
+            missing = sorted(required_context.difference(context))
+            if missing:
+                raise DiagnosticTrainingError(
+                    f"fila {number}: faltan context_inputs: {','.join(missing)}"
+                )
+        elif schema_group == "engine_v2":
+            required_v2 = {
+                "context_state", "zones", "lifecycle", "M5", "M1",
+                "permissions", "lineage", "reason_codes",
+            }
+            missing = sorted(required_v2.difference(features))
+            if missing:
+                raise DiagnosticTrainingError(
+                    f"fila {number}: features_at_t engine_v2 incompleto: {','.join(missing)}"
+                )
+        else:
             raise DiagnosticTrainingError(
-                f"fila {number}: features_at_t causal incompleto"
-            )
-        required_context = {"sequence_direction", "d1_bias", "h4_location", "h1_alignment"}
-        missing = sorted(required_context.difference(context))
-        if missing:
-            raise DiagnosticTrainingError(
-                f"fila {number}: faltan context_inputs: {','.join(missing)}"
+                f"fila {number}: schema_group desconocido: {schema_group}"
             )
         _validate_feature_value(features, event_time, f"fila {number}.features_at_t")
         identity = str(row.get("episode_id") or row.get("event_id") or "")

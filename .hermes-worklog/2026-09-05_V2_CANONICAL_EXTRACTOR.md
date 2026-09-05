@@ -48,6 +48,16 @@ bounded quarter, then audit reproducible predictions before considering training
   certificado y no existe `research_gate` elegible.
 - No se creó modelo, registro ni checkpoint; se conserva `can_trade=false`.
 
+## Ruta diagnóstica solicitada sin certificación
+
+- Se añadió `label_end_6` al extractor; el runner productivo sigue protegido.
+- Se ejecutó una sola muestra diagnóstica balanceada de 600 filas (200 por clase),
+  360/120/120 en split temporal, `DIAGNOSTIC_ONLY_COMPLETED`.
+- Métricas: TRAIN accuracy 0.486, VALIDATION 0.208, TEST/OOS accuracy 0.0 y
+  log-loss 1.651; el OOS quedó compuesto solo por `failure`, por lo que no es
+  evidencia de edge ni promoción.
+- Artefacto: `runtime/ai_learning/artifacts/v2_engine_2022_q1_diag_sample.json`.
+
 ## Resultado de corrida Q1
 
 - Finalizada en 1530.2 s (~25.5 min), returncode=0.

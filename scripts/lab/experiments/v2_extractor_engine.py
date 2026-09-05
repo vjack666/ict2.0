@@ -151,6 +151,7 @@ def extract(start: str, end: str, output: Path, data_dir: Path) -> dict[str, Any
                 "decision_time": key,
                 "label_end_time": label_end_time,
                 "label": label,
+                TARGET: label,
                 "features_at_t": _json(_features(state, stack, direction)),
                 "engine_snapshot": _json(state.to_dict()),
                 "can_trade": False,

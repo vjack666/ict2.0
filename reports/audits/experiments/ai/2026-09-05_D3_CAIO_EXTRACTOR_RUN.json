@@ -1,0 +1,60 @@
+{
+  "execution_timestamp": "2026-09-05T19:43:38Z",
+  "agent": "D3_CAIO",
+  "defaults_applied": {
+    "SOURCE_AUTHORIZED": "historico_dukascopy_local",
+    "TARGET_AUTHORIZED": "label_end_6",
+    "CLASSES_AUTHORIZED": [
+      "continuation",
+      "reversal",
+      "failure"
+    ],
+    "SPLIT": {
+      "TRAIN": 0.6,
+      "VALIDATION": 0.2,
+      "TEST_OOS": 0.2
+    },
+    "CAN_TRADE": false,
+    "SHADOW_MODE": true,
+    "DIAGNOSTIC_ONLY": true
+  },
+  "data_inventory_real": {
+    "dukascopy_2006_2010_csv_files": 62,
+    "raw_EURUSD_parquet": [
+      {
+        "file": "EURUSD_M1.parquet",
+        "bytes": 91834188,
+        "sha256": "5c20148ae3770928fbd4b3410f9f4f36a059a82f35e321a8bff456339934f89f"
+      },
+      {
+        "file": "EURUSD_M5.parquet",
+        "bytes": 5593396,
+        "sha256": "4c99da4c0aeab9aafdb833667ceff9533bf7a26e1a0789056396e8e6885c0b79"
+      }
+    ],
+    "window_contiguous_3m_real": "2022-Q1 (2022-01-02 a 2022-03-31) \u2014 primer trimestre con cobertura conjunta M1/M5/H1/H4/D1 seg\u00fan inventario local",
+    "window_2006_2010_real": "NO tiene M5/M15/H4/D1 simult\u00e1neos; solo CSV M15 (datos hist\u00f3ricos, no V2)"
+  },
+  "corpus_v2_real_rows": 0,
+  "corpus_v2_materialized_actual": 1,
+  "materializado_bytes": 121,
+  "rejected_by_extract_v2": "TODOS los datos Dukascopy 2006-2010 (CSV M15) y los datos V1/h200 (features.jsonl, schema_group=MISSING). NO hay datos locales con `features_at_t.engine_v2`. El extractor creado (`v2_extractor_local.py`) rechazar\u00eda todo con AdapterError.",
+  "adapter_state": "corrected (fail-closed, no placeholder, tri-state verified)",
+  "extractor_state": "created (v2_extractor_local.py, 4819 bytes)",
+  "training_executed": false,
+  "training_eligible": false,
+  "training_block_reason": "BLOCKED_PENDIENTE_EXTRAER_Datos: los datos locales Dukascopy (hist\u00f3ricos) existan, pero no est\u00e1n en formato V2 (engine_v2 + features_at_t + tri-state + lineage). El extractor creado puede construir el formato V2 si se autoriza la transformaci\u00f3n. El adapter corregido confirma que cualquier intento con datos no-V2 es rechazado (como debe ser).",
+  "next_authority_decision": [
+    "Confirmar que hist\u00f3rico Dukascopy local es fuente autorizada para V2 (contrato v1 lo permite).",
+    "Confirmar ventana 2022-Q1 (o la que corresponda con cobertura real).",
+    "Ejecutar extractor (`v2_extractor_local.py`) con archivo CSV real para generar `dataset.jsonl` V2 con filas reales."
+  ],
+  "confirmaciones_no_promocion": {
+    "can_trade": false,
+    "training_eligible": false,
+    "shadow_mode": true,
+    "DIAGNOSTIC_ONLY": true,
+    "NO_PUSH": true,
+    "NO_PROMOTION": true
+  }
+}

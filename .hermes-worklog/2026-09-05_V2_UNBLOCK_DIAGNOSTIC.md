@@ -30,3 +30,10 @@ El signo se conserva: no se ajustan métricas, etiquetas ni datos para convertir
 ## Siguiente acción
 
 Repetir funnel y backtest usando este mismo corpus/snapshot y comparar contra una línea base definida, manteniendo modo diagnóstico y `can_trade=false`.
+
+## Backtest y funnel posteriores
+
+- Backtest canónico Q1 2022: `reports/audits/experiments/ai/v2_unblock_q1_backtest.json`.
+- 6.073 velas, 4.898 eventos, 0 señales y 0 trades. El motor observó 123 `SWEEP`, pero 0 `DISPLACE`, 0 `BOS` y 0 `ENTRY`; con `require_displacement=true` no se generaron entradas.
+- Bridge del funnel: `BACKTEST_SIGNALS_MISSING`; queda bloqueado correctamente porque no hay señales que enlazar. No se inventaron episodios ni outcomes.
+- Por tanto, no hay una comparación económica positiva o negativa en esta corrida: la muestra de trades es cero. El resultado negativo medible sigue siendo el OOS del modelo (`-0.002471` frente a la mayoría).

@@ -65,3 +65,10 @@ bounded quarter, then audit reproducible predictions before considering training
 - Distribución: continuation=2,861; reversal=3,018; failure=283.
 - Hash de salida verificado contra el manifiesto; 287,050,261 bytes.
 - training_eligible=false por procedencia pendiente; no se ejecutó entrenamiento.
+
+## Comparación diagnóstica cronológica
+
+- Corrida única sobre las primeras 2.000 filas cronológicas, split 1.200/400/400.
+- OOS accuracy del modelo: 0.4975; baseline mayoritario OOS: 0.4975.
+- Diferencia: 0.0000 (sin mejora); log-loss OOS 0.95117.
+- No se invirtió ni maquilló el signo del resultado: cambiar etiquetas o métricas para forzar positividad invalidaría la auditoría.

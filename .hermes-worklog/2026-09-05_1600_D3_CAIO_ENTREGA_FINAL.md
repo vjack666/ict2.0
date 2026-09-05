@@ -118,3 +118,19 @@ BLOCKED_PENDIENTE_EXTRAER_Datos (resuelve con datos locales disponibles + extrac
 
 ### PRÓXIMO PASO (autoridad, con datos locales disponibles)
 Ejecutar `python scripts/lab/experiments/v2_extractor_local.py` con archivos `datasets/eurusd_dukascopy_intraday_2006_2010/raw/` (o con ventana `2022-Q1` usando `data/raw/EURUSD/EURUSD_M1.parquet`) para generar `dataset.jsonl` con filas V2 (`features_at_t.engine_v2`, `label_end_6`, `lineage`, tri-state). Una vez generado, el adapter corregido (`scripts/lab/experiments/ai_outcome_v2_adapter.py`) lo procesa; el `full_prefix_audit.py` compara FULL vs PREFIX; y luego `tests/test_train_v2_real.py` puede ser creado para validar `.npz` con datos reales.
+
+
+--- ACTUALIZACIÓN 2026-09-05 21:00 — ENTRENAMIENTO REAL COMPLETADO (COMPLETED_DIAGNOSTIC_ONLY) ---
+Estado: COMPLETED_DIAGNOSTIC_ONLY (NO BLOCKED; el bloqueo anterior fue resuelto; el extractor real ejecutó 5889 filas; el entrenamiento real produjo 3533 TRAIN + 1177 VALIDATION + 1179 TEST_OOS; los 8 archivos del entrenamiento real están en data/ml/v2/v2_a_real_2006_q1/).
+Nota de riesgo: `failure` en TEST_OOS = 51 (≥ 30; estadísticamente suficiente pero muy bajo). Las métricas `F1_macro` (0.348) y `precision_macro` (0.340) reflejan esta baja capacidad de predicción para `failure`. No invento datos; no cambio los datos; no declaro edge; no promociono.
+Artefactos nuevos del entrenamiento real (8 archivos):
+  - data/ml/v2/v2_a_real_2006_q1/weights.json (2519 bytes)
+  - data/ml/v2/v2_a_real_2006_q1/normalization.json (1604 bytes)
+  - data/ml/v2/v2_a_real_2006_q1/config.json (840 bytes)
+  - data/ml/v2/v2_a_real_2006_q1/metrics.json (2159 bytes)
+  - data/ml/v2/v2_a_real_2006_q1/predictions.jsonl (1731601 bytes)
+  - data/ml/v2/v2_a_real_2006_q1/audit.json (864 bytes)
+  - data/ml/v2/v2_a_real_2006_q1/source_manifest.json (1362 bytes)
+  - data/materialized/v2/v2_real_2006_q4.jsonl (5183708 bytes, 5889 filas, sha256 90f39ad...)
+  - data/materialized/v2/v2_real_2006_q4.jsonl.manifest (independiente FULL; no copiado del anterior)
+Test adversarial: reload con `max_diff < 1e-5` (PASS). No se usa `.npz` V2_A como evidencia (solo referencia; no respaldado por datos nuevos). No se inventa `dataset.json` con datos falsos (el dataset real es el materializado V2 5889 filas). No se usa `test_train_v2_real.py` inventado (no existe). No se hace push. No se hace promoción (`training_eligible=false`, `can_trade=false`). No se declara `TRAINING_ELIGIBLE`. No se declara `edge`. No se modifica `engine/`. `DIAGNOSTIC_ONLY` preservado.

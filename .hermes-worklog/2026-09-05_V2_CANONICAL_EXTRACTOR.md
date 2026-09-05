@@ -102,3 +102,10 @@ bounded quarter, then audit reproducible predictions before considering training
 - ICT_ONLY y WYCKOFF_ONLY fueron ejecutados una vez cada uno con parámetros fijos.
 - Ambos obtuvieron accuracy OOS 0.4675 frente a baseline 0.5050 (diferencia -0.0375).
 - Log-loss OOS: 0.88266 y 0.88264; ninguno superó al combinado 0.88216.
+
+## Ajuste de convergencia diagnóstico
+
+- Una corrida adicional del perfil combinado con learning_rate=0.2 e iterations=300.
+- Accuracy OOS 0.4675 (sin cambio; sigue -0.0375 frente al baseline 0.5050).
+- Log-loss OOS 0.82057, mejora 0.06159 frente a 0.88216 del combinado anterior.
+- La mejora probabilística no equivale a edge ni autoriza promoción.

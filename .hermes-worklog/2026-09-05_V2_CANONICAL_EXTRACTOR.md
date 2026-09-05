@@ -109,3 +109,10 @@ bounded quarter, then audit reproducible predictions before considering training
 - Accuracy OOS 0.4675 (sin cambio; sigue -0.0375 frente al baseline 0.5050).
 - Log-loss OOS 0.82057, mejora 0.06159 frente a 0.88216 del combinado anterior.
 - La mejora probabilística no equivale a edge ni autoriza promoción.
+
+## Ajuste de decisión con validación
+
+- Selección de exponentes de prior hecha solo con VALIDATION: continuation=0.75, failure=0.5, reversal=0.5.
+- OOS accuracy ajustada: 0.5050; modelo crudo: 0.4675; baseline: 0.5050.
+- Recuperación frente al modelo crudo: +0.0375; diferencia final frente al baseline: 0.0000.
+- No se fabricó una mejora: el ajuste alcanzó el baseline, no lo superó.

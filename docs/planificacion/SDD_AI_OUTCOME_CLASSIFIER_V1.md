@@ -139,3 +139,23 @@ ejecución. Esta SDD no autoriza broker, órdenes ni `can_trade=true`.
 - calibración, dominio y abstención documentados;
 - Shadow Mode explícito;
 - cero órdenes y cero promoción automática.
+
+## 5. v2 — Retraining sobre el funnel del engine (`ai-outcome-v2`)
+
+**Estado:** ESPEC (referencia: `docs/contratos/CONTRATO_AI_OUTCOME_CLASSIFIER_V1.md` addendum v2).
+
+La v2 reentrena el clasificador sobre el funnel canónico (`engine/episodes.py`)
+en lugar de `backtest/replay.py`, incorporando Context State, BOS HTF, zonas/
+lifecycle, M5/M1 y permisos tri-state (allow_long/allow_short), lineage y reason
+codes. La v1 (feature set A + `label_end_12`) permanece intacta y actúa como
+baseline de comparación; los artefactos baseline se conservan byte-for-byte.
+
+Documentos de referencia (no se reescribe el contenido de la v1):
+- Propuesta: `.hermes/plans/2026-09-05_AI_OUTCOME_V2_PROPOSAL.md`
+- Especificación (contratos A–F, dataset v2, adapter, target, splits, gates
+  G0–G13, igualdad de experimento, comparación vs baseline): 
+  `.hermes/plans/2026-09-05_AI_OUTCOME_V2_SPEC.md`
+
+Restricciones: `can_trade=false`, sin MT5, sin modificación de `engine/`
+(solo lectura), sin optimización circular, sin push, **sin declaración de
+`TRAINING_ELIGIBLE`** (provenance bloqueada; esta corrida es `DIAGNOSTIC_ONLY`).

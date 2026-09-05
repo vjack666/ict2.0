@@ -72,3 +72,11 @@ bounded quarter, then audit reproducible predictions before considering training
 - OOS accuracy del modelo: 0.4975; baseline mayoritario OOS: 0.4975.
 - Diferencia: 0.0000 (sin mejora); log-loss OOS 0.95117.
 - No se invirtió ni maquilló el signo del resultado: cambiar etiquetas o métricas para forzar positividad invalidaría la auditoría.
+
+## Corrección de mapeo V2
+
+- El extractor ahora expone `direction`, `sequence_depth`, conteos de zonas
+  anidados, `regime_stack`, `bos_htf` y proximidad causal para que el clasificador
+  no reciba columnas silenciosamente vacías.
+- Repetición diagnóstica cronológica con ese mapeo: OOS accuracy `0.4975`, igual
+  al baseline; diferencia `0.0000`. No hubo mejora positiva verificable.

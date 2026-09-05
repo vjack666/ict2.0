@@ -76,16 +76,32 @@ def _features(state: Any, stack: dict[str, Any], direction: int) -> dict[str, An
     micro = {tf: stack.get(tf) or {} for tf in ("M5", "M1")}
     m5 = micro["M5"]
     m1 = micro["M1"]
+    last_close = next((layer.get("last_close") for layer in layers.values() if layer.get("last_close") is not None), None)
+    distances = [abs(float(last_close) - (float(z["low"]) + float(z["high"])) / 2.0) for z in zones if last_close is not None and z.get("low") is not None and z.get("high") is not None]
+    proximity = min(distances) if distances else None
+    regime_stack = {tf: layer.get("regime", "UNKNOWN") for tf, layer in layers.items() if tf in ("D1", "H4", "H1")}
+    bos_htf = {tf: {"bullish": layer.get("last_bos_direction") == 1, "bearish": layer.get("last_bos_direction") == -1} for tf, layer in layers.items() if tf in ("D1", "H4", "H1")}
     return {
         "schema_group": "engine_v2",
+        "direction": direction,
+        "sequence_depth": 0,
         "context_state": {
             "status": raw.get("status"),
             "direction_hint": _enum(constraints.get("direction_hint")),
             "layer_status": {tf: "OK" for tf in layers},
             "layers": layers,
+            "regime_stack": regime_stack,
             "policy": "CONTEXT_STATE_NOT_ENTRY_SIGNAL",
         },
-        "zones": {**counts, "proximity": None},
+        "zones": {
+            "poi": {"count": counts["poi_count"]},
+            "bsl": {"count": counts["bsl_count"]},
+            "ssl": {"count": counts["ssl_count"]},
+            "dealing": {"count": counts["dealing_count"]},
+            "proximity": proximity,
+            **counts,
+        },
+        "bos_htf": bos_htf,
         "lifecycle": {"stage": "CONTEXT_OBSERVATION"},
         "M5": {
             "m5_bos": int(m5.get("bos_dir", 0) or 0) != 0 if m5.get("available") else None,

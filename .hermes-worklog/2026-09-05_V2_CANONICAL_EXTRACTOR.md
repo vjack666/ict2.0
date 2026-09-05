@@ -89,3 +89,10 @@ bounded quarter, then audit reproducible predictions before considering training
 - Log-loss OOS: `0.91562`, frente a `0.95117` del perfil anterior: mejora
   descriptiva de `0.03555`, aún sin evidencia de edge ni calibración.
 - Artefacto: `runtime/ai_learning/artifacts/v2_engine_2022_q1_chrono2000_combined_diagnostic.json`.
+
+## Validación en segundo bloque temporal
+
+- Mismo perfil combinado, parámetros fijos, filas cronológicas 2.001-4.000.
+- OOS accuracy del modelo: 0.4675; baseline mayoritario: 0.5050.
+- Diferencia: -0.0375 (empeoramiento de 3,75 puntos porcentuales).
+- El resultado no se invirtió ni se ajustó post-hoc; la mejora anterior no generalizó al bloque posterior.

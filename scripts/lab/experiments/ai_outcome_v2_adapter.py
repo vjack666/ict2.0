@@ -211,9 +211,8 @@ def _prefix_frame(frame, decision_time: str) -> Any:
     try:
         from engine.mt5_operational_snapshot import _frame_prefix
         return _frame_prefix(frame, decision_time)
-    except Exception:
-        # Fallback for testing without full engine
-        return frame  # full window as placeholder (test passes with identity check)
+    except Exception as exc:
+        raise AdapterError(f"PREFIX causal failure: cannot build prefix for decision_time={decision_time}: {exc}") from exc
 
 
 def _default_causal_context(
@@ -223,27 +222,24 @@ def _default_causal_context(
 ) -> dict[str, Any]:
     """
     Default causal extraction for testing without live navigator.
-    Reads features directly from a pre-built record's causal payload.
+
+    Strict mode: requires the record to already carry an engine_v2
+    `features_at_t` payload. If the record is empty or has a different
+    schema_group, this fails closed. No placeholder constants are used:
+    absent causal context is reported as an explicit rejection, never
+    silently substituted with zeros/UNKNOWN.
     """
     features = record.get("features_at_t", {})
-    if not isinstance(features, Mapping):
-        features = {}
+    if not isinstance(features, Mapping) or not features:
+        raise AdapterError(
+            f"causal context unavailable: record lacks features_at_t at decision_time={decision_time}; "
+            f"fallback to placeholder values is forbidden (R3 / C-3.4 / C-3.5)"
+        )
 
-    # If record already carries a v2 payload, use it but validate tri-state
-    if features.get("schema_group") == "engine_v2":
-        return {"features_at_t": dict(features)}
+    if features.get("schema_group") != "engine_v2":
+        raise AdapterError(
+            f"causal context unavailable: schema_group must be 'engine_v2', got {features.get('schema_group')!r}; "
+            f"record is not from the canonical engine_v2 snapshot"
+        )
 
-    # Otherwise build a minimal degenerate payload
-    return {
-        "features_at_t": {
-            "schema_group": "engine_v2",
-            "context_state": {"direction_hint": "UNKNOWN"},
-            "zones": {"poi_count": 0, "bsl_count": 0, "ssl_count": 0, "proximity": 0.0},
-            "lifecycle": {"stage": "SETUP"},
-            "M5": {"m5_bos": None, "m5_displacement": None, "m5_fvg": None},
-            "M1": {"m1_trigger": None, "m1_retest": "UNKNOWN"},
-            "permissions": {"allow_long": None, "allow_short": None},
-            "lineage": {"depth": 0, "count": 0},
-            "reason_codes": [],
-        }
-    }
+    return {"features_at_t": dict(features)}

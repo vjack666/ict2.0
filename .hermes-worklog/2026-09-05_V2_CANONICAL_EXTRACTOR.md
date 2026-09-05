@@ -96,3 +96,9 @@ bounded quarter, then audit reproducible predictions before considering training
 - OOS accuracy del modelo: 0.4675; baseline mayoritario: 0.5050.
 - Diferencia: -0.0375 (empeoramiento de 3,75 puntos porcentuales).
 - El resultado no se invirtió ni se ajustó post-hoc; la mejora anterior no generalizó al bloque posterior.
+
+## Comparación de perfiles en OOS posterior
+
+- ICT_ONLY y WYCKOFF_ONLY fueron ejecutados una vez cada uno con parámetros fijos.
+- Ambos obtuvieron accuracy OOS 0.4675 frente a baseline 0.5050 (diferencia -0.0375).
+- Log-loss OOS: 0.88266 y 0.88264; ninguno superó al combinado 0.88216.

@@ -41,6 +41,13 @@ abstention/trade safety fields.
 Add a compact canonical snapshot projection and a provenance manifest, rerun the
 bounded quarter, then audit reproducible predictions before considering training.
 
+## Intento de entrenamiento
+
+- Ejecutado una sola vez con el runner contractual sobre el corpus Q1.
+- Resultado: `BLOCKED`; el corpus JSONL no es todavía un `DatasetSnapshot`
+  certificado y no existe `research_gate` elegible.
+- No se creó modelo, registro ni checkpoint; se conserva `can_trade=false`.
+
 ## Resultado de corrida Q1
 
 - Finalizada en 1530.2 s (~25.5 min), returncode=0.

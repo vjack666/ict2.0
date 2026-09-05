@@ -116,3 +116,9 @@ bounded quarter, then audit reproducible predictions before considering training
 - OOS accuracy ajustada: 0.5050; modelo crudo: 0.4675; baseline: 0.5050.
 - Recuperación frente al modelo crudo: +0.0375; diferencia final frente al baseline: 0.0000.
 - No se fabricó una mejora: el ajuste alcanzó el baseline, no lo superó.
+
+## Prueba de abstención
+
+- En el OOS posterior la confianza fue idéntica en las 400 filas: 0.4807.
+- Umbrales 0.55-0.80 producen cobertura 0%; el modelo no discrimina casos confiables.
+- La abstención total es el comportamiento seguro; no existe base para convertirlo en señal positiva.

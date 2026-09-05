@@ -102,6 +102,21 @@ def _features(state: Any, stack: dict[str, Any], direction: int) -> dict[str, An
             **counts,
         },
         "bos_htf": bos_htf,
+        "context_inputs": {"sequence_direction": direction},
+        "intraday": {
+            "ict_m15": {
+                "bos_bullish": bool((layers.get("M15", {}).get("last_bos_direction") == 1)),
+                "bos_bearish": bool((layers.get("M15", {}).get("last_bos_direction") == -1)),
+                "choch_bullish": False, "choch_bearish": False,
+                "displacement_bullish": bool(layers.get("M15", {}).get("displacement_recent") and direction == 1),
+                "displacement_bearish": bool(layers.get("M15", {}).get("displacement_recent") and direction == -1),
+                "fvg_bullish": False, "fvg_bearish": False, "sweep_up": False, "sweep_down": False,
+            },
+            "wyckoff": {
+                tf: {"phase": {"TREND_BULL": "MARKUP", "TREND_BEAR": "MARKDOWN", "RANGE": "RANGE_UNCLASSIFIED", "COMPRESSION": "RANGE_UNCLASSIFIED"}.get(layers.get(tf, {}).get("regime"), "UNKNOWN"), "events": []}
+                for tf in ("H1", "M15")
+            },
+        },
         "lifecycle": {"stage": "CONTEXT_OBSERVATION"},
         "M5": {
             "m5_bos": int(m5.get("bos_dir", 0) or 0) != 0 if m5.get("available") else None,

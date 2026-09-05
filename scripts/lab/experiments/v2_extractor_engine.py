@@ -43,6 +43,21 @@ def _json(value: Any) -> Any:
     return _enum(value)
 
 
+def _compact_snapshot(state: Any) -> dict[str, Any]:
+    raw = state.to_dict()
+    layers = raw.get("layers") or {}
+    compact_layers = {}
+    for tf, layer in layers.items():
+        compact_layers[tf] = {
+            k: layer.get(k)
+            for k in ("layer", "asof_time", "last_close", "structure_bias", "regime",
+                      "last_bos_direction", "last_bos_bar", "displacement_recent",
+                      "range_high", "range_low", "zones", "answers")
+            if k in layer
+        }
+    return {"status": raw.get("status"), "constraints": raw.get("constraints"), "layers": compact_layers}
+
+
 def _label(rows: pd.DataFrame, index: int, horizon: int = 6):
     end = index + horizon
     if end >= len(rows):
@@ -200,7 +215,7 @@ def extract(start: str, end: str, output: Path, data_dir: Path) -> dict[str, Any
                 "label": label,
                 TARGET: label,
                 "features_at_t": _json(_features(state, stack, direction, _sequence_depth(m15, row_index))),
-                "engine_snapshot": _json(state.to_dict()),
+                "engine_snapshot": _json(_compact_snapshot(state)),
                 "can_trade": False,
                 "shadow_mode": True,
                 "diagnostic_only": True,

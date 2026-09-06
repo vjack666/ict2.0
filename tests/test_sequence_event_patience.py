@@ -66,6 +66,8 @@ def test_sweep_freezes_closed_h4_reference_and_snapshot_round_trips():
     assert anchor["anchor_htf"] == "H4"
     assert anchor["layers"]["H4"]["asof_bar"] == 7
     assert anchor["layers"]["H4"]["asof_time"] == "2026-01-01T00:00:00Z"
+    assert anchor["layers"]["M15"]["asof_bar"] == 1
+    assert anchor["layers"]["M15"]["sweep_down"] is True
     assert SequenceState.from_snapshot(state.to_snapshot()).context_anchor == anchor
 
 

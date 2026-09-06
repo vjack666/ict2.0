@@ -433,18 +433,30 @@ def run_visual_replay(
     main_raw = frames[config.timeframe]
 
     closed_index: dict[str, int] = {}
-    context_tfs = tuple(featured)
+    # D1/H4/H1 deciden el contexto. M15 queda sellado por la máquina de
+    # secuencia y M5/M1 solo refinan ejecución; recalcularlos aquí por cada
+    # vela añade coste sin poder redefinir ni vetar el sesgo mayor.
+    context_tfs = tuple(tf for tf in ("D1", "H4", "H1") if tf in featured)
+    context_cache: dict[tuple[tuple[str, int], ...], dict[str, Any]] = {}
 
     def context_at(index: int) -> dict[str, Any]:
         timestamp = main.iloc[index]["time"]
         for tf, frame in featured.items():
             closed_index[tf] = _last_closed_index(frame, timestamp)
-        return build_multitf_context(
+        # Entre dos cierres D1/H4/H1 la foto top-down es exactamente la
+        # misma. Reutilizarla evita recomputar estructura sin alterar tiempo,
+        # datos disponibles ni decisiones de la máquina de estados.
+        cache_key = tuple((tf, closed_index[tf]) for tf in context_tfs)
+        if cache_key in context_cache:
+            return context_cache[cache_key]
+        context = build_multitf_context(
             featured,
             timestamp,
             tfs=context_tfs,
             closed_index=closed_index,
         )
+        context_cache[cache_key] = context
+        return context
 
     sequence_config = config.sequence
     htf = config.htf_timeframe or (

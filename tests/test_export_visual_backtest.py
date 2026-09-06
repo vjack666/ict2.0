@@ -14,3 +14,9 @@ def test_context_can_be_explicitly_changed_for_a_diagnostic_replay():
         "--execution-timeframe", "M1",
     ])
     assert _required_timeframes(args) == ("M15", "M1", "H1")
+
+
+def test_multitf_mode_keeps_the_full_d1_h4_h1_context_stack():
+    args = _parser().parse_args(["--tfs", "M15", "M5", "M1", "--multitf-context"])
+
+    assert _required_timeframes(args) == ("M15", "M5", "M1", "D1", "H4", "H1")

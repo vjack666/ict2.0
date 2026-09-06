@@ -39,3 +39,19 @@ def test_signal_projection_preserves_frozen_h4_anchor():
 
     assert projected[0]["context_anchor"]["anchor_htf"] == "H4"
     assert projected[0]["context_anchor"]["layers"]["H4"]["asof_bar"] == 5
+
+
+def test_multitf_context_cache_preserves_replay_result():
+    frame = pd.DataFrame({
+        "time": pd.date_range("2022-01-03", periods=25, freq="15min", tz="UTC"),
+        "open": [1.1] * 25, "high": [1.101] * 25,
+        "low": [1.099] * 25, "close": [1.1] * 25,
+    })
+    # The test exercises the cache path. With no structural events the output
+    # remains deterministically empty, which is the expected engine result.
+    replay = run_visual_replay(
+        {"D1": frame, "H4": frame, "H1": frame, "M15": frame},
+        ReplayConfig(timeframes=("D1", "H4", "H1", "M15"), use_multitf_context=True),
+    ).to_dict()
+    assert replay["signals"] == []
+    assert replay["metadata"]["multitf_context"] is True

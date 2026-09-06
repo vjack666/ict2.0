@@ -55,8 +55,9 @@ def _required_timeframes(args: argparse.Namespace) -> tuple[str, ...]:
     HTF. That makes the directional bias flip bar by bar and can discard a
     valid sweep before its following displacement is evaluated.
     """
+    context_stack = ("D1", "H4", "H1") if args.multitf_context else ()
     return tuple(dict.fromkeys(
-        [*args.tfs, args.timeframe, args.htf_timeframe, args.execution_timeframe]
+        [*args.tfs, *context_stack, args.timeframe, args.htf_timeframe, args.execution_timeframe]
     ))
 
 

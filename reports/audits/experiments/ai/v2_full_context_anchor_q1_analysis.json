@@ -1,0 +1,35 @@
+{
+  "status": "PASS_TECHNICAL_REVIEW_EDGE",
+  "scope": "EURUSD Q1 2022, canonical M15 replay, diagnostic only",
+  "can_trade": false,
+  "diagnostic_only": true,
+  "comparison": {
+    "h4_only": {
+      "frames": ["M15", "M5", "M1", "H4"],
+      "signals": 18,
+      "phase_seen": {"SWEEP": 237, "DISPLACE": 27, "BOS": 19, "ENTRY": 18},
+      "direction_flip_invalidations": 24,
+      "opposite_swing_invalidations": 195,
+      "anchor_layers_per_signal": ["H4"]
+    },
+    "full_context": {
+      "frames": ["M15", "M5", "M1", "D1", "H4", "H1"],
+      "signals": 8,
+      "phase_seen": {"SWEEP": 75, "DISPLACE": 8, "BOS": 8, "ENTRY": 8},
+      "direction_flip_invalidations": 1,
+      "opposite_swing_invalidations": 66,
+      "anchor_layers_per_signal": ["D1", "H4", "H1", "M15"],
+      "causal_anchor_checks": {"signals_checked": 8, "missing_layers": 0, "future_layers": 0}
+    }
+  },
+  "findings": [
+    "The full stack preserves D1/H4/H1/M15 at sweep time and projects it with the signal.",
+    "D1/H1 filtered 10 H4-only signals before they entered the lower-timeframe sequence; this is a context veto, not a timeout or loss of memory.",
+    "Direction-flip invalidations fell from 24 to 1, indicating that the sequence is less exposed to lower-timeframe bias replacement.",
+    "Trade outcomes are not edge evidence: the horizon leaves most outcomes OPEN and the sample is small."
+  ],
+  "performance": {
+    "finding": "Full context is materially more expensive than H4-only; cache snapshots while the last closed D1/H4/H1 bars do not change.",
+    "decision": "Do not infer an operational edge or promote this diagnostic result."
+  }
+}

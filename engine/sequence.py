@@ -609,14 +609,18 @@ def _context_proves_opposition(context, target: int, cfg: SequenceConfig) -> boo
 
 
 def _freeze_context_anchor(context: dict | None, htf: str | None,
-                           est_htf: dict | None, decision_time: Any) -> dict:
+                           est_htf: dict | None, decision_time: Any,
+                           ltf_obj: MarketObject | None = None,
+                           ltf_tf: str = "M15") -> dict:
     """Conserva la referencia top-down disponible al nacer un setup.
 
     No es un cache para decisiones futuras: es evidencia de lo que el motor
     conocía al confirmar el sweep. Las capas posteriores siguen evaluándose
     closed-only para detectar una invalidación HTF real.
     """
-    selected = ("D1", "H4", "H1") if context is not None else (str(htf or "H4"),)
+    # M15 también se sella cuando es la capa donde nace el sweep. Así la
+    # secuencia conserva la historia completa D1 -> H4 -> H1 -> M15.
+    selected = ("D1", "H4", "H1", "M15") if context is not None else (str(htf or "H4"),)
     layers: dict[str, dict] = {}
     for tf in selected:
         raw = ((context or {}).get(tf) or {}) if context is not None else (est_htf or {})
@@ -632,6 +636,21 @@ def _freeze_context_anchor(context: dict | None, htf: str | None,
             "sweep_up": bool(raw.get("sweep_up", False)),
             "sweep_down": bool(raw.get("sweep_down", False)),
             "pd_side": str(raw.get("pd_side", "UNKNOWN")),
+        }
+    # El LTF no decide el sesgo top-down, pero sí es parte de la historia: se
+    # sella la vela que confirmó el sweep sin reconstruir M5/M1 por cada tick.
+    if ltf_obj is not None:
+        meta = ltf_obj.meta
+        layers[ltf_tf] = {
+            "tf": ltf_tf,
+            "available": True,
+            "asof_time": str(meta.get("time", decision_time)),
+            "asof_bar": int(ltf_obj.bar_index) if ltf_obj.bar_index is not None else None,
+            "trend": "RANGING",
+            "bos_dir": int(meta.get("bos_dir", 0) or 0),
+            "sweep_up": bool(meta.get("liquidity_sweep_up", False)),
+            "sweep_down": bool(meta.get("liquidity_sweep_down", False)),
+            "pd_side": "UNKNOWN",
         }
     return {
         "anchor_time": str(decision_time),
@@ -994,7 +1013,7 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 state.direction = target
                 state.sweep_idx = i
                 state.context_anchor = _freeze_context_anchor(
-                    _ctx, htf, est_htf, obj.meta.get("time")
+                    _ctx, htf, est_htf, obj.meta.get("time"), obj, ltf_tf
                 )
                 _record_context_anchor(audit, state)
                 state.note("SWEEP", i)

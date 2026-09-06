@@ -1,0 +1,452 @@
+{
+  "artifact_hash": "253a5dd8dcd7344e32035e173c04fca81d69aeecea2293eb5bba5a09e06f4e98",
+  "artifact_kind": "ai_outcome_classifier_diagnostic_only",
+  "can_trade": false,
+  "certified_snapshot": false,
+  "config": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "can_trade": false,
+    "iterations": 300,
+    "l2": 0.0001,
+    "learning_rate": 0.05,
+    "min_class_rows": 5,
+    "mode": "DIAGNOSTIC_ONLY",
+    "seed": 17,
+    "target": "label_end_6",
+    "train_fraction": 0.6,
+    "validation_fraction": 0.2
+  },
+  "diagnostic_authorization": {
+    "certified_snapshot": false,
+    "dataset_hash": "88d08913ebde2c01b2c9dbd3108d7505dd5b7342ecd7ab0b7c4184cb03a24e83",
+    "promotion_authorized": false,
+    "scope": "DIAGNOSTIC_ONLY",
+    "status": "PASS",
+    "verdict": "TRAINING_ELIGIBLE"
+  },
+  "diagnostics": [
+    "ajuste ejecutado sólo para diagnóstico local; no es certificación ni promoción"
+  ],
+  "feature_health": {
+    "feature_count": 15,
+    "rows": 6067,
+    "varying_count": 12,
+    "varying_fraction": 0.8
+  },
+  "fit_executed": true,
+  "input": {
+    "format": "causal_materialized_jsonl",
+    "rows": 6067,
+    "schema_hash": "a5298dc4d86cd52f41e956054cb26be2b7113c5d46563bfcf035bf9d39259fcb",
+    "sha256": "88d08913ebde2c01b2c9dbd3108d7505dd5b7342ecd7ab0b7c4184cb03a24e83",
+    "source_name": "v2_engine_2022_q1_current_train.jsonl"
+  },
+  "metrics": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "calibration_status": "NOT_CALIBRATED",
+    "classes": [
+      "continuation",
+      "reversal",
+      "failure"
+    ],
+    "model_training_executed": true,
+    "oos_scope": "TEST_OOS never used for fitting",
+    "policy": "SHADOW_ONLY_NO_ORDER",
+    "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+    "target": "label_end_6",
+    "test_oos": {
+      "accuracy": 0.4818780889621087,
+      "class_counts": {
+        "continuation": 588,
+        "failure": 44,
+        "reversal": 582
+      },
+      "log_loss": 0.8379720801536794,
+      "rows": 1214
+    },
+    "train": {
+      "accuracy": 0.48846153846153845,
+      "class_counts": {
+        "continuation": 1677,
+        "failure": 200,
+        "reversal": 1763
+      },
+      "log_loss": 0.8703513540603856,
+      "rows": 3640
+    },
+    "validation": {
+      "accuracy": 0.47980214344600164,
+      "class_counts": {
+        "continuation": 564,
+        "failure": 35,
+        "reversal": 614
+      },
+      "log_loss": 0.825917757421365,
+      "rows": 1213
+    }
+  },
+  "minimum_window": {
+    "additional_rows_at_least": 0,
+    "available_class_counts": {
+      "continuation": 2829,
+      "failure": 279,
+      "reversal": 2959
+    },
+    "available_rows": 6067,
+    "earliest_qualifying_window": {
+      "end_event_time": "2022-01-04T06:45:00+00:00",
+      "rows_required": 152,
+      "start_event_time": "2022-01-02T17:00:00+00:00",
+      "test_rows": 31,
+      "train_class_counts": {
+        "continuation": 32,
+        "failure": 5,
+        "reversal": 54
+      },
+      "train_rows": 91,
+      "validation_rows": 30
+    },
+    "minimum_partition_rows": {
+      "test": 10,
+      "train": 30,
+      "validation": 10
+    },
+    "minimum_total_rows": 50,
+    "minimum_train_class_rows": 5,
+    "window_policy": "chronological prefix; 60% train, 20% validation, remainder test"
+  },
+  "model": {
+    "artifact_hash": "0bd319064879420498c7007220b31ba92cd0c4541d2854dac1009f48f723f410",
+    "bias": [
+      0.5713509786862471,
+      0.6229788803598201,
+      -1.1943298590460694
+    ],
+    "can_trade": false,
+    "classes": [
+      "continuation",
+      "reversal",
+      "failure"
+    ],
+    "dataset_hash": "88d08913ebde2c01b2c9dbd3108d7505dd5b7342ecd7ab0b7c4184cb03a24e83",
+    "experiment_id": "EXP-AI-OUTCOME-DIAGNOSTIC-ONLY",
+    "feature_names": [
+      "direction",
+      "sequence_depth",
+      "context_bucket=ALIGNED",
+      "context_bucket=NEUTRAL",
+      "context_bucket=AGAINST",
+      "h1_alignment=ALIGNED",
+      "h1_alignment=NEUTRAL",
+      "h1_alignment=AGAINST",
+      "d1_bias=BULLISH",
+      "d1_bias=BEARISH",
+      "d1_bias=UNKNOWN",
+      "d1_bias=MIXED",
+      "h4_location=DISCOUNT",
+      "h4_location=PREMIUM",
+      "h4_location=EQUILIBRIUM",
+      "h4_location=MID",
+      "h4_location=UNKNOWN",
+      "sequence_has=LIQUIDITY_POOL",
+      "sequence_has=SWEEP",
+      "sequence_has=DISPLACEMENT",
+      "sequence_has=STRUCTURE",
+      "sequence_has=OB",
+      "sequence_has=FVG",
+      "sequence_has=CONFLUENCE"
+    ],
+    "mean": [
+      0.12087912087912088,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "metrics": {
+      "algorithm": "deterministic_multinomial_softmax",
+      "calibration_status": "NOT_CALIBRATED",
+      "classes": [
+        "continuation",
+        "reversal",
+        "failure"
+      ],
+      "model_training_executed": true,
+      "oos_scope": "TEST_OOS never used for fitting",
+      "policy": "SHADOW_ONLY_NO_ORDER",
+      "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+      "target": "label_end_6",
+      "test_oos": {
+        "accuracy": 0.4818780889621087,
+        "class_counts": {
+          "continuation": 588,
+          "failure": 44,
+          "reversal": 582
+        },
+        "log_loss": 0.8379720801536794,
+        "rows": 1214
+      },
+      "train": {
+        "accuracy": 0.48846153846153845,
+        "class_counts": {
+          "continuation": 1677,
+          "failure": 200,
+          "reversal": 1763
+        },
+        "log_loss": 0.8703513540603856,
+        "rows": 3640
+      },
+      "validation": {
+        "accuracy": 0.47980214344600164,
+        "class_counts": {
+          "continuation": 564,
+          "failure": 35,
+          "reversal": 614
+        },
+        "log_loss": 0.825917757421365,
+        "rows": 1213
+      }
+    },
+    "model_id": "ICT_OUTCOME_CLASSIFIER_V1_DIAGNOSTIC",
+    "model_version": "diagnostic-1.0.0",
+    "scale": [
+      0.8849804720657588,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "schema_hash": "a5298dc4d86cd52f41e956054cb26be2b7113c5d46563bfcf035bf9d39259fcb",
+    "schema_version": "1.0",
+    "seed": 17,
+    "shadow_mode": true,
+    "snapshot_id": "DIAGNOSTIC_JSONL_88d08913ebde2c01",
+    "source_code_commit": "d501c61feb28376b7a57f80b8ae645f6ed45eaf0",
+    "target": "label_end_6",
+    "weights": [
+      [
+        0.050757989180494616,
+        0.0033792400900887897,
+        -0.005391621631230931,
+        -0.012583529064117834,
+        -0.018917814612238966,
+        0.00018610354434618888,
+        -0.008093521572594688,
+        -0.008708487034139678,
+        -0.0022163680158300866,
+        -0.000517683171933169,
+        -0.022733701931274584,
+        0.009237599074961649,
+        -0.020238076089734918,
+        0.018568367564598325,
+        0.0058968292127819935,
+        -0.004711372801491134,
+        0.013409835476619501,
+        0.00020755305519815846,
+        0.006898853604823616,
+        0.00107066358996706,
+        0.010948878119354702,
+        0.010598315102233191,
+        -0.009059741570242877,
+        -0.006115737271913944
+      ],
+      [
+        -0.04241962956615585,
+        -0.002096953717646917,
+        -0.022814894059177165,
+        0.02023080629275778,
+        -0.021717173452906177,
+        -0.02078422872235319,
+        -0.012741996812340008,
+        0.005640045966106871,
+        0.017933205006495433,
+        -0.002350621938392781,
+        -0.003904911727964621,
+        0.0017364080698156475,
+        -0.003663098647764048,
+        0.0008224176907146707,
+        -0.011382627797323606,
+        0.004376005376230132,
+        0.0039199096901989,
+        -0.02431767019575466,
+        -0.0011006072993532364,
+        0.0016267162652800324,
+        0.005603835520834919,
+        -0.008148665363913801,
+        -0.013260437011852314,
+        -0.009493090448697273
+      ],
+      [
+        0.011557079456861958,
+        -0.008505587103747797,
+        -0.007629984521771573,
+        0.011420512111443494,
+        -0.007849792341364528,
+        -0.008972856789141212,
+        -0.000911008094174289,
+        0.001983128232136422,
+        0.0103607437704787,
+        -0.008780096751258881,
+        -0.015658041199640222,
+        -0.0012231304386940323,
+        0.006426720818253058,
+        -0.01479305913771439,
+        -0.004865326673334269,
+        0.003057368375727227,
+        0.00230678022479486,
+        0.0008323404585088019,
+        -0.0025650447099585176,
+        -0.007981483342066276,
+        -0.00926746834117812,
+        0.01154529136736031,
+        -0.011155351523626192,
+        0.01226159474581278
+      ]
+    ]
+  },
+  "promotion_authorized": false,
+  "reason_code": null,
+  "schema_version": "1.0",
+  "scientific_training_eligible": false,
+  "shadow_mode": true,
+  "status": "DIAGNOSTIC_ONLY_COMPLETED",
+  "target": "label_end_6",
+  "temporal_split": {
+    "oos_scope": "test",
+    "oos_test_rows": 1214,
+    "selection_rows": 4853,
+    "selection_scope": "train+validation",
+    "split_source": "diagnostic_configured_temporal",
+    "test_rows": 1214,
+    "time_column": "event_time",
+    "train_end": "2022-02-23T14:45:00+00:00",
+    "train_rows": 3640,
+    "validation_end": "2022-03-14T05:00:00+00:00",
+    "validation_rows": 1213
+  },
+  "train_class_counts": {
+    "continuation": 1677,
+    "failure": 200,
+    "reversal": 1763
+  },
+  "training_plan": {
+    "config": {
+      "algorithm": "deterministic_multinomial_softmax",
+      "can_trade": false,
+      "iterations": 300,
+      "l2": 0.0001,
+      "learning_rate": 0.05,
+      "min_class_rows": 5,
+      "mode": "DIAGNOSTIC_ONLY",
+      "seed": 17,
+      "target": "label_end_6",
+      "train_fraction": 0.6,
+      "validation_fraction": 0.2
+    },
+    "dataset_hash": "88d08913ebde2c01b2c9dbd3108d7505dd5b7342ecd7ab0b7c4184cb03a24e83",
+    "features": [
+      "direction",
+      "sequence_depth",
+      "context_bucket=ALIGNED",
+      "context_bucket=NEUTRAL",
+      "context_bucket=AGAINST",
+      "h1_alignment=ALIGNED",
+      "h1_alignment=NEUTRAL",
+      "h1_alignment=AGAINST",
+      "d1_bias=BULLISH",
+      "d1_bias=BEARISH",
+      "d1_bias=UNKNOWN",
+      "d1_bias=MIXED",
+      "h4_location=DISCOUNT",
+      "h4_location=PREMIUM",
+      "h4_location=EQUILIBRIUM",
+      "h4_location=MID",
+      "h4_location=UNKNOWN",
+      "sequence_has=LIQUIDITY_POOL",
+      "sequence_has=SWEEP",
+      "sequence_has=DISPLACEMENT",
+      "sequence_has=STRUCTURE",
+      "sequence_has=OB",
+      "sequence_has=FVG",
+      "sequence_has=CONFLUENCE"
+    ],
+    "labels": [
+      "label_end_6"
+    ],
+    "metrics": {
+      "data_digest": "862037e1008a121317b99825c5ba6d9b842e55909c33f5c27b1b7d0a4dc4cf33",
+      "model_training_executed": false,
+      "oos_scope": "test",
+      "oos_test_rows": 1214,
+      "pipeline_schema_version": "1.0",
+      "selection_rows": 4853,
+      "selection_scope": "train+validation",
+      "split_source": "diagnostic_configured_temporal",
+      "test_rows": 1214,
+      "train_rows": 3640,
+      "validation_rows": 1213
+    },
+    "model_id": "ICT_OUTCOME_CLASSIFIER_V1_DIAGNOSTIC",
+    "model_training": {
+      "executed": false,
+      "kind": "contract-skeleton"
+    },
+    "model_version": "diagnostic-1.0.0",
+    "pipeline_schema_version": "1.0",
+    "run_id": "69621e37812aba01303f1a7646d417e4735cc069537a4ddc2502953deed4a544",
+    "schema_hash": "a5298dc4d86cd52f41e956054cb26be2b7113c5d46563bfcf035bf9d39259fcb",
+    "seed": 17,
+    "snapshot_id": "DIAGNOSTIC_JSONL_88d08913ebde2c01",
+    "split": {
+      "oos_scope": "test",
+      "oos_test_rows": 1214,
+      "selection_rows": 4853,
+      "selection_scope": "train+validation",
+      "split_source": "diagnostic_configured_temporal",
+      "test_rows": 1214,
+      "time_column": "event_time",
+      "train_end": "2022-02-23T14:45:00+00:00",
+      "train_rows": 3640,
+      "validation_end": "2022-03-14T05:00:00+00:00",
+      "validation_rows": 1213
+    }
+  }
+}

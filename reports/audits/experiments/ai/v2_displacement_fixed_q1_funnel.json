@@ -1,0 +1,3777 @@
+{
+  "aggregated_status": "BLOCKED",
+  "backtest_linkage": {
+    "artifact_kind": "canonical_replay_signal_trade_link",
+    "outcome_not_copied_into_features": true,
+    "trade_key": "signal_index"
+  },
+  "checksum": "9affb9cd6e3ccaa7ae31d78b2dfcccc01dd400a9e276fe000fd96159a361eeb4",
+  "contract_version": "EPISODES_FUNNEL_V1",
+  "episodes": [
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-06 11:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000001",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "37fc3303-533e-4df5-af03-1ad2419534de",
+        "CONTRACT": "c1d38475-2a47-4e03-816c-93a5db35b5ef",
+        "DISPLACE": "5033d71f-0d60-4dc3-9b2b-032435270402",
+        "LIQUIDITY": "41d14d10-22bc-4ac8-936a-3a3a2ad4bc64",
+        "REFINEMENT": "db3dbd83-3a63-4e9d-82a2-108a3963bedd",
+        "RETURN": "7da0d06f-de52-4c2a-ba7d-28804fa44552",
+        "SWEEP": "714e1650-68e8-413f-bdb8-7d74dfcffc26"
+      },
+      "meta": {
+        "backtest_signal_index": 0
+      },
+      "object_refs": [
+        "37fc3303-533e-4df5-af03-1ad2419534de",
+        "41d14d10-22bc-4ac8-936a-3a3a2ad4bc64",
+        "5033d71f-0d60-4dc3-9b2b-032435270402",
+        "714e1650-68e8-413f-bdb8-7d74dfcffc26",
+        "7da0d06f-de52-4c2a-ba7d-28804fa44552",
+        "c1d38475-2a47-4e03-816c-93a5db35b5ef",
+        "db3dbd83-3a63-4e9d-82a2-108a3963bedd"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-11 02:00:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000002",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "00973516-9b46-47cb-8679-7ab110a2c561",
+        "CONTRACT": "be111c16-8e53-4228-a57e-d6fa28609173",
+        "DISPLACE": "1d7cf6e3-772b-4c45-be35-f4d6567ebc53",
+        "LIQUIDITY": "c52529c7-18d2-44bc-b9d5-c02d53adacb1",
+        "REFINEMENT": "4438764d-60ee-4c21-8f6a-66c818f010cd",
+        "RETURN": "37e63490-3eb3-4d6e-af7d-075bbe70522b",
+        "SWEEP": "ff5e3b4a-1258-46b0-bf9e-84d23bbef209"
+      },
+      "meta": {
+        "backtest_signal_index": 1
+      },
+      "object_refs": [
+        "00973516-9b46-47cb-8679-7ab110a2c561",
+        "1d7cf6e3-772b-4c45-be35-f4d6567ebc53",
+        "37e63490-3eb3-4d6e-af7d-075bbe70522b",
+        "4438764d-60ee-4c21-8f6a-66c818f010cd",
+        "be111c16-8e53-4228-a57e-d6fa28609173",
+        "c52529c7-18d2-44bc-b9d5-c02d53adacb1",
+        "ff5e3b4a-1258-46b0-bf9e-84d23bbef209"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-12 02:15:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000003",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "33a0e8cd-0aa8-427c-8cdd-56a3be8918cb",
+        "CONTRACT": "1a8cf052-3d80-4ad2-8d42-d1e9122a7a23",
+        "DISPLACE": "fcd5f185-654a-431c-a5c2-2b0920d4fa95",
+        "LIQUIDITY": "dd51bb6c-69f9-442d-bcc7-523cc0508efc",
+        "REFINEMENT": "8dc445b9-1f9d-4aa2-87ce-07d0664fd8c8",
+        "RETURN": "5b52c021-d9c1-4382-a1b7-c480e5acadc9",
+        "SWEEP": "0d849902-a473-4e6d-a065-66f917155bbe"
+      },
+      "meta": {
+        "backtest_signal_index": 2
+      },
+      "object_refs": [
+        "0d849902-a473-4e6d-a065-66f917155bbe",
+        "1a8cf052-3d80-4ad2-8d42-d1e9122a7a23",
+        "33a0e8cd-0aa8-427c-8cdd-56a3be8918cb",
+        "5b52c021-d9c1-4382-a1b7-c480e5acadc9",
+        "8dc445b9-1f9d-4aa2-87ce-07d0664fd8c8",
+        "dd51bb6c-69f9-442d-bcc7-523cc0508efc",
+        "fcd5f185-654a-431c-a5c2-2b0920d4fa95"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-18 18:45:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000004",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "7a94aaf5-4aaf-40d0-9492-93751b19281b",
+        "CONTRACT": "d8388a5a-23f9-44b5-96ce-211601faba0b",
+        "DISPLACE": "508742b3-348b-4c56-aebc-725d25f03bb1",
+        "LIQUIDITY": "36f9ee40-37db-47c6-b736-7eda62a6f092",
+        "REFINEMENT": "3f8d6385-d174-4ed2-9968-6102c8d9f1f9",
+        "RETURN": "cd03d69e-29f4-4b49-bfae-8277da4b8dec",
+        "SWEEP": "d2a2a72b-977c-42cb-899c-b8eb4507b191"
+      },
+      "meta": {
+        "backtest_signal_index": 3
+      },
+      "object_refs": [
+        "36f9ee40-37db-47c6-b736-7eda62a6f092",
+        "3f8d6385-d174-4ed2-9968-6102c8d9f1f9",
+        "508742b3-348b-4c56-aebc-725d25f03bb1",
+        "7a94aaf5-4aaf-40d0-9492-93751b19281b",
+        "cd03d69e-29f4-4b49-bfae-8277da4b8dec",
+        "d2a2a72b-977c-42cb-899c-b8eb4507b191",
+        "d8388a5a-23f9-44b5-96ce-211601faba0b"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-20 10:45:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000005",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e0f3e27a-ee19-4109-bdd5-24d3b265e05c",
+        "CONTRACT": "f8ee475a-7df2-497b-8684-b31e0d5e960b",
+        "DISPLACE": "954aa413-212a-4857-a751-bc20dfbdabfa",
+        "LIQUIDITY": "2d430da3-0dff-49a4-bc5e-4599b151e55b",
+        "REFINEMENT": "32a65c27-ad03-48b8-992d-17d0f65b2ce3",
+        "RETURN": "524dce17-2f86-4e0b-8214-342f7a6c2a7f",
+        "SWEEP": "e76a46df-92db-4627-8092-0a708c096192"
+      },
+      "meta": {
+        "backtest_signal_index": 4
+      },
+      "object_refs": [
+        "2d430da3-0dff-49a4-bc5e-4599b151e55b",
+        "32a65c27-ad03-48b8-992d-17d0f65b2ce3",
+        "524dce17-2f86-4e0b-8214-342f7a6c2a7f",
+        "954aa413-212a-4857-a751-bc20dfbdabfa",
+        "e0f3e27a-ee19-4109-bdd5-24d3b265e05c",
+        "e76a46df-92db-4627-8092-0a708c096192",
+        "f8ee475a-7df2-497b-8684-b31e0d5e960b"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-31 03:00:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000006",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "7fb8eb87-8127-456a-b1f2-09dcb35d73a2",
+        "CONTRACT": "55a2d314-77ca-4c39-8653-9fd162e95078",
+        "DISPLACE": "c1b75590-25b2-47de-98d5-b0a315e57d86",
+        "LIQUIDITY": "4f59ccaf-64ca-4ec2-badd-61f614f9d1d3",
+        "REFINEMENT": "393fd00c-7014-4722-ba02-a4f2b227bd36",
+        "RETURN": "61d03c49-bee2-48c1-aa3e-fbafa855cfd7",
+        "SWEEP": "d95cf5bf-23e8-42fe-bcf3-5619ab1fcbd7"
+      },
+      "meta": {
+        "backtest_signal_index": 5
+      },
+      "object_refs": [
+        "393fd00c-7014-4722-ba02-a4f2b227bd36",
+        "4f59ccaf-64ca-4ec2-badd-61f614f9d1d3",
+        "55a2d314-77ca-4c39-8653-9fd162e95078",
+        "61d03c49-bee2-48c1-aa3e-fbafa855cfd7",
+        "7fb8eb87-8127-456a-b1f2-09dcb35d73a2",
+        "c1b75590-25b2-47de-98d5-b0a315e57d86",
+        "d95cf5bf-23e8-42fe-bcf3-5619ab1fcbd7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-31 09:00:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000007",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "0b0e6e28-b966-4a1e-98f5-e78cce639b07",
+        "CONTRACT": "e016f209-576e-450a-b7ed-6a0186ee8ac9",
+        "DISPLACE": "556d3717-6c1c-4c13-be76-9412201a87b3",
+        "LIQUIDITY": "2914ea93-7cce-4f58-856a-60dc5da1028d",
+        "REFINEMENT": "d54d5ac3-8cfd-492a-a01a-32505e047011",
+        "RETURN": "08525238-d1b5-48ca-ae53-02c1dcbfd987",
+        "SWEEP": "52aa6005-d4ce-4862-af39-46e06a24f82b"
+      },
+      "meta": {
+        "backtest_signal_index": 6
+      },
+      "object_refs": [
+        "08525238-d1b5-48ca-ae53-02c1dcbfd987",
+        "0b0e6e28-b966-4a1e-98f5-e78cce639b07",
+        "2914ea93-7cce-4f58-856a-60dc5da1028d",
+        "52aa6005-d4ce-4862-af39-46e06a24f82b",
+        "556d3717-6c1c-4c13-be76-9412201a87b3",
+        "d54d5ac3-8cfd-492a-a01a-32505e047011",
+        "e016f209-576e-450a-b7ed-6a0186ee8ac9"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-03 07:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000008",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e75103c3-2176-434d-8152-c5bd8f50515f",
+        "CONTRACT": "d63c7482-a8dd-48fd-abbf-19e8c0b66bd2",
+        "DISPLACE": "d4361c6a-7547-4988-bcbb-bfb8a05ab2e4",
+        "LIQUIDITY": "0a2c542c-3f40-4919-8d40-43c2e4b5cb30",
+        "REFINEMENT": "841a1e92-75e3-4bcf-b83c-11d09f3c8a12",
+        "RETURN": "9bb0a5b9-4bf0-407a-8c4a-1e19da1717a7",
+        "SWEEP": "b09818f7-2004-4273-aad0-85383667c0c9"
+      },
+      "meta": {
+        "backtest_signal_index": 7
+      },
+      "object_refs": [
+        "0a2c542c-3f40-4919-8d40-43c2e4b5cb30",
+        "841a1e92-75e3-4bcf-b83c-11d09f3c8a12",
+        "9bb0a5b9-4bf0-407a-8c4a-1e19da1717a7",
+        "b09818f7-2004-4273-aad0-85383667c0c9",
+        "d4361c6a-7547-4988-bcbb-bfb8a05ab2e4",
+        "d63c7482-a8dd-48fd-abbf-19e8c0b66bd2",
+        "e75103c3-2176-434d-8152-c5bd8f50515f"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-03 19:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000009",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e335bb65-cba3-455d-89f1-6bc8290bc455",
+        "CONTRACT": "4919c458-6b02-4376-b829-9cad29c5a9dd",
+        "DISPLACE": "d8c06033-437d-4ade-be63-4286c0de6b88",
+        "LIQUIDITY": "a75f40f6-38b5-4713-ad76-21382301cdb7",
+        "REFINEMENT": "bb67a21f-140e-4d39-bed9-43132e7469f3",
+        "RETURN": "79012c5b-352c-4026-9229-b35e8557a26e",
+        "SWEEP": "0d9a5544-84be-496c-ac6c-7d490c267315"
+      },
+      "meta": {
+        "backtest_signal_index": 8
+      },
+      "object_refs": [
+        "0d9a5544-84be-496c-ac6c-7d490c267315",
+        "4919c458-6b02-4376-b829-9cad29c5a9dd",
+        "79012c5b-352c-4026-9229-b35e8557a26e",
+        "a75f40f6-38b5-4713-ad76-21382301cdb7",
+        "bb67a21f-140e-4d39-bed9-43132e7469f3",
+        "d8c06033-437d-4ade-be63-4286c0de6b88",
+        "e335bb65-cba3-455d-89f1-6bc8290bc455"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-14 00:45:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000010",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "9251cb8c-1689-4bc3-94f6-bf7e4dbf1aa5",
+        "CONTRACT": "158e7f1d-aa21-4102-9be6-c90dd091d57e",
+        "DISPLACE": "8294caf2-2033-4d48-aa99-c01c8a451583",
+        "LIQUIDITY": "fec76406-6569-4a63-add0-92186437e61b",
+        "REFINEMENT": "dba8462b-2382-4cdf-b203-0f097984532c",
+        "RETURN": "07a548c5-ea9d-4c3c-ad33-3656eebfc887",
+        "SWEEP": "5dbf588c-9a0d-4377-91b4-2b3ffc0c716f"
+      },
+      "meta": {
+        "backtest_signal_index": 9
+      },
+      "object_refs": [
+        "07a548c5-ea9d-4c3c-ad33-3656eebfc887",
+        "158e7f1d-aa21-4102-9be6-c90dd091d57e",
+        "5dbf588c-9a0d-4377-91b4-2b3ffc0c716f",
+        "8294caf2-2033-4d48-aa99-c01c8a451583",
+        "9251cb8c-1689-4bc3-94f6-bf7e4dbf1aa5",
+        "dba8462b-2382-4cdf-b203-0f097984532c",
+        "fec76406-6569-4a63-add0-92186437e61b"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-16 18:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000011",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "f58fcfeb-02be-4595-a208-e6895d5b1db0",
+        "CONTRACT": "2cf2c3e5-34f9-44c8-b622-799fbc0c9ece",
+        "DISPLACE": "1b96511f-36ef-47f9-9a55-15d4c3e3bc1c",
+        "LIQUIDITY": "c50c23c4-8bdf-4290-b54a-bbc0528b8df3",
+        "REFINEMENT": "ccf57204-c229-4ea0-8fd0-d44fb6e764de",
+        "RETURN": "0115108c-07f3-47b5-8c19-ddc17e53d368",
+        "SWEEP": "2014d6e9-9138-472e-b063-fe53757e781b"
+      },
+      "meta": {
+        "backtest_signal_index": 10
+      },
+      "object_refs": [
+        "0115108c-07f3-47b5-8c19-ddc17e53d368",
+        "1b96511f-36ef-47f9-9a55-15d4c3e3bc1c",
+        "2014d6e9-9138-472e-b063-fe53757e781b",
+        "2cf2c3e5-34f9-44c8-b622-799fbc0c9ece",
+        "c50c23c4-8bdf-4290-b54a-bbc0528b8df3",
+        "ccf57204-c229-4ea0-8fd0-d44fb6e764de",
+        "f58fcfeb-02be-4595-a208-e6895d5b1db0"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-21 06:45:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000012",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "71ce4459-a855-4a7a-ac07-14e2997653fd",
+        "CONTRACT": "7058f01a-68b2-4b80-9b03-3678e33a055e",
+        "DISPLACE": "af1660f6-3cfb-4094-bba9-6eef996f8abe",
+        "LIQUIDITY": "b061c9b5-5a5a-4c28-81e1-a33964c833d4",
+        "REFINEMENT": "5e98bbd8-f2c2-4591-b55d-b5947cf51ffe",
+        "RETURN": "765d657f-cf3e-45e0-8373-42c6fde57343",
+        "SWEEP": "10f96d86-d354-4894-afe2-2428c03d2ad0"
+      },
+      "meta": {
+        "backtest_signal_index": 11
+      },
+      "object_refs": [
+        "10f96d86-d354-4894-afe2-2428c03d2ad0",
+        "5e98bbd8-f2c2-4591-b55d-b5947cf51ffe",
+        "7058f01a-68b2-4b80-9b03-3678e33a055e",
+        "71ce4459-a855-4a7a-ac07-14e2997653fd",
+        "765d657f-cf3e-45e0-8373-42c6fde57343",
+        "af1660f6-3cfb-4094-bba9-6eef996f8abe",
+        "b061c9b5-5a5a-4c28-81e1-a33964c833d4"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-23 03:00:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000013",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "bf3c607a-8855-4bd7-8466-5c823871f7c4",
+        "CONTRACT": "3637cd01-18ec-421e-839d-03f0b50b3e13",
+        "DISPLACE": "6e331fd2-f0f0-4dc6-966f-67bd4189d136",
+        "LIQUIDITY": "2f5e0d73-f46b-4009-aec1-24c57f80b5c1",
+        "REFINEMENT": "fff6624d-6586-43a6-af4d-07c7f9054743",
+        "RETURN": "6bf00115-8201-4199-9f1a-a36ad566c441",
+        "SWEEP": "a7065c2b-abd8-4262-8900-604ae4088a0e"
+      },
+      "meta": {
+        "backtest_signal_index": 12
+      },
+      "object_refs": [
+        "2f5e0d73-f46b-4009-aec1-24c57f80b5c1",
+        "3637cd01-18ec-421e-839d-03f0b50b3e13",
+        "6bf00115-8201-4199-9f1a-a36ad566c441",
+        "6e331fd2-f0f0-4dc6-966f-67bd4189d136",
+        "a7065c2b-abd8-4262-8900-604ae4088a0e",
+        "bf3c607a-8855-4bd7-8466-5c823871f7c4",
+        "fff6624d-6586-43a6-af4d-07c7f9054743"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-03 19:30:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000014",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "c2177b0c-009f-48e5-80b7-aabb4809a3ed",
+        "CONTRACT": "89025169-8335-487c-ae53-d4c2fb43eb30",
+        "DISPLACE": "21d39cb9-ff5a-4ec9-9bc6-80decea3bd14",
+        "LIQUIDITY": "40719269-e6c0-489e-984a-d92b87d4132f",
+        "REFINEMENT": "d0ebd7c8-68d3-4871-871f-1bb78849c80a",
+        "RETURN": "e14435ea-cf9d-4b46-ac7b-e9a0a71ce0a4",
+        "SWEEP": "f790938f-5d79-4376-a91f-b26058f4c255"
+      },
+      "meta": {
+        "backtest_signal_index": 13
+      },
+      "object_refs": [
+        "21d39cb9-ff5a-4ec9-9bc6-80decea3bd14",
+        "40719269-e6c0-489e-984a-d92b87d4132f",
+        "89025169-8335-487c-ae53-d4c2fb43eb30",
+        "c2177b0c-009f-48e5-80b7-aabb4809a3ed",
+        "d0ebd7c8-68d3-4871-871f-1bb78849c80a",
+        "e14435ea-cf9d-4b46-ac7b-e9a0a71ce0a4",
+        "f790938f-5d79-4376-a91f-b26058f4c255"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-06 18:30:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000015",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "8e304bff-88e1-4c56-9718-1d82d25be11b",
+        "CONTRACT": "94a18ee2-0b60-4ce0-b980-e99f6dd49b84",
+        "DISPLACE": "44d7d04e-7fdc-4a32-b8d6-4cabab203a52",
+        "LIQUIDITY": "7e471ea5-158b-4ed5-950e-cb82d592502a",
+        "REFINEMENT": "c2d32152-636b-4e8b-8acb-2bdd242d8c5d",
+        "RETURN": "ba0e66c2-e901-4252-aea9-c783e77c84ee",
+        "SWEEP": "9fce5e05-2fb2-444c-8262-61a822d554cb"
+      },
+      "meta": {
+        "backtest_signal_index": 14
+      },
+      "object_refs": [
+        "44d7d04e-7fdc-4a32-b8d6-4cabab203a52",
+        "7e471ea5-158b-4ed5-950e-cb82d592502a",
+        "8e304bff-88e1-4c56-9718-1d82d25be11b",
+        "94a18ee2-0b60-4ce0-b980-e99f6dd49b84",
+        "9fce5e05-2fb2-444c-8262-61a822d554cb",
+        "ba0e66c2-e901-4252-aea9-c783e77c84ee",
+        "c2d32152-636b-4e8b-8acb-2bdd242d8c5d"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-10 08:15:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000016",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "b26ef447-5e73-4a4a-ae2a-fa53fd953424",
+        "CONTRACT": "442b6e6b-2900-4f9c-be19-0bc2d6e813f2",
+        "DISPLACE": "64666216-849a-441d-982b-1c9d41662a1d",
+        "LIQUIDITY": "bca876e0-d5f5-4e46-a2c3-d728350afc2c",
+        "REFINEMENT": "a7434113-b395-4b30-a82d-30ecea9588cc",
+        "RETURN": "a4a891fd-1bdf-414e-9ab1-3d8767ec22ff",
+        "SWEEP": "708f1da3-1068-4c52-b136-88655758f833"
+      },
+      "meta": {
+        "backtest_signal_index": 15
+      },
+      "object_refs": [
+        "442b6e6b-2900-4f9c-be19-0bc2d6e813f2",
+        "64666216-849a-441d-982b-1c9d41662a1d",
+        "708f1da3-1068-4c52-b136-88655758f833",
+        "a4a891fd-1bdf-414e-9ab1-3d8767ec22ff",
+        "a7434113-b395-4b30-a82d-30ecea9588cc",
+        "b26ef447-5e73-4a4a-ae2a-fa53fd953424",
+        "bca876e0-d5f5-4e46-a2c3-d728350afc2c"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-18 01:45:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000017",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "27f8b78c-30c3-4ced-8401-414ae8f2374f",
+        "CONTRACT": "751e10ec-0c91-4427-a838-5a279fe6aee8",
+        "DISPLACE": "d1408538-e046-40b6-b54b-e75c2fe8f341",
+        "LIQUIDITY": "59f08fc9-d542-486e-9ba4-bccdde9d778d",
+        "REFINEMENT": "4afe517c-afab-4183-8cb3-4390b702512b",
+        "RETURN": "d6c2b9a8-a7d8-4bb6-accb-043dd938179a",
+        "SWEEP": "d3986a3e-b974-42a8-b3b7-57dd4b150fb3"
+      },
+      "meta": {
+        "backtest_signal_index": 16
+      },
+      "object_refs": [
+        "27f8b78c-30c3-4ced-8401-414ae8f2374f",
+        "4afe517c-afab-4183-8cb3-4390b702512b",
+        "59f08fc9-d542-486e-9ba4-bccdde9d778d",
+        "751e10ec-0c91-4427-a838-5a279fe6aee8",
+        "d1408538-e046-40b6-b54b-e75c2fe8f341",
+        "d3986a3e-b974-42a8-b3b7-57dd4b150fb3",
+        "d6c2b9a8-a7d8-4bb6-accb-043dd938179a"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-23 10:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000018",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "7f7134dd-ef87-4466-a9a2-4b940b79d9ca",
+        "CONTRACT": "7f534baa-7609-4cf2-8dcf-65b5f9210c9b",
+        "DISPLACE": "bb53fec6-e342-491e-a48b-cb074e56dc63",
+        "LIQUIDITY": "9cd7a26d-185b-425f-b6e9-876d4cb3bdbd",
+        "REFINEMENT": "f72274e3-7c75-435b-9188-347986c392fc",
+        "RETURN": "25bd0ee8-ad7a-435d-9e52-3a81226a1c23",
+        "SWEEP": "e1f0b946-9ed9-4119-b103-712488903b45"
+      },
+      "meta": {
+        "backtest_signal_index": 17
+      },
+      "object_refs": [
+        "25bd0ee8-ad7a-435d-9e52-3a81226a1c23",
+        "7f534baa-7609-4cf2-8dcf-65b5f9210c9b",
+        "7f7134dd-ef87-4466-a9a2-4b940b79d9ca",
+        "9cd7a26d-185b-425f-b6e9-876d4cb3bdbd",
+        "bb53fec6-e342-491e-a48b-cb074e56dc63",
+        "e1f0b946-9ed9-4119-b103-712488903b45",
+        "f72274e3-7c75-435b-9188-347986c392fc"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    }
+  ],
+  "full_prefix": {
+    "prefix_matches_full": false
+  },
+  "gates": {
+    "E0": "PASS",
+    "E1": "PASS",
+    "causal_full_vs_prefix": "BLOCKED"
+  },
+  "generator_commit": "b327ab8",
+  "policy": {
+    "can_trade": false,
+    "promotion_authorized": false
+  },
+  "provenance": {},
+  "records": [
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-06 11:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000001",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "37fc3303-533e-4df5-af03-1ad2419534de",
+        "CONTRACT": "c1d38475-2a47-4e03-816c-93a5db35b5ef",
+        "DISPLACE": "5033d71f-0d60-4dc3-9b2b-032435270402",
+        "LIQUIDITY": "41d14d10-22bc-4ac8-936a-3a3a2ad4bc64",
+        "REFINEMENT": "db3dbd83-3a63-4e9d-82a2-108a3963bedd",
+        "RETURN": "7da0d06f-de52-4c2a-ba7d-28804fa44552",
+        "SWEEP": "714e1650-68e8-413f-bdb8-7d74dfcffc26"
+      },
+      "meta": {
+        "backtest_signal_index": 0
+      },
+      "object_refs": [
+        "37fc3303-533e-4df5-af03-1ad2419534de",
+        "41d14d10-22bc-4ac8-936a-3a3a2ad4bc64",
+        "5033d71f-0d60-4dc3-9b2b-032435270402",
+        "714e1650-68e8-413f-bdb8-7d74dfcffc26",
+        "7da0d06f-de52-4c2a-ba7d-28804fa44552",
+        "c1d38475-2a47-4e03-816c-93a5db35b5ef",
+        "db3dbd83-3a63-4e9d-82a2-108a3963bedd"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-11 02:00:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000002",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "00973516-9b46-47cb-8679-7ab110a2c561",
+        "CONTRACT": "be111c16-8e53-4228-a57e-d6fa28609173",
+        "DISPLACE": "1d7cf6e3-772b-4c45-be35-f4d6567ebc53",
+        "LIQUIDITY": "c52529c7-18d2-44bc-b9d5-c02d53adacb1",
+        "REFINEMENT": "4438764d-60ee-4c21-8f6a-66c818f010cd",
+        "RETURN": "37e63490-3eb3-4d6e-af7d-075bbe70522b",
+        "SWEEP": "ff5e3b4a-1258-46b0-bf9e-84d23bbef209"
+      },
+      "meta": {
+        "backtest_signal_index": 1
+      },
+      "object_refs": [
+        "00973516-9b46-47cb-8679-7ab110a2c561",
+        "1d7cf6e3-772b-4c45-be35-f4d6567ebc53",
+        "37e63490-3eb3-4d6e-af7d-075bbe70522b",
+        "4438764d-60ee-4c21-8f6a-66c818f010cd",
+        "be111c16-8e53-4228-a57e-d6fa28609173",
+        "c52529c7-18d2-44bc-b9d5-c02d53adacb1",
+        "ff5e3b4a-1258-46b0-bf9e-84d23bbef209"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-12 02:15:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000003",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "33a0e8cd-0aa8-427c-8cdd-56a3be8918cb",
+        "CONTRACT": "1a8cf052-3d80-4ad2-8d42-d1e9122a7a23",
+        "DISPLACE": "fcd5f185-654a-431c-a5c2-2b0920d4fa95",
+        "LIQUIDITY": "dd51bb6c-69f9-442d-bcc7-523cc0508efc",
+        "REFINEMENT": "8dc445b9-1f9d-4aa2-87ce-07d0664fd8c8",
+        "RETURN": "5b52c021-d9c1-4382-a1b7-c480e5acadc9",
+        "SWEEP": "0d849902-a473-4e6d-a065-66f917155bbe"
+      },
+      "meta": {
+        "backtest_signal_index": 2
+      },
+      "object_refs": [
+        "0d849902-a473-4e6d-a065-66f917155bbe",
+        "1a8cf052-3d80-4ad2-8d42-d1e9122a7a23",
+        "33a0e8cd-0aa8-427c-8cdd-56a3be8918cb",
+        "5b52c021-d9c1-4382-a1b7-c480e5acadc9",
+        "8dc445b9-1f9d-4aa2-87ce-07d0664fd8c8",
+        "dd51bb6c-69f9-442d-bcc7-523cc0508efc",
+        "fcd5f185-654a-431c-a5c2-2b0920d4fa95"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-18 18:45:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000004",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "7a94aaf5-4aaf-40d0-9492-93751b19281b",
+        "CONTRACT": "d8388a5a-23f9-44b5-96ce-211601faba0b",
+        "DISPLACE": "508742b3-348b-4c56-aebc-725d25f03bb1",
+        "LIQUIDITY": "36f9ee40-37db-47c6-b736-7eda62a6f092",
+        "REFINEMENT": "3f8d6385-d174-4ed2-9968-6102c8d9f1f9",
+        "RETURN": "cd03d69e-29f4-4b49-bfae-8277da4b8dec",
+        "SWEEP": "d2a2a72b-977c-42cb-899c-b8eb4507b191"
+      },
+      "meta": {
+        "backtest_signal_index": 3
+      },
+      "object_refs": [
+        "36f9ee40-37db-47c6-b736-7eda62a6f092",
+        "3f8d6385-d174-4ed2-9968-6102c8d9f1f9",
+        "508742b3-348b-4c56-aebc-725d25f03bb1",
+        "7a94aaf5-4aaf-40d0-9492-93751b19281b",
+        "cd03d69e-29f4-4b49-bfae-8277da4b8dec",
+        "d2a2a72b-977c-42cb-899c-b8eb4507b191",
+        "d8388a5a-23f9-44b5-96ce-211601faba0b"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-20 10:45:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000005",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e0f3e27a-ee19-4109-bdd5-24d3b265e05c",
+        "CONTRACT": "f8ee475a-7df2-497b-8684-b31e0d5e960b",
+        "DISPLACE": "954aa413-212a-4857-a751-bc20dfbdabfa",
+        "LIQUIDITY": "2d430da3-0dff-49a4-bc5e-4599b151e55b",
+        "REFINEMENT": "32a65c27-ad03-48b8-992d-17d0f65b2ce3",
+        "RETURN": "524dce17-2f86-4e0b-8214-342f7a6c2a7f",
+        "SWEEP": "e76a46df-92db-4627-8092-0a708c096192"
+      },
+      "meta": {
+        "backtest_signal_index": 4
+      },
+      "object_refs": [
+        "2d430da3-0dff-49a4-bc5e-4599b151e55b",
+        "32a65c27-ad03-48b8-992d-17d0f65b2ce3",
+        "524dce17-2f86-4e0b-8214-342f7a6c2a7f",
+        "954aa413-212a-4857-a751-bc20dfbdabfa",
+        "e0f3e27a-ee19-4109-bdd5-24d3b265e05c",
+        "e76a46df-92db-4627-8092-0a708c096192",
+        "f8ee475a-7df2-497b-8684-b31e0d5e960b"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-31 03:00:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000006",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "7fb8eb87-8127-456a-b1f2-09dcb35d73a2",
+        "CONTRACT": "55a2d314-77ca-4c39-8653-9fd162e95078",
+        "DISPLACE": "c1b75590-25b2-47de-98d5-b0a315e57d86",
+        "LIQUIDITY": "4f59ccaf-64ca-4ec2-badd-61f614f9d1d3",
+        "REFINEMENT": "393fd00c-7014-4722-ba02-a4f2b227bd36",
+        "RETURN": "61d03c49-bee2-48c1-aa3e-fbafa855cfd7",
+        "SWEEP": "d95cf5bf-23e8-42fe-bcf3-5619ab1fcbd7"
+      },
+      "meta": {
+        "backtest_signal_index": 5
+      },
+      "object_refs": [
+        "393fd00c-7014-4722-ba02-a4f2b227bd36",
+        "4f59ccaf-64ca-4ec2-badd-61f614f9d1d3",
+        "55a2d314-77ca-4c39-8653-9fd162e95078",
+        "61d03c49-bee2-48c1-aa3e-fbafa855cfd7",
+        "7fb8eb87-8127-456a-b1f2-09dcb35d73a2",
+        "c1b75590-25b2-47de-98d5-b0a315e57d86",
+        "d95cf5bf-23e8-42fe-bcf3-5619ab1fcbd7"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-01-31 09:00:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000007",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "0b0e6e28-b966-4a1e-98f5-e78cce639b07",
+        "CONTRACT": "e016f209-576e-450a-b7ed-6a0186ee8ac9",
+        "DISPLACE": "556d3717-6c1c-4c13-be76-9412201a87b3",
+        "LIQUIDITY": "2914ea93-7cce-4f58-856a-60dc5da1028d",
+        "REFINEMENT": "d54d5ac3-8cfd-492a-a01a-32505e047011",
+        "RETURN": "08525238-d1b5-48ca-ae53-02c1dcbfd987",
+        "SWEEP": "52aa6005-d4ce-4862-af39-46e06a24f82b"
+      },
+      "meta": {
+        "backtest_signal_index": 6
+      },
+      "object_refs": [
+        "08525238-d1b5-48ca-ae53-02c1dcbfd987",
+        "0b0e6e28-b966-4a1e-98f5-e78cce639b07",
+        "2914ea93-7cce-4f58-856a-60dc5da1028d",
+        "52aa6005-d4ce-4862-af39-46e06a24f82b",
+        "556d3717-6c1c-4c13-be76-9412201a87b3",
+        "d54d5ac3-8cfd-492a-a01a-32505e047011",
+        "e016f209-576e-450a-b7ed-6a0186ee8ac9"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-03 07:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000008",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e75103c3-2176-434d-8152-c5bd8f50515f",
+        "CONTRACT": "d63c7482-a8dd-48fd-abbf-19e8c0b66bd2",
+        "DISPLACE": "d4361c6a-7547-4988-bcbb-bfb8a05ab2e4",
+        "LIQUIDITY": "0a2c542c-3f40-4919-8d40-43c2e4b5cb30",
+        "REFINEMENT": "841a1e92-75e3-4bcf-b83c-11d09f3c8a12",
+        "RETURN": "9bb0a5b9-4bf0-407a-8c4a-1e19da1717a7",
+        "SWEEP": "b09818f7-2004-4273-aad0-85383667c0c9"
+      },
+      "meta": {
+        "backtest_signal_index": 7
+      },
+      "object_refs": [
+        "0a2c542c-3f40-4919-8d40-43c2e4b5cb30",
+        "841a1e92-75e3-4bcf-b83c-11d09f3c8a12",
+        "9bb0a5b9-4bf0-407a-8c4a-1e19da1717a7",
+        "b09818f7-2004-4273-aad0-85383667c0c9",
+        "d4361c6a-7547-4988-bcbb-bfb8a05ab2e4",
+        "d63c7482-a8dd-48fd-abbf-19e8c0b66bd2",
+        "e75103c3-2176-434d-8152-c5bd8f50515f"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-03 19:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000009",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "e335bb65-cba3-455d-89f1-6bc8290bc455",
+        "CONTRACT": "4919c458-6b02-4376-b829-9cad29c5a9dd",
+        "DISPLACE": "d8c06033-437d-4ade-be63-4286c0de6b88",
+        "LIQUIDITY": "a75f40f6-38b5-4713-ad76-21382301cdb7",
+        "REFINEMENT": "bb67a21f-140e-4d39-bed9-43132e7469f3",
+        "RETURN": "79012c5b-352c-4026-9229-b35e8557a26e",
+        "SWEEP": "0d9a5544-84be-496c-ac6c-7d490c267315"
+      },
+      "meta": {
+        "backtest_signal_index": 8
+      },
+      "object_refs": [
+        "0d9a5544-84be-496c-ac6c-7d490c267315",
+        "4919c458-6b02-4376-b829-9cad29c5a9dd",
+        "79012c5b-352c-4026-9229-b35e8557a26e",
+        "a75f40f6-38b5-4713-ad76-21382301cdb7",
+        "bb67a21f-140e-4d39-bed9-43132e7469f3",
+        "d8c06033-437d-4ade-be63-4286c0de6b88",
+        "e335bb65-cba3-455d-89f1-6bc8290bc455"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-14 00:45:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000010",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "9251cb8c-1689-4bc3-94f6-bf7e4dbf1aa5",
+        "CONTRACT": "158e7f1d-aa21-4102-9be6-c90dd091d57e",
+        "DISPLACE": "8294caf2-2033-4d48-aa99-c01c8a451583",
+        "LIQUIDITY": "fec76406-6569-4a63-add0-92186437e61b",
+        "REFINEMENT": "dba8462b-2382-4cdf-b203-0f097984532c",
+        "RETURN": "07a548c5-ea9d-4c3c-ad33-3656eebfc887",
+        "SWEEP": "5dbf588c-9a0d-4377-91b4-2b3ffc0c716f"
+      },
+      "meta": {
+        "backtest_signal_index": 9
+      },
+      "object_refs": [
+        "07a548c5-ea9d-4c3c-ad33-3656eebfc887",
+        "158e7f1d-aa21-4102-9be6-c90dd091d57e",
+        "5dbf588c-9a0d-4377-91b4-2b3ffc0c716f",
+        "8294caf2-2033-4d48-aa99-c01c8a451583",
+        "9251cb8c-1689-4bc3-94f6-bf7e4dbf1aa5",
+        "dba8462b-2382-4cdf-b203-0f097984532c",
+        "fec76406-6569-4a63-add0-92186437e61b"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-16 18:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000011",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "f58fcfeb-02be-4595-a208-e6895d5b1db0",
+        "CONTRACT": "2cf2c3e5-34f9-44c8-b622-799fbc0c9ece",
+        "DISPLACE": "1b96511f-36ef-47f9-9a55-15d4c3e3bc1c",
+        "LIQUIDITY": "c50c23c4-8bdf-4290-b54a-bbc0528b8df3",
+        "REFINEMENT": "ccf57204-c229-4ea0-8fd0-d44fb6e764de",
+        "RETURN": "0115108c-07f3-47b5-8c19-ddc17e53d368",
+        "SWEEP": "2014d6e9-9138-472e-b063-fe53757e781b"
+      },
+      "meta": {
+        "backtest_signal_index": 10
+      },
+      "object_refs": [
+        "0115108c-07f3-47b5-8c19-ddc17e53d368",
+        "1b96511f-36ef-47f9-9a55-15d4c3e3bc1c",
+        "2014d6e9-9138-472e-b063-fe53757e781b",
+        "2cf2c3e5-34f9-44c8-b622-799fbc0c9ece",
+        "c50c23c4-8bdf-4290-b54a-bbc0528b8df3",
+        "ccf57204-c229-4ea0-8fd0-d44fb6e764de",
+        "f58fcfeb-02be-4595-a208-e6895d5b1db0"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-21 06:45:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000012",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "71ce4459-a855-4a7a-ac07-14e2997653fd",
+        "CONTRACT": "7058f01a-68b2-4b80-9b03-3678e33a055e",
+        "DISPLACE": "af1660f6-3cfb-4094-bba9-6eef996f8abe",
+        "LIQUIDITY": "b061c9b5-5a5a-4c28-81e1-a33964c833d4",
+        "REFINEMENT": "5e98bbd8-f2c2-4591-b55d-b5947cf51ffe",
+        "RETURN": "765d657f-cf3e-45e0-8373-42c6fde57343",
+        "SWEEP": "10f96d86-d354-4894-afe2-2428c03d2ad0"
+      },
+      "meta": {
+        "backtest_signal_index": 11
+      },
+      "object_refs": [
+        "10f96d86-d354-4894-afe2-2428c03d2ad0",
+        "5e98bbd8-f2c2-4591-b55d-b5947cf51ffe",
+        "7058f01a-68b2-4b80-9b03-3678e33a055e",
+        "71ce4459-a855-4a7a-ac07-14e2997653fd",
+        "765d657f-cf3e-45e0-8373-42c6fde57343",
+        "af1660f6-3cfb-4094-bba9-6eef996f8abe",
+        "b061c9b5-5a5a-4c28-81e1-a33964c833d4"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-02-23 03:00:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000013",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "bf3c607a-8855-4bd7-8466-5c823871f7c4",
+        "CONTRACT": "3637cd01-18ec-421e-839d-03f0b50b3e13",
+        "DISPLACE": "6e331fd2-f0f0-4dc6-966f-67bd4189d136",
+        "LIQUIDITY": "2f5e0d73-f46b-4009-aec1-24c57f80b5c1",
+        "REFINEMENT": "fff6624d-6586-43a6-af4d-07c7f9054743",
+        "RETURN": "6bf00115-8201-4199-9f1a-a36ad566c441",
+        "SWEEP": "a7065c2b-abd8-4262-8900-604ae4088a0e"
+      },
+      "meta": {
+        "backtest_signal_index": 12
+      },
+      "object_refs": [
+        "2f5e0d73-f46b-4009-aec1-24c57f80b5c1",
+        "3637cd01-18ec-421e-839d-03f0b50b3e13",
+        "6bf00115-8201-4199-9f1a-a36ad566c441",
+        "6e331fd2-f0f0-4dc6-966f-67bd4189d136",
+        "a7065c2b-abd8-4262-8900-604ae4088a0e",
+        "bf3c607a-8855-4bd7-8466-5c823871f7c4",
+        "fff6624d-6586-43a6-af4d-07c7f9054743"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-03 19:30:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000014",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "c2177b0c-009f-48e5-80b7-aabb4809a3ed",
+        "CONTRACT": "89025169-8335-487c-ae53-d4c2fb43eb30",
+        "DISPLACE": "21d39cb9-ff5a-4ec9-9bc6-80decea3bd14",
+        "LIQUIDITY": "40719269-e6c0-489e-984a-d92b87d4132f",
+        "REFINEMENT": "d0ebd7c8-68d3-4871-871f-1bb78849c80a",
+        "RETURN": "e14435ea-cf9d-4b46-ac7b-e9a0a71ce0a4",
+        "SWEEP": "f790938f-5d79-4376-a91f-b26058f4c255"
+      },
+      "meta": {
+        "backtest_signal_index": 13
+      },
+      "object_refs": [
+        "21d39cb9-ff5a-4ec9-9bc6-80decea3bd14",
+        "40719269-e6c0-489e-984a-d92b87d4132f",
+        "89025169-8335-487c-ae53-d4c2fb43eb30",
+        "c2177b0c-009f-48e5-80b7-aabb4809a3ed",
+        "d0ebd7c8-68d3-4871-871f-1bb78849c80a",
+        "e14435ea-cf9d-4b46-ac7b-e9a0a71ce0a4",
+        "f790938f-5d79-4376-a91f-b26058f4c255"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-06 18:30:00+00:00",
+      "direction": -1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000015",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": -1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "8e304bff-88e1-4c56-9718-1d82d25be11b",
+        "CONTRACT": "94a18ee2-0b60-4ce0-b980-e99f6dd49b84",
+        "DISPLACE": "44d7d04e-7fdc-4a32-b8d6-4cabab203a52",
+        "LIQUIDITY": "7e471ea5-158b-4ed5-950e-cb82d592502a",
+        "REFINEMENT": "c2d32152-636b-4e8b-8acb-2bdd242d8c5d",
+        "RETURN": "ba0e66c2-e901-4252-aea9-c783e77c84ee",
+        "SWEEP": "9fce5e05-2fb2-444c-8262-61a822d554cb"
+      },
+      "meta": {
+        "backtest_signal_index": 14
+      },
+      "object_refs": [
+        "44d7d04e-7fdc-4a32-b8d6-4cabab203a52",
+        "7e471ea5-158b-4ed5-950e-cb82d592502a",
+        "8e304bff-88e1-4c56-9718-1d82d25be11b",
+        "94a18ee2-0b60-4ce0-b980-e99f6dd49b84",
+        "9fce5e05-2fb2-444c-8262-61a822d554cb",
+        "ba0e66c2-e901-4252-aea9-c783e77c84ee",
+        "c2d32152-636b-4e8b-8acb-2bdd242d8c5d"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-10 08:15:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000016",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "b26ef447-5e73-4a4a-ae2a-fa53fd953424",
+        "CONTRACT": "442b6e6b-2900-4f9c-be19-0bc2d6e813f2",
+        "DISPLACE": "64666216-849a-441d-982b-1c9d41662a1d",
+        "LIQUIDITY": "bca876e0-d5f5-4e46-a2c3-d728350afc2c",
+        "REFINEMENT": "a7434113-b395-4b30-a82d-30ecea9588cc",
+        "RETURN": "a4a891fd-1bdf-414e-9ab1-3d8767ec22ff",
+        "SWEEP": "708f1da3-1068-4c52-b136-88655758f833"
+      },
+      "meta": {
+        "backtest_signal_index": 15
+      },
+      "object_refs": [
+        "442b6e6b-2900-4f9c-be19-0bc2d6e813f2",
+        "64666216-849a-441d-982b-1c9d41662a1d",
+        "708f1da3-1068-4c52-b136-88655758f833",
+        "a4a891fd-1bdf-414e-9ab1-3d8767ec22ff",
+        "a7434113-b395-4b30-a82d-30ecea9588cc",
+        "b26ef447-5e73-4a4a-ae2a-fa53fd953424",
+        "bca876e0-d5f5-4e46-a2c3-d728350afc2c"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-18 01:45:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000017",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "27f8b78c-30c3-4ced-8401-414ae8f2374f",
+        "CONTRACT": "751e10ec-0c91-4427-a838-5a279fe6aee8",
+        "DISPLACE": "d1408538-e046-40b6-b54b-e75c2fe8f341",
+        "LIQUIDITY": "59f08fc9-d542-486e-9ba4-bccdde9d778d",
+        "REFINEMENT": "4afe517c-afab-4183-8cb3-4390b702512b",
+        "RETURN": "d6c2b9a8-a7d8-4bb6-accb-043dd938179a",
+        "SWEEP": "d3986a3e-b974-42a8-b3b7-57dd4b150fb3"
+      },
+      "meta": {
+        "backtest_signal_index": 16
+      },
+      "object_refs": [
+        "27f8b78c-30c3-4ced-8401-414ae8f2374f",
+        "4afe517c-afab-4183-8cb3-4390b702512b",
+        "59f08fc9-d542-486e-9ba4-bccdde9d778d",
+        "751e10ec-0c91-4427-a838-5a279fe6aee8",
+        "d1408538-e046-40b6-b54b-e75c2fe8f341",
+        "d3986a3e-b974-42a8-b3b7-57dd4b150fb3",
+        "d6c2b9a8-a7d8-4bb6-accb-043dd938179a"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    },
+    {
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-23 10:30:00+00:00",
+      "direction": 1,
+      "episode_id": "v2-displacement-fixed-q1__EP_SIGNAL_000018",
+      "features_at_t": {
+        "context_inputs": {
+          "d1_bias": "UNKNOWN",
+          "h1_alignment": "NEUTRAL",
+          "h4_location": "UNKNOWN",
+          "sequence_direction": 1
+        },
+        "sequence": [
+          "LIQUIDITY_POOL",
+          "SWEEP",
+          "DISPLACEMENT",
+          "STRUCTURE",
+          "FVG",
+          "RETEST",
+          "CONTRACT"
+        ],
+        "sequence_depth": 7
+      },
+      "lineage": {
+        "BOS": "7f7134dd-ef87-4466-a9a2-4b940b79d9ca",
+        "CONTRACT": "7f534baa-7609-4cf2-8dcf-65b5f9210c9b",
+        "DISPLACE": "bb53fec6-e342-491e-a48b-cb074e56dc63",
+        "LIQUIDITY": "9cd7a26d-185b-425f-b6e9-876d4cb3bdbd",
+        "REFINEMENT": "f72274e3-7c75-435b-9188-347986c392fc",
+        "RETURN": "25bd0ee8-ad7a-435d-9e52-3a81226a1c23",
+        "SWEEP": "e1f0b946-9ed9-4119-b103-712488903b45"
+      },
+      "meta": {
+        "backtest_signal_index": 17
+      },
+      "object_refs": [
+        "25bd0ee8-ad7a-435d-9e52-3a81226a1c23",
+        "7f534baa-7609-4cf2-8dcf-65b5f9210c9b",
+        "7f7134dd-ef87-4466-a9a2-4b940b79d9ca",
+        "9cd7a26d-185b-425f-b6e9-876d4cb3bdbd",
+        "bb53fec6-e342-491e-a48b-cb074e56dc63",
+        "e1f0b946-9ed9-4119-b103-712488903b45",
+        "f72274e3-7c75-435b-9188-347986c392fc"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD"
+    }
+  ],
+  "rejections": [],
+  "sequence_audit": {
+    "invalidations": [
+      {
+        "bar_idx": 143,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13002",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 142,
+        "time": "2022-01-04 04:45:00+00:00"
+      },
+      {
+        "bar_idx": 203,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12817",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 202,
+        "time": "2022-01-04 19:45:00+00:00"
+      },
+      {
+        "bar_idx": 208,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12855",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 207,
+        "time": "2022-01-04 21:00:00+00:00"
+      },
+      {
+        "bar_idx": 212,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12913",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 211,
+        "time": "2022-01-04 22:00:00+00:00"
+      },
+      {
+        "bar_idx": 214,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12941",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 213,
+        "time": "2022-01-04 22:30:00+00:00"
+      },
+      {
+        "bar_idx": 220,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "DISPLACE_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 215,
+        "time": "2022-01-05 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 270,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13395",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 269,
+        "time": "2022-01-05 12:30:00+00:00"
+      },
+      {
+        "bar_idx": 326,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1296",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 325,
+        "time": "2022-01-06 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 375,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12916",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 371,
+        "time": "2022-01-06 14:45:00+00:00"
+      },
+      {
+        "bar_idx": 380,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 376,
+        "time": "2022-01-06 16:00:00+00:00"
+      },
+      {
+        "bar_idx": 399,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12981",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 396,
+        "time": "2022-01-06 20:45:00+00:00"
+      },
+      {
+        "bar_idx": 410,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13002",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 400,
+        "time": "2022-01-06 23:30:00+00:00"
+      },
+      {
+        "bar_idx": 412,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13003",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 411,
+        "time": "2022-01-07 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 442,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13008",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 441,
+        "time": "2022-01-07 07:30:00+00:00"
+      },
+      {
+        "bar_idx": 444,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12982",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 443,
+        "time": "2022-01-07 08:00:00+00:00"
+      },
+      {
+        "bar_idx": 460,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "BOS_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 446,
+        "time": "2022-01-07 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 461,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13508",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 460,
+        "time": "2022-01-07 12:15:00+00:00"
+      },
+      {
+        "bar_idx": 466,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13585",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 465,
+        "time": "2022-01-07 13:30:00+00:00"
+      },
+      {
+        "bar_idx": 499,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1348",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 498,
+        "time": "2022-01-09 21:45:00+00:00"
+      },
+      {
+        "bar_idx": 510,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13337",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 507,
+        "time": "2022-01-10 00:30:00+00:00"
+      },
+      {
+        "bar_idx": 512,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13332",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 511,
+        "time": "2022-01-10 01:00:00+00:00"
+      },
+      {
+        "bar_idx": 538,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13226",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 537,
+        "time": "2022-01-10 07:30:00+00:00"
+      },
+      {
+        "bar_idx": 540,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13204",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 539,
+        "time": "2022-01-10 08:00:00+00:00"
+      },
+      {
+        "bar_idx": 546,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12949",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 545,
+        "time": "2022-01-10 09:30:00+00:00"
+      },
+      {
+        "bar_idx": 587,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13326",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 586,
+        "time": "2022-01-10 19:45:00+00:00"
+      },
+      {
+        "bar_idx": 591,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13347",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 590,
+        "time": "2022-01-10 20:45:00+00:00"
+      },
+      {
+        "bar_idx": 617,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13441",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 613,
+        "time": "2022-01-11 03:15:00+00:00"
+      },
+      {
+        "bar_idx": 620,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13493",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 619,
+        "time": "2022-01-11 04:00:00+00:00"
+      },
+      {
+        "bar_idx": 648,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13516",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 621,
+        "time": "2022-01-11 11:00:00+00:00"
+      },
+      {
+        "bar_idx": 780,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "DISPLACE_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 723,
+        "time": "2022-01-12 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 796,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 780,
+        "time": "2022-01-13 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 839,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14673",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 838,
+        "time": "2022-01-13 10:45:00+00:00"
+      },
+      {
+        "bar_idx": 903,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1469",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 901,
+        "time": "2022-01-14 02:45:00+00:00"
+      },
+      {
+        "bar_idx": 910,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14623",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 909,
+        "time": "2022-01-14 04:30:00+00:00"
+      },
+      {
+        "bar_idx": 914,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14582",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 912,
+        "time": "2022-01-14 05:30:00+00:00"
+      },
+      {
+        "bar_idx": 917,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14553",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 915,
+        "time": "2022-01-14 06:15:00+00:00"
+      },
+      {
+        "bar_idx": 927,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14419",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 925,
+        "time": "2022-01-14 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 932,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14333",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 929,
+        "time": "2022-01-14 10:00:00+00:00"
+      },
+      {
+        "bar_idx": 934,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14299",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 933,
+        "time": "2022-01-14 10:30:00+00:00"
+      },
+      {
+        "bar_idx": 943,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14076",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 942,
+        "time": "2022-01-14 12:45:00+00:00"
+      },
+      {
+        "bar_idx": 970,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14056",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 969,
+        "time": "2022-01-16 19:30:00+00:00"
+      },
+      {
+        "bar_idx": 988,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 974,
+        "time": "2022-01-17 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 997,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14212",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 991,
+        "time": "2022-01-17 02:15:00+00:00"
+      },
+      {
+        "bar_idx": 1070,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14189",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1069,
+        "time": "2022-01-17 20:30:00+00:00"
+      },
+      {
+        "bar_idx": 1179,
+        "detail": "precio cierra mas alla del swing opuesto high 1.133",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1178,
+        "time": "2022-01-18 23:45:00+00:00"
+      },
+      {
+        "bar_idx": 1185,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13313",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1180,
+        "time": "2022-01-19 01:15:00+00:00"
+      },
+      {
+        "bar_idx": 1189,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13341",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1187,
+        "time": "2022-01-19 02:15:00+00:00"
+      },
+      {
+        "bar_idx": 1196,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13364",
+        "direction": -1,
+        "phase": "DISPLACE_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1190,
+        "time": "2022-01-19 04:00:00+00:00"
+      },
+      {
+        "bar_idx": 1198,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13383",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1197,
+        "time": "2022-01-19 04:30:00+00:00"
+      },
+      {
+        "bar_idx": 1213,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13482",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1202,
+        "time": "2022-01-19 08:15:00+00:00"
+      },
+      {
+        "bar_idx": 1220,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13506",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1219,
+        "time": "2022-01-19 10:00:00+00:00"
+      },
+      {
+        "bar_idx": 1297,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1346",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1295,
+        "time": "2022-01-20 05:15:00+00:00"
+      },
+      {
+        "bar_idx": 1300,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13432",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1298,
+        "time": "2022-01-20 06:00:00+00:00"
+      },
+      {
+        "bar_idx": 1302,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13416",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1301,
+        "time": "2022-01-20 06:30:00+00:00"
+      },
+      {
+        "bar_idx": 1356,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13063",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1355,
+        "time": "2022-01-20 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 1382,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13307",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1381,
+        "time": "2022-01-21 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 1388,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13364",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1386,
+        "time": "2022-01-21 04:00:00+00:00"
+      },
+      {
+        "bar_idx": 1402,
+        "detail": "precio cierra mas alla del swing opuesto high 1.134",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1390,
+        "time": "2022-01-21 07:30:00+00:00"
+      },
+      {
+        "bar_idx": 1406,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13446",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1405,
+        "time": "2022-01-21 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 1408,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13505",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1407,
+        "time": "2022-01-21 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 1448,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1339",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1444,
+        "time": "2022-01-23 19:00:00+00:00"
+      },
+      {
+        "bar_idx": 1450,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13365",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1449,
+        "time": "2022-01-23 19:30:00+00:00"
+      },
+      {
+        "bar_idx": 1459,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13325",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1458,
+        "time": "2022-01-23 21:45:00+00:00"
+      },
+      {
+        "bar_idx": 1461,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1332",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1460,
+        "time": "2022-01-23 22:15:00+00:00"
+      },
+      {
+        "bar_idx": 1493,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13147",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1480,
+        "time": "2022-01-24 06:15:00+00:00"
+      },
+      {
+        "bar_idx": 1497,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13101",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1496,
+        "time": "2022-01-24 07:15:00+00:00"
+      },
+      {
+        "bar_idx": 1499,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1498,
+        "time": "2022-01-24 07:45:00+00:00"
+      },
+      {
+        "bar_idx": 1502,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12999",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1500,
+        "time": "2022-01-24 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 1506,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12962",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1504,
+        "time": "2022-01-24 09:30:00+00:00"
+      },
+      {
+        "bar_idx": 1522,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13293",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1521,
+        "time": "2022-01-24 13:30:00+00:00"
+      },
+      {
+        "bar_idx": 1612,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "DISPLACE_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1523,
+        "time": "2022-01-25 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 1708,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1698,
+        "time": "2022-01-26 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 1720,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1274",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1719,
+        "time": "2022-01-26 15:00:00+00:00"
+      },
+      {
+        "bar_idx": 1723,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1245",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1722,
+        "time": "2022-01-26 15:45:00+00:00"
+      },
+      {
+        "bar_idx": 1740,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1236",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1739,
+        "time": "2022-01-26 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 1840,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11474",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1839,
+        "time": "2022-01-27 21:00:00+00:00"
+      },
+      {
+        "bar_idx": 1842,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11481",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1841,
+        "time": "2022-01-27 21:30:00+00:00"
+      },
+      {
+        "bar_idx": 1846,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11522",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1845,
+        "time": "2022-01-27 22:30:00+00:00"
+      },
+      {
+        "bar_idx": 1895,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11635",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1888,
+        "time": "2022-01-28 10:45:00+00:00"
+      },
+      {
+        "bar_idx": 2002,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12195",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2001,
+        "time": "2022-01-31 13:30:00+00:00"
+      },
+      {
+        "bar_idx": 2004,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12317",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2003,
+        "time": "2022-01-31 14:00:00+00:00"
+      },
+      {
+        "bar_idx": 2006,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12343",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2005,
+        "time": "2022-01-31 14:30:00+00:00"
+      },
+      {
+        "bar_idx": 2028,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12253",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2027,
+        "time": "2022-01-31 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 2085,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12633",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2084,
+        "time": "2022-02-01 10:15:00+00:00"
+      },
+      {
+        "bar_idx": 2088,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12509",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2087,
+        "time": "2022-02-01 11:00:00+00:00"
+      },
+      {
+        "bar_idx": 2090,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12452",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2089,
+        "time": "2022-02-01 11:30:00+00:00"
+      },
+      {
+        "bar_idx": 2092,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12429",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2091,
+        "time": "2022-02-01 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 2188,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2173,
+        "time": "2022-02-02 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 2215,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13008",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2213,
+        "time": "2022-02-02 18:45:00+00:00"
+      },
+      {
+        "bar_idx": 2217,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12982",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2216,
+        "time": "2022-02-02 19:15:00+00:00"
+      },
+      {
+        "bar_idx": 2219,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12975",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2218,
+        "time": "2022-02-02 19:45:00+00:00"
+      },
+      {
+        "bar_idx": 2242,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12945",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2241,
+        "time": "2022-02-03 01:30:00+00:00"
+      },
+      {
+        "bar_idx": 2252,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12902",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2246,
+        "time": "2022-02-03 04:00:00+00:00"
+      },
+      {
+        "bar_idx": 2259,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12812",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2258,
+        "time": "2022-02-03 05:45:00+00:00"
+      },
+      {
+        "bar_idx": 2320,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14529",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2318,
+        "time": "2022-02-03 21:00:00+00:00"
+      },
+      {
+        "bar_idx": 2322,
+        "detail": "precio cierra mas alla del swing opuesto high 1.1454",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2321,
+        "time": "2022-02-03 21:30:00+00:00"
+      },
+      {
+        "bar_idx": 2325,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14575",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2324,
+        "time": "2022-02-03 22:15:00+00:00"
+      },
+      {
+        "bar_idx": 2329,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14643",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2326,
+        "time": "2022-02-03 23:15:00+00:00"
+      },
+      {
+        "bar_idx": 2366,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14513",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2345,
+        "time": "2022-02-04 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 2368,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14586",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2367,
+        "time": "2022-02-04 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 2428,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2372,
+        "time": "2022-02-07 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 2455,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14404",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2442,
+        "time": "2022-02-07 06:45:00+00:00"
+      },
+      {
+        "bar_idx": 2479,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14201",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2478,
+        "time": "2022-02-07 12:45:00+00:00"
+      },
+      {
+        "bar_idx": 2492,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2481,
+        "time": "2022-02-07 16:00:00+00:00"
+      },
+      {
+        "bar_idx": 2509,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14424",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2508,
+        "time": "2022-02-07 20:15:00+00:00"
+      },
+      {
+        "bar_idx": 2572,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2551,
+        "time": "2022-02-08 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 2610,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14229",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2609,
+        "time": "2022-02-08 21:30:00+00:00"
+      },
+      {
+        "bar_idx": 2614,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14288",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2612,
+        "time": "2022-02-08 22:30:00+00:00"
+      },
+      {
+        "bar_idx": 2640,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14277",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2639,
+        "time": "2022-02-09 05:00:00+00:00"
+      },
+      {
+        "bar_idx": 2670,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14412",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2655,
+        "time": "2022-02-09 12:30:00+00:00"
+      },
+      {
+        "bar_idx": 2698,
+        "detail": "precio cierra mas alla del swing opuesto low 1.142",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2696,
+        "time": "2022-02-09 19:30:00+00:00"
+      },
+      {
+        "bar_idx": 2700,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14184",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2699,
+        "time": "2022-02-09 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 2757,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14098",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2756,
+        "time": "2022-02-10 10:15:00+00:00"
+      },
+      {
+        "bar_idx": 2760,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14497",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2759,
+        "time": "2022-02-10 11:00:00+00:00"
+      },
+      {
+        "bar_idx": 2762,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14736",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2761,
+        "time": "2022-02-10 11:30:00+00:00"
+      },
+      {
+        "bar_idx": 2834,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13944",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2827,
+        "time": "2022-02-11 05:30:00+00:00"
+      },
+      {
+        "bar_idx": 2987,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13105",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2986,
+        "time": "2022-02-14 19:45:00+00:00"
+      },
+      {
+        "bar_idx": 2996,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13128",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2995,
+        "time": "2022-02-14 22:00:00+00:00"
+      },
+      {
+        "bar_idx": 3013,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13223",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2999,
+        "time": "2022-02-15 02:15:00+00:00"
+      },
+      {
+        "bar_idx": 3018,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13281",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3017,
+        "time": "2022-02-15 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 3021,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13455",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3019,
+        "time": "2022-02-15 04:15:00+00:00"
+      },
+      {
+        "bar_idx": 3038,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13501",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3024,
+        "time": "2022-02-15 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 3084,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1355",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3080,
+        "time": "2022-02-15 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 3088,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13506",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3086,
+        "time": "2022-02-15 21:00:00+00:00"
+      },
+      {
+        "bar_idx": 3133,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13722",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3132,
+        "time": "2022-02-16 08:15:00+00:00"
+      },
+      {
+        "bar_idx": 3135,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13639",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3134,
+        "time": "2022-02-16 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 3191,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13713",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3175,
+        "time": "2022-02-16 22:45:00+00:00"
+      },
+      {
+        "bar_idx": 3193,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13786",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3192,
+        "time": "2022-02-16 23:15:00+00:00"
+      },
+      {
+        "bar_idx": 3244,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3235,
+        "time": "2022-02-17 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 3270,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13658",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3269,
+        "time": "2022-02-17 18:30:00+00:00"
+      },
+      {
+        "bar_idx": 3279,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13613",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3278,
+        "time": "2022-02-17 20:45:00+00:00"
+      },
+      {
+        "bar_idx": 3299,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13702",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3280,
+        "time": "2022-02-18 01:45:00+00:00"
+      },
+      {
+        "bar_idx": 3302,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13718",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3301,
+        "time": "2022-02-18 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 3306,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13735",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3303,
+        "time": "2022-02-18 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 3365,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13175",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3364,
+        "time": "2022-02-20 18:15:00+00:00"
+      },
+      {
+        "bar_idx": 3369,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13157",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3366,
+        "time": "2022-02-20 19:15:00+00:00"
+      },
+      {
+        "bar_idx": 3400,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13752",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3399,
+        "time": "2022-02-21 03:00:00+00:00"
+      },
+      {
+        "bar_idx": 3442,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13355",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3441,
+        "time": "2022-02-21 13:30:00+00:00"
+      },
+      {
+        "bar_idx": 3476,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13016",
+        "direction": 1,
+        "phase": "DISPLACE_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3462,
+        "time": "2022-02-21 22:00:00+00:00"
+      },
+      {
+        "bar_idx": 3507,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13367",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3506,
+        "time": "2022-02-22 05:45:00+00:00"
+      },
+      {
+        "bar_idx": 3587,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13229",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3572,
+        "time": "2022-02-23 01:45:00+00:00"
+      },
+      {
+        "bar_idx": 3624,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13214",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3623,
+        "time": "2022-02-23 11:00:00+00:00"
+      },
+      {
+        "bar_idx": 3626,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13206",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3625,
+        "time": "2022-02-23 11:30:00+00:00"
+      },
+      {
+        "bar_idx": 3763,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12123",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3737,
+        "time": "2022-02-24 21:45:00+00:00"
+      },
+      {
+        "bar_idx": 3767,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12141",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3766,
+        "time": "2022-02-24 22:45:00+00:00"
+      },
+      {
+        "bar_idx": 3775,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12214",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3770,
+        "time": "2022-02-25 00:45:00+00:00"
+      },
+      {
+        "bar_idx": 3805,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12185",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3803,
+        "time": "2022-02-25 08:15:00+00:00"
+      },
+      {
+        "bar_idx": 3812,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12369",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3807,
+        "time": "2022-02-25 10:00:00+00:00"
+      },
+      {
+        "bar_idx": 3817,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12497",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3815,
+        "time": "2022-02-25 11:15:00+00:00"
+      },
+      {
+        "bar_idx": 3911,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12292",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3908,
+        "time": "2022-02-28 10:45:00+00:00"
+      },
+      {
+        "bar_idx": 3913,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12363",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3912,
+        "time": "2022-02-28 11:15:00+00:00"
+      },
+      {
+        "bar_idx": 3951,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12029",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3950,
+        "time": "2022-02-28 20:45:00+00:00"
+      },
+      {
+        "bar_idx": 3984,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1194",
+        "direction": 1,
+        "phase": "DISPLACE_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3960,
+        "time": "2022-03-01 05:00:00+00:00"
+      },
+      {
+        "bar_idx": 3992,
+        "detail": "precio cierra mas alla del swing opuesto low 1.11745",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3986,
+        "time": "2022-03-01 07:00:00+00:00"
+      },
+      {
+        "bar_idx": 4013,
+        "detail": "precio cierra mas alla del swing opuesto low 1.11037",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4012,
+        "time": "2022-03-01 12:15:00+00:00"
+      },
+      {
+        "bar_idx": 4089,
+        "detail": "precio cierra mas alla del swing opuesto high 1.1103",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4088,
+        "time": "2022-03-02 07:15:00+00:00"
+      },
+      {
+        "bar_idx": 4112,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11099",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4106,
+        "time": "2022-03-02 13:00:00+00:00"
+      },
+      {
+        "bar_idx": 4220,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4205,
+        "time": "2022-03-03 16:00:00+00:00"
+      },
+      {
+        "bar_idx": 4309,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09317",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4308,
+        "time": "2022-03-04 14:15:00+00:00"
+      },
+      {
+        "bar_idx": 4318,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09346",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4310,
+        "time": "2022-03-04 16:30:00+00:00"
+      },
+      {
+        "bar_idx": 4352,
+        "detail": "precio cierra mas alla del swing opuesto high 1.08801",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4349,
+        "time": "2022-03-07 01:00:00+00:00"
+      },
+      {
+        "bar_idx": 4378,
+        "detail": "precio cierra mas alla del swing opuesto high 1.08893",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4357,
+        "time": "2022-03-07 07:30:00+00:00"
+      },
+      {
+        "bar_idx": 4444,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4385,
+        "time": "2022-03-08 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 4452,
+        "detail": "precio cierra mas alla del swing opuesto low 1.08557",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4449,
+        "time": "2022-03-08 02:00:00+00:00"
+      },
+      {
+        "bar_idx": 4540,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09199",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4530,
+        "time": "2022-03-09 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 4620,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10509",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4619,
+        "time": "2022-03-09 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 4650,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10522",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4649,
+        "time": "2022-03-10 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 4684,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4678,
+        "time": "2022-03-10 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 4716,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "DISPLACE_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4700,
+        "time": "2022-03-10 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 4844,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09356",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4811,
+        "time": "2022-03-14 03:00:00+00:00"
+      },
+      {
+        "bar_idx": 4848,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09494",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4847,
+        "time": "2022-03-14 04:00:00+00:00"
+      },
+      {
+        "bar_idx": 4850,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09599",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4849,
+        "time": "2022-03-14 04:30:00+00:00"
+      },
+      {
+        "bar_idx": 4877,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09863",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4876,
+        "time": "2022-03-14 11:15:00+00:00"
+      },
+      {
+        "bar_idx": 4928,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4878,
+        "time": "2022-03-15 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 4967,
+        "detail": "precio cierra mas alla del swing opuesto low 1.0985",
+        "direction": 1,
+        "phase": "DISPLACE_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4962,
+        "time": "2022-03-15 09:45:00+00:00"
+      },
+      {
+        "bar_idx": 4971,
+        "detail": "precio cierra mas alla del swing opuesto low 1.0974",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4970,
+        "time": "2022-03-15 10:45:00+00:00"
+      },
+      {
+        "bar_idx": 4974,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09631",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4973,
+        "time": "2022-03-15 11:30:00+00:00"
+      },
+      {
+        "bar_idx": 4976,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4975,
+        "time": "2022-03-15 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 5034,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09709",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5033,
+        "time": "2022-03-16 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 5060,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10106",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5051,
+        "time": "2022-03-16 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 5085,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10343",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5084,
+        "time": "2022-03-16 15:15:00+00:00"
+      },
+      {
+        "bar_idx": 5226,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10818",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5225,
+        "time": "2022-03-18 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 5229,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10712",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5228,
+        "time": "2022-03-18 03:15:00+00:00"
+      },
+      {
+        "bar_idx": 5235,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10633",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5231,
+        "time": "2022-03-18 04:45:00+00:00"
+      },
+      {
+        "bar_idx": 5243,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10316",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5242,
+        "time": "2022-03-18 06:45:00+00:00"
+      },
+      {
+        "bar_idx": 5245,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1031",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5244,
+        "time": "2022-03-18 07:15:00+00:00"
+      },
+      {
+        "bar_idx": 5248,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10161",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5247,
+        "time": "2022-03-18 08:00:00+00:00"
+      },
+      {
+        "bar_idx": 5250,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10151",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5249,
+        "time": "2022-03-18 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 5322,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10469",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5321,
+        "time": "2022-03-21 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 5327,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10558",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5325,
+        "time": "2022-03-21 03:45:00+00:00"
+      },
+      {
+        "bar_idx": 5376,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5356,
+        "time": "2022-03-21 16:00:00+00:00"
+      },
+      {
+        "bar_idx": 5437,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10114",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5424,
+        "time": "2022-03-22 07:15:00+00:00"
+      },
+      {
+        "bar_idx": 5445,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10325",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5444,
+        "time": "2022-03-22 09:15:00+00:00"
+      },
+      {
+        "bar_idx": 5476,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10319",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5471,
+        "time": "2022-03-22 17:00:00+00:00"
+      },
+      {
+        "bar_idx": 5514,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10306",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5513,
+        "time": "2022-03-23 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 5522,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10103",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5520,
+        "time": "2022-03-23 04:30:00+00:00"
+      },
+      {
+        "bar_idx": 5524,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10098",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5523,
+        "time": "2022-03-23 05:00:00+00:00"
+      },
+      {
+        "bar_idx": 5538,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09748",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5537,
+        "time": "2022-03-23 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 5614,
+        "detail": "precio cierra mas alla del swing opuesto high 1.0989",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5613,
+        "time": "2022-03-24 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 5632,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5627,
+        "time": "2022-03-24 08:00:00+00:00"
+      },
+      {
+        "bar_idx": 5664,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5635,
+        "time": "2022-03-24 16:00:00+00:00"
+      },
+      {
+        "bar_idx": 5671,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10026",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5670,
+        "time": "2022-03-24 17:45:00+00:00"
+      },
+      {
+        "bar_idx": 5675,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10064",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5673,
+        "time": "2022-03-24 18:45:00+00:00"
+      },
+      {
+        "bar_idx": 5680,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10097",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5676,
+        "time": "2022-03-24 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 5685,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10288",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5684,
+        "time": "2022-03-24 21:15:00+00:00"
+      },
+      {
+        "bar_idx": 5694,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10342",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5693,
+        "time": "2022-03-24 23:30:00+00:00"
+      },
+      {
+        "bar_idx": 5707,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10239",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5703,
+        "time": "2022-03-25 02:45:00+00:00"
+      },
+      {
+        "bar_idx": 5739,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10026",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5728,
+        "time": "2022-03-25 10:45:00+00:00"
+      },
+      {
+        "bar_idx": 5759,
+        "detail": "precio cierra mas alla del swing opuesto low 1.0982",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5743,
+        "time": "2022-03-25 15:45:00+00:00"
+      },
+      {
+        "bar_idx": 5769,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09797",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5764,
+        "time": "2022-03-27 20:15:00+00:00"
+      },
+      {
+        "bar_idx": 5777,
+        "detail": "precio cierra mas alla del swing opuesto low 1.0957",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5776,
+        "time": "2022-03-27 22:15:00+00:00"
+      },
+      {
+        "bar_idx": 5784,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5783,
+        "time": "2022-03-28 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 5801,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09598",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5795,
+        "time": "2022-03-28 04:15:00+00:00"
+      },
+      {
+        "bar_idx": 5900,
+        "detail": "precio cierra mas alla del swing opuesto high 1.1009",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5894,
+        "time": "2022-03-29 05:00:00+00:00"
+      },
+      {
+        "bar_idx": 5905,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10332",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5904,
+        "time": "2022-03-29 06:15:00+00:00"
+      },
+      {
+        "bar_idx": 5915,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11025",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5914,
+        "time": "2022-03-29 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 5918,
+        "detail": "precio cierra mas alla del swing opuesto high 1.1129",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5917,
+        "time": "2022-03-29 09:30:00+00:00"
+      },
+      {
+        "bar_idx": 6024,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 6009,
+        "time": "2022-03-30 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 6040,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 6024,
+        "time": "2022-03-30 16:00:00+00:00"
+      }
+    ],
+    "pending_end": [],
+    "policy": {
+      "bos_gap": null,
+      "displace_gap": null,
+      "mode": "EVENT_DRIVEN",
+      "structural_invalidation": true
+    },
+    "schema_version": "1.0",
+    "suspensions": []
+  }
+}

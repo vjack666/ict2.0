@@ -25,6 +25,16 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--symbol", default="EURUSD")
     parser.add_argument("--timeframe", default="M15")
     parser.add_argument("--tfs", nargs="+", default=list(DEFAULT_TFS))
+    parser.add_argument(
+        "--htf-timeframe",
+        default="H4",
+        help="Closed-bar higher-timeframe context for the sequence (default: H4).",
+    )
+    parser.add_argument(
+        "--execution-timeframe",
+        default="M5",
+        help="Execution timeframe recorded for the replay (default: M5).",
+    )
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data" / "raw")
     parser.add_argument("--start")
     parser.add_argument("--end")
@@ -38,9 +48,21 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _required_timeframes(args: argparse.Namespace) -> tuple[str, ...]:
+    """Keep the causal context explicit even when a caller narrows ``--tfs``.
+
+    A M15 replay with only M15/M5/M1 previously fell back to M15 as its own
+    HTF. That makes the directional bias flip bar by bar and can discard a
+    valid sweep before its following displacement is evaluated.
+    """
+    return tuple(dict.fromkeys(
+        [*args.tfs, args.timeframe, args.htf_timeframe, args.execution_timeframe]
+    ))
+
+
 def main() -> int:
     args = _parser().parse_args()
-    timeframes = tuple(dict.fromkeys(args.tfs + [args.timeframe]))
+    timeframes = _required_timeframes(args)
     raw_frames = load_raw_frames(
         args.symbol,
         timeframes,
@@ -52,6 +74,8 @@ def main() -> int:
         symbol=args.symbol,
         timeframe=args.timeframe,
         timeframes=timeframes,
+        execution_tf=args.execution_timeframe,
+        htf_timeframe=args.htf_timeframe,
         use_multitf_context=args.multitf_context,
         outcome=OutcomeConfig(horizon_bars=args.horizon_bars),
     )

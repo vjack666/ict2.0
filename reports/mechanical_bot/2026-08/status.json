@@ -1,0 +1,20 @@
+{
+  "state": "FINALIZADO",
+  "updated_at": "2026-09-06T20:50:20.119080+00:00",
+  "can_trade": false,
+  "mode": "DIAGNOSTIC_ONLY",
+  "artifact_path": "reports/mechanical_bot/2026-08/backtest.json",
+  "events_path": "reports/mechanical_bot/2026-08/events.jsonl",
+  "report_summary": "reports/mechanical_bot/2026-08/summary.json",
+  "summary": {
+    "starting_balance": 5000.0,
+    "ending_balance": 4932.799999999992,
+    "net_pnl_usd": -67.200000000008,
+    "cycles_closed": 2,
+    "take_profit_cycles": 1,
+    "loss_cycles": 1,
+    "max_drawdown_usd": 130.39999999999964,
+    "max_drawdown_pct": 2.57600600541277
+  },
+  "note": "Resultado de la corrida mensual completa finalizada; el informe fue regenerado desde ese artefacto para conservar DD intrabar."
+}

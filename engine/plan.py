@@ -101,12 +101,16 @@ def _bias_from_frame(df: pd.DataFrame, t: Any) -> str:
     if {"bos_active_dir", "choch_active_dir"}.issubset(sub.columns):
         last = sub.iloc[-1]
         choch_dir = int(last.get("choch_active_dir", 0) or 0)
-        choch_source = int(last.get("choch_active_source_bar", -1) or -1)
+        raw_choch_source = last.get("choch_active_source_bar", -1)
+        choch_source = int(raw_choch_source) if pd.notna(raw_choch_source) else -1
         if choch_dir and 0 <= choch_source < len(sub):
             source = sub.iloc[choch_source]
             if (
                 "bos_real" not in sub.columns
-                or "choch_proj_level" not in source.columns
+                # ``source`` is the event row (a Series); column membership
+                # belongs to the annotated frame.  This path is used by every
+                # causal Context State snapshot with an active CHoCH.
+                or "choch_proj_level" not in sub.columns
                 or _bos_real_behind(
                     sub, choch_source, choch_dir,
                     float(source.get("choch_proj_level", np.nan)),
@@ -114,7 +118,8 @@ def _bias_from_frame(df: pd.DataFrame, t: Any) -> str:
             ):
                 return "BULLISH" if choch_dir > 0 else "BEARISH"
         bos_dir = int(last.get("bos_active_dir", 0) or 0)
-        bos_source = int(last.get("bos_active_source_bar", -1) or -1)
+        raw_bos_source = last.get("bos_active_source_bar", -1)
+        bos_source = int(raw_bos_source) if pd.notna(raw_bos_source) else -1
         if bos_dir and 0 <= bos_source < len(sub):
             source = sub.iloc[bos_source]
             if "bos_real" not in sub.columns or bool(source.get("bos_real", False)):

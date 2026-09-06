@@ -1,0 +1,1107 @@
+{
+  "artifact_kind": "MECHANICAL_BOT_MONTHLY_BACKTEST",
+  "policy": {
+    "diagnostic_only": true,
+    "can_trade": false,
+    "entry_authorized": false,
+    "promotion_authorized": false
+  },
+  "symbol": "EURUSD",
+  "period": {
+    "start": "2026-08-01",
+    "end": "2026-08-31"
+  },
+  "config": {
+    "symbol": "EURUSD",
+    "starting_balance": 5000.0,
+    "pip_size": 0.0001,
+    "dollars_per_pip_per_lot": 10.0,
+    "lots": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "reentry_pips": [
+      20.0,
+      40.0
+    ],
+    "take_profit_usd": 60.0,
+    "loss_balance_pct": 0.02,
+    "spread_pips": 1.0,
+    "slippage_pips": 0.3,
+    "commission_per_lot_side": 5.0
+  },
+  "context_lookback_bars": {
+    "D1": 520,
+    "H4": 780,
+    "H1": 1200,
+    "M15": 800
+  },
+  "summary": {
+    "starting_balance": 5000.0,
+    "ending_balance": 4932.799999999992,
+    "net_pnl_usd": -67.200000000008,
+    "cycles_closed": 2,
+    "take_profit_cycles": 1,
+    "loss_cycles": 1,
+    "max_drawdown_usd": 130.39999999999964
+  },
+  "events": [
+    {
+      "id": "MB-000001",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-01T01:00:00+00:00",
+      "trading_day": "2026-08-01",
+      "context": {
+        "asof_time": "2026-08-01 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BULLISH",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000002",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-02T01:00:00+00:00",
+      "trading_day": "2026-08-02",
+      "context": {
+        "asof_time": "2026-08-02 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BULLISH",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000003",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-03T01:00:00+00:00",
+      "trading_day": "2026-08-03",
+      "context": {
+        "asof_time": "2026-08-03 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BULLISH",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000004",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-03T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000005",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-03T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000006",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-03T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000007",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-03T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000008",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-04T01:00:00+00:00",
+      "trading_day": "2026-08-04",
+      "context": {
+        "asof_time": "2026-08-04 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15461,
+        "fvg_high": 1.15462
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000009",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-04T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000010",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-04T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000011",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-04T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000012",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-04T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000013",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-05T01:00:00+00:00",
+      "trading_day": "2026-08-05",
+      "context": {
+        "asof_time": "2026-08-05 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "RANGING",
+        "m15_direction": "BULLISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15461,
+        "fvg_high": 1.15462
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000014",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-05T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000015",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-05T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000016",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-05T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000017",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-05T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000018",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-06T01:00:00+00:00",
+      "trading_day": "2026-08-06",
+      "context": {
+        "asof_time": "2026-08-06 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000019",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-06T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000020",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-06T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000021",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-06T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000022",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-06T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000023",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-07T01:00:00+00:00",
+      "trading_day": "2026-08-07",
+      "context": {
+        "asof_time": "2026-08-07 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "BEARISH",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15212,
+        "fvg_high": 1.15217
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000024",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-07T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000025",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-07T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000026",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-07T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000027",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-07T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000028",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-08T01:00:00+00:00",
+      "trading_day": "2026-08-08",
+      "context": {
+        "asof_time": "2026-08-08 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15619,
+        "fvg_high": 1.15658
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000029",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-09T01:00:00+00:00",
+      "trading_day": "2026-08-09",
+      "context": {
+        "asof_time": "2026-08-09 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15619,
+        "fvg_high": 1.15658
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000030",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-10T01:00:00+00:00",
+      "trading_day": "2026-08-10",
+      "context": {
+        "asof_time": "2026-08-10 01:00:00+00:00",
+        "direction": "BUY",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BULLISH",
+        "fvg_direction": "BUY",
+        "fvg_low": 1.15214,
+        "fvg_high": 1.15225
+      },
+      "eligible": true
+    },
+    {
+      "id": "MB-000031",
+      "kind": "STOCHASTIC_CROSS",
+      "asof_time": "2026-08-10T07:30:00+00:00",
+      "session": "LONDON",
+      "direction": "BUY",
+      "m15_closed_at": "2026-08-10T07:30:00+00:00"
+    },
+    {
+      "id": "MB-000032",
+      "kind": "ENTRY",
+      "asof_time": "2026-08-10T07:31:00+00:00",
+      "session": "LONDON",
+      "direction": "BUY",
+      "volume": 0.1,
+      "price": 1.15503,
+      "balance_at_start": 5000.0
+    },
+    {
+      "id": "MB-000033",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-11T01:00:00+00:00",
+      "trading_day": "2026-08-11",
+      "context": {
+        "asof_time": "2026-08-11 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "BEARISH",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000034",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-12T01:00:00+00:00",
+      "trading_day": "2026-08-12",
+      "context": {
+        "asof_time": "2026-08-12 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "BULLISH",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000035",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-13T01:00:00+00:00",
+      "trading_day": "2026-08-13",
+      "context": {
+        "asof_time": "2026-08-13 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "BEARISH",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15323,
+        "fvg_high": 1.15334
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000036",
+      "kind": "REENTRY",
+      "asof_time": "2026-08-13T07:00:00+00:00",
+      "direction": "BUY",
+      "level": 1,
+      "volume": 0.2,
+      "price": 1.15311
+    },
+    {
+      "id": "MB-000037",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-14T01:00:00+00:00",
+      "trading_day": "2026-08-14",
+      "context": {
+        "asof_time": "2026-08-14 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "RANGING",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15366,
+        "fvg_high": 1.15378
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000038",
+      "kind": "CLOSE",
+      "asof_time": "2026-08-14T14:15:00+00:00",
+      "session": "LONDON",
+      "reason": "take_profit_aggregate",
+      "direction": "BUY",
+      "entries": 2,
+      "raw_gross_pnl_usd": 69.8999999999983,
+      "gross_pnl_usd": 65.0999999999935,
+      "net_pnl_usd": 62.0999999999935,
+      "execution_cost_usd": 7.8000000000048,
+      "close_commission_usd": 1.5,
+      "balance_before": 5000.0,
+      "balance_after": 5062.099999999993
+    },
+    {
+      "id": "MB-000039",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-14T14:16:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000040",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-14T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000041",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-15T01:00:00+00:00",
+      "trading_day": "2026-08-15",
+      "context": {
+        "asof_time": "2026-08-15 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15714,
+        "fvg_high": 1.15736
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000042",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-16T01:00:00+00:00",
+      "trading_day": "2026-08-16",
+      "context": {
+        "asof_time": "2026-08-16 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15714,
+        "fvg_high": 1.15736
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000043",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-17T01:00:00+00:00",
+      "trading_day": "2026-08-17",
+      "context": {
+        "asof_time": "2026-08-17 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15714,
+        "fvg_high": 1.15736
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000044",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-17T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000045",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-17T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000046",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-17T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000047",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-17T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000048",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-18T01:00:00+00:00",
+      "trading_day": "2026-08-18",
+      "context": {
+        "asof_time": "2026-08-18 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BEARISH",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15866,
+        "fvg_high": 1.1588
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000049",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-18T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000050",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-18T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000051",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-18T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000052",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-18T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000053",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-19T01:00:00+00:00",
+      "trading_day": "2026-08-19",
+      "context": {
+        "asof_time": "2026-08-19 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15751,
+        "fvg_high": 1.15765
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000054",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-19T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000055",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-19T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000056",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-19T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000057",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-19T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000058",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-20T01:00:00+00:00",
+      "trading_day": "2026-08-20",
+      "context": {
+        "asof_time": "2026-08-20 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "BULLISH",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000059",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-20T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000060",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-20T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000061",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-20T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000062",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-20T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000063",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-21T01:00:00+00:00",
+      "trading_day": "2026-08-21",
+      "context": {
+        "asof_time": "2026-08-21 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.16982,
+        "fvg_high": 1.17023
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000064",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-21T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000065",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-21T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000066",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-21T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000067",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-21T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000068",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-22T01:00:00+00:00",
+      "trading_day": "2026-08-22",
+      "context": {
+        "asof_time": "2026-08-22 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BEARISH",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.16947,
+        "fvg_high": 1.16971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000069",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-23T01:00:00+00:00",
+      "trading_day": "2026-08-23",
+      "context": {
+        "asof_time": "2026-08-23 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BEARISH",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.16947,
+        "fvg_high": 1.16971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000070",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-24T01:00:00+00:00",
+      "trading_day": "2026-08-24",
+      "context": {
+        "asof_time": "2026-08-24 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BEARISH",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.16947,
+        "fvg_high": 1.16971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000071",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-24T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000072",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-24T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000073",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-24T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000074",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-24T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000075",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-25T01:00:00+00:00",
+      "trading_day": "2026-08-25",
+      "context": {
+        "asof_time": "2026-08-25 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BEARISH",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.16947,
+        "fvg_high": 1.16971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000076",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-25T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000077",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-25T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000078",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-25T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000079",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-25T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000080",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-26T01:00:00+00:00",
+      "trading_day": "2026-08-26",
+      "context": {
+        "asof_time": "2026-08-26 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BEARISH",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.16947,
+        "fvg_high": 1.16971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000081",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-26T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000082",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-26T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000083",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-26T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000084",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-26T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000085",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-27T01:00:00+00:00",
+      "trading_day": "2026-08-27",
+      "context": {
+        "asof_time": "2026-08-27 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BEARISH",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.16654,
+        "fvg_high": 1.16705
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000086",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-27T07:00:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000087",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-27T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000088",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-27T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000089",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-27T16:00:00+00:00",
+      "session": "NEW_YORK"
+    },
+    {
+      "id": "MB-000090",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-28T01:00:00+00:00",
+      "trading_day": "2026-08-28",
+      "context": {
+        "asof_time": "2026-08-28 01:00:00+00:00",
+        "direction": "BUY",
+        "d1_direction": "BULLISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BULLISH",
+        "fvg_direction": "BUY",
+        "fvg_low": 1.1629800000000001,
+        "fvg_high": 1.16355
+      },
+      "eligible": true
+    },
+    {
+      "id": "MB-000091",
+      "kind": "STOCHASTIC_CROSS",
+      "asof_time": "2026-08-28T08:00:00+00:00",
+      "session": "LONDON",
+      "direction": "BUY",
+      "m15_closed_at": "2026-08-28T08:00:00+00:00"
+    },
+    {
+      "id": "MB-000092",
+      "kind": "ENTRY",
+      "asof_time": "2026-08-28T08:01:00+00:00",
+      "session": "LONDON",
+      "direction": "BUY",
+      "volume": 0.1,
+      "price": 1.16459,
+      "balance_at_start": 5062.099999999993
+    },
+    {
+      "id": "MB-000093",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-29T01:00:00+00:00",
+      "trading_day": "2026-08-29",
+      "context": {
+        "asof_time": "2026-08-29 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BEARISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15907,
+        "fvg_high": 1.15971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000094",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-30T01:00:00+00:00",
+      "trading_day": "2026-08-30",
+      "context": {
+        "asof_time": "2026-08-30 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BEARISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "RANGING",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15907,
+        "fvg_high": 1.15971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000095",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-31T01:00:00+00:00",
+      "trading_day": "2026-08-31",
+      "context": {
+        "asof_time": "2026-08-31 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BEARISH",
+        "h4_direction": "BULLISH",
+        "h1_direction": "RANGING",
+        "m15_direction": "BEARISH",
+        "fvg_direction": "UNKNOWN",
+        "fvg_low": 1.15907,
+        "fvg_high": 1.15971
+      },
+      "eligible": false
+    },
+    {
+      "id": "MB-000096",
+      "kind": "REENTRY",
+      "asof_time": "2026-08-31T07:00:00+00:00",
+      "direction": "BUY",
+      "level": 1,
+      "volume": 0.2,
+      "price": 1.16267
+    },
+    {
+      "id": "MB-000097",
+      "kind": "CLOSE",
+      "asof_time": "2026-08-31T07:01:00+00:00",
+      "session": "LONDON",
+      "reason": "max_floating_loss",
+      "direction": "BUY",
+      "entries": 2,
+      "raw_gross_pnl_usd": -121.49999999999662,
+      "gross_pnl_usd": -126.3000000000014,
+      "net_pnl_usd": -129.3000000000014,
+      "execution_cost_usd": 7.800000000004786,
+      "close_commission_usd": 1.5,
+      "balance_before": 5062.099999999993,
+      "balance_after": 4932.799999999992
+    },
+    {
+      "id": "MB-000098",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-31T07:02:00+00:00",
+      "session": "LONDON",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000099",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-31T11:00:00+00:00",
+      "session": "LONDON"
+    },
+    {
+      "id": "MB-000100",
+      "kind": "SESSION_ABSTAIN",
+      "asof_time": "2026-08-31T12:00:00+00:00",
+      "session": "NEW_YORK",
+      "reason": "frozen_context_not_aligned_or_no_active_fvg"
+    },
+    {
+      "id": "MB-000101",
+      "kind": "SESSION_NO_ENTRY",
+      "asof_time": "2026-08-31T16:00:00+00:00",
+      "session": "NEW_YORK"
+    }
+  ],
+  "input_sha256": {
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_D1.parquet": "f4acbf7b7d89faecdee39f8a0ea333c2593cf2ff097dcf67a0bd8c3e1ceb0cb8",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H4.parquet": "c43d76193c8f0b00a0aab95c9e48aa987f9c50a91e67204b20b9a7a8b0521ae9",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H1.parquet": "18e9a496b0a86411fa275ab0552fcdc587893bfc3f91349fd15c4cfedae221e4",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M15.parquet": "25a65e237c0453682a4d13efc38f6e8c7f59d85638001fc42d56e0cddb2017ff",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M1.parquet": "4f511ba77728502e2d9ea7ca55158bf98947f627c33c004b4a66c742ccf26081"
+  },
+  "events_jsonl": "reports\\mechanical_bot\\2026-08\\events.jsonl",
+  "status": "FINALIZADO_DIAGNOSTIC_ONLY"
+}

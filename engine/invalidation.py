@@ -10,7 +10,6 @@ datos posteriores al nacimiento (anti look-ahead).
 
 Las reglas son el SUSTITUTO explicito de los resets hoy implicitos en
 run_sequence:
-  - TIMEOUT          : i - sweep_idx > gap (ventana de confirmacion vencida)
   - DIRECTION_FLIP   : el sesgo HTF cambia de direccion (top-down veto)
   - TOPDOWN_VETO     : la cascada D1->H4->H1 no permite la direccion objetivo
   - OPPOSITE_SWING_BREAK : el precio cierra mas alla del swing opuesto del
@@ -36,7 +35,7 @@ from engine.market_object import MarketObject
 class InvalidationRule:
     """Una condicion de muerte predefinida para el expediente de la senal."""
 
-    kind: str                       # TIMEOUT | DIRECTION_FLIP | TOPDOWN_VETO | OPPOSITE_SWING_BREAK
+    kind: str                       # DIRECTION_FLIP | TOPDOWN_VETO | OPPOSITE_SWING_BREAK | TIMEOUT legacy
     level: float | None = None      # nivel de ruptura (solo OPPOSITE_SWING_BREAK)
     deadline_idx: int | None = None  # i maximo antes de timeout (solo TIMEOUT)
     descr: str = ""
@@ -70,17 +69,12 @@ def build_rules(
     """
     rules: list[InvalidationRule] = []
 
-    # TIMEOUT: deadline derivado de la ventana de confirmacion BOS efectiva.
-    # Usamos el gap de BOS si esta fijo; si es dinamico (None) usamos un
-    # fallback conservador igual al displace_gap + 40 (igual que sequence).
-    bos_gap = getattr(cfg, "bos_gap", None)
-    eff_bos_gap = bos_gap if bos_gap is not None else 40
-    deadline = sweep_idx + max(getattr(cfg, "displace_gap", 6), eff_bos_gap)
-    rules.append(InvalidationRule(
-        kind="TIMEOUT",
-        deadline_idx=deadline,
-        descr=f"timeout si i-sweep_idx supera {deadline}",
-    ))
+    # No se crea TIMEOUT por defecto. Una secuencia viva espera nuevos cierres
+    # mientras la estructura que la sostiene siga válida. El motor aplica una
+    # ventana solamente cuando el caller opta explícitamente por un límite
+    # legacy (SequenceConfig.{displace_gap,bos_gap}=int), porque el límite
+    # depende de la fase activa y no puede congelarse correctamente aquí al
+    # nacer el sweep.
 
     # Regla sustantiva nueva, detras de flag.
     if getattr(cfg, "invalidate_on_opposite_swing", False):

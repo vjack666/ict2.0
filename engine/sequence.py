@@ -11,8 +11,9 @@ eventos ocurren EN SECUENCIA y el mercado se revela en cascada (D1 -> H4 -> M15)
                 en esa direccion.
   4. ENTRY     : aparece un FVG/OB en la direccion -> se genera la senal.
 
-Cada evento se recuerda vela a vela en SequenceState (memoria). Si pasa
-max_gap velas sin avanzar, la secuencia se reinicia (no acumula ruido).
+Cada evento se recuerda vela a vela en SequenceState (memoria). Una secuencia
+permanece abierta hasta una invalidación causal; las ventanas por barras solo
+existen como modo legacy explícito para reproducir experimentos anteriores.
 
 Esto es la "memoria" que pediste, antes de meter ML (Capa 3): el estado de
 que eventos ya pasaron y hace cuantas velas.
@@ -71,12 +72,11 @@ _CANDLE_FIELDS = (
 @dataclass
 class SequenceConfig:
     sweep_lookback: int = 8        # el sweep debe verse en las ultimas N velas
-    displace_gap: int = 6          # ventana para el displacement tras el sweep
-    # R10 (Propuesta A): ventana de confirmacion BOS.
-    #   bos_gap: int  -> fijo (solo para debugging/scripts).
-    #   bos_gap: None -> DINAMICO: confirmation_window() deriva N de la FUERZA
-    #                del quiebre via tabla empirica del backtest (sin ATR/indicadores).
-    # Por defecto running en modo dinamico; si se pasa int, se mantiene compat.
+    # None conserva el escenario mientras su estructura siga vigente. Un int
+    # es un timeout legacy explícito para reproducir experimentos antiguos.
+    displace_gap: int | None = None
+    # None espera el retorno/BOS mientras el escenario siga válido; un int
+    # mantiene una ventana legacy explícita.
     bos_gap: int | None = None
     require_displacement: bool = True
     counter_trend: bool = False
@@ -84,8 +84,15 @@ class SequenceConfig:
     # RR de la contratacion LTF (ICT 1:3). Usado por el nodo CONTRACT.
     rr: float = 3.0
     # B3: nueva regla sustantiva OPPOSITE_SWING_BREAK, detras de flag.
-    # OFF = bit a bit identico al historico (regresion cero).
-    invalidate_on_opposite_swing: bool = False
+    # En modo paciente la ruptura del swing opuesto ya confirmado es una causa
+    # terminal. Si no existe un nivel confirmado, no se inventa una regla.
+    invalidate_on_opposite_swing: bool = True
+
+    def __post_init__(self) -> None:
+        for name in ("displace_gap", "bos_gap"):
+            value = getattr(self, name)
+            if value is not None and (isinstance(value, bool) or not isinstance(value, int) or value <= 0):
+                raise ValueError(f"{name} debe ser None o un entero positivo")
 
 
 @dataclass
@@ -534,70 +541,156 @@ def _invalidate_expediente(exp: "Expediente | None", i: int, time,
         pass
 
 
-def _check_and_apply_invalidation(state: "SequenceState", obj: MarketObject, i: int) -> bool:
+def _check_and_apply_invalidation(state: "SequenceState", obj: MarketObject, i: int):
     """B3: evalúa las reglas congeladas contra la barra i.
 
-    Devuelve True si el expediente fue invalidado (y la secuencia debe
-    reiniciarse). Las reglas son descriptivas salvo OPPOSITE_SWING_BREAK, que
-    SI cambia la decision - pero solo cuando el flag esta ON (regresion cero).
+    Devuelve la regla que invalidó o ``None``. Solo compara la barra cerrada
+    actual con niveles congelados al nacer el escenario.
     """
     if not state.invalidation_rules or state.expediente is None:
-        return False
+        return None
     rule = check_invalidation(state.invalidation_rules, obj, i)
     if rule is None:
-        return False
+        return None
     _invalidate_expediente(state.expediente, i, obj.meta.get("time"), rule.descr)
-    return True
+    return rule
 
 
-def confirmation_window(bos_obj: MarketObject, ctx_objs: list[MarketObject],
-                         ctx_len: int, bos_table: dict | None) -> int:
-    """R10 (Propuesta A): ventana de confirmacion BOS DINAMICA, SIN INDICADORES.
+def _legacy_timeout_rule(state: "SequenceState", cfg: SequenceConfig, i: int):
+    """Devuelve un timeout solo si el caller lo configuró explícitamente.
 
-    Deriva N de la FUERZA del quiebre usando MATEMATICA PURA del gráfico:
-        r = rango_bos / rango_promedio_contexto
-    donde rango = high - low (ningún indicador). Luego mapea `r` a un bucket
-    entero y lo busca en `bos_table` (tabla empirica P(mitigacion en N velas |
-    fuerza r), pre-calculada del backtest). Si no hay tabla, fallback 40.
-
-    Esto reemplaza el "numero magico" por "lo que el mercado hizo antes en
-    situaciones iguales" (Principio 1: decision del estado, no constante).
+    El límite pertenece a la fase, no al sweep completo: ``displace_gap``
+    gobierna SWEEP -> DISPLACE y ``bos_gap`` gobierna las esperas posteriores.
+    Con ambos en ``None`` no hay reloj artificial; el cierre de cada vela aún
+    comprueba las invalidaciones estructurales congeladas.
     """
-    if bos_table is None:
-        return 40  # fallback deterministico (default canonico previo a R10)
-
-    def _rango(o: MarketObject) -> float:
-        return float(o.meta.get("high", 0.0)) - float(o.meta.get("low", 0.0))
-
-    rango_bos = _rango(bos_obj)
-    if ctx_len > 0 and rango_bos <= 0:
-        return 40
-    # rango promedio del contexto (promedio simple de high-low, NO ATR).
-    if ctx_len > 0:
-        suma = sum(_rango(o) for o in ctx_objs[:ctx_len])
-        rango_ctx = suma / ctx_len
+    if state.phase == "SWEEP_DONE":
+        anchor, gap, phase = state.sweep_idx, cfg.displace_gap, "DISPLACE"
+    elif state.phase in ("DISPLACE_DONE", "BOS_DONE"):
+        anchor, gap, phase = state.displace_idx if state.phase == "DISPLACE_DONE" else state.bos_idx, cfg.bos_gap, "BOS_OR_RETURN"
     else:
-        rango_ctx = rango_bos
-    if rango_ctx <= 0:
-        return 40
-    r = rango_bos / rango_ctx
-    # bucket: 1 (debil) .. 5+ (muy fuerte). BOS fuerte => bucket alto.
-    bucket = max(1, min(5, int(round(r))))
-    return int(bos_table.get(bucket, 40))
+        return None
+    if gap is None or anchor < 0 or i - anchor <= gap:
+        return None
+    from engine.invalidation import InvalidationRule
+    return InvalidationRule(
+        kind="TIMEOUT",
+        deadline_idx=anchor + gap,
+        descr=f"legacy timeout {phase}: {i - anchor} barras > {gap}",
+    )
 
 
-def _effective_bos_gap(cfg: SequenceConfig, i: int, obj, est_htf,
-                       objs, bos_table) -> int:
-    """Ventana efectiva: fija si bos_gap es int, dinamica si es None.
+def _context_invalidation_rule(kind: str, detail: str):
+    """Regla terminal observada en la barra actual, sin mirar el futuro."""
+    from engine.invalidation import InvalidationRule
+    return InvalidationRule(kind=kind, descr=detail)
 
-    R10: el contexto es la ventana de velas previas (memoria del humano) para
-    medir el rango promedio del mercado sin indicadores.
+
+def _context_proves_opposition(context, target: int, cfg: SequenceConfig) -> bool:
+    """Solo trata una oposición direccional observada como invalidación.
+
+    Ausencia, rango y ``UNKNOWN`` suspenden la búsqueda: no prueban que la
+    tesis del escenario sea falsa. El modo contratendencia ya define su propia
+    relación con el HTF, por lo que no se infiere oposición extra aquí.
     """
-    if cfg.bos_gap is None:
-        lo = max(0, i - 50)
-        ctx = objs[lo:i] if i > lo else objs[lo:i + 1]
-        return confirmation_window(obj, ctx, len(ctx), bos_table)
-    return cfg.bos_gap
+    if context is None or cfg.counter_trend:
+        return False
+    opposite = "BEARISH" if target > 0 else "BULLISH"
+    return any(
+        str((context.get(tf) or {}).get("trend", "RANGING")) == opposite
+        for tf in ("D1", "H4", "H1")
+    )
+
+
+def _invalidation_frame_from_objects(objs, upto_idx: int) -> pd.DataFrame:
+    """Materializa solo el prefijo OHLC cerrado al nacer un sweep.
+
+    El runner incremental normalmente recibe ``MarketObject[]``. La regla de
+    swing opuesto requiere el mismo prefijo de velas que el camino DataFrame;
+    este adaptador se ejecuta una sola vez al crear el expediente, nunca en
+    cada barra de espera.
+    """
+    return pd.DataFrame([
+        {
+            "high": obj.meta.get("high", np.nan),
+            "low": obj.meta.get("low", np.nan),
+            "close": obj.meta.get("close", np.nan),
+        }
+        for obj in objs[:upto_idx + 1]
+    ])
+
+
+def _init_sequence_audit(audit: dict | None, cfg: SequenceConfig) -> None:
+    """Inicializa un contenedor opcional, aditivo y apto para streaming."""
+    if audit is None:
+        return
+    audit.setdefault("schema_version", "1.0")
+    audit.setdefault("policy", {
+        "mode": ("EXPLICIT_TIMEOUT" if (cfg.displace_gap is not None or cfg.bos_gap is not None)
+                 else "EVENT_DRIVEN"),
+        "displace_gap": cfg.displace_gap,
+        "bos_gap": cfg.bos_gap,
+        "structural_invalidation": bool(cfg.invalidate_on_opposite_swing),
+    })
+    audit.setdefault("invalidations", [])
+    audit.setdefault("suspensions", [])
+    audit.setdefault("pending_end", [])
+
+
+def _record_invalidation(audit: dict | None, state: "SequenceState", obj: MarketObject,
+                         i: int, rule) -> None:
+    if audit is None:
+        return
+    audit["invalidations"].append({
+        "phase": state.phase,
+        "direction": state.direction,
+        "sweep_idx": state.sweep_idx,
+        "bar_idx": i,
+        "time": str(obj.meta.get("time")),
+        "reason": rule.kind,
+        "detail": rule.descr,
+    })
+
+
+def _record_suspension(audit: dict | None, state: "SequenceState", obj: MarketObject,
+                       i: int, reason: str) -> None:
+    if audit is not None and state.phase != "IDLE":
+        rows = audit["suspensions"]
+        if (rows and rows[-1]["phase"] == state.phase and
+                rows[-1]["direction"] == state.direction and
+                rows[-1]["reason"] == reason and rows[-1]["end_bar_idx"] == i - 1):
+            rows[-1]["end_bar_idx"] = i
+            rows[-1]["end_time"] = str(obj.meta.get("time"))
+            rows[-1]["count"] += 1
+            return
+        rows.append({
+            "phase": state.phase, "direction": state.direction, "bar_idx": i,
+            "time": str(obj.meta.get("time")), "end_bar_idx": i,
+            "end_time": str(obj.meta.get("time")), "count": 1, "reason": reason,
+        })
+
+
+def _record_pending_end(audit: dict | None, state: "SequenceState", objs, end_idx: int) -> None:
+    """Marca una secuencia abierta como censurada por fin de datos, no fallida."""
+    if state.phase == "IDLE":
+        return
+    if end_idx < 0 or end_idx >= len(objs):
+        return
+    anchor = (state.sweep_idx if state.phase == "SWEEP_DONE" else
+              state.displace_idx if state.phase == "DISPLACE_DONE" else state.bos_idx)
+    waited = max(0, end_idx - anchor) if anchor >= 0 else 0
+    if audit is not None:
+        record = {
+            "phase": state.phase,
+            "direction": state.direction,
+            "sweep_idx": state.sweep_idx,
+            "bar_idx": end_idx,
+            "waited_bars": waited,
+            "time": str(objs[end_idx].meta.get("time")) if end_idx >= 0 else None,
+            "status": "PENDING_END_OF_DATA",
+        }
+        if not audit["pending_end"] or audit["pending_end"][-1] != record:
+            audit["pending_end"].append(record)
 
 
 def _build_ltf_contract(state: "SequenceState", objs, obj, ltf_tf: str, target: int,
@@ -663,7 +756,8 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                  htf: str | None = None,
                  est_htf_ctx_fn=None, exec_frames: dict | None = None,
                  initial_state: Any = None, start_i: int = 0,
-                 copy_objs: bool = True, single_step: bool = False):
+                 copy_objs: bool = True, single_step: bool = False,
+                 audit: dict | None = None, invalidation_ltf_df=None):
     """Recorre el LTF y devuelve lista de dicts de senal.
 
     R9 Paso 3: acepta DataFrame O lista de MarketObject (type=CANDLE). En
@@ -718,6 +812,7 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
     signals: list[dict] = []
     n = len(objs)
     phase_seen = {"SWEEP": 0, "DISPLACE": 0, "BOS": 0, "ENTRY": 0}
+    _init_sequence_audit(audit, cfg)
     # B3: reglas de invalidacion congeladas por nacimiento del expediente.
     # Se construyen al confirmar el sweep (build_rules) y se evaluan con
     # check_invalidation solo contra la barra i. Con el flag OFF, build_rules
@@ -739,17 +834,54 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
         else:
             _ctx = None
             est_htf = est_htf_fn(i)
+
+        # Una capa no disponible no puede reutilizar un trend posiblemente
+        # antiguo para confirmar ni invalidar. El escenario queda suspendido.
+        if est_htf_ctx_fn is not None and _ctx is not None and htf is not None:
+            layer = _ctx.get(htf) or {}
+            if not layer.get("available", False):
+                _record_suspension(audit, state, obj, i, f"{str(htf).lower()}_unavailable")
+                continue
+
+        # La paciencia se decide por eventos: toda vela cerrada evalúa primero
+        # la estructura congelada. No se borra un escenario sano por edad.
+        if state.phase != "IDLE":
+            _rule = _check_and_apply_invalidation(state, obj, i)
+            if _rule is None:
+                _rule = _legacy_timeout_rule(state, cfg, i)
+                if _rule is not None:
+                    _invalidate_expediente(state.expediente, i, obj.meta.get("time"), _rule.descr)
+            if _rule is not None:
+                state.note("INVALIDATED", i, _rule.kind)
+                _record_invalidation(audit, state, obj, i, _rule)
+                if state.expediente is not None:
+                    expedientes.append(state.expediente)
+                state.reset()
+                continue
         htf_trend = str(est_htf.get("trend", "RANGING"))
         bias = htf_trend if htf_trend in ("BULLISH", "BEARISH") else "RANGING"
         if bias == "RANGING":
-            state.reset()
+            if state.phase != "IDLE":
+                _record_suspension(audit, state, obj, i, "htf_ranging_or_unavailable")
             continue
 
         # Direccion objetivo segun sesgo (a-favor o contratendencia)
         target = _direction_from_bias(bias, cfg.counter_trend)
         if target == 0:
-            state.reset()
+            if state.phase != "IDLE":
+                _record_suspension(audit, state, obj, i, "target_unavailable")
             continue
+
+        # Un cambio direccional confirmado en la capa que alimenta la
+        # secuencia invalida antes de consultar gates secundarios incompletos.
+        if state.phase != "IDLE" and state.direction != target:
+            _rule = _context_invalidation_rule("DIRECTION_FLIP", "la dirección objetivo cambió")
+            _invalidate_expediente(state.expediente, i, obj.meta.get("time"), _rule.descr)
+            state.note("INVALIDATED", i, _rule.kind)
+            _record_invalidation(audit, state, obj, i, _rule)
+            if state.expediente is not None:
+                expedientes.append(state.expediente)
+            state.reset()
 
         # BRECHA A1 (Opción B, filtro suave): la dirección objetivo debe
         # alinearse con la cascada top-down D1->H4->H1 del MultiTFContext
@@ -764,16 +896,21 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 _ctx, target, counter_trend=cfg.counter_trend, require_pd=False,
             )
             if not _ok:
-                # Veta la dirección que choca con la cascada y reinicia la
-                # secuencia (no cambia la lógica interna del SETUP).
+                # Datos ausentes/neutros suspenden la espera. Solo una capa
+                # direccional que se opone de forma observada mata el setup.
                 state.htf_aligned = False
                 state.htf_reason = _reason
-                state.reset()
+                if state.phase != "IDLE" and _context_proves_opposition(_ctx, target, cfg):
+                    _rule = _context_invalidation_rule("TOPDOWN_VETO", str(_reason))
+                    _invalidate_expediente(state.expediente, i, obj.meta.get("time"), _rule.descr)
+                    state.note("INVALIDATED", i, _rule.kind)
+                    _record_invalidation(audit, state, obj, i, _rule)
+                    if state.expediente is not None:
+                        expedientes.append(state.expediente)
+                    state.reset()
+                elif state.phase != "IDLE":
+                    _record_suspension(audit, state, obj, i, str(_reason))
                 continue
-
-        # Si la secuencia en curso es de distinta direccion, reinicia
-        if state.phase != "IDLE" and state.direction != target:
-            state.reset()
 
         # Memoria de zona: recordar la ULTIMA vela con FVG/OB entre el sweep y
         # el BOS (el FVG/OB NO esta en la vela del BOS). Se congela en BOS_DONE
@@ -844,7 +981,9 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                     direction=target,
                     sweep_idx=i,
                     sweep_time=obj.meta.get("time"),
-                    ltf_df=(ltf_df_or_objs if isinstance(ltf_df_or_objs, pd.DataFrame) else None),
+                    ltf_df=(invalidation_ltf_df if invalidation_ltf_df is not None else
+                            ltf_df_or_objs if isinstance(ltf_df_or_objs, pd.DataFrame) else
+                            _invalidation_frame_from_objects(objs, i)),
                     htf_df=None,
                     htf=htf,
                     cfg=cfg,
@@ -855,11 +994,6 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                     )
                 phase_seen["SWEEP"] += 1
         elif state.phase == "SWEEP_DONE":
-            if i - state.sweep_idx > cfg.displace_gap:
-                if _check_and_apply_invalidation(state, obj, i):
-                    expedientes.append(state.expediente)  # type: ignore[arg-type]
-                state.reset()
-                continue
             if (not cfg.require_displacement) or _has_displacement(obj, target, est_htf):
                 state.phase = "DISPLACE_DONE"
                 state.displace_idx = i
@@ -876,11 +1010,6 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                                     event_id=_disp_obj.id, parent_event_id=state.sweep_id)
                 phase_seen["DISPLACE"] += 1
         elif state.phase == "DISPLACE_DONE":
-            if i - state.displace_idx > _effective_bos_gap(cfg, i, obj, est_htf, objs, bos_table):
-                if _check_and_apply_invalidation(state, obj, i):
-                    expedientes.append(state.expediente)  # type: ignore[arg-type]
-                state.reset()
-                continue
             if _has_bos(obj, est_htf, target, cfg.counter_trend):
                 # Secuencia canonica BOS->CHOCH->BOS (libro 02 §3.1): en
                 # contratendencia exigir CHOCH (giro) ANTES del BOS de confirmacion.
@@ -984,11 +1113,6 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                                     event_id=_bos_obj.id, parent_event_id=state.displace_id)
                 phase_seen["BOS"] += 1
         elif state.phase == "BOS_DONE":
-            if i - state.bos_idx > _effective_bos_gap(cfg, i, obj, est_htf, objs, bos_table):
-                if _check_and_apply_invalidation(state, obj, i):
-                    expedientes.append(state.expediente)  # type: ignore[arg-type]
-                state.reset()
-                continue
             # ENTRADA = el precio RETORNA al cuadro trazado (mitigation), no FVG instantaneo.
             if _touches_zone(obj, state.zone_high, state.zone_low):
                 # SENAL: la secuencia completa ocurrio en orden y el precio
@@ -1080,6 +1204,8 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 state.note("ENTRY", i)
                 phase_seen["ENTRY"] += 1
                 state.reset()  # una secuencia por senal
+    if not single_step:
+        _record_pending_end(audit, state, objs, n - 1)
     return signals, phase_seen, expedientes, state
 
 
@@ -1087,7 +1213,8 @@ def run_sequence(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 htf_poi_fn=None, ltf_tf: str = "M15", bos_table: dict | None = None,
                 htf_pd_index=None, ltf_map: dict | None = None,
                 htf: str | None = None,
-                est_htf_ctx_fn=None, exec_frames: dict | None = None):
+                est_htf_ctx_fn=None, exec_frames: dict | None = None,
+                audit: dict | None = None):
     """Wrapper 2-tuple (signals, phase_seen) - firma legacy preservada.
 
     El motor autónomo usa _run_sequence_impl (4-tuple); aquí se descartan los
@@ -1097,7 +1224,7 @@ def run_sequence(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
         ltf_df_or_objs, est_htf_fn, cfg,
         htf_poi_fn=htf_poi_fn, ltf_tf=ltf_tf, bos_table=bos_table,
         htf_pd_index=htf_pd_index, ltf_map=ltf_map,
-        htf=htf, est_htf_ctx_fn=est_htf_ctx_fn, exec_frames=exec_frames,
+        htf=htf, est_htf_ctx_fn=est_htf_ctx_fn, exec_frames=exec_frames, audit=audit,
     )
     return s, p
 
@@ -1108,7 +1235,7 @@ def run_sequence_traced(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                         htf: str | None = None,
                         est_htf_ctx_fn=None, exec_frames: dict | None = None,
                         initial_state=None, start_i: int = 0,
-                        copy_objs: bool = True):
+                        copy_objs: bool = True, audit: dict | None = None):
     """B1: (signals, phase_seen, expedientes, state) - trazabilidad + estado.
 
     Devuelve el SequenceState final para persistencia (HYP-002 M3). El llamador
@@ -1118,14 +1245,16 @@ def run_sequence_traced(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
     garantizando una sola implementación de la máquina de estados.
     """
     # Conversion inicial: DataFrame -> MarketObject[] (si no vino ya como objetos).
+    source_ltf_df = ltf_df_or_objs if isinstance(ltf_df_or_objs, pd.DataFrame) else None
     if isinstance(ltf_df_or_objs, pd.DataFrame):
         objs = _candle_objects(ltf_df_or_objs, ltf_tf)
     else:
         objs = list(ltf_df_or_objs) if copy_objs else ltf_df_or_objs
     runner = SequenceRunner(
-        objs, est_htf_ctx_fn, cfg, ltf_tf=ltf_tf, htf=htf,
+        objs, est_htf_ctx_fn, cfg, est_htf_fn=est_htf_fn, ltf_tf=ltf_tf, htf=htf,
         htf_poi_fn=htf_poi_fn, bos_table=bos_table, htf_pd_index=htf_pd_index,
-        ltf_map=ltf_map, exec_frames=exec_frames, initial_state=initial_state)
+        ltf_map=ltf_map, exec_frames=exec_frames, initial_state=initial_state, audit=audit,
+        invalidation_ltf_df=source_ltf_df)
     return runner.run_all(start_i=start_i)
 
 
@@ -1144,10 +1273,12 @@ class SequenceRunner:
 
     def __init__(self, objs, est_htf_ctx_fn, cfg, ltf_tf="M15", htf=None,
                  htf_poi_fn=None, bos_table=None, htf_pd_index=None,
-                 ltf_map=None, exec_frames=None, initial_state=None):
+                 ltf_map=None, exec_frames=None, initial_state=None, est_htf_fn=None,
+                 audit: dict | None = None, invalidation_ltf_df=None):
         # objs es la lista COMPLETA de MarketObject[] (índices absolutos).
         self.objs = list(objs) if not isinstance(objs, list) else objs
         self.est_htf_ctx_fn = est_htf_ctx_fn
+        self.est_htf_fn = est_htf_fn
         self.cfg = cfg
         self.ltf_tf = ltf_tf
         self.htf = htf
@@ -1160,6 +1291,9 @@ class SequenceRunner:
         self.signals: list[dict] = []
         self.phase_seen = {"SWEEP": 0, "DISPLACE": 0, "BOS": 0, "ENTRY": 0}
         self.expedientes: list = []
+        self.audit = audit
+        self.invalidation_ltf_df = invalidation_ltf_df
+        _init_sequence_audit(self.audit, self.cfg)
 
     def step(self, i: int):
         """Procesa SOLO la transición de la vela i (índice absoluto).
@@ -1168,13 +1302,14 @@ class SequenceRunner:
         El estado se acumula entre llamadas (initial_state=self.state).
         """
         sigs, phase, exp, state = _run_sequence_impl(
-            self.objs, None, self.cfg,
+            self.objs, self.est_htf_fn, self.cfg,
             htf_poi_fn=self.htf_poi_fn, ltf_tf=self.ltf_tf,
             bos_table=self.bos_table, htf_pd_index=self.htf_pd_index,
             ltf_map=self.ltf_map, htf=self.htf,
             est_htf_ctx_fn=self.est_htf_ctx_fn, exec_frames=self.exec_frames,
             initial_state=self.state, start_i=i - 1, single_step=True,
-            copy_objs=False,
+            copy_objs=False, audit=self.audit,
+            invalidation_ltf_df=self.invalidation_ltf_df,
         )
         self.state = state
         self.signals.extend(sigs)
@@ -1189,4 +1324,6 @@ class SequenceRunner:
         end = n if end_i is None else min(end_i, n)
         for i in range(start_i + 1, end):
             self.step(i)
+        if end == n:
+            _record_pending_end(self.audit, self.state, self.objs, end - 1)
         return self.signals, self.phase_seen, self.expedientes, self.state

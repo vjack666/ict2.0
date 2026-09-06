@@ -1,0 +1,1156 @@
+{
+  "aggregated_status": "BLOCKED",
+  "backtest_linkage": {
+    "artifact_kind": "canonical_replay_signal_trade_link",
+    "outcome_not_copied_into_features": true,
+    "trade_key": "signal_index"
+  },
+  "checksum": "a798d77dd6e8b30f298c15caeaebff3a20ed5c20b651df5c17b50764991615c0",
+  "contract_version": "EPISODES_FUNNEL_V1",
+  "episodes": [],
+  "full_prefix": {
+    "prefix_matches_full": false
+  },
+  "gates": {
+    "E0": "BLOCKED",
+    "E1": "PASS",
+    "causal_full_vs_prefix": "BLOCKED"
+  },
+  "generator_commit": "125013a",
+  "policy": {
+    "can_trade": false,
+    "promotion_authorized": false
+  },
+  "provenance": {},
+  "records": [],
+  "rejections": [],
+  "sequence_audit": {
+    "invalidations": [
+      {
+        "bar_idx": 39,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 38,
+        "time": "2022-01-03 02:45:00+00:00"
+      },
+      {
+        "bar_idx": 103,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12976",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 102,
+        "time": "2022-01-03 18:45:00+00:00"
+      },
+      {
+        "bar_idx": 143,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13002",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 142,
+        "time": "2022-01-04 04:45:00+00:00"
+      },
+      {
+        "bar_idx": 256,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13183",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 255,
+        "time": "2022-01-05 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 270,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13395",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 269,
+        "time": "2022-01-05 12:30:00+00:00"
+      },
+      {
+        "bar_idx": 355,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13197",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 354,
+        "time": "2022-01-06 09:45:00+00:00"
+      },
+      {
+        "bar_idx": 358,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 357,
+        "time": "2022-01-06 10:30:00+00:00"
+      },
+      {
+        "bar_idx": 377,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 376,
+        "time": "2022-01-06 15:15:00+00:00"
+      },
+      {
+        "bar_idx": 398,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 396,
+        "time": "2022-01-06 20:30:00+00:00"
+      },
+      {
+        "bar_idx": 412,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13003",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 411,
+        "time": "2022-01-07 00:00:00+00:00"
+      },
+      {
+        "bar_idx": 421,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13033",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 420,
+        "time": "2022-01-07 02:15:00+00:00"
+      },
+      {
+        "bar_idx": 423,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13039",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 422,
+        "time": "2022-01-07 02:45:00+00:00"
+      },
+      {
+        "bar_idx": 447,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 446,
+        "time": "2022-01-07 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 467,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 466,
+        "time": "2022-01-07 13:45:00+00:00"
+      },
+      {
+        "bar_idx": 509,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 507,
+        "time": "2022-01-10 00:15:00+00:00"
+      },
+      {
+        "bar_idx": 525,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13325",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 524,
+        "time": "2022-01-10 04:15:00+00:00"
+      },
+      {
+        "bar_idx": 538,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13226",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 537,
+        "time": "2022-01-10 07:30:00+00:00"
+      },
+      {
+        "bar_idx": 612,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 611,
+        "time": "2022-01-11 02:00:00+00:00"
+      },
+      {
+        "bar_idx": 615,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 613,
+        "time": "2022-01-11 02:45:00+00:00"
+      },
+      {
+        "bar_idx": 624,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13446",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 623,
+        "time": "2022-01-11 05:00:00+00:00"
+      },
+      {
+        "bar_idx": 640,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13287",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 639,
+        "time": "2022-01-11 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 690,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 688,
+        "time": "2022-01-11 21:30:00+00:00"
+      },
+      {
+        "bar_idx": 734,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13666",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 733,
+        "time": "2022-01-12 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 910,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14623",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 909,
+        "time": "2022-01-14 04:30:00+00:00"
+      },
+      {
+        "bar_idx": 1016,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14148",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1015,
+        "time": "2022-01-17 07:00:00+00:00"
+      },
+      {
+        "bar_idx": 1065,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14081",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1064,
+        "time": "2022-01-17 19:15:00+00:00"
+      },
+      {
+        "bar_idx": 1118,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13812",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1117,
+        "time": "2022-01-18 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 1147,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13253",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1146,
+        "time": "2022-01-18 15:45:00+00:00"
+      },
+      {
+        "bar_idx": 1204,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1202,
+        "time": "2022-01-19 06:00:00+00:00"
+      },
+      {
+        "bar_idx": 1220,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13506",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1219,
+        "time": "2022-01-19 10:00:00+00:00"
+      },
+      {
+        "bar_idx": 1387,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1386,
+        "time": "2022-01-21 03:45:00+00:00"
+      },
+      {
+        "bar_idx": 1482,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1480,
+        "time": "2022-01-24 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 1484,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1482,
+        "time": "2022-01-24 04:00:00+00:00"
+      },
+      {
+        "bar_idx": 1505,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1504,
+        "time": "2022-01-24 09:15:00+00:00"
+      },
+      {
+        "bar_idx": 1603,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1602,
+        "time": "2022-01-25 09:45:00+00:00"
+      },
+      {
+        "bar_idx": 1677,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1675,
+        "time": "2022-01-26 04:15:00+00:00"
+      },
+      {
+        "bar_idx": 1689,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1688,
+        "time": "2022-01-26 07:15:00+00:00"
+      },
+      {
+        "bar_idx": 1695,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1694,
+        "time": "2022-01-26 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 1765,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1215",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1764,
+        "time": "2022-01-27 02:15:00+00:00"
+      },
+      {
+        "bar_idx": 1800,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1798,
+        "time": "2022-01-27 11:00:00+00:00"
+      },
+      {
+        "bar_idx": 1834,
+        "detail": "precio cierra mas alla del swing opuesto low 1.11418",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1833,
+        "time": "2022-01-27 19:30:00+00:00"
+      },
+      {
+        "bar_idx": 1922,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1920,
+        "time": "2022-01-30 17:30:00+00:00"
+      },
+      {
+        "bar_idx": 1937,
+        "detail": "precio cierra mas alla del swing opuesto high 1.1151",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1936,
+        "time": "2022-01-30 21:15:00+00:00"
+      },
+      {
+        "bar_idx": 1958,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 1956,
+        "time": "2022-01-31 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 1991,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11982",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 1990,
+        "time": "2022-01-31 10:45:00+00:00"
+      },
+      {
+        "bar_idx": 2085,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12633",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2084,
+        "time": "2022-02-01 10:15:00+00:00"
+      },
+      {
+        "bar_idx": 2150,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12745",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2149,
+        "time": "2022-02-02 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 2269,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2267,
+        "time": "2022-02-03 08:15:00+00:00"
+      },
+      {
+        "bar_idx": 2280,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14101",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2279,
+        "time": "2022-02-03 11:00:00+00:00"
+      },
+      {
+        "bar_idx": 2346,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2345,
+        "time": "2022-02-04 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 2359,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14752",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2358,
+        "time": "2022-02-04 06:45:00+00:00"
+      },
+      {
+        "bar_idx": 2402,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2400,
+        "time": "2022-02-06 17:30:00+00:00"
+      },
+      {
+        "bar_idx": 2582,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2580,
+        "time": "2022-02-08 14:30:00+00:00"
+      },
+      {
+        "bar_idx": 2656,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2655,
+        "time": "2022-02-09 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 2675,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2670,
+        "time": "2022-02-09 13:45:00+00:00"
+      },
+      {
+        "bar_idx": 2729,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14286",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2728,
+        "time": "2022-02-10 03:15:00+00:00"
+      },
+      {
+        "bar_idx": 2752,
+        "detail": "precio cierra mas alla del swing opuesto low 1.14324",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2751,
+        "time": "2022-02-10 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 2757,
+        "detail": "precio cierra mas alla del swing opuesto high 1.14098",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2756,
+        "time": "2022-02-10 10:15:00+00:00"
+      },
+      {
+        "bar_idx": 2789,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1407",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2788,
+        "time": "2022-02-10 18:15:00+00:00"
+      },
+      {
+        "bar_idx": 2820,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2819,
+        "time": "2022-02-11 02:00:00+00:00"
+      },
+      {
+        "bar_idx": 2921,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13373",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2920,
+        "time": "2022-02-14 03:15:00+00:00"
+      },
+      {
+        "bar_idx": 2930,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2929,
+        "time": "2022-02-14 05:30:00+00:00"
+      },
+      {
+        "bar_idx": 2934,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 2933,
+        "time": "2022-02-14 06:30:00+00:00"
+      },
+      {
+        "bar_idx": 2996,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13128",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 2995,
+        "time": "2022-02-14 22:00:00+00:00"
+      },
+      {
+        "bar_idx": 3013,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13209",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3011,
+        "time": "2022-02-15 02:15:00+00:00"
+      },
+      {
+        "bar_idx": 3017,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3016,
+        "time": "2022-02-15 03:15:00+00:00"
+      },
+      {
+        "bar_idx": 3018,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13281",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3017,
+        "time": "2022-02-15 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 3177,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3175,
+        "time": "2022-02-16 19:15:00+00:00"
+      },
+      {
+        "bar_idx": 3279,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13613",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3278,
+        "time": "2022-02-17 20:45:00+00:00"
+      },
+      {
+        "bar_idx": 3336,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13408",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3335,
+        "time": "2022-02-18 11:00:00+00:00"
+      },
+      {
+        "bar_idx": 3343,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3342,
+        "time": "2022-02-18 12:45:00+00:00"
+      },
+      {
+        "bar_idx": 3372,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13202",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3371,
+        "time": "2022-02-20 20:00:00+00:00"
+      },
+      {
+        "bar_idx": 3405,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3404,
+        "time": "2022-02-21 04:15:00+00:00"
+      },
+      {
+        "bar_idx": 3527,
+        "detail": "precio cierra mas alla del swing opuesto low 1.13355",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3526,
+        "time": "2022-02-22 10:45:00+00:00"
+      },
+      {
+        "bar_idx": 3541,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3540,
+        "time": "2022-02-22 14:15:00+00:00"
+      },
+      {
+        "bar_idx": 3570,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3568,
+        "time": "2022-02-22 21:30:00+00:00"
+      },
+      {
+        "bar_idx": 3590,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3588,
+        "time": "2022-02-23 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 3592,
+        "detail": "precio cierra mas alla del swing opuesto high 1.13304",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3591,
+        "time": "2022-02-23 03:00:00+00:00"
+      },
+      {
+        "bar_idx": 3641,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3639,
+        "time": "2022-02-23 15:15:00+00:00"
+      },
+      {
+        "bar_idx": 3654,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3652,
+        "time": "2022-02-23 18:30:00+00:00"
+      },
+      {
+        "bar_idx": 3763,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12056",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3762,
+        "time": "2022-02-24 21:45:00+00:00"
+      },
+      {
+        "bar_idx": 3792,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3791,
+        "time": "2022-02-25 05:00:00+00:00"
+      },
+      {
+        "bar_idx": 3913,
+        "detail": "precio cierra mas alla del swing opuesto high 1.12363",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3912,
+        "time": "2022-02-28 11:15:00+00:00"
+      },
+      {
+        "bar_idx": 3961,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 3960,
+        "time": "2022-02-28 23:15:00+00:00"
+      },
+      {
+        "bar_idx": 3984,
+        "detail": "precio cierra mas alla del swing opuesto low 1.12116",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 3983,
+        "time": "2022-03-01 05:00:00+00:00"
+      },
+      {
+        "bar_idx": 4089,
+        "detail": "precio cierra mas alla del swing opuesto high 1.1103",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4088,
+        "time": "2022-03-02 07:15:00+00:00"
+      },
+      {
+        "bar_idx": 4108,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4106,
+        "time": "2022-03-02 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 4168,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10949",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4167,
+        "time": "2022-03-03 03:00:00+00:00"
+      },
+      {
+        "bar_idx": 4261,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10239",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4260,
+        "time": "2022-03-04 02:15:00+00:00"
+      },
+      {
+        "bar_idx": 4326,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09217",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4325,
+        "time": "2022-03-06 18:30:00+00:00"
+      },
+      {
+        "bar_idx": 4351,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4349,
+        "time": "2022-03-07 00:45:00+00:00"
+      },
+      {
+        "bar_idx": 4359,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4357,
+        "time": "2022-03-07 02:45:00+00:00"
+      },
+      {
+        "bar_idx": 4430,
+        "detail": "precio cierra mas alla del swing opuesto high 1.08697",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4429,
+        "time": "2022-03-07 20:30:00+00:00"
+      },
+      {
+        "bar_idx": 4451,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4450,
+        "time": "2022-03-08 01:45:00+00:00"
+      },
+      {
+        "bar_idx": 4455,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4454,
+        "time": "2022-03-08 02:45:00+00:00"
+      },
+      {
+        "bar_idx": 4482,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4480,
+        "time": "2022-03-08 09:30:00+00:00"
+      },
+      {
+        "bar_idx": 4553,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09253",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4552,
+        "time": "2022-03-09 03:15:00+00:00"
+      },
+      {
+        "bar_idx": 4650,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10522",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4649,
+        "time": "2022-03-10 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 4654,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4652,
+        "time": "2022-03-10 04:30:00+00:00"
+      },
+      {
+        "bar_idx": 4779,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09461",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4778,
+        "time": "2022-03-11 11:45:00+00:00"
+      },
+      {
+        "bar_idx": 4813,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4811,
+        "time": "2022-03-13 19:15:00+00:00"
+      },
+      {
+        "bar_idx": 4868,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4867,
+        "time": "2022-03-14 09:00:00+00:00"
+      },
+      {
+        "bar_idx": 4905,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09361",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 4904,
+        "time": "2022-03-14 18:15:00+00:00"
+      },
+      {
+        "bar_idx": 4963,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 4962,
+        "time": "2022-03-15 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 5034,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09709",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5033,
+        "time": "2022-03-16 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 5039,
+        "detail": "precio cierra mas alla del swing opuesto high 1.09705",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5038,
+        "time": "2022-03-16 03:45:00+00:00"
+      },
+      {
+        "bar_idx": 5052,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5051,
+        "time": "2022-03-16 07:00:00+00:00"
+      },
+      {
+        "bar_idx": 5061,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10247",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5060,
+        "time": "2022-03-16 09:15:00+00:00"
+      },
+      {
+        "bar_idx": 5155,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10537",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5154,
+        "time": "2022-03-17 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 5194,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5192,
+        "time": "2022-03-17 18:30:00+00:00"
+      },
+      {
+        "bar_idx": 5217,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5216,
+        "time": "2022-03-18 00:15:00+00:00"
+      },
+      {
+        "bar_idx": 5226,
+        "detail": "precio cierra mas alla del swing opuesto low 1.10818",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5225,
+        "time": "2022-03-18 02:30:00+00:00"
+      },
+      {
+        "bar_idx": 5360,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5358,
+        "time": "2022-03-21 12:00:00+00:00"
+      },
+      {
+        "bar_idx": 5370,
+        "detail": "precio cierra mas alla del swing opuesto low 1.1015",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5369,
+        "time": "2022-03-21 14:30:00+00:00"
+      },
+      {
+        "bar_idx": 5445,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10325",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5444,
+        "time": "2022-03-22 09:15:00+00:00"
+      },
+      {
+        "bar_idx": 5538,
+        "detail": "precio cierra mas alla del swing opuesto low 1.09748",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5537,
+        "time": "2022-03-23 08:30:00+00:00"
+      },
+      {
+        "bar_idx": 5597,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5595,
+        "time": "2022-03-23 23:15:00+00:00"
+      },
+      {
+        "bar_idx": 5614,
+        "detail": "precio cierra mas alla del swing opuesto high 1.0989",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5613,
+        "time": "2022-03-24 03:30:00+00:00"
+      },
+      {
+        "bar_idx": 5766,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 5764,
+        "time": "2022-03-27 18:30:00+00:00"
+      },
+      {
+        "bar_idx": 5901,
+        "detail": "precio cierra mas alla del swing opuesto high 1.1018",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5900,
+        "time": "2022-03-29 05:15:00+00:00"
+      },
+      {
+        "bar_idx": 5966,
+        "detail": "precio cierra mas alla del swing opuesto high 1.10979",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5965,
+        "time": "2022-03-29 21:30:00+00:00"
+      },
+      {
+        "bar_idx": 5972,
+        "detail": "precio cierra mas alla del swing opuesto high 1.11089",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "OPPOSITE_SWING_BREAK",
+        "sweep_idx": 5971,
+        "time": "2022-03-29 23:00:00+00:00"
+      },
+      {
+        "bar_idx": 6011,
+        "detail": "la dirección objetivo cambió",
+        "direction": 1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 6009,
+        "time": "2022-03-30 08:45:00+00:00"
+      },
+      {
+        "bar_idx": 6051,
+        "detail": "la dirección objetivo cambió",
+        "direction": -1,
+        "phase": "SWEEP_DONE",
+        "reason": "DIRECTION_FLIP",
+        "sweep_idx": 6049,
+        "time": "2022-03-30 18:45:00+00:00"
+      }
+    ],
+    "pending_end": [],
+    "policy": {
+      "bos_gap": null,
+      "displace_gap": null,
+      "mode": "EVENT_DRIVEN",
+      "structural_invalidation": true
+    },
+    "schema_version": "1.0",
+    "suspensions": []
+  }
+}

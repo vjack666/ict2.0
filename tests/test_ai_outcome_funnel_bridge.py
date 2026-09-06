@@ -56,6 +56,24 @@ def test_bridge_stays_blocked_without_prefix_proof():
     assert artifact["gates"]["causal_full_vs_prefix"] == "BLOCKED"
 
 
+def test_pending_sequence_is_auditable_but_not_a_training_label():
+    payload = _payload(prefix=True)
+    payload["signals"] = []
+    payload["trades"] = []
+    payload["metadata"]["sequence_audit"] = {
+        "pending_end": [{"phase": "SWEEP_DONE", "waited_bars": 30}],
+        "invalidations": [],
+    }
+    artifact = build_funnel_artifact(payload, generator_commit="a" * 40)
+    assert artifact["aggregated_status"] == "BLOCKED"
+    assert artifact["gates"]["E0"] == "BLOCKED"
+    assert artifact["episodes"] == artifact["records"] == []
+    assert artifact["sequence_audit"] == payload["metadata"]["sequence_audit"]
+    assert artifact["policy"]["can_trade"] is False
+    payload["metadata"]["sequence_audit"]["pending_end"][0]["phase"] = "CHANGED"
+    assert artifact["sequence_audit"]["pending_end"][0]["phase"] == "SWEEP_DONE"
+
+
 def test_bridge_can_namespace_episode_ids_for_partitioned_corpus():
     artifact = build_funnel_artifact(
         _payload(prefix=True), generator_commit="a" * 40, episode_namespace="Y2006_2010"

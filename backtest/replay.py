@@ -472,7 +472,10 @@ def run_visual_replay(
     if config.use_multitf_context:
         replay_kwargs["est_htf_ctx_fn"] = context_at
         est_htf_fn = None
-    signals, phase_seen = run_sequence(main, est_htf_fn, sequence_config, **replay_kwargs)
+    sequence_audit: dict[str, Any] = {}
+    signals, phase_seen = run_sequence(
+        main, est_htf_fn, sequence_config, audit=sequence_audit, **replay_kwargs
+    )
     structure_events = extract_structure_events(main_raw, structure=config.structure)
     trades = _trade_records(signals, featured, config)
     signal_records = _signal_records(
@@ -497,6 +500,7 @@ def run_visual_replay(
             "htf_timeframe": htf,
             "multitf_context": config.use_multitf_context,
             "phase_seen": phase_seen,
+            "sequence_audit": json_safe(sequence_audit),
             "expedientes": sum(1 for signal in signals if signal.get("expediente") is not None),
             "config": json_safe(config.sequence.__dict__),
             "legacy_backtest": False,

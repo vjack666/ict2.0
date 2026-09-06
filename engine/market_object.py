@@ -13,6 +13,16 @@ from enum import Enum
 import uuid
 
 
+def _restored_float(value: object) -> float:
+    """Restore a numeric field serialized as JSON ``null`` for NaN.
+
+    ``to_dict`` intentionally represents non-finite geometry as null.  A
+    pending sequence can legitimately contain such an event, so restoration
+    must preserve that absence instead of failing the whole checkpoint.
+    """
+    return float("nan") if value is None else float(value)
+
+
 class ObjectType(str, Enum):
     BOS = "BOS"
     CHOCH = "CHOCH"
@@ -285,7 +295,8 @@ class MarketObject:
             lifecycle_tf=d.get("lifecycle_tf", ""), observation_tf=d.get("observation_tf", ""),
             execution_tf=d.get("execution_tf", ""), role=Role(d["role"]),
             direction=int(d.get("direction", 0)),
-            zone_high=float(d.get("zone_high", 0.0)), zone_low=float(d.get("zone_low", 0.0)),
+            zone_high=_restored_float(d.get("zone_high", 0.0)),
+            zone_low=_restored_float(d.get("zone_low", 0.0)),
             creation_time=d.get("creation_time"), state=ObjectState(d.get("state", ObjectState.CREATED)),
             meta=meta, parent_object=d.get("parent_object"),
             related_objects=list(d.get("related_objects", [])), quality_score=d.get("quality_score"),

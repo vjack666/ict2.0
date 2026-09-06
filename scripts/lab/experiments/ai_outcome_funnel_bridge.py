@@ -69,7 +69,9 @@ def build_funnel_artifact(
     trades = payload.get("trades")
     if not isinstance(metadata, Mapping) or metadata.get("causal") is not True:
         raise FunnelBridgeError("BACKTEST_CAUSAL_METADATA_MISSING")
-    if not isinstance(signals, list) or not signals:
+    if not isinstance(signals, list) or (
+        not signals and not isinstance(metadata.get("sequence_audit"), Mapping)
+    ):
         raise FunnelBridgeError("BACKTEST_SIGNALS_MISSING")
     if not isinstance(trades, list):
         raise FunnelBridgeError("BACKTEST_TRADES_INVALID")
@@ -143,6 +145,9 @@ def build_funnel_artifact(
         "full_prefix": {"prefix_matches_full": prefix_pass},
         "generator_commit": generator_commit,
         "provenance": deepcopy(dict(metadata.get("provenance") or {})),
+        # Diagnostic lifecycle evidence is not a labelled training episode.
+        "sequence_audit": deepcopy(dict(metadata.get("sequence_audit") or {})),
+        "policy": {"can_trade": False, "promotion_authorized": False},
         "episodes": episodes,
         "records": episodes + rejected,
         "rejections": rejected,

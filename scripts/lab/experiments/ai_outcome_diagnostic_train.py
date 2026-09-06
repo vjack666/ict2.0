@@ -15,6 +15,15 @@ from runtime.ai_learning.diagnostic_training import (
     run_diagnostic_training,
     write_diagnostic_artifact,
 )
+from runtime.ai_learning.outcome_classifier import (
+    FEATURE_NAMES,
+    INTRADAY_FEATURE_PROFILES,
+)
+
+
+# El perfil debe ser explícito: BASELINE conserva los experimentos anteriores,
+# mientras que ICT_ONLY incluye las columnas causales de desplazamiento M15.
+FEATURE_PROFILES = {"BASELINE": FEATURE_NAMES, **INTRADAY_FEATURE_PROFILES}
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -27,6 +36,12 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--learning-rate", type=float, default=0.05)
     parser.add_argument("--l2", type=float, default=1e-4)
     parser.add_argument("--min-class-rows", type=int, default=5)
+    parser.add_argument(
+        "--feature-profile",
+        choices=tuple(FEATURE_PROFILES),
+        default="BASELINE",
+        help="perfil causal entregado al clasificador; ICT_ONLY incluye displacement M15",
+    )
     return parser
 
 
@@ -41,7 +56,9 @@ def main(argv: list[str] | None = None) -> int:
             learning_rate=args.learning_rate,
             l2=args.l2,
             min_class_rows=args.min_class_rows,
+            feature_names=FEATURE_PROFILES[args.feature_profile],
         )
+        payload["requested_feature_profile"] = args.feature_profile
         output = write_diagnostic_artifact(payload, args.output)
     except DiagnosticTrainingError as exc:
         print(json.dumps({"status": "BLOCKED", "reason": str(exc)}, ensure_ascii=False))

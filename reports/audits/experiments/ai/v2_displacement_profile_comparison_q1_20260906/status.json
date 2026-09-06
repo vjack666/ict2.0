@@ -1,0 +1,13 @@
+{
+  "can_trade": false,
+  "completed_profiles": [
+    "BASELINE",
+    "ICT_ONLY"
+  ],
+  "current_step": null,
+  "mode": "DIAGNOSTIC_ONLY",
+  "state": "FINALIZADO",
+  "summary": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\v2_displacement_profile_comparison_q1_20260906\\summary.json",
+  "total_profiles": 2,
+  "updated_at": "2026-09-06T13:47:47.877739+00:00"
+}

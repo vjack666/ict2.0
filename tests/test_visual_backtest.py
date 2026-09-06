@@ -36,6 +36,7 @@ def test_new_replay_emits_valid_schema_without_old_backtest_imports():
     assert payload["metadata"]["legacy_backtest"] is False
     assert "signals" in payload
     assert payload["metadata"]["promotion_authorized"] is False
+    assert payload["metadata"]["outcome"]["horizon_bars"] == 200
 
     for path in ("backtest/__init__.py", "backtest/replay.py", "backtest/schema.py"):
         tree = ast.parse(open(path, encoding="utf-8").read())

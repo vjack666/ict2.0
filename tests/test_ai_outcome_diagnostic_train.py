@@ -15,6 +15,22 @@ from runtime.ai_learning.diagnostic_calibration import (
     DiagnosticCalibrationError,
     calibrate_diagnostic_artifact,
 )
+from scripts.lab.experiments.ai_outcome_diagnostic_train import (
+    FEATURE_PROFILES,
+    _parser,
+)
+from runtime.ai_learning.outcome_classifier import INTRADAY_ICT_ONLY_FEATURE_NAMES
+
+
+def test_cli_exposes_ict_only_profile_with_displacement_features():
+    args = _parser().parse_args([
+        "--jsonl", "causal.jsonl", "--output", "artifact.json",
+        "--feature-profile", "ICT_ONLY",
+    ])
+
+    assert args.feature_profile == "ICT_ONLY"
+    assert FEATURE_PROFILES[args.feature_profile] == INTRADAY_ICT_ONLY_FEATURE_NAMES
+    assert "ict_m15_displacement_bullish" in FEATURE_PROFILES[args.feature_profile]
 
 
 def _row(index: int, *, label: str | None = None) -> dict:

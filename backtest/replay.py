@@ -501,6 +501,14 @@ def run_visual_replay(
             "multitf_context": config.use_multitf_context,
             "phase_seen": phase_seen,
             "sequence_audit": json_safe(sequence_audit),
+            # The materializer may use future bars only up to this declared
+            # horizon. Without it an OPEN trade cannot be distinguished from
+            # a truncated replay.
+            "outcome": {
+                "horizon_bars": config.outcome.horizon_bars,
+                "tie_policy": config.outcome.tie_policy,
+                "sl_buffer": config.outcome.sl_buffer,
+            },
             "expedientes": sum(1 for signal in signals if signal.get("expediente") is not None),
             "config": json_safe(config.sequence.__dict__),
             "legacy_backtest": False,

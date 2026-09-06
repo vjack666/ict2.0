@@ -1,0 +1,21 @@
+{
+  "status": "BLOCKED",
+  "training_eligible": false,
+  "rows": 18,
+  "horizon_bars": 6,
+  "dataset_hash": "5fd497598af2b993783ee9b56fd352ec5f1dd6a3989d2a655bd85d6134108ddc",
+  "diagnostics": [
+    "FUNNEL_STATUS_BLOCKED",
+    "FUNNEL_CAUSAL_GATES_NOT_PASS",
+    "FUNNEL_FULL_PREFIX_NOT_PROVEN",
+    "FUNNEL_PROVENANCE_MISSING",
+    "A7_EVIDENCE_MISSING",
+    "RESEARCH_GATE_MISSING"
+  ],
+  "labels": {
+    "continuation": 0,
+    "reversal": 4,
+    "failure": 14
+  },
+  "can_trade": false
+}

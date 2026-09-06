@@ -1,0 +1,82 @@
+{
+  "can_trade": false,
+  "diagnostic_only": true,
+  "input": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\materialized\\v2\\v2_engine_2022_q1_current_train.jsonl",
+  "iterations": 300,
+  "kind": "DISPLACEMENT_PROFILE_COMPARISON",
+  "oos_accuracy_delta_ict_minus_baseline": 0.00658978583196046,
+  "results": {
+    "BASELINE": {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\v2_displacement_profile_comparison_q1_20260906\\baseline.json",
+      "feature_names": [
+        "direction",
+        "sequence_depth",
+        "context_bucket=ALIGNED",
+        "context_bucket=NEUTRAL",
+        "context_bucket=AGAINST",
+        "h1_alignment=ALIGNED",
+        "h1_alignment=NEUTRAL",
+        "h1_alignment=AGAINST",
+        "d1_bias=BULLISH",
+        "d1_bias=BEARISH",
+        "d1_bias=UNKNOWN",
+        "d1_bias=MIXED",
+        "h4_location=DISCOUNT",
+        "h4_location=PREMIUM",
+        "h4_location=EQUILIBRIUM",
+        "h4_location=MID",
+        "h4_location=UNKNOWN",
+        "sequence_has=LIQUIDITY_POOL",
+        "sequence_has=SWEEP",
+        "sequence_has=DISPLACEMENT",
+        "sequence_has=STRUCTURE",
+        "sequence_has=OB",
+        "sequence_has=FVG",
+        "sequence_has=CONFLUENCE"
+      ],
+      "fit_executed": true,
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "test_oos": {
+        "accuracy": 0.4818780889621087,
+        "class_counts": {
+          "continuation": 588,
+          "failure": 44,
+          "reversal": 582
+        },
+        "log_loss": 0.8379720801536794,
+        "rows": 1214
+      }
+    },
+    "ICT_ONLY": {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\v2_displacement_profile_comparison_q1_20260906\\ict_only.json",
+      "feature_names": [
+        "direction",
+        "sequence_depth",
+        "ict_m15_bos_bullish",
+        "ict_m15_bos_bearish",
+        "ict_m15_choch_bullish",
+        "ict_m15_choch_bearish",
+        "ict_m15_displacement_bullish",
+        "ict_m15_displacement_bearish",
+        "ict_m15_fvg_bullish",
+        "ict_m15_fvg_bearish",
+        "ict_m15_sweep_up",
+        "ict_m15_sweep_down"
+      ],
+      "fit_executed": true,
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "test_oos": {
+        "accuracy": 0.48846787479406917,
+        "class_counts": {
+          "continuation": 588,
+          "failure": 44,
+          "reversal": 582
+        },
+        "log_loss": 0.8394972347857387,
+        "rows": 1214
+      }
+    }
+  },
+  "seed": 17,
+  "target": "label_end_6"
+}

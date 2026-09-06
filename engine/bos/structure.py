@@ -198,7 +198,7 @@ def _track_structure(
     config: StructureConfig,
     is_choch: bool = False,
     inval_level: pd.Series | None = None,
-) -> tuple[pd.Series, pd.Series, pd.Series]:
+) -> tuple[pd.Series, pd.Series, pd.Series, pd.Series, pd.Series]:
     n = len(d)
     status = pd.Series(["none"] * n, index=d.index, dtype=object)
     age = pd.Series([0] * n, index=d.index, dtype=int)
@@ -214,6 +214,12 @@ def _track_structure(
     bos_level = d["bos_level"].to_numpy() if "bos_level" in d.columns else np.full(n, np.nan)
     last_dir_series = pd.Series(0, index=d.index, dtype=int)
     last_level_series = pd.Series(np.nan, index=d.index, dtype=float)
+    # Estado point-in-time: a diferencia de ``status``, nunca se reescribe al
+    # invalidar o reemplazar un evento en una vela posterior. Los snapshots
+    # usan estas columnas para no dejar que el futuro cambie el contexto ya
+    # observado.
+    active_dir_series = pd.Series(0, index=d.index, dtype=int)
+    active_source_series = pd.Series(-1, index=d.index, dtype=int)
 
     for i in range(1, n):
         dr = int(dir_col[i])
@@ -258,6 +264,9 @@ def _track_structure(
                 status.iloc[i] = "active"
         last_dir_series.iat[i] = last_dir
         last_level_series.iat[i] = last_level
+        if active:
+            active_dir_series.iat[i] = last_dir
+            active_source_series.iat[i] = last_idx
 
     if not is_choch:
         d["_last_bos_dir"] = last_dir_series
@@ -265,7 +274,7 @@ def _track_structure(
     else:
         d["_last_choch_dir"] = last_dir_series
         d["_last_choch_level"] = last_level_series
-    return status, age, discard_reason
+    return status, age, discard_reason, active_dir_series, active_source_series
 
 
 def _derive_trend(d: pd.DataFrame) -> pd.Series:
@@ -510,7 +519,13 @@ def detect_market_structure(
         np.where(d["bos_dir"] == -1, sl.shift(1), np.nan),
     )
 
-    d["bos_status"], _, bos_discard = _track_structure(d, config, is_choch=False)
+    (
+        d["bos_status"],
+        _,
+        bos_discard,
+        d["bos_active_dir"],
+        d["bos_active_source_bar"],
+    ) = _track_structure(d, config, is_choch=False)
     # CHoCH real: rompe el swing que produjo el ULTIMO BOS, en direccion
     # OPUESTA a ese BOS. No es una copia de BOS.
     # CORRECCION (verificacion 2026-08-06): el CHOCH es un evento de GIRO
@@ -536,7 +551,13 @@ def detect_market_structure(
     # que ROMPIO (choch_proj_level). Se pasa a _track_structure para que el
     # CHOCH muera cuando el precio cruza ese nivel (no vive de por vida).
     d["choch_proj_level"] = d["_last_bos_level"]
-    d["choch_status"], _, choch_discard = _track_structure(
+    (
+        d["choch_status"],
+        _,
+        choch_discard,
+        d["choch_active_dir"],
+        d["choch_active_source_bar"],
+    ) = _track_structure(
         d, config, is_choch=True, inval_level=d["choch_proj_level"]
     )
     # T9.2 — Niveles de PROYECCION e INVALIDACION (geometria pura, sin

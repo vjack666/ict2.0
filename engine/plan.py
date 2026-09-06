@@ -93,6 +93,33 @@ def _bias_from_frame(df: pd.DataFrame, t: Any) -> str:
     # para no romper frames sinteticos/feeds externos (regresion cero).
     if "bos_dir" not in sub.columns or "bos_status" not in sub.columns:
         return _trend_of(sub.iloc[-1])
+    # Los estados ``*_active_dir`` se calculan secuencialmente por el motor.
+    # No son el resultado retrospectivo del ciclo de vida del evento: una
+    # invalidación posterior no modifica el valor que tenía una barra pasada.
+    # Preferirlos evita que el contexto H4/H1/D1 cambie cuando el replay carga
+    # velas posteriores al momento de decisión.
+    if {"bos_active_dir", "choch_active_dir"}.issubset(sub.columns):
+        last = sub.iloc[-1]
+        choch_dir = int(last.get("choch_active_dir", 0) or 0)
+        choch_source = int(last.get("choch_active_source_bar", -1) or -1)
+        if choch_dir and 0 <= choch_source < len(sub):
+            source = sub.iloc[choch_source]
+            if (
+                "bos_real" not in sub.columns
+                or "choch_proj_level" not in source.columns
+                or _bos_real_behind(
+                    sub, choch_source, choch_dir,
+                    float(source.get("choch_proj_level", np.nan)),
+                )
+            ):
+                return "BULLISH" if choch_dir > 0 else "BEARISH"
+        bos_dir = int(last.get("bos_active_dir", 0) or 0)
+        bos_source = int(last.get("bos_active_source_bar", -1) or -1)
+        if bos_dir and 0 <= bos_source < len(sub):
+            source = sub.iloc[bos_source]
+            if "bos_real" not in sub.columns or bool(source.get("bos_real", False)):
+                return "BULLISH" if bos_dir > 0 else "BEARISH"
+        return "RANGING"
     # T9.5 (tesis §3/§7.0): el sesgo HTF solo cuenta BOS REALES (bos_real),
     # o sea BOS con displacement (empujon decidido) sobre swing confirmado.
     # Un BOS sin displacement es ruido de rotura tibia que el humano no cuenta.
@@ -357,7 +384,7 @@ def ltf_structure_at(
             )
             fr = ms_res.frame
             last = fr.iloc[-1]
-            trend = _bias_from_frame(win, win["time"].iloc[-1])
+            trend = _bias_from_frame(fr, fr["time"].iloc[-1])
             bos_dir = int(last.get("bos_dir", 0) or 0)
             # EXP-012 (bonus de autoridad, NO veta el sesgo canonico): cuantos
             # CHOCH en la ventana cumplen la regla del humano (empuje >=2 HH/LL).

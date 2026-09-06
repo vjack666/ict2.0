@@ -13,6 +13,9 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parents[3]
+OOS_END = "2022-06-30T23:45:00+00:00"
+# Cola exclusiva de resolución: las señales posteriores a OOS_END se excluyen.
+DATA_END_WITH_RESOLUTION_BUFFER = "2022-07-08"
 
 
 def _write(path: Path, body: dict) -> None:
@@ -33,7 +36,7 @@ def _run(output_dir: Path, name: str, *, multitf: bool) -> Path:
     command = [
         sys.executable, "scripts/export_visual_backtest.py", "--symbol", "EURUSD",
         "--timeframe", "M15", "--tfs", "M15", "M5", "M1",
-        "--data-dir", "data/raw/EURUSD", "--start", "2022-04-01", "--end", "2022-06-30",
+        "--data-dir", "data/raw/EURUSD", "--start", "2022-04-01", "--end", DATA_END_WITH_RESOLUTION_BUFFER,
         "--horizon-bars", "200", "--output", str(output),
     ]
     if multitf:
@@ -46,16 +49,24 @@ def _run(output_dir: Path, name: str, *, multitf: bool) -> Path:
 
 def _metrics(path: Path) -> dict:
     payload = json.loads(path.read_text(encoding="utf-8"))
-    trades = payload["trades"]
+    signals = [
+        signal for signal in payload["signals"]
+        if str(signal.get("decision_time", "")) <= OOS_END
+    ]
+    trades = [
+        trade for trade in payload["trades"]
+        if str(trade.get("entry_time", "")) <= OOS_END
+    ]
     resolved = [trade for trade in trades if trade.get("outcome") in {"TP", "SL"}]
     return {
-        "signals": len(payload["signals"]),
+        "signals": len(signals),
         "trades": len(trades),
         "resolved": len(resolved),
         "tp": sum(trade.get("outcome") == "TP" for trade in resolved),
         "sl": sum(trade.get("outcome") == "SL" for trade in resolved),
         "open_or_unresolved": len(trades) - len(resolved),
-        "phase_seen": payload["metadata"]["phase_seen"],
+        "resolution_buffer_end": DATA_END_WITH_RESOLUTION_BUFFER,
+        "excluded_post_oos_trades": len(payload["trades"]) - len(trades),
         "direction_flip_invalidations": sum(
             row.get("reason") == "DIRECTION_FLIP"
             for row in payload["metadata"]["sequence_audit"].get("invalidations", [])
@@ -64,7 +75,7 @@ def _metrics(path: Path) -> dict:
 
 
 def main() -> int:
-    output_dir = ROOT / "reports/audits/experiments/ai/v2_context_oos_q2_20220906"
+    output_dir = ROOT / "reports/audits/experiments/ai/v2_context_oos_q2_causal_buffered_20260906"
     if output_dir.exists():
         raise SystemExit(f"output directory already exists: {output_dir}")
     output_dir.mkdir(parents=True)
@@ -80,6 +91,8 @@ def main() -> int:
             "can_trade": False,
             "diagnostic_only": True,
             "horizon_bars": 200,
+            "oos_end": OOS_END,
+            "data_end_with_resolution_buffer": DATA_END_WITH_RESOLUTION_BUFFER,
             "h4_only": _metrics(h4),
             "full_context": _metrics(full),
             "note": "Resolved TP/SL only; OPEN rows are not interpreted as wins or losses.",

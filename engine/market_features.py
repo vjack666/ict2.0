@@ -66,6 +66,13 @@ def build_features(
     )
     d["bos_status"] = ms["bos_status"].where(ms["bos_dir"] != 0, "none").values
     d["choch_status"] = ms["choch_status"].values
+    # Estado incremental point-in-time para snapshots HTF. Las columnas de
+    # estado del evento pueden cambiar tras una invalidación futura; estas
+    # conservan qué estructura seguía vigente en cada vela cerrada.
+    d["bos_active_dir"] = ms["bos_active_dir"].values
+    d["bos_active_source_bar"] = ms["bos_active_source_bar"].values
+    d["choch_active_dir"] = ms["choch_active_dir"].values
+    d["choch_active_source_bar"] = ms["choch_active_source_bar"].values
     d["trend"] = ms["trend"].values
     d["swing_high"] = ms["swing_high"].values
     d["swing_low"] = ms["swing_low"].values

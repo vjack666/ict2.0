@@ -1,3 +1,7 @@
+# Estado sustituido
+
+Esta corrida se conserva como trazabilidad, pero no es evidencia de edge: terminaba en `2022-06-30 00:00 UTC` y dejó resultados sin H200 completo. La evaluación válida y causal está en `2026-09-06_CONTEXT_OOS_Q2_CAUSAL_CORRECTION.md`.
+
 # OOS Q2 2022 — H4 solo frente a contexto completo
 
 Estado: `REVIEW_INSUFFICIENT_RESOLVED_OOS`. Diagnóstico local; `can_trade=false`.

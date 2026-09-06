@@ -1,0 +1,12 @@
+{
+  "can_trade": false,
+  "completed": [
+    "H4_ONLY",
+    "FULL_CONTEXT_RECOVERED"
+  ],
+  "current_step": null,
+  "diagnostic_only": true,
+  "note": "Original wrapper interrupted before full context; recovered output included.",
+  "state": "FINALIZADO",
+  "summary": "reports\\audits\\experiments\\ai\\v2_context_oos_q2_20220906\\summary.json"
+}

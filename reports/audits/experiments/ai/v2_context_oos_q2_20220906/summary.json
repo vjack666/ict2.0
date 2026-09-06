@@ -1,0 +1,58 @@
+{
+  "can_trade": false,
+  "conclusion": "Full context preserved all required anchors and reduced candidate count, but zero TP/SL-resolved full-context trades means no edge comparison is possible yet. OPEN is not scored as success or failure.",
+  "diagnostic_only": true,
+  "full_context": {
+    "anchor_issues": [],
+    "anchor_layers": [
+      "D1",
+      "H1",
+      "H4",
+      "M15"
+    ],
+    "direction_flip_invalidations": 0,
+    "open_or_unresolved": 2,
+    "outcomes": {
+      "OPEN": 2
+    },
+    "phase_seen": {
+      "BOS": 2,
+      "DISPLACE": 3,
+      "ENTRY": 2,
+      "SWEEP": 7
+    },
+    "resolved": 0,
+    "signals": 2,
+    "sl": 0,
+    "tp": 0,
+    "trades": 2
+  },
+  "h4_only": {
+    "anchor_issues": [],
+    "anchor_layers": [
+      "H4",
+      "M15"
+    ],
+    "direction_flip_invalidations": 23,
+    "open_or_unresolved": 4,
+    "outcomes": {
+      "OPEN": 4,
+      "SL": 5,
+      "TP": 2
+    },
+    "phase_seen": {
+      "BOS": 11,
+      "DISPLACE": 22,
+      "ENTRY": 11,
+      "SWEEP": 270
+    },
+    "resolved": 7,
+    "signals": 11,
+    "sl": 5,
+    "tp": 2,
+    "trades": 11
+  },
+  "horizon_bars": 200,
+  "scope": "Q2_2022_OOS_AFTER_Q1_CONTEXT_CHANGE",
+  "status": "REVIEW_INSUFFICIENT_RESOLVED_OOS"
+}

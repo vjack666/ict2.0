@@ -51,6 +51,24 @@ def test_event_driven_wait_accepts_displacement_after_legacy_six_bars():
     assert audit["invalidations"] == []
 
 
+def test_sweep_freezes_closed_h4_reference_and_snapshot_round_trips():
+    def h4(i):
+        return {
+            "tf": "H4", "available": True, "trend": "BULLISH",
+            "asof_time": "2026-01-01T00:00:00Z", "asof_bar": 7,
+        }
+
+    _, _, _, state = run_sequence_traced(
+        _frame(displacement_at=9), h4, SequenceConfig(), audit={}, htf="H4",
+    )
+
+    anchor = state.context_anchor
+    assert anchor["anchor_htf"] == "H4"
+    assert anchor["layers"]["H4"]["asof_bar"] == 7
+    assert anchor["layers"]["H4"]["asof_time"] == "2026-01-01T00:00:00Z"
+    assert SequenceState.from_snapshot(state.to_snapshot()).context_anchor == anchor
+
+
 def test_event_driven_wait_accepts_bos_after_an_extended_confirmation_gap():
     frame = _frame(n=18, displacement_at=3)
     frame.loc[12, "bos_dir"] = 1

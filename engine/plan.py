@@ -147,6 +147,7 @@ def snapshot_tf(ms: dict[str, pd.DataFrame], tf: str, t: Any,
     df = ms.get(tf)
     if df is None or len(df) == 0:
         return {"tf": tf, "available": False, "trend": "RANGING"}
+    asof_bar: int | None = None
     if tf in ("M1", "M5", "M15"):
         # LTF/exec: ultima barra con time <= t (esa barra ya cerro en el loop)
         times = pd.to_datetime(df["time"], utc=True, errors="coerce")
@@ -154,12 +155,16 @@ def snapshot_tf(ms: dict[str, pd.DataFrame], tf: str, t: Any,
         prior = df.index[times <= tt]
         if len(prior) == 0:
             return {"tf": tf, "available": False, "trend": "RANGING"}
-        row = df.iloc[int(prior[-1])]
+        asof_bar = int(prior[-1])
+        row = df.iloc[asof_bar]
     else:
         if closed_idx is not None and 0 <= closed_idx < len(df):
-            row = df.iloc[int(closed_idx)]
+            asof_bar = int(closed_idx)
+            row = df.iloc[asof_bar]
         else:
             row = _closed_row_at_time(df, t)
+            if row is not None:
+                asof_bar = int(df.index.get_loc(row.name))
     if row is None:
         return {"tf": tf, "available": False, "trend": "RANGING"}
     fvg_state = str(row.get("fvg_state", "NONE") or "NONE")
@@ -180,6 +185,10 @@ def snapshot_tf(ms: dict[str, pd.DataFrame], tf: str, t: Any,
         "fvg_state": fvg_state,
         "ob_dir": ob_dir,
         "time": str(row.get("time", t)),
+        # Identidad point-in-time de la barra realmente disponible.  Estos
+        # campos permiten congelar y auditar el contexto HTF de un setup.
+        "asof_time": str(row.get("time", t)),
+        "asof_bar": asof_bar,
     }
 
 

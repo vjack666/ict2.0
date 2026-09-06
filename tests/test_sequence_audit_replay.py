@@ -1,7 +1,7 @@
 """Consumer integration: lifecycle evidence travels without becoming labels."""
 import pandas as pd
 
-from backtest.replay import ReplayConfig, run_visual_replay
+from backtest.replay import ReplayConfig, _signal_records, run_visual_replay
 from scripts.lab.experiments.ai_outcome_funnel_bridge import build_funnel_artifact
 
 
@@ -23,3 +23,19 @@ def test_replay_transports_engine_audit_to_empty_blocked_funnel():
     assert funnel["episodes"] == []
     assert funnel["aggregated_status"] == "BLOCKED"
     assert funnel["policy"]["can_trade"] is False
+
+
+def test_signal_projection_preserves_frozen_h4_anchor():
+    projected = _signal_records([{
+        "time": "2022-01-03T00:00:00Z",
+        "direction": 1,
+        "event_ids": {"SWEEP": "sweep-1"},
+        "context_anchor": {
+            "anchor_time": "2022-01-03T00:00:00Z",
+            "anchor_htf": "H4",
+            "layers": {"H4": {"asof_time": "2022-01-02T20:00:00Z", "asof_bar": 5}},
+        },
+    }])
+
+    assert projected[0]["context_anchor"]["anchor_htf"] == "H4"
+    assert projected[0]["context_anchor"]["layers"]["H4"]["asof_bar"] == 5

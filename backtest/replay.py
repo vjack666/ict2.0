@@ -394,6 +394,9 @@ def _signal_records(
             "direction": direction,
             "status": "ACCEPTED",
             "features_at_t": features_at_t,
+            # Referencia congelada al sweep: permite revisar qué H4 estaba
+            # disponible entonces, sin confundirla con el contexto al cierre.
+            "context_anchor": json_safe(signal.get("context_anchor") or {}),
             "lineage": {str(role): str(value) for role, value in event_ids.items() if value},
             "event_objects": json_safe(signal.get("event_objects") or {}),
             "source": "engine.sequence.run_sequence",
@@ -457,6 +460,10 @@ def run_visual_replay(
             return {"trend": "RANGING", "sweep_up": False, "sweep_down": False}
         row = htf_frame.iloc[htf_index]
         return {
+            "tf": htf,
+            "available": True,
+            "asof_time": str(row.get("time")),
+            "asof_bar": int(htf_index),
             "trend": str(row.get("trend", "RANGING")),
             "sweep_up": bool(row.get("liquidity_sweep_up", False)),
             "sweep_down": bool(row.get("liquidity_sweep_down", False)),

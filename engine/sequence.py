@@ -111,6 +111,9 @@ class SequenceState:
     zone_authority: Any = None     # Fase C (C2/C3): ZoneAuthority anotada (peso de confianza)
     htf_aligned: bool = True       # A1 (Brecha A1): ¿la cascada D1->H4->H1 permite la dir?
     htf_reason: str = "ok"         # A1: motivo del filtro top-down (observabilidad)
+    # Foto closed-only tomada cuando nace el sweep. El contexto posterior puede
+    # invalidar por estructura HTF real, pero no reescribe esta referencia.
+    context_anchor: dict = field(default_factory=dict)
     poi_present: Any = None          # Brecha A (Fase C): ¿hay POI HTF anclado en dir? (bonus, no gate)
     expediente: Any = None          # B5: Expediente por señal (Ley 8/7/4)
     invalidation_rules: list = field(default_factory=list)  # B3: reglas congeladas al nacimiento
@@ -142,6 +145,7 @@ class SequenceState:
         self.zone_authority = None
         self.htf_aligned = True
         self.htf_reason = "ok"
+        self.context_anchor = {}
         self.poi_present = None
         self.expediente = None
         self.invalidation_rules = []
@@ -182,6 +186,7 @@ class SequenceState:
             "zone_authority": _safe(self.zone_authority),
             "htf_aligned": bool(self.htf_aligned),
             "htf_reason": self.htf_reason,
+            "context_anchor": _safe(self.context_anchor),
             "poi_present": self.poi_present,
             "invalidation_rules": [_rule_to_dict(r) for r in self.invalidation_rules],
             "history": [(str(t), int(i), str(e)) for t, i, e in self.history],
@@ -224,6 +229,7 @@ class SequenceState:
         st.zone_authority = data.get("zone_authority")
         st.htf_aligned = bool(data.get("htf_aligned", True))
         st.htf_reason = data.get("htf_reason", "ok")
+        st.context_anchor = dict(data.get("context_anchor") or {})
         st.poi_present = data.get("poi_present")
         st.invalidation_rules = [_rule_from_dict(r) for r in data.get("invalidation_rules", [])]
         st.history = [(t, int(i), e) for t, i, e in data.get("history", [])]
@@ -602,6 +608,38 @@ def _context_proves_opposition(context, target: int, cfg: SequenceConfig) -> boo
     )
 
 
+def _freeze_context_anchor(context: dict | None, htf: str | None,
+                           est_htf: dict | None, decision_time: Any) -> dict:
+    """Conserva la referencia top-down disponible al nacer un setup.
+
+    No es un cache para decisiones futuras: es evidencia de lo que el motor
+    conocía al confirmar el sweep. Las capas posteriores siguen evaluándose
+    closed-only para detectar una invalidación HTF real.
+    """
+    selected = ("D1", "H4", "H1") if context is not None else (str(htf or "H4"),)
+    layers: dict[str, dict] = {}
+    for tf in selected:
+        raw = ((context or {}).get(tf) or {}) if context is not None else (est_htf or {})
+        if not raw:
+            continue
+        layers[tf] = {
+            "tf": str(raw.get("tf", tf)),
+            "available": bool(raw.get("available", True)),
+            "asof_time": str(raw.get("asof_time", raw.get("time", ""))),
+            "asof_bar": raw.get("asof_bar"),
+            "trend": str(raw.get("trend", "RANGING")),
+            "bos_dir": int(raw.get("bos_dir", 0) or 0),
+            "sweep_up": bool(raw.get("sweep_up", False)),
+            "sweep_down": bool(raw.get("sweep_down", False)),
+            "pd_side": str(raw.get("pd_side", "UNKNOWN")),
+        }
+    return {
+        "anchor_time": str(decision_time),
+        "anchor_htf": str(htf or ""),
+        "layers": layers,
+    }
+
+
 def _invalidation_frame_from_objects(objs, upto_idx: int) -> pd.DataFrame:
     """Materializa solo el prefijo OHLC cerrado al nacer un sweep.
 
@@ -635,6 +673,12 @@ def _init_sequence_audit(audit: dict | None, cfg: SequenceConfig) -> None:
     audit.setdefault("invalidations", [])
     audit.setdefault("suspensions", [])
     audit.setdefault("pending_end", [])
+    audit.setdefault("context_anchors", [])
+
+
+def _record_context_anchor(audit: dict | None, state: "SequenceState") -> None:
+    if audit is not None:
+        audit["context_anchors"].append(_safe(state.context_anchor))
 
 
 def _record_invalidation(audit: dict | None, state: "SequenceState", obj: MarketObject,
@@ -949,6 +993,10 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 state.phase = "SWEEP_DONE"
                 state.direction = target
                 state.sweep_idx = i
+                state.context_anchor = _freeze_context_anchor(
+                    _ctx, htf, est_htf, obj.meta.get("time")
+                )
+                _record_context_anchor(audit, state)
                 state.note("SWEEP", i)
                 # B5: Expediente nace con el sweep (Ley 7 unicidad por id hash).
                 # Fase 5/6 (Arq A): guarda el id del evento SWEEP para enlazar hijos.
@@ -1164,6 +1212,7 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                     "poi_present": _poi_present,
                     "htf_aligned": state.htf_aligned,
                     "htf_reason": state.htf_reason,
+                    "context_anchor": _safe(state.context_anchor),
                     # Fase 5/6 (Arq A): ids de eventos + niveles derivables (aditivo).
                     "event_ids": {
                         "LIQUIDITY": state.liquidity_id,

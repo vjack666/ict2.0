@@ -1,0 +1,23 @@
+{
+  "can_trade": false,
+  "checks": {
+    "h4_anchor_before_or_at_sweep": true,
+    "loaded_htf": "H4",
+    "phase_seen": {
+      "BOS": 19,
+      "DISPLACE": 27,
+      "ENTRY": 18,
+      "SWEEP": 237
+    },
+    "sequence_audit_context_anchors": 237,
+    "signals": 18,
+    "signals_with_valid_closed_h4_anchor": 18,
+    "sweep_before_or_at_decision": true
+  },
+  "conclusion": "H4 is frozen at sweep as historical reference; later closed H4 context may only support a real HTF invalidation, never rewrite the anchor.",
+  "diagnostic_only": true,
+  "input": "reports\\audits\\experiments\\ai\\v2_h4_context_anchor_q1_backtest.json",
+  "issues": [],
+  "scope": "Q1_2022_EURUSD_M15_REPLAY_H4_CONTEXT_ANCHOR",
+  "status": "PASS"
+}

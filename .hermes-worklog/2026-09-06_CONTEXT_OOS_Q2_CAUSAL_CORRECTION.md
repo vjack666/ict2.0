@@ -23,3 +23,6 @@ Los dos registros del 2022-06-29 quedaron separados por 8h45: 01:00 UTC terminó
 
 ## Artefactos anteriores
 `v2_context_oos_q2_20220906` queda invalidado para métricas de resultado: carecía de la cola de resolución y se produjo antes de la corrección point-in-time. Se conserva para trazabilidad, no como evidencia de edge.
+
+## Ampliación Q2--Q4
+La matriz causal consolidada termina BLOCKED_INSUFFICIENT_RESOLVED_SUPPORT: 7 trades resueltos full-context, por debajo de 30; no hay materialización ni entrenamiento.

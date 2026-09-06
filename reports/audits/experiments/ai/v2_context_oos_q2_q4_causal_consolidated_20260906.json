@@ -1,0 +1,74 @@
+{
+  "status": "BLOCKED_INSUFFICIENT_RESOLVED_SUPPORT",
+  "can_trade": false,
+  "diagnostic_only": true,
+  "scope": "EURUSD_M15_Q2_Q4_2022_H200",
+  "full_context": {
+    "signals": 13,
+    "trades": 13,
+    "resolved": 7,
+    "tp": 2,
+    "sl": 5,
+    "open_or_unresolved": 6,
+    "resolved_win_rate": 0.2857142857142857
+  },
+  "h4_only": {
+    "signals": null
+  },
+  "gate": {
+    "minimum_resolved_per_profile": 30,
+    "passed": false,
+    "reason": "Only 7 resolved full-context trades; no stable advantage may be inferred or materialized."
+  },
+  "by_quarter": {
+    "Q2": {
+      "tp": 1,
+      "sl": 3,
+      "open": 2
+    },
+    "Q3": {
+      "tp": 1,
+      "sl": 1,
+      "open": 0
+    },
+    "Q4": {
+      "tp": 0,
+      "sl": 1,
+      "open": 4
+    }
+  },
+  "by_direction": {
+    "bearish": {
+      "tp": 2,
+      "sl": 2,
+      "open": 2
+    },
+    "bullish": {
+      "tp": 0,
+      "sl": 3,
+      "open": 4
+    }
+  },
+  "by_session": {
+    "ASIA": {
+      "tp": 1,
+      "sl": 3,
+      "open": 1
+    },
+    "LONDON": {
+      "tp": 1,
+      "sl": 1,
+      "open": 2
+    },
+    "NEW_YORK": {
+      "tp": 0,
+      "sl": 1,
+      "open": 2
+    },
+    "OFF_HOURS": {
+      "tp": 0,
+      "sl": 0,
+      "open": 1
+    }
+  }
+}

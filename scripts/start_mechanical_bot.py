@@ -14,6 +14,10 @@ from pathlib import Path
 CANONICAL_AUTHORITY = False
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PID_FILE = ROOT / "reports" / "mechanical_bot" / "dashboard.pid"
+# The same explicitly selected terminal that supplies the daily EURUSD feed.
+# Passing it to the adapter prevents MetaTrader5 from silently attaching to a
+# different installed terminal/account.
+DEFAULT_TERMINAL_PATH = Path(r"C:\Program Files\FundedNext MT5 Terminal\terminal64.exe")
 
 
 def pid_is_running(pid: int) -> bool:
@@ -59,6 +63,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", default=8780, type=int)
     parser.add_argument("--pid-file", type=Path, default=DEFAULT_PID_FILE)
+    parser.add_argument("--terminal-path", type=Path, default=DEFAULT_TERMINAL_PATH,
+                        help="Terminal MT5 que debe usarse para el dashboard y la cuenta detectada.")
     parser.add_argument("--open-browser", action="store_true")
     parser.add_argument("--execution-enabled", action="store_true", help="Permite al adaptador enviar órdenes solo después de pulsar Encender bot.")
     args = parser.parse_args(argv)
@@ -79,7 +85,8 @@ def main(argv: list[str] | None = None) -> int:
     adapter = None
     try:
         from mechanical_bot.mt5_adapter import MT5Adapter
-        adapter = MT5Adapter(execution_enabled=args.execution_enabled)
+        terminal_path = str(args.terminal_path) if args.terminal_path.is_file() else None
+        adapter = MT5Adapter(terminal_path=terminal_path, execution_enabled=args.execution_enabled)
         adapter.connect()
     except Exception as exc:
         print(f"MT5 no disponible para el dashboard: {exc}")

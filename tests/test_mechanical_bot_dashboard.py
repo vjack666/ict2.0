@@ -8,7 +8,7 @@ from pathlib import Path
 
 from scripts.mechanical_bot_dashboard import create_server
 from scripts import start_mechanical_bot
-from scripts.start_mechanical_bot import acquire_pid, release_pid
+from scripts.start_mechanical_bot import DEFAULT_TERMINAL_PATH, acquire_pid, release_pid
 
 
 class FakeService:
@@ -103,3 +103,7 @@ def test_launcher_does_not_start_a_second_dashboard(tmp_path: Path, monkeypatch)
     pid_file = tmp_path / "dashboard.pid"
     monkeypatch.setattr(start_mechanical_bot, "acquire_pid", lambda _path: False)
     assert start_mechanical_bot.main(["--pid-file", str(pid_file)]) == 0
+
+
+def test_launcher_selects_an_explicit_mt5_terminal_by_default():
+    assert DEFAULT_TERMINAL_PATH.name.lower() == "terminal64.exe"

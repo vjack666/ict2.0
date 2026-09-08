@@ -59,7 +59,8 @@ def main():
             raise RuntimeError("El terminal seleccionado no existe; no se permite fallback")
         import MetaTrader5
         mt5 = LockedMT5(MetaTrader5)
-        adapter = MT5Adapter(terminal_path=args.terminal_path, execution_enabled=args.execution_enabled, mt5=mt5)
+        adapter = MT5Adapter(terminal_path=args.terminal_path, execution_enabled=args.execution_enabled, mt5=mt5,
+                             server_utc_offset_seconds=int(args.server_utc_offset_hours * 3600))
         adapter.connect()
         if args.demo_test:
             if not args.execution_enabled:

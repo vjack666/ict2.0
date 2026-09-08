@@ -27,7 +27,7 @@ class AccountStatus:
 class MT5Adapter:
     def __init__(self, *, terminal_path: str | None = None, execution_enabled: bool = False, mt5: Any | None = None,
                  blackbox: BlackBoxJournal | None = None, demo_account_login: int | None = None,
-                 demo_account_server: str | None = None):
+                 demo_account_server: str | None = None, server_utc_offset_seconds: int = 0):
         if mt5 is None:
             try:
                 import MetaTrader5 as mt5_module
@@ -39,6 +39,7 @@ class MT5Adapter:
         # Never interpret a string such as "false" as permission to trade.
         self.execution_enabled = execution_enabled is True
         self._lock = RLock()
+        self.server_utc_offset_seconds = int(server_utc_offset_seconds)
         self._blackbox = blackbox
         self._demo_account_login: int | None = None
         self._demo_account_server: str | None = None
@@ -98,7 +99,7 @@ class MT5Adapter:
             # MT5 exposes Unix seconds on live ticks.  Test doubles without a
             # timestamp remain usable, but a real stale terminal fails closed.
             if hasattr(tick, "time"):
-                self._assert_recent_epoch(getattr(tick, "time"), 30, "MT5 tick")
+                self._assert_recent_epoch(getattr(tick, "time"), 30, "MT5 tick", self.server_utc_offset_seconds)
             return float(tick.ask if side == "BUY" else tick.bid)
 
     def closed_m15_candles(self, symbol: str, count: int = 80) -> list[Candle]:
@@ -107,7 +108,7 @@ class MT5Adapter:
             if rates is None or len(rates) < count:
                 raise RuntimeError(f"MT5 closed M15 candles unavailable for {symbol}")
             try:
-                self._assert_recent_epoch(rates[-1]["time"], 1_800, "MT5 closed M15 candle")
+                self._assert_recent_epoch(rates[-1]["time"], 1_800, "MT5 closed M15 candle", self.server_utc_offset_seconds)
             except (IndexError, KeyError, TypeError):
                 # MT5 native structured arrays always have ``time``.  Keep
                 # lightweight test fixtures compatible while live feeds retain
@@ -217,12 +218,12 @@ class MT5Adapter:
             return f"last_error unavailable: {exc}"
 
     @staticmethod
-    def _assert_recent_epoch(value: Any, max_age_seconds: int, source: str) -> None:
+    def _assert_recent_epoch(value: Any, max_age_seconds: int, source: str, server_utc_offset_seconds: int = 0) -> None:
         try:
             timestamp = float(value)
         except (TypeError, ValueError) as exc:
             raise RuntimeError(f"{source} timestamp is invalid") from exc
-        age = (datetime.now(timezone.utc) - datetime.fromtimestamp(timestamp, tz=timezone.utc)).total_seconds()
+        age = (datetime.now(timezone.utc) - datetime.fromtimestamp(timestamp - server_utc_offset_seconds, tz=timezone.utc)).total_seconds()
         if age < -5 or age > max_age_seconds:
             raise RuntimeError(f"{source} is stale or from the future (age_seconds={age:.1f})")
 

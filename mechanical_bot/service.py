@@ -7,13 +7,17 @@ but can never create an order.
 from __future__ import annotations
 
 import json
+import traceback
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import datetime, time, timezone
 from pathlib import Path
 from threading import Event, RLock, Thread, current_thread
 from typing import Any
+from uuid import uuid4
+from zoneinfo import ZoneInfo
 
-from mechanical_bot.core import BotConfig, BotState, Cycle, MechanicalBot, Snapshot, stochastic_14_3_3
+from mechanical_bot.blackbox import BlackBoxJournal, BlackBoxWriteError, canonical_hash
+from mechanical_bot.core import BotConfig, BotState, Cycle, MechanicalBot, Snapshot, SnapshotRejected, stochastic_14_3_3
 from mechanical_bot.mt5_adapter import MT5Adapter
 
 
@@ -21,17 +25,23 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SNAPSHOT = ROOT / "runtime" / "mechanical_bot" / "latest_snapshot.json"
 DEFAULT_STATE = ROOT / ".hermes-state" / "mechanical_bot_state.json"
 DEFAULT_LOG = ROOT / ".hermes-state" / "mechanical_bot_events.jsonl"
+DEFAULT_BLACKBOX = ROOT / ".hermes-state" / "mechanical_bot_blackbox.jsonl"
 
 
 class MechanicalBotService:
     """One local bot service. Its only side effect is through its adapter."""
     def __init__(self, config: BotConfig | None = None, *, adapter: MT5Adapter | None = None,
-                 snapshot_path: Path = DEFAULT_SNAPSHOT, state_path: Path = DEFAULT_STATE, log_path: Path = DEFAULT_LOG):
+                 snapshot_path: Path = DEFAULT_SNAPSHOT, state_path: Path = DEFAULT_STATE, log_path: Path = DEFAULT_LOG,
+                 blackbox_path: Path = DEFAULT_BLACKBOX, entry_sessions_enabled: bool = False):
         # ``enabled`` means that a human may arm this separate controller.  It
         # does not start a cycle, connect MT5, or send an order by itself.
         self.bot = MechanicalBot(config or BotConfig(enabled=True))
         self.adapter = adapter
         self.snapshot_path, self.state_path, self.log_path = snapshot_path, state_path, log_path
+        self.blackbox = BlackBoxJournal(blackbox_path)
+        self.entry_sessions_enabled = entry_sessions_enabled is True
+        if self.adapter is not None and hasattr(self.adapter, "set_blackbox"):
+            self.adapter.set_blackbox(self.blackbox)
         self._runner: Thread | None = None
         self._runner_stop = Event()
         self._runner_lock = RLock()
@@ -53,7 +63,9 @@ class MechanicalBotService:
                     account = {"status": "UNAVAILABLE", "error": str(exc)}
             cycle = None if self.bot.cycle is None else _json_safe(asdict(self.bot.cycle))
             return {"state": self.bot.state.value, "symbol": self.bot.config.symbol, "execution_enabled": bool(getattr(self.adapter, "execution_enabled", False)),
-                    "account": account, "cycle": cycle, "m5_m1": "DIAGNOSTIC_ONLY_NO_VETO"}
+                    "account": account, "cycle": cycle, "m5_m1": "DIAGNOSTIC_ONLY_NO_VETO",
+                    "session_schedule": self._session_schedule(), "demo_wait_enabled": bool(getattr(self, "demo_wait_enabled", False)),
+                    "black_box": self.blackbox.summary()}
 
     def analyze(self) -> dict[str, Any]:
         raw = self._read_snapshot()
@@ -108,20 +120,45 @@ class MechanicalBotService:
                 raise RuntimeError("MT5 adapter is not configured")
             if self.bot.state in {BotState.OFF, BotState.ERROR, BotState.CLOSING}:
                 return self.status()
-            snapshot = self._load_snapshot()
+            raw = self._read_snapshot()
+            snapshot = self._snapshot_from_raw(raw)
             candles = self.adapter.closed_m15_candles(self.bot.config.symbol)
             stochastic = stochastic_14_3_3(candles, self.bot.config)
-            account = self.adapter.account_status()
             now = datetime.now(timezone.utc)
+            correlation_id = str(uuid4())
+            action = None
+            abstention: str | None = None
             if self.bot.cycle is None:
-                price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
-                action = self.bot.decide_entry(snapshot, stochastic, price, account.balance, now) if snapshot else None
+                if self.entry_sessions_enabled and not any(item["active"] for item in self._session_schedule()["sessions"]):
+                    self.bot.state = BotState.WAIT_SIGNAL
+                    abstention = "OUTSIDE_ENTRY_WINDOW"
+                elif snapshot is None:
+                    self.bot.state = BotState.WAIT_SIGNAL
+                    abstention = "WAIT_SNAPSHOT"
+                else:
+                    account = self.adapter.account_status()
+                    price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
+                    try:
+                        action = self.bot.decide_entry(snapshot, stochastic, price, account.balance, now)
+                    except SnapshotRejected as exc:
+                        self.bot.state = BotState.WAIT_SIGNAL
+                        abstention = f"SNAPSHOT_REJECTED:{exc}"
+                    if action is None and abstention is None:
+                        if stochastic is None:
+                            abstention = "WAIT_STOCHASTIC_NO_READING"
+                        elif self.bot.last_closed_signal_time is not None and _as_utc(snapshot.asof_time) <= _as_utc(self.bot.last_closed_signal_time):
+                            abstention = "REUSED_CLOSED_SIGNAL"
+                        else:
+                            abstention = "WAIT_STOCHASTIC_CROSS"
             else:
                 price = self.adapter.tick_price(self.bot.config.symbol, self.bot.cycle.direction)
                 action = self.bot.monitor(price, self.adapter.positions())
+                if action is None:
+                    abstention = "MONITOR_NO_ACTION" if self.bot.state != BotState.ERROR else "OWN_POSITIONS_MISSING"
+            self._record_decision(correlation_id, raw, snapshot, stochastic, action, abstention)
             if action is None:
                 return self.status()
-            return self._execute(action.kind, action.reason, action=action)
+            return self._execute(action.kind, action.reason, action=action, correlation_id=correlation_id)
 
     def start_runner(self, interval_seconds: float = 15.0) -> None:
         """Run bounded MT5 ticks only after explicit arming and execution enablement.
@@ -155,12 +192,12 @@ class MechanicalBotService:
                 with self._state_lock:
                     self.bot.state = BotState.ERROR
                     self._persist_state()
-                    self._record("RUNNER_ERROR", error=str(exc))
+                    self._record("RUNNER_ERROR", error=str(exc), traceback=traceback.format_exc())
                 return
             if self._runner_stop.wait(self._runner_interval_seconds):
                 return
 
-    def _execute(self, kind: str, reason: str, *, action: Any | None = None) -> dict[str, Any]:
+    def _execute(self, kind: str, reason: str, *, action: Any | None = None, correlation_id: str | None = None) -> dict[str, Any]:
         with self._state_lock:
             if self.adapter is None:
                 raise RuntimeError("MT5 adapter is not configured")
@@ -173,24 +210,69 @@ class MechanicalBotService:
                                     if position.symbol == self.bot.config.symbol and position.magic_number == self.bot.config.magic_number]
                     if not before_close:
                         raise RuntimeError("close reconciliation failed: no matching bot positions")
-                results = self.adapter.execute(action, symbol=self.bot.config.symbol, magic_number=self.bot.config.magic_number)
+                results = self.adapter.execute(action, symbol=self.bot.config.symbol, magic_number=self.bot.config.magic_number,
+                                               correlation_id=correlation_id)
                 if kind == "CLOSE_ALL":
                     remaining = [position for position in self.adapter.positions()
                                  if position.symbol == self.bot.config.symbol and position.magic_number == self.bot.config.magic_number]
                     if remaining:
                         raise RuntimeError("close reconciliation failed: matching bot positions remain")
-            except Exception:
+            except Exception as exc:
                 # An uncertain broker response must never be retried as an OPEN.
                 # Preserve the cycle for audit, but require explicit reconciliation.
                 self.bot.state = BotState.ERROR
                 self._persist_state()
-                self._record("EXECUTION_ERROR", reason=reason)
+                self._record("EXECUTION_ERROR", reason=reason, correlation_id=correlation_id, error=str(exc))
                 raise
             if kind == "CLOSE_ALL":
                 self.bot.complete_close()
             self._persist_state()
-            self._record(kind, reason=reason, results=results)
+            self._record(kind, reason=reason, results=results, correlation_id=correlation_id)
             return self.status()
+
+    def _record_decision(self, correlation_id: str, raw: dict[str, Any] | None, snapshot: Snapshot | None,
+                         stochastic: Any, action: Any, abstention: str | None) -> None:
+        """Persist every tick before a potential broker request.
+
+        Failure is intentionally terminal for this tick.  An action cannot
+        reach the adapter without a durable decision record and correlation ID.
+        """
+        try:
+            self.blackbox.record(
+                "DECISION",
+                correlation_id=correlation_id,
+                raw_snapshot_hash=None if raw is None else canonical_hash(raw),
+                raw_snapshot_hash_scope="full_canonical_json",
+                snapshot=None if snapshot is None else _json_safe(asdict(snapshot)),
+                stochastic=None if stochastic is None else _json_safe(asdict(stochastic)),
+                state_before=self.bot.state.value,
+                action=None if action is None else _json_safe(asdict(action)),
+                reason=action.reason if action is not None else abstention,
+            )
+        except BlackBoxWriteError as exc:
+            self.bot.state = BotState.ERROR
+            self._persist_state()
+            raise RuntimeError("mechanical bot stopped: black-box decision persistence failed") from exc
+
+    def _session_schedule(self) -> dict[str, Any]:
+        """Expose London and New York 08:00--12:00 in both requested clocks."""
+        guayaquil = ZoneInfo("America/Guayaquil")
+        now = datetime.now(guayaquil)
+        definitions = (("LONDON", ZoneInfo("Europe/London")), ("NEW_YORK", ZoneInfo("America/New_York")))
+        sessions = []
+        for name, zone in definitions:
+            local_today = now.astimezone(zone).date()
+            start = datetime.combine(local_today, time(8, 0), tzinfo=zone)
+            end = datetime.combine(local_today, time(12, 0), tzinfo=zone)
+            sessions.append({
+                "name": name,
+                "weekdays_only": True,
+                "active": now.weekday() < 5 and start <= now.astimezone(zone) < end,
+                "start_local": start.isoformat(), "end_local": end.isoformat(),
+                "start_guayaquil": start.astimezone(guayaquil).isoformat(), "end_guayaquil": end.astimezone(guayaquil).isoformat(),
+                "start_utc": start.astimezone(timezone.utc).isoformat(), "end_utc": end.astimezone(timezone.utc).isoformat(),
+            })
+        return {"enabled": self.entry_sessions_enabled, "sessions": sessions}
 
     def _load_snapshot(self) -> Snapshot | None:
         return self._snapshot_from_raw(self._read_snapshot())
@@ -268,6 +350,10 @@ def _json_safe(value: Any) -> Any:
     if isinstance(value, (list, tuple)):
         return [_json_safe(item) for item in value]
     return value
+
+
+def _as_utc(value: datetime) -> datetime:
+    return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
 
 
 __all__ = ["MechanicalBotService"]

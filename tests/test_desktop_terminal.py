@@ -83,6 +83,19 @@ def test_disabled_actions_and_missing_producer_fail_closed():
         runtime.action("arm")
 
 
+def test_demo_wait_arms_without_fabricating_snapshot():
+    class Service:
+        demo_wait_enabled = True
+        def status(self):
+            return {"execution_enabled": True}
+        def arm(self):
+            return {"state": "ARMED", "snapshot": None}
+    runtime = TerminalRuntime(service=Service())
+    result = runtime.action("arm")
+    assert result["state"] == "ARMED"
+    assert result["snapshot"] is None
+
+
 def test_http_origin_token_and_path_boundary(tmp_path):
     (tmp_path / "index.html").write_text("<h1>ICT</h1>")
     runtime = TerminalRuntime()

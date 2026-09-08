@@ -38,6 +38,24 @@ No existe SL/TP por precio inventado. Los cierres son agregados por beneficio o 
 
 ## Verificación
 
+### Prueba DEMO y caja negra — 2026-09-07
+
+Autorización del usuario: dejar bot encendido para probar y registrar decisiones,
+envíos y errores. La prueba se fija a login/servidor DEMO y bloquea el envío si
+cambia la cuenta o el tipo. El armado puede esperar un snapshot aún ausente;
+esto no elimina confirmación, probabilidad >=0.70, frescura ni cruce M15.
+
+Nuevas entradas solo lunes a viernes en [08:00,12:00) Europe/London o
+America/New_York, conforme a las ventanas documentadas del bot mensual.
+ZoneInfo resuelve DST, sin importar código del backtest. La interfaz muestra
+America/Guayaquil; trazas conservan UTC. Gestión de ciclos y cierres continúa
+fuera de sesión. Para 2026-09-08 equivalen a 02:00–06:00 y 07:00–11:00 Guayaquil.
+
+Caja negra durable: decisión y abstención, snapshot/huella, estocástico,
+correlación de acción y petición previa a order_send, resultado MT5 completo,
+last_error y excepción cuando corresponde. Fallo de escritura previo impide
+envío. Ninguna prueba técnica necesita enviar una operación al broker.
+
 ### Integración del terminal local — 2026-09-07
 
 El terminal de escritorio conserva esta estrategia y añade controles de servicio

@@ -272,7 +272,7 @@ class TerminalRuntime:
             status = self.service.status()
             if action in {"arm", "close-cycle"} and not status.get("execution_enabled"):
                 raise RuntimeError("EXECUTION_DISABLED")
-            if action == "arm":
+            if action == "arm" and not getattr(self.service, "demo_wait_enabled", False):
                 # Validate the real producer input, not an engine UI projection.
                 from mechanical_bot.core import validate_snapshot
                 snapshot = self.service._load_snapshot()

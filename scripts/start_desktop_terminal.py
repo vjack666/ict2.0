@@ -32,6 +32,7 @@ def main():
     parser.add_argument("--server-utc-offset-hours", type=float, default=3,
                         help="Desfase explícito del reloj MT5 observado: +3 h el 2026-09-07; ajustar si cambia broker/DST")
     parser.add_argument("--execution-enabled", action="store_true", help="Permite ejecución mecánica después de armado manual y snapshot válido")
+    parser.add_argument("--demo-test", action="store_true", help="Prueba armable solo en la cuenta DEMO fijada; permite esperar snapshot")
     args = parser.parse_args()
     url = f"http://127.0.0.1:{args.port}"
     try:
@@ -60,11 +61,20 @@ def main():
         mt5 = LockedMT5(MetaTrader5)
         adapter = MT5Adapter(terminal_path=args.terminal_path, execution_enabled=args.execution_enabled, mt5=mt5)
         adapter.connect()
+        if args.demo_test:
+            if not args.execution_enabled:
+                raise RuntimeError("DEMO_TEST_REQUIRES_EXECUTION_FLAG")
+            account = adapter.account_status()
+            if not account.is_demo:
+                raise RuntimeError("DEMO_TEST_REQUIRES_DEMO_ACCOUNT")
+            adapter.configure_demo_guard(account.login, account.server)
         if not mt5.symbol_select("EURUSD", True):
             raise RuntimeError("EURUSD no está disponible en el terminal seleccionado")
     except Exception as exc:
         error, adapter, mt5 = str(exc), None, None
     service = MechanicalBotService(BotConfig(enabled=True), adapter=adapter)
+    service.demo_wait_enabled = bool(args.demo_test and adapter is not None)
+    service.entry_sessions_enabled = bool(args.demo_test)
     runtime = TerminalRuntime(mt5, service, server_offset_seconds=int(args.server_utc_offset_hours * 3600))
     try:
         server = create_server(runtime, args.port)

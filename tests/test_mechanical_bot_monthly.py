@@ -41,6 +41,10 @@ def test_freeze_context_consumes_engine_context_and_cannot_pass_future_bar(monke
     monkeypatch.setattr(monthly, "top_down_allows_trade", lambda *_a, **_k: (True, "ok"))
     monkeypatch.setattr(monthly, "build_ltf_canonical_feed", lambda *_a, **_k: {"zones": {"M15": [zone]}})
     context = freeze_context({"D1": base, "H4": base, "H1": base, "M15": base}, cutoff)
+    assert context.probability is None
+    assert context.confirmed is False
+    assert context.wyckoff_state == "UNCONFIRMED"
+    assert set(context.timeframe_sha256 or {}) == {"D1", "H4", "H1", "M15"}
     assert context.direction == "BUY" and context.fvg_direction == "BUY"
     assert pd.Timestamp("2026-08-10", tz="UTC") not in seen[0].time.tolist()  # D1 future bar excluded
 

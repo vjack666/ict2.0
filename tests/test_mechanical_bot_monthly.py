@@ -60,7 +60,7 @@ def test_cycle_ladder_and_loss_priority_and_jsonl(tmp_path):
     replay._open_initial(datetime(2026, 8, 3, 8, tzinfo=UTC), 1.2, "BUY", "LONDON", datetime(2026, 8, 3, tzinfo=UTC))
     replay._manage_bar(datetime(2026, 8, 3, 8, 1, tzinfo=UTC), frames["M1"].iloc[1])
     replay._manage_bar(datetime(2026, 8, 3, 8, 2, tzinfo=UTC), frames["M1"].iloc[2])
-    assert [e["volume"] for e in replay.events if e["kind"] == "REENTRY"] == [.2, .3]
+    assert [e["volume"] for e in replay.events if e["kind"] == "REENTRY"] == [.1, .1]
     # A later candle spans both a gain and a loss threshold; loss wins.
     replay._manage_bar(datetime(2026, 8, 3, 8, 3, tzinfo=UTC), pd.Series({"high": 1.22, "low": 1.17}))
     close = [e for e in replay.events if e["kind"] == "CLOSE"][-1]

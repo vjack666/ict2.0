@@ -37,10 +37,10 @@ class MonthlyBotConfig:
     starting_balance: float = 5_000.0
     pip_size: float = 0.0001
     dollars_per_pip_per_lot: float = 10.0
-    lots: tuple[float, float, float] = (0.10, 0.20, 0.30)
+    lots: tuple[float, float, float] = (0.10, 0.10, 0.10)
     reentry_pips: tuple[float, float] = (20.0, 40.0)
     take_profit_usd: float = 60.0
-    loss_balance_pct: float = 0.02
+    loss_balance_pct: float = 0.03
     spread_pips: float = 1.0
     slippage_pips: float = 0.3
     commission_per_lot_side: float = 5.0
@@ -416,4 +416,4 @@ def run_month_from_parquets(
     if events_path is not None:
         write_events_jsonl(result["events"], events_path)
         result["events_jsonl"] = str(events_path)
-    return result\n
+    return result

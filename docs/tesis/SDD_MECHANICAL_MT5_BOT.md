@@ -38,4 +38,15 @@ No existe SL/TP por precio inventado. Los cierres son agregados por beneficio o 
 
 ## Verificación
 
+### Integración del terminal local — 2026-09-07
+
+El terminal de escritorio conserva esta estrategia y añade controles de servicio
+serializados. Un snapshot exige símbolo, confirmación booleana estricta,
+probabilidad finita dentro de [0, 1] y timestamp no futuro. OFF/ERROR/CLOSING
+no producen entradas. Apagar espera el tick activo y conserva el ciclo.
+Los cierres cotejan posiciones propias antes y después: una respuesta parcial
+no acredita un ciclo cerrado. Los accesos nativos MT5 se protegen con RLock.
+El productor de latest_snapshot.json sigue pendiente; WAIT_SNAPSHOT bloquea el
+armado. No se generaron órdenes reales para verificar esta integración.
+
 Las pruebas focales cubren frescura y confirmación del snapshot, umbral 70%, cruces M15, independencia M5/M1, escalera 0.10/0.20/0.30, cierres agregados, filtro magic/símbolo, recuperación, retcodes MT5 y estados demo/real.

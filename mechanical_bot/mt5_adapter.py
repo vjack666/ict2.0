@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from threading import RLock
 from typing import Any, Iterable
 
 from mechanical_bot.core import BotAction, Candle, Position
@@ -32,55 +33,63 @@ class MT5Adapter:
             mt5 = mt5_module
         self._mt5 = mt5
         self._path = terminal_path
-        self.execution_enabled = execution_enabled
+        # Never interpret a string such as "false" as permission to trade.
+        self.execution_enabled = execution_enabled is True
+        self._lock = RLock()
 
     def connect(self) -> None:
-        kwargs = {} if self._path is None else {"path": self._path}
-        if not self._mt5.initialize(**kwargs):
-            raise RuntimeError(f"MT5 initialize failed: {self._mt5.last_error()}")
+        with self._lock:
+            kwargs = {} if self._path is None else {"path": self._path}
+            if not self._mt5.initialize(**kwargs):
+                raise RuntimeError(f"MT5 initialize failed: {self._mt5.last_error()}")
 
     def close(self) -> None:
-        self._mt5.shutdown()
+        with self._lock:
+            self._mt5.shutdown()
 
     def account_status(self) -> AccountStatus:
-        info = self._mt5.account_info()
-        if info is None:
-            raise RuntimeError("MT5 account is not available")
-        # MT5 reports trade_mode=0 for demo in the official Python API.
-        demo_mode = getattr(self._mt5, "ACCOUNT_TRADE_MODE_DEMO", 0)
-        return AccountStatus(int(info.login), str(info.server), float(info.balance), float(info.equity), getattr(info, "trade_mode", None) == demo_mode)
+        with self._lock:
+            info = self._mt5.account_info()
+            if info is None:
+                raise RuntimeError("MT5 account is not available")
+            demo_mode = getattr(self._mt5, "ACCOUNT_TRADE_MODE_DEMO", 0)
+            return AccountStatus(int(info.login), str(info.server), float(info.balance), float(info.equity), getattr(info, "trade_mode", None) == demo_mode)
 
     def account_balance(self) -> float:
         return self.account_status().balance
 
     def positions(self) -> Iterable[Position]:
-        rows = self._mt5.positions_get() or ()
-        buy_type = getattr(self._mt5, "POSITION_TYPE_BUY", 0)
-        return [
-            Position(str(row.symbol), int(row.magic), "BUY" if row.type == buy_type else "SELL", float(row.volume), float(row.price_open), float(row.profit))
-            for row in rows
-        ]
+        with self._lock:
+            rows = self._mt5.positions_get() or ()
+            buy_type = getattr(self._mt5, "POSITION_TYPE_BUY", 0)
+            return [
+                Position(str(row.symbol), int(row.magic), "BUY" if row.type == buy_type else "SELL", float(row.volume), float(row.price_open), float(row.profit))
+                for row in rows
+            ]
 
     def tick_price(self, symbol: str, side: str) -> float:
-        tick = self._mt5.symbol_info_tick(symbol)
-        if tick is None:
-            raise RuntimeError(f"MT5 tick unavailable for {symbol}")
-        return float(tick.ask if side == "BUY" else tick.bid)
+        with self._lock:
+            tick = self._mt5.symbol_info_tick(symbol)
+            if tick is None:
+                raise RuntimeError(f"MT5 tick unavailable for {symbol}")
+            return float(tick.ask if side == "BUY" else tick.bid)
 
     def closed_m15_candles(self, symbol: str, count: int = 80) -> list[Candle]:
-        rates = self._mt5.copy_rates_from_pos(symbol, self._mt5.TIMEFRAME_M15, 1, count)
-        if rates is None or len(rates) < count:
-            raise RuntimeError(f"MT5 closed M15 candles unavailable for {symbol}")
-        return [Candle(float(row["high"]), float(row["low"]), float(row["close"])) for row in rates]
+        with self._lock:
+            rates = self._mt5.copy_rates_from_pos(symbol, self._mt5.TIMEFRAME_M15, 1, count)
+            if rates is None or len(rates) < count:
+                raise RuntimeError(f"MT5 closed M15 candles unavailable for {symbol}")
+            return [Candle(float(row["high"]), float(row["low"]), float(row["close"])) for row in rates]
 
     def execute(self, action: BotAction, *, symbol: str, magic_number: int) -> list[dict[str, Any]]:
-        if not self.execution_enabled:
-            raise RuntimeError("order execution is disabled in mechanical bot configuration")
-        if action.kind == "OPEN":
-            return [self._open(action, symbol, magic_number)]
-        if action.kind == "CLOSE_ALL":
-            return self._close_all(symbol, magic_number)
-        raise ValueError(f"unsupported bot action: {action.kind}")
+        with self._lock:
+            if not self.execution_enabled:
+                raise RuntimeError("order execution is disabled in mechanical bot configuration")
+            if action.kind == "OPEN":
+                return [self._open(action, symbol, magic_number)]
+            if action.kind == "CLOSE_ALL":
+                return self._close_all(symbol, magic_number)
+            raise ValueError(f"unsupported bot action: {action.kind}")
 
     def _open(self, action: BotAction, symbol: str, magic_number: int) -> dict[str, Any]:
         side = action.side or ""
@@ -97,6 +106,8 @@ class MT5Adapter:
 
     def _close_all(self, symbol: str, magic_number: int) -> list[dict[str, Any]]:
         rows = [row for row in (self._mt5.positions_get(symbol=symbol) or ()) if int(row.magic) == int(magic_number)]
+        if not rows:
+            raise RuntimeError("MT5 close reconciliation failed: no matching bot positions")
         buy_type = getattr(self._mt5, "POSITION_TYPE_BUY", 0)
         results = []
         for row in rows:
@@ -109,6 +120,9 @@ class MT5Adapter:
                 raise RuntimeError(f"MT5 close failed: {self._mt5.last_error()}")
             self._require_success(result, f"close ticket {row.ticket}")
             results.append({"kind": "CLOSE", "ticket": int(row.ticket), "retcode": int(result.retcode), "deal": int(getattr(result, "deal", 0))})
+        remaining = [row for row in (self._mt5.positions_get(symbol=symbol) or ()) if int(row.magic) == int(magic_number)]
+        if remaining:
+            raise RuntimeError("MT5 close reconciliation failed: matching bot positions remain")
         return results
 
     @staticmethod

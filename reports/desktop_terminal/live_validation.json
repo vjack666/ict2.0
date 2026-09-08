@@ -1,0 +1,33 @@
+{
+  "date_utc": "2026-09-07T23:52:11.713431+00:00",
+  "application_id": "ICT_DESKTOP_TERMINAL_V1",
+  "connection": {
+    "status": "READY",
+    "error": null,
+    "updated_at": "2026-09-07T23:52:11.095390+00:00",
+    "tick_age_seconds": 2.1,
+    "server_utc_offset_hours": 3.0
+  },
+  "environment": "DEMO",
+  "bot_state": "OFF",
+  "execution_enabled": false,
+  "snapshot_status": "WAIT_SNAPSHOT",
+  "position_count": 0,
+  "bars_by_tf": {
+    "D1": 400,
+    "H4": 400,
+    "H1": 400,
+    "M15": 400,
+    "M5": 400,
+    "M1": 400
+  },
+  "engine_status": "READY",
+  "engine_duration_ms": 5552.8,
+  "incremental_bytes_min": 11651,
+  "incremental_bytes_max": 11717,
+  "http_samples": 20,
+  "http_p50_ms": 10.368,
+  "http_p95_ms": 24.231,
+  "source_policy": "OBSERVE_ONLY_NO_ORDER",
+  "orders_sent_by_qa": 0
+}

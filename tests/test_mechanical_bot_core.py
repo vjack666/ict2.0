@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import math
 
 import pytest
 
@@ -36,6 +37,29 @@ def test_snapshot_requires_confirmed_fresh_and_threshold_but_ignores_ltf():
     with pytest.raises(SnapshotRejected):
         validate_snapshot(snapshot(asof_time=NOW - timedelta(minutes=21)), CONFIG, NOW)
     # Snapshot deliberately has no M5/M1 fields; these cannot veto this API.
+
+
+@pytest.mark.parametrize("probability", [float("nan"), float("inf"), -0.01, 1.01, True])
+def test_snapshot_probability_must_be_a_finite_unit_interval(probability):
+    with pytest.raises(SnapshotRejected):
+        validate_snapshot(snapshot(probability=probability), CONFIG, NOW)
+
+
+def test_snapshot_rejects_future_time_non_boolean_confirmation_and_missing_symbol():
+    with pytest.raises(SnapshotRejected, match="future"):
+        validate_snapshot(snapshot(asof_time=NOW + timedelta(microseconds=1)), CONFIG, NOW)
+    with pytest.raises(SnapshotRejected, match="confirmed"):
+        validate_snapshot(snapshot(confirmed="false"), CONFIG, NOW)
+    with pytest.raises(SnapshotRejected, match="symbol"):
+        validate_snapshot(snapshot(symbol=""), CONFIG, NOW)
+
+
+def test_config_rejects_non_finite_probability_threshold():
+    for value in (math.nan, math.inf, True):
+        with pytest.raises(ValueError):
+            BotConfig(min_probability=value)
+    with pytest.raises(ValueError, match="boolean"):
+        BotConfig(enabled="false")
 
 
 def test_buy_and_sell_only_open_on_matching_stochastic_cross():
@@ -98,6 +122,14 @@ def test_complete_close_resets_cycle_and_requires_new_signal():
     bot.arm(); bot.decide_entry(snapshot(), oversold_cross(), 1.1, 1_000, NOW)
     bot.complete_close()
     assert bot.cycle is None and bot.state == BotState.CLOSED
+
+
+def test_disarm_preserves_cycle_and_blocks_new_decisions():
+    bot = MechanicalBot(CONFIG)
+    bot.arm(); bot.decide_entry(snapshot(), oversold_cross(), 1.1, 1_000, NOW)
+    bot.stop()
+    assert bot.state == BotState.OFF and bot.cycle is not None
+    assert bot.decide_entry(snapshot(asof_time=NOW + timedelta(minutes=1)), oversold_cross(), 1.1, 1_000, NOW + timedelta(minutes=1)) is None
 
 def test_after_close_the_same_snapshot_cannot_reopen_a_cycle():
     bot = MechanicalBot(CONFIG)

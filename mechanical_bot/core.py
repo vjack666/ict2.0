@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
+import math
 from typing import Iterable, Mapping, Protocol, Sequence
 
 
@@ -44,7 +45,9 @@ class BotConfig:
     max_loss_balance_pct: float = 0.02
 
     def __post_init__(self) -> None:
-        if not 0 < self.min_probability <= 1:
+        if type(self.enabled) is not bool:
+            raise ValueError("enabled must be a boolean")
+        if not isinstance(self.min_probability, (int, float)) or isinstance(self.min_probability, bool) or not math.isfinite(self.min_probability) or not 0 < self.min_probability <= 1:
             raise ValueError("min_probability must be in (0, 1]")
         if self.pip_size <= 0 or self.initial_lot <= 0:
             raise ValueError("pip_size and initial_lot must be positive")
@@ -78,13 +81,23 @@ def validate_snapshot(snapshot: Snapshot, config: BotConfig, now: datetime) -> s
 
     No M5 or M1 field is inspected: they are deliberately diagnostic-only.
     """
+    if not isinstance(snapshot.symbol, str) or not snapshot.symbol.strip():
+        raise SnapshotRejected("snapshot symbol is required")
     if snapshot.symbol != config.symbol:
         raise SnapshotRejected("snapshot symbol differs from configured symbol")
-    if not snapshot.confirmed:
+    if type(snapshot.confirmed) is not bool or not snapshot.confirmed:
         raise SnapshotRejected("snapshot is not confirmed")
-    asof = _utc(snapshot.asof_time)
-    if _utc(now) - asof > config.stale_after:
+    if not isinstance(snapshot.asof_time, datetime) or not isinstance(now, datetime):
+        raise SnapshotRejected("snapshot time must be a datetime")
+    asof, current_time = _utc(snapshot.asof_time), _utc(now)
+    if asof > current_time:
+        raise SnapshotRejected("snapshot is from the future")
+    if current_time - asof > config.stale_after:
         raise SnapshotRejected("snapshot is stale")
+    if not isinstance(snapshot.probability, (int, float)) or isinstance(snapshot.probability, bool) or not math.isfinite(snapshot.probability) or not 0.0 <= snapshot.probability <= 1.0:
+        raise SnapshotRejected("snapshot probability must be finite and between 0 and 1")
+    if not isinstance(snapshot.direction, str):
+        raise SnapshotRejected("snapshot direction must be text")
     direction = snapshot.normalized_direction()
     if direction == "UNKNOWN" or snapshot.probability < config.min_probability:
         raise SnapshotRejected("snapshot has insufficient directional probability")
@@ -181,7 +194,8 @@ class MechanicalBot:
 
     def stop(self) -> None:
         """Disarm without requesting a broker operation."""
-        self.state, self.cycle = BotState.OFF, None
+        # A live/recovered basket remains visible for an explicit close or audit.
+        self.state = BotState.OFF
 
     def decide_entry(self, snapshot: Snapshot, stochastic: StochasticReading | None, price: float, balance: float, now: datetime) -> BotAction | None:
         """Return an initial OPEN action only for a new approved M15 cross."""

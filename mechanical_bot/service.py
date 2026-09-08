@@ -10,7 +10,7 @@ import json
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from threading import Event, Lock, Thread
+from threading import Event, RLock, Thread, current_thread
 from typing import Any
 
 from mechanical_bot.core import BotConfig, BotState, Cycle, MechanicalBot, Snapshot, stochastic_14_3_3
@@ -34,22 +34,26 @@ class MechanicalBotService:
         self.snapshot_path, self.state_path, self.log_path = snapshot_path, state_path, log_path
         self._runner: Thread | None = None
         self._runner_stop = Event()
-        self._runner_lock = Lock()
+        self._runner_lock = RLock()
+        # This lock covers the state machine and its broker action as one
+        # transaction.  RLock permits status/persistence calls while holding it.
+        self._state_lock = RLock()
         self._runner_interval_seconds = 15.0
         self._restore_state()
 
     def status(self) -> dict[str, Any]:
-        account: dict[str, Any] | None = None
-        if self.adapter is not None:
-            try:
-                info = self.adapter.account_status()
-                account = {"login": info.login, "server": info.server, "balance": info.balance, "equity": info.equity,
-                           "environment": "DEMO" if info.is_demo else "REAL", "real_account_warning": not info.is_demo}
-            except Exception as exc:
-                account = {"status": "UNAVAILABLE", "error": str(exc)}
-        cycle = None if self.bot.cycle is None else _json_safe(asdict(self.bot.cycle))
-        return {"state": self.bot.state.value, "symbol": self.bot.config.symbol, "execution_enabled": bool(getattr(self.adapter, "execution_enabled", False)),
-                "account": account, "cycle": cycle, "m5_m1": "DIAGNOSTIC_ONLY_NO_VETO"}
+        with self._state_lock:
+            account: dict[str, Any] | None = None
+            if self.adapter is not None:
+                try:
+                    info = self.adapter.account_status()
+                    account = {"login": info.login, "server": info.server, "balance": info.balance, "equity": info.equity,
+                               "environment": "DEMO" if info.is_demo else "REAL", "real_account_warning": not info.is_demo}
+                except Exception as exc:
+                    account = {"status": "UNAVAILABLE", "error": str(exc)}
+            cycle = None if self.bot.cycle is None else _json_safe(asdict(self.bot.cycle))
+            return {"state": self.bot.state.value, "symbol": self.bot.config.symbol, "execution_enabled": bool(getattr(self.adapter, "execution_enabled", False)),
+                    "account": account, "cycle": cycle, "m5_m1": "DIAGNOSTIC_ONLY_NO_VETO"}
 
     def analyze(self) -> dict[str, Any]:
         raw = self._read_snapshot()
@@ -73,43 +77,51 @@ class MechanicalBotService:
         return result
 
     def arm(self) -> dict[str, Any]:
-        self.bot.arm()
-        self._persist_state()
-        self._record("ARMED")
-        if self.adapter is not None and bool(getattr(self.adapter, "execution_enabled", False)):
-            self.start_runner()
-        return self.status()
+        with self._state_lock:
+            self.bot.arm()
+            self._persist_state()
+            self._record("ARMED")
+            if self.adapter is not None and bool(getattr(self.adapter, "execution_enabled", False)):
+                self.start_runner()
+            return self.status()
 
     def disarm(self) -> dict[str, Any]:
+        # Wait for an in-flight tick before returning OFF.  This prevents a
+        # delayed OPEN from appearing after an operator receives this response.
         self.stop_runner()
-        self.bot.stop()
-        self._persist_state()
-        self._record("OFF")
-        return self.status()
+        with self._state_lock:
+            self.bot.stop()
+            self._persist_state()
+            self._record("OFF")
+            return self.status()
 
     def close_cycle(self) -> dict[str, Any]:
-        if self.bot.cycle is None:
-            return self.status()
-        return self._execute("CLOSE_ALL", "manual_close")
+        with self._state_lock:
+            if self.bot.cycle is None:
+                return self.status()
+            return self._execute("CLOSE_ALL", "manual_close")
 
     def tick(self) -> dict[str, Any]:
         """Run one bounded decision tick; callers schedule it, never a hidden loop."""
-        if self.adapter is None:
-            raise RuntimeError("MT5 adapter is not configured")
-        snapshot = self._load_snapshot()
-        candles = self.adapter.closed_m15_candles(self.bot.config.symbol)
-        stochastic = stochastic_14_3_3(candles, self.bot.config)
-        account = self.adapter.account_status()
-        now = datetime.now(timezone.utc)
-        if self.bot.cycle is None:
-            price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
-            action = self.bot.decide_entry(snapshot, stochastic, price, account.balance, now) if snapshot else None
-        else:
-            price = self.adapter.tick_price(self.bot.config.symbol, self.bot.cycle.direction)
-            action = self.bot.monitor(price, self.adapter.positions())
-        if action is None:
-            return self.status()
-        return self._execute(action.kind, action.reason, action=action)
+        with self._state_lock:
+            if self.adapter is None:
+                raise RuntimeError("MT5 adapter is not configured")
+            if self.bot.state in {BotState.OFF, BotState.ERROR, BotState.CLOSING}:
+                return self.status()
+            snapshot = self._load_snapshot()
+            candles = self.adapter.closed_m15_candles(self.bot.config.symbol)
+            stochastic = stochastic_14_3_3(candles, self.bot.config)
+            account = self.adapter.account_status()
+            now = datetime.now(timezone.utc)
+            if self.bot.cycle is None:
+                price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
+                action = self.bot.decide_entry(snapshot, stochastic, price, account.balance, now) if snapshot else None
+            else:
+                price = self.adapter.tick_price(self.bot.config.symbol, self.bot.cycle.direction)
+                action = self.bot.monitor(price, self.adapter.positions())
+            if action is None:
+                return self.status()
+            return self._execute(action.kind, action.reason, action=action)
 
     def start_runner(self, interval_seconds: float = 15.0) -> None:
         """Run bounded MT5 ticks only after explicit arming and execution enablement.
@@ -130,40 +142,55 @@ class MechanicalBotService:
 
     def stop_runner(self) -> None:
         self._runner_stop.set()
+        with self._runner_lock:
+            runner = self._runner
+        if runner is not None and runner.is_alive() and runner is not current_thread():
+            runner.join()
 
     def _run(self) -> None:
         while not self._runner_stop.is_set():
             try:
                 self.tick()
             except Exception as exc:
-                self.bot.state = BotState.ERROR
-                self._persist_state()
-                self._record("RUNNER_ERROR", error=str(exc))
+                with self._state_lock:
+                    self.bot.state = BotState.ERROR
+                    self._persist_state()
+                    self._record("RUNNER_ERROR", error=str(exc))
                 return
             if self._runner_stop.wait(self._runner_interval_seconds):
                 return
 
     def _execute(self, kind: str, reason: str, *, action: Any | None = None) -> dict[str, Any]:
-        if self.adapter is None:
-            raise RuntimeError("MT5 adapter is not configured")
-        if action is None:
-            from mechanical_bot.core import BotAction
-            action = BotAction(kind, reason)
-        try:
-            results = self.adapter.execute(action, symbol=self.bot.config.symbol, magic_number=self.bot.config.magic_number)
-        except Exception:
-            # An uncertain broker response must never be retried as an OPEN.
-            # Preserve the cycle for audit, but require an explicit operator
-            # action before another decision tick.
-            self.bot.state = BotState.ERROR
+        with self._state_lock:
+            if self.adapter is None:
+                raise RuntimeError("MT5 adapter is not configured")
+            if action is None:
+                from mechanical_bot.core import BotAction
+                action = BotAction(kind, reason)
+            try:
+                if kind == "CLOSE_ALL":
+                    before_close = [position for position in self.adapter.positions()
+                                    if position.symbol == self.bot.config.symbol and position.magic_number == self.bot.config.magic_number]
+                    if not before_close:
+                        raise RuntimeError("close reconciliation failed: no matching bot positions")
+                results = self.adapter.execute(action, symbol=self.bot.config.symbol, magic_number=self.bot.config.magic_number)
+                if kind == "CLOSE_ALL":
+                    remaining = [position for position in self.adapter.positions()
+                                 if position.symbol == self.bot.config.symbol and position.magic_number == self.bot.config.magic_number]
+                    if remaining:
+                        raise RuntimeError("close reconciliation failed: matching bot positions remain")
+            except Exception:
+                # An uncertain broker response must never be retried as an OPEN.
+                # Preserve the cycle for audit, but require explicit reconciliation.
+                self.bot.state = BotState.ERROR
+                self._persist_state()
+                self._record("EXECUTION_ERROR", reason=reason)
+                raise
+            if kind == "CLOSE_ALL":
+                self.bot.complete_close()
             self._persist_state()
-            self._record("EXECUTION_ERROR", reason=reason)
-            raise
-        if kind == "CLOSE_ALL":
-            self.bot.complete_close()
-        self._persist_state()
-        self._record(kind, reason=reason, results=results)
-        return self.status()
+            self._record(kind, reason=reason, results=results)
+            return self.status()
 
     def _load_snapshot(self) -> Snapshot | None:
         return self._snapshot_from_raw(self._read_snapshot())
@@ -179,8 +206,13 @@ class MechanicalBotService:
         try:
             if raw is None:
                 return None
-            return Snapshot(str(raw["direction"]), float(raw["probability"]), bool(raw["confirmed"]),
-                            datetime.fromisoformat(str(raw["asof_time"]).replace("Z", "+00:00")), str(raw.get("symbol", self.bot.config.symbol)))
+            direction, probability, confirmed, asof_time, symbol = raw["direction"], raw["probability"], raw["confirmed"], raw["asof_time"], raw["symbol"]
+            if not isinstance(direction, str) or type(confirmed) is not bool or not isinstance(symbol, str) or not symbol.strip():
+                return None
+            if not isinstance(probability, (int, float)) or isinstance(probability, bool):
+                return None
+            return Snapshot(direction, float(probability), confirmed,
+                            datetime.fromisoformat(str(asof_time).replace("Z", "+00:00")), symbol)
         except (ValueError, KeyError, TypeError):
             return None
 

@@ -42,7 +42,7 @@ class BotConfig:
     reentry_lots: tuple[float, float] = (0.20, 0.30)
     reentry_pips: tuple[float, float] = (20.0, 40.0)
     take_profit_usd: float = 60.0
-    max_loss_balance_pct: float = 0.02
+    max_loss_balance_pct: float = 0.03
 
     def __post_init__(self) -> None:
         if type(self.enabled) is not bool:

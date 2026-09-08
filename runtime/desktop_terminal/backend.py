@@ -272,13 +272,8 @@ class TerminalRuntime:
             status = self.service.status()
             if action in {"arm", "close-cycle"} and not status.get("execution_enabled"):
                 raise RuntimeError("EXECUTION_DISABLED")
-            if action == "arm" and not getattr(self.service, "demo_wait_enabled", False):
-                # Validate the real producer input, not an engine UI projection.
-                from mechanical_bot.core import validate_snapshot
-                snapshot = self.service._load_snapshot()
-                if snapshot is None:
-                    raise RuntimeError("WAIT_SNAPSHOT: productor operativo no disponible")
-                validate_snapshot(snapshot, self.service.bot.config, datetime.now(timezone.utc))
+            # Arming is explicit human authorization. Snapshot and stochastic
+            # checks remain in tick(), immediately before any OPEN action.
             method = {"arm": "arm", "disarm": "disarm", "close-cycle": "close_cycle"}[action]
             result = getattr(self.service, method)()
         with self.lock:

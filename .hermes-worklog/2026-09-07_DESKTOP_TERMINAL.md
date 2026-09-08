@@ -34,6 +34,10 @@ también mediante git show HEAD, anteriores a esta misión. No son imports del
 terminal. Se conserva su código y no se declara PASS de regresión mensual.
 Empaquetado: 4 PASS; build Vite correcto, JavaScript 128.02 KB gzip.
 QA visual y correcciones en runtime/desktop_terminal/ui/design-qa.md.
+Repetición focal final: 47 PASS en 4.12 s. Commit de implementación 0647ecb.
+Graphify update final completado: 13953 nodos, 23210 aristas, 1185 comunidades;
+graph.json y GRAPH_REPORT.md actualizados. HTML omitido por límite de 5000 nodos.
+Launcher --desktop verificado: reutiliza PID 30644 sin duplicar el servicio.
 Auditoría independiente execution_audit: READY para QA de lectura; observación
 de node_modules sin ignore corregida y verificada con git check-ignore.
 

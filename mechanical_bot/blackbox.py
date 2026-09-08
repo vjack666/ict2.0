@@ -9,7 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from threading import RLock
 from typing import Any, Mapping
@@ -34,14 +34,18 @@ class BlackBoxJournal:
     or altered entries within that file.
     """
 
-    def __init__(self, path: Path, *, max_bytes: int = 5_000_000, backups: int = 3, max_record_bytes: int = 32_000):
+    def __init__(self, path: Path, *, max_bytes: int = 5_000_000, backups: int = 3, max_record_bytes: int = 32_000, retention_days: int = 365):
         if max_bytes < 100_000 or backups < 1 or max_record_bytes < 1_000:
             raise ValueError("invalid black-box retention limits")
         self.path = Path(path)
         self.max_bytes = int(max_bytes)
         self.backups = int(backups)
         self.max_record_bytes = int(max_record_bytes)
+        if retention_days < 1:
+            raise ValueError("retention_days must be positive")
+        self.retention_days = int(retention_days)
         self._lock = RLock()
+        self._cleanup_expired()
         self._previous_hash = self._load_last_hash()
 
     def record(self, event: str, /, **fields: Any) -> dict[str, Any]:
@@ -61,6 +65,7 @@ class BlackBoxJournal:
                 if len(line.encode("utf-8")) > self.max_record_bytes:
                     raise BlackBoxWriteError("black-box record exceeds bounded size")
                 self.path.parent.mkdir(parents=True, exist_ok=True)
+                self._cleanup_expired()
                 self._rotate_if_needed(len(line.encode("utf-8")))
                 with self.path.open("a", encoding="utf-8", newline="\n") as handle:
                     handle.write(line)
@@ -100,7 +105,17 @@ class BlackBoxJournal:
         return entries
 
     def summary(self) -> dict[str, Any]:
-        return {"path": str(self.path), "tail": self.tail(12), "max_bytes": self.max_bytes, "backups": self.backups}
+        return {"path": str(self.path), "tail": self.tail(12), "max_bytes": self.max_bytes, "backups": self.backups, "retention_days": self.retention_days}
+
+    def _cleanup_expired(self) -> None:
+        """Delete this journal and its rotations after the configured retention."""
+        cutoff = datetime.now(timezone.utc) - timedelta(days=self.retention_days)
+        for candidate in (self.path, *[self.path.with_name(f"{self.path.name}.{i}") for i in range(1, self.backups + 1)]):
+            try:
+                if candidate.exists() and datetime.fromtimestamp(candidate.stat().st_mtime, timezone.utc) < cutoff:
+                    candidate.unlink()
+            except OSError:
+                continue
 
     def _rotate_if_needed(self, incoming_bytes: int) -> None:
         try:

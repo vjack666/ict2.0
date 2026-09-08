@@ -248,6 +248,7 @@ class MechanicalBotService:
                 state_before=self.bot.state.value,
                 action=None if action is None else _json_safe(asdict(action)),
                 reason=action.reason if action is not None else abstention,
+                strategy=_strategy_fields(raw),
             )
         except BlackBoxWriteError as exc:
             self.bot.state = BotState.ERROR
@@ -340,6 +341,17 @@ class MechanicalBotService:
             self.bot.state = BotState.OFF
         except (OSError, ValueError, KeyError, TypeError):
             return
+
+
+def _strategy_fields(raw: dict[str, Any] | None) -> dict[str, Any]:
+    """Normalize strategy evidence for black-box queries without fabricating it."""
+    if not isinstance(raw, dict):
+        return {"phase": None, "poi": None, "bos_choch": None, "m15_structure": None, "session": None}
+    return {"phase": raw.get("wyckoff_phase", raw.get("phase")),
+            "poi": raw.get("poi", raw.get("zones")),
+            "bos_choch": raw.get("bos", raw.get("choch")),
+            "m15_structure": raw.get("m15_structure", raw.get("structure")),
+            "session": raw.get("session")}
 
 
 def _json_safe(value: Any) -> Any:

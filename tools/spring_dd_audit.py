@@ -38,11 +38,13 @@ def classify_trade(entry: float, future_highs: list[float], future_lows: list[fl
     mae = entry - min(future_lows)
     tp_pips = risk.take_profit_usd / (lots * pip_value_per_lot)
     stop_pips = risk.stop_usd / (lots * pip_value_per_lot)
-    if mae >= stop_pips and mfe >= tp_pips:
+    mfe_pips = mfe / 0.0001
+    mae_pips = mae / 0.0001
+    if mae_pips >= stop_pips and mfe_pips >= tp_pips:
         pnl = -risk.stop_usd
-    elif mae >= stop_pips:
+    elif mae_pips >= stop_pips:
         pnl = -risk.stop_usd
-    elif mfe >= tp_pips:
+    elif mfe_pips >= tp_pips:
         pnl = risk.take_profit_usd
     else:
         pnl = 0.0

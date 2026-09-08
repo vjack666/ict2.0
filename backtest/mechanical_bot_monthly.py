@@ -57,6 +57,11 @@ class FrozenContext:
     fvg_direction: str | None
     fvg_low: float | None
     fvg_high: float | None
+    wyckoff_phase: str = "UNKNOWN"
+    wyckoff_state: str = "UNCONFIRMED"
+    probability: float | None = None
+    confirmed: bool = False
+    timeframe_sha256: dict[str, str] | None = None
 
     @property
     def eligible(self) -> bool:
@@ -169,6 +174,14 @@ def freeze_context(frames: dict[str, pd.DataFrame], cutoff: datetime) -> FrozenC
         fvg_direction=fvg_direction,
         fvg_low=None if fvg is None else float(fvg.zone_low),
         fvg_high=None if fvg is None else float(fvg.zone_high),
+        # Historical probability/Wyckoff publication is unavailable in this
+        # diagnostic runner; preserve an explicit non-operable state instead
+        # of fabricating a signal.
+        wyckoff_phase="UNKNOWN",
+        wyckoff_state="UNCONFIRMED",
+        probability=None,
+        confirmed=False,
+        timeframe_sha256={tf: sha256(canonical[tf].to_json(orient="split").encode()).hexdigest() for tf in canonical},
     )
 
 def stochastic_reading(m15: pd.DataFrame) -> tuple[float, float, float, float] | None:

@@ -118,6 +118,24 @@ class TerminalRuntime:
         with self.lock:
             self.state["events"] = [{"time": utc_now(), "event": event, "detail": str(detail)}, *self.state["events"]][:100]
 
+    def _publish_bot_snapshot(self, snapshot):
+        """Publish only an explicitly operable engine snapshot for the bot.
+
+        The engine's diagnostic/observe-only snapshots intentionally do not
+        contain direction, probability and confirmation.  Never manufacture
+        those fields: remove any stale file so the bot fails closed.
+        """
+        path = ROOT / "runtime" / "mechanical_bot" / "latest_snapshot.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        required = ("direction", "probability", "confirmed", "asof_time", "symbol")
+        if not isinstance(snapshot, dict) or any(k not in snapshot for k in required):
+            path.unlink(missing_ok=True)
+            return False
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        temporary.write_text(json.dumps(snapshot, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+        temporary.replace(path)
+        return True
+
     def start(self):
         if self.thread is not None:
             return
@@ -229,6 +247,7 @@ class TerminalRuntime:
                 with self.lock:
                     self.state["engine"] = {"status": result["snapshot"]["status"], **result}
                     self.state["engine_version"] += 1
+                self._publish_bot_snapshot(result.get("snapshot"))
                 self.event("ENGINE_UPDATED", f'{result["duration_ms"]} ms')
             except Exception as exc:
                 with self.lock:

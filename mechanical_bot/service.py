@@ -134,7 +134,9 @@ class MechanicalBotService:
                     abstention = "OUTSIDE_ENTRY_WINDOW"
                 elif snapshot is None:
                     self.bot.state = BotState.WAIT_SIGNAL
-                    abstention = "WAIT_SNAPSHOT"
+                    # Arming starts the live loop immediately. Missing engine
+                    # data blocks direction, but the scanner remains active.
+                    abstention = "WAIT_DIRECTION"
                 else:
                     account = self.adapter.account_status()
                     price = self.adapter.tick_price(self.bot.config.symbol, "BUY")

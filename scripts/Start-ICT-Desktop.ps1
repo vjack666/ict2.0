@@ -13,4 +13,6 @@ try {
     }
 } catch { }
 $ictLauncher = Join-Path $PSScriptRoot 'start_desktop_terminal.py'
-Start-Process -FilePath $ictPython -ArgumentList "`"$ictLauncher`" --desktop" -WorkingDirectory $ictRoot -WindowStyle Hidden
+# Execution remains OFF until the operator presses Arm in the dashboard; this
+# flag only permits the explicitly armed manual/strategy path to reach MT5.
+Start-Process -FilePath $ictPython -ArgumentList "`"$ictLauncher`" --desktop --execution-enabled" -WorkingDirectory $ictRoot -WindowStyle Hidden

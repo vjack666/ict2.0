@@ -6,7 +6,7 @@ frontend se puede abrir en `http://127.0.0.1:8790/`.
 
 ## Inicio
 
-`C:\Python314\python.exe scripts/start_desktop_terminal.py --desktop`
+`C:\Python314\python.exe scripts/start_desktop_terminal.py --desktop --execution-enabled`
 
 También se puede usar `scripts/Start-ICT-Desktop.ps1`. Una instancia ya abierta
 se reutiliza. Cerrar la ventana conserva el servicio en segundo plano para

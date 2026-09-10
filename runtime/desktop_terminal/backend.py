@@ -280,7 +280,7 @@ class TerminalRuntime:
             self.state["engine"]["error"] = None
 
     def action(self, action):
-        if action not in {"analyze", "arm", "disarm", "close-cycle"}:
+        if action not in {"analyze", "arm", "disarm", "close-cycle", "manual-buy", "manual-sell"}:
             raise ValueError("UNKNOWN_ACTION")
         if action == "analyze":
             self.refresh_event.set()
@@ -289,12 +289,15 @@ class TerminalRuntime:
             raise RuntimeError("BOT_UNAVAILABLE")
         with self.action_lock:
             status = self.service.status()
-            if action in {"arm", "close-cycle"} and not status.get("execution_enabled"):
+            if action in {"arm", "close-cycle", "manual-buy", "manual-sell"} and not status.get("execution_enabled"):
                 raise RuntimeError("EXECUTION_DISABLED")
             # Arming is explicit human authorization. Snapshot and stochastic
             # checks remain in tick(), immediately before any OPEN action.
-            method = {"arm": "arm", "disarm": "disarm", "close-cycle": "close_cycle"}[action]
-            result = getattr(self.service, method)()
+            if action in {"manual-buy", "manual-sell"}:
+                result = self.service.manual_entry("BUY" if action == "manual-buy" else "SELL")
+            else:
+                method = {"arm": "arm", "disarm": "disarm", "close-cycle": "close_cycle"}[action]
+                result = getattr(self.service, method)()
         with self.lock:
             self.state["bot"] = {**self.state["bot"], **result}
         self.event("BOT_ACTION", action)

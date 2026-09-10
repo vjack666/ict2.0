@@ -1,0 +1,305 @@
+{
+  "can_trade": false,
+  "code_commit": "e7692d841871236bd8dd88201e5341ca449d3fcd",
+  "generated_at_utc": "2026-09-01T13:43:53.917622+00:00",
+  "holdout_2021_2025_used": false,
+  "input": {
+    "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010.jsonl",
+    "rows": 53761,
+    "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+    "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922"
+  },
+  "mode": "DIAGNOSTIC_ONLY",
+  "next_action": "Auditar comparación, luego ejecutar holdout 2021-2025 sin ajuste y revisar calibración/abstención/drift.",
+  "report_hash": "99ada9c56b621c856981db01fe15da8b719e7f6ef04424f85148b124e20a6219",
+  "same_temporal_split": true,
+  "schema_version": "1.0",
+  "scientific_training_eligible": false,
+  "seed": 20260831,
+  "shadow_mode": true,
+  "status": "DIAGNOSTIC_COMPARISON_COMPLETED",
+  "target": "label_end_12",
+  "variants": [
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_comparison_postcommit_e7692d8\\ict_only.json",
+      "artifact_file_sha256": "89b5bb238bb0a99027b94336b4fb369792e949f71223262061ffbd085b91558e",
+      "artifact_hash": "8ef0335ca0793c1ca1cde6f512c6dfd3e1db88014df01b662cc4b56800cd6e6a",
+      "can_trade": false,
+      "feature_count": 12,
+      "feature_names": [
+        "direction",
+        "sequence_depth",
+        "ict_m15_bos_bullish",
+        "ict_m15_bos_bearish",
+        "ict_m15_choch_bullish",
+        "ict_m15_choch_bearish",
+        "ict_m15_displacement_bullish",
+        "ict_m15_displacement_bearish",
+        "ict_m15_fvg_bullish",
+        "ict_m15_fvg_bearish",
+        "ict_m15_sweep_up",
+        "ict_m15_sweep_down"
+      ],
+      "fit_executed": true,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4030503115409653,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.090154339549795,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42866443452380953,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0770977116242293,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39890252976190477,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.089248953787133,
+          "rows": 10752
+        }
+      },
+      "profile": "ICT_ONLY",
+      "slug": "ict_only",
+      "source_code_commit": "e7692d841871236bd8dd88201e5341ca449d3fcd",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "test_accuracy_delta_vs_majority": 0.004091881335441305,
+      "test_majority_baseline_accuracy": 0.398958430205524,
+      "test_uniform_baseline_log_loss": 1.0986122886681098
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_comparison_postcommit_e7692d8\\wyckoff_only.json",
+      "artifact_file_sha256": "0e1d62696a221c2d8c816752a666544670035fc1dced08291cfaa16b2f4ca64a",
+      "artifact_hash": "4f3f0f5632eddaad38f3f218fbc8536cc1f3dcb773f36116a8ef76f29c3f2cf4",
+      "can_trade": false,
+      "feature_count": 38,
+      "feature_names": [
+        "direction",
+        "sequence_depth",
+        "wyckoff_h1_phase=ACCUMULATION",
+        "wyckoff_h1_phase=MARKUP",
+        "wyckoff_h1_phase=DISTRIBUTION",
+        "wyckoff_h1_phase=MARKDOWN",
+        "wyckoff_h1_phase=RANGE_UNCLASSIFIED",
+        "wyckoff_h1_phase=TRANSITION",
+        "wyckoff_h1_phase=UNKNOWN",
+        "wyckoff_m15_phase=ACCUMULATION",
+        "wyckoff_m15_phase=MARKUP",
+        "wyckoff_m15_phase=DISTRIBUTION",
+        "wyckoff_m15_phase=MARKDOWN",
+        "wyckoff_m15_phase=RANGE_UNCLASSIFIED",
+        "wyckoff_m15_phase=TRANSITION",
+        "wyckoff_m15_phase=UNKNOWN",
+        "wyckoff_h1_event=SPRING",
+        "wyckoff_h1_event=UPTHRUST",
+        "wyckoff_h1_event=UTAD",
+        "wyckoff_h1_event=SOS",
+        "wyckoff_h1_event=SOW",
+        "wyckoff_h1_event=LPS",
+        "wyckoff_h1_event=LPSY",
+        "wyckoff_h1_event=TEST",
+        "wyckoff_h1_event=FAILED_TEST",
+        "wyckoff_h1_event=RANGE_BREAK",
+        "wyckoff_h1_event=EFFORT_RESULT_DIVERGENCE",
+        "wyckoff_m15_event=SPRING",
+        "wyckoff_m15_event=UPTHRUST",
+        "wyckoff_m15_event=UTAD",
+        "wyckoff_m15_event=SOS",
+        "wyckoff_m15_event=SOW",
+        "wyckoff_m15_event=LPS",
+        "wyckoff_m15_event=LPSY",
+        "wyckoff_m15_event=TEST",
+        "wyckoff_m15_event=FAILED_TEST",
+        "wyckoff_m15_event=RANGE_BREAK",
+        "wyckoff_m15_event=EFFORT_RESULT_DIVERGENCE"
+      ],
+      "fit_executed": true,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4001673951455408,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.090932584932586,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42627728174603174,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0769372063059386,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.3971354166666667,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0879009883609942,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ONLY",
+      "slug": "wyckoff_only",
+      "source_code_commit": "e7692d841871236bd8dd88201e5341ca449d3fcd",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "test_accuracy_delta_vs_majority": 0.0012089649400167657,
+      "test_majority_baseline_accuracy": 0.398958430205524,
+      "test_uniform_baseline_log_loss": 1.0986122886681098
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_comparison_postcommit_e7692d8\\wyckoff_ict_combined.json",
+      "artifact_file_sha256": "0e0a4de53cb735a77c43d20cf201b208fa26d7cd67b1cfc97cd72d772c2a5868",
+      "artifact_hash": "83d892b31465f9cf67ac409780de5e5372492ec17f4b469eb857c7a18954c362",
+      "can_trade": false,
+      "feature_count": 48,
+      "feature_names": [
+        "direction",
+        "sequence_depth",
+        "ict_m15_bos_bullish",
+        "ict_m15_bos_bearish",
+        "ict_m15_choch_bullish",
+        "ict_m15_choch_bearish",
+        "ict_m15_displacement_bullish",
+        "ict_m15_displacement_bearish",
+        "ict_m15_fvg_bullish",
+        "ict_m15_fvg_bearish",
+        "ict_m15_sweep_up",
+        "ict_m15_sweep_down",
+        "wyckoff_h1_phase=ACCUMULATION",
+        "wyckoff_h1_phase=MARKUP",
+        "wyckoff_h1_phase=DISTRIBUTION",
+        "wyckoff_h1_phase=MARKDOWN",
+        "wyckoff_h1_phase=RANGE_UNCLASSIFIED",
+        "wyckoff_h1_phase=TRANSITION",
+        "wyckoff_h1_phase=UNKNOWN",
+        "wyckoff_m15_phase=ACCUMULATION",
+        "wyckoff_m15_phase=MARKUP",
+        "wyckoff_m15_phase=DISTRIBUTION",
+        "wyckoff_m15_phase=MARKDOWN",
+        "wyckoff_m15_phase=RANGE_UNCLASSIFIED",
+        "wyckoff_m15_phase=TRANSITION",
+        "wyckoff_m15_phase=UNKNOWN",
+        "wyckoff_h1_event=SPRING",
+        "wyckoff_h1_event=UPTHRUST",
+        "wyckoff_h1_event=UTAD",
+        "wyckoff_h1_event=SOS",
+        "wyckoff_h1_event=SOW",
+        "wyckoff_h1_event=LPS",
+        "wyckoff_h1_event=LPSY",
+        "wyckoff_h1_event=TEST",
+        "wyckoff_h1_event=FAILED_TEST",
+        "wyckoff_h1_event=RANGE_BREAK",
+        "wyckoff_h1_event=EFFORT_RESULT_DIVERGENCE",
+        "wyckoff_m15_event=SPRING",
+        "wyckoff_m15_event=UPTHRUST",
+        "wyckoff_m15_event=UTAD",
+        "wyckoff_m15_event=SOS",
+        "wyckoff_m15_event=SOW",
+        "wyckoff_m15_event=LPS",
+        "wyckoff_m15_event=LPSY",
+        "wyckoff_m15_event=TEST",
+        "wyckoff_m15_event=FAILED_TEST",
+        "wyckoff_m15_event=RANGE_BREAK",
+        "wyckoff_m15_event=EFFORT_RESULT_DIVERGENCE"
+      ],
+      "fit_executed": true,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.40267832232865247,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0901123428024249,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.4289124503968254,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.075941471184837,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.3986235119047619,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.087645334876339,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ICT_COMBINED",
+      "slug": "wyckoff_ict_combined",
+      "source_code_commit": "e7692d841871236bd8dd88201e5341ca449d3fcd",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "test_accuracy_delta_vs_majority": 0.0037198921231284543,
+      "test_majority_baseline_accuracy": 0.398958430205524,
+      "test_uniform_baseline_log_loss": 1.0986122886681098
+    }
+  ]
+}

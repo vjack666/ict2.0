@@ -1,0 +1,78 @@
+{
+  "artifact_kind": "MECHANICAL_BOT_MONTHLY_BACKTEST",
+  "policy": {
+    "diagnostic_only": true,
+    "can_trade": false,
+    "entry_authorized": false,
+    "promotion_authorized": false
+  },
+  "symbol": "EURUSD",
+  "period": {
+    "start": "2026-08-01",
+    "end": "2026-08-01"
+  },
+  "config": {
+    "symbol": "EURUSD",
+    "starting_balance": 5000.0,
+    "pip_size": 0.0001,
+    "dollars_per_pip_per_lot": 10.0,
+    "lots": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "reentry_pips": [
+      20.0,
+      40.0
+    ],
+    "take_profit_usd": 60.0,
+    "loss_balance_pct": 0.02,
+    "spread_pips": 1.0,
+    "slippage_pips": 0.3,
+    "commission_per_lot_side": 5.0
+  },
+  "context_lookback_bars": {
+    "D1": 520,
+    "H4": 780,
+    "H1": 1200,
+    "M15": 800
+  },
+  "summary": {
+    "starting_balance": 5000.0,
+    "ending_balance": 5000.0,
+    "net_pnl_usd": 0.0,
+    "cycles_closed": 0,
+    "take_profit_cycles": 0,
+    "loss_cycles": 0,
+    "max_drawdown_usd": 0.0
+  },
+  "events": [
+    {
+      "id": "MB-000001",
+      "kind": "SNAPSHOT",
+      "asof_time": "2026-08-01T01:00:00+00:00",
+      "trading_day": "2026-08-01",
+      "context": {
+        "asof_time": "2026-08-01 01:00:00+00:00",
+        "direction": "UNKNOWN",
+        "d1_direction": "BULLISH",
+        "h4_direction": "RANGING",
+        "h1_direction": "BULLISH",
+        "m15_direction": "BULLISH",
+        "fvg_direction": null,
+        "fvg_low": null,
+        "fvg_high": null
+      },
+      "eligible": false
+    }
+  ],
+  "input_sha256": {
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_D1.parquet": "f4acbf7b7d89faecdee39f8a0ea333c2593cf2ff097dcf67a0bd8c3e1ceb0cb8",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H4.parquet": "c43d76193c8f0b00a0aab95c9e48aa987f9c50a91e67204b20b9a7a8b0521ae9",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_H1.parquet": "18e9a496b0a86411fa275ab0552fcdc587893bfc3f91349fd15c4cfedae221e4",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M15.parquet": "25a65e237c0453682a4d13efc38f6e8c7f59d85638001fc42d56e0cddb2017ff",
+    "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M1.parquet": "4f511ba77728502e2d9ea7ca55158bf98947f627c33c004b4a66c742ccf26081"
+  },
+  "events_jsonl": "reports\\mechanical_bot\\debug-2026-08-01-v4\\events.jsonl",
+  "status": "FINALIZADO_DIAGNOSTIC_ONLY"
+}

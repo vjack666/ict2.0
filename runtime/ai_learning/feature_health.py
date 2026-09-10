@@ -31,7 +31,15 @@ def validate_temporal_feature_health(
         if len(values) > 1:
             varying.append(name)
     fraction = len(varying) / max(len(names), 1)
-    depths = [v.get("sequence_depth") for v in vectors]
+    # Diagnostic rows carry the canonical sequence depth at row level. Keep a
+    # nested fallback for older feature snapshots that embedded it in
+    # ``features_at_t``.
+    depths = [
+        row.get("sequence_depth")
+        if row.get("sequence_depth") is not None
+        else vector.get("sequence_depth")
+        for row, vector in zip(rows, vectors)
+    ]
     if all(d in (None, 0, "0") for d in depths):
         raise FeatureHealthError("TEMPORAL_SEQUENCE_DEPTH_ZERO: rebuild rolling closed-bar sequence")
     if fraction < min_varying_fraction:

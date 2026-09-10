@@ -1,0 +1,11 @@
+{
+  "state": "RUNNING",
+  "updated_at": "2026-09-06T20:19:34.820638+00:00",
+  "can_trade": false,
+  "mode": "DIAGNOSTIC_ONLY",
+  "period": {
+    "start": "2026-08-01",
+    "end": "2026-08-01"
+  },
+  "events_path": "reports\\mechanical_bot\\debug-2026-08-01-v2\\events.jsonl"
+}

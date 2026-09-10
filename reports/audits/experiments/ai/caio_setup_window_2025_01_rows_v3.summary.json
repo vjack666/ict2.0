@@ -1,0 +1,206 @@
+{
+  "batch_size": 1,
+  "can_trade": false,
+  "causality": {
+    "decision_time_policy": "Funnel episode decision_time is the only feature timestamp",
+    "future_features_exported": false,
+    "mt5_used": false,
+    "outcome_policy": "canonical backtest trade outcome; future not copied into features_at_t"
+  },
+  "contract_version": "AI_SETUP_WINDOW_DATASET_V1",
+  "counts": {
+    "labels": {
+      "reversal": 1
+    },
+    "rejected": 0,
+    "rows": 1,
+    "split": {
+      "HOLDOUT": 1
+    },
+    "windows": 1
+  },
+  "diagnostics": [
+    "BACKTEST_PROVENANCE_BLOCKED",
+    "BACKTEST_PROVENANCE_NOT_PASS",
+    "FUNNEL_PROVENANCE_BLOCKED"
+  ],
+  "generator": {
+    "branch": "codex/audit-hermes-cert-20260826",
+    "commit": "afcee7e62a38e97940c10cdf62882623a893cdc4",
+    "contract_version": "AI_SETUP_WINDOW_DATASET_V1",
+    "script": "scripts/lab/experiments/ai_setup_window_materializer.py",
+    "worktree_state": "DIRTY"
+  },
+  "horizon_bars": 200,
+  "inputs": {
+    "backtest": {
+      "bytes": 3639953,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\visual_backtest_2025_01_h200_prefix.json",
+      "sha256": "409b49306825a428985974b87d22f7f9b6342b5cd7817cf6dc9eb162e412c92e"
+    },
+    "funnel": {
+      "bytes": 6641,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\visual_backtest_2025_01_h200_funnel.json",
+      "sha256": "f38cfc0d74622e43bb790f7e424196f7c0a8479e2b4a935c10949641c15ac6f5"
+    }
+  },
+  "materialization_status": "PASS",
+  "output": {
+    "bytes": 788,
+    "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\caio_setup_window_2025_01_rows_v3.jsonl",
+    "sha256": "f9edf38a9d0ea1d79b7cd2f17bf800c6337cbed9d8f431eded19544e9599789c"
+  },
+  "promotion_authorized": false,
+  "provenance": {
+    "blocking_reasons": [
+      "BACKTEST_PROVENANCE_BLOCKED",
+      "FUNNEL_PROVENANCE_BLOCKED"
+    ],
+    "sources": {
+      "backtest": {
+        "acquired_at_utc": null,
+        "blocking_reasons": [
+          "SOURCE_LICENSE_OR_PERMITTED_USE_UNKNOWN",
+          "ACQUISITION_EXECUTION_LOG_NOT_ESTABLISHED_BY_CSV_BYTES",
+          "GENERATOR_WORKTREE_NOT_CLEAN"
+        ],
+        "contract_or_continuous_policy": "spot FX; no futures contract or rollover",
+        "dataset_id": "eurusd_dukascopy_20y",
+        "files": {
+          "D1": {
+            "bytes": 265598,
+            "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_D1.csv",
+            "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+            "rows_after_filter": 313,
+            "rows_before_filter": 6258,
+            "sha256": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+            "timeframe": "D1",
+            "timestamp_field": "time",
+            "timezone_policy": "naive CSV timestamps interpreted as UTC",
+            "window_end": "2025-12-31T00:00:00+00:00",
+            "window_start": "2025-01-01T00:00:00+00:00"
+          },
+          "H1": {
+            "bytes": 6399327,
+            "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+            "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+            "rows_after_filter": 6205,
+            "rows_before_filter": 124377,
+            "sha256": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+            "timeframe": "H1",
+            "timestamp_field": "time",
+            "timezone_policy": "naive CSV timestamps interpreted as UTC",
+            "window_end": "2025-12-31T00:00:00+00:00",
+            "window_start": "2025-01-01T22:00:00+00:00"
+          },
+          "H4": {
+            "bytes": 1653194,
+            "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H4.csv",
+            "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+            "rows_after_filter": 1605,
+            "rows_before_filter": 32133,
+            "sha256": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+            "timeframe": "H4",
+            "timestamp_field": "time",
+            "timezone_policy": "naive CSV timestamps interpreted as UTC",
+            "window_end": "2025-12-31T00:00:00+00:00",
+            "window_start": "2025-01-01T20:00:00+00:00"
+          }
+        },
+        "instrument": "EURUSD spot bid",
+        "license_and_permitted_use": "UNKNOWN",
+        "open_interest_semantics": "UNAVAILABLE",
+        "provider": "Dukascopy",
+        "request_parameters": "not read from a sidecar; CSV-only input boundary",
+        "rollover_rule": "not applicable",
+        "source_documentation_refs": [
+          "datasets/eurusd_dukascopy_20y/README.md"
+        ],
+        "status": "BLOCKED",
+        "symbol": "EURUSD",
+        "venue": "spot/OTC",
+        "volume_semantics": "UNAVAILABLE"
+      },
+      "funnel": {
+        "acquired_at_utc": null,
+        "blocking_reasons": [
+          "SOURCE_LICENSE_OR_PERMITTED_USE_UNKNOWN",
+          "ACQUISITION_EXECUTION_LOG_NOT_ESTABLISHED_BY_CSV_BYTES",
+          "GENERATOR_WORKTREE_NOT_CLEAN"
+        ],
+        "contract_or_continuous_policy": "spot FX; no futures contract or rollover",
+        "dataset_id": "eurusd_dukascopy_20y",
+        "files": {
+          "D1": {
+            "bytes": 265598,
+            "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_D1.csv",
+            "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+            "rows_after_filter": 313,
+            "rows_before_filter": 6258,
+            "sha256": "9738c970f3b9ef75e83aad3509a69d267a895fb47ac8176f75b78a24bf1665d2",
+            "timeframe": "D1",
+            "timestamp_field": "time",
+            "timezone_policy": "naive CSV timestamps interpreted as UTC",
+            "window_end": "2025-12-31T00:00:00+00:00",
+            "window_start": "2025-01-01T00:00:00+00:00"
+          },
+          "H1": {
+            "bytes": 6399327,
+            "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H1.csv",
+            "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+            "rows_after_filter": 6205,
+            "rows_before_filter": 124377,
+            "sha256": "c83e608678f98c55fbddeecc1b363ff3c6c3b8cee0ac95c3c34318a5a24a1139",
+            "timeframe": "H1",
+            "timestamp_field": "time",
+            "timezone_policy": "naive CSV timestamps interpreted as UTC",
+            "window_end": "2025-12-31T00:00:00+00:00",
+            "window_start": "2025-01-01T22:00:00+00:00"
+          },
+          "H4": {
+            "bytes": 1653194,
+            "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\datasets\\eurusd_dukascopy_20y\\EURUSD_H4.csv",
+            "row_repair": "none; invalid ordering/duplicates/OHLC fail closed",
+            "rows_after_filter": 1605,
+            "rows_before_filter": 32133,
+            "sha256": "91b985650a95882552511ccb36726f4914174d4e95cb192b52f9a194deacfc8b",
+            "timeframe": "H4",
+            "timestamp_field": "time",
+            "timezone_policy": "naive CSV timestamps interpreted as UTC",
+            "window_end": "2025-12-31T00:00:00+00:00",
+            "window_start": "2025-01-01T20:00:00+00:00"
+          }
+        },
+        "instrument": "EURUSD spot bid",
+        "license_and_permitted_use": "UNKNOWN",
+        "open_interest_semantics": "UNAVAILABLE",
+        "provider": "Dukascopy",
+        "request_parameters": "not read from a sidecar; CSV-only input boundary",
+        "rollover_rule": "not applicable",
+        "source_documentation_refs": [
+          "datasets/eurusd_dukascopy_20y/README.md"
+        ],
+        "status": "BLOCKED",
+        "symbol": "EURUSD",
+        "venue": "spot/OTC",
+        "volume_semantics": "UNAVAILABLE"
+      }
+    },
+    "status": "BLOCKED"
+  },
+  "split_policy": "registered temporal DESIGN/VALIDATION/HOLDOUT; no random split",
+  "status": "BLOCKED",
+  "training_eligible": false,
+  "windows": [
+    {
+      "diagnostics": [
+        "FUNNEL_PROVENANCE_BLOCKED",
+        "BACKTEST_PROVENANCE_NOT_PASS"
+      ],
+      "end": "2025-01-31T23:59:59+00:00",
+      "rejected": 0,
+      "rows": 1,
+      "start": "2025-01-01T00:00:00+00:00"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "artifact_hash": "fd86549f05a8aa75fdb07dd721c57eca3ab03bcfcb69caa934f777e573befdfb",
+  "artifact_kind": "ai_outcome_classifier_diagnostic_only",
+  "can_trade": false,
+  "certified_snapshot": false,
+  "config": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "can_trade": false,
+    "iterations": 300,
+    "l2": 0.0001,
+    "learning_rate": 0.05,
+    "min_class_rows": 5,
+    "mode": "DIAGNOSTIC_ONLY",
+    "seed": 17,
+    "target": "label_end_6",
+    "train_fraction": 0.6,
+    "validation_fraction": 0.2
+  },
+  "diagnostics": [
+    "no se ejecutó ajuste: faltan filas para 30 TRAIN + 10 VALIDATION + 10 TEST/OOS"
+  ],
+  "fit_executed": false,
+  "input": {
+    "format": "causal_materialized_jsonl",
+    "rows": 18,
+    "schema_hash": "f49c03d376f812efb2e32c063d0b6cccbabdd1e86ff2fa544f57597f8dac8eac",
+    "sha256": "5fd497598af2b993783ee9b56fd352ec5f1dd6a3989d2a655bd85d6134108ddc",
+    "source_name": "v2_displacement_q1_diagnostic.jsonl"
+  },
+  "minimum_window": {
+    "additional_rows_at_least": 32,
+    "available_class_counts": {
+      "continuation": 0,
+      "failure": 14,
+      "reversal": 4
+    },
+    "available_rows": 18,
+    "earliest_qualifying_window": null,
+    "minimum_partition_rows": {
+      "test": 10,
+      "train": 30,
+      "validation": 10
+    },
+    "minimum_total_rows": 50,
+    "minimum_train_class_rows": 5,
+    "window_policy": "chronological prefix; 60% train, 20% validation, remainder test"
+  },
+  "promotion_authorized": false,
+  "reason_code": "INSUFFICIENT_DATA",
+  "schema_version": "1.0",
+  "scientific_training_eligible": false,
+  "shadow_mode": true,
+  "status": "BLOCKED",
+  "target": "label_end_6",
+  "temporal_split": {
+    "split_source": "diagnostic_configured_temporal",
+    "test_rows": 5,
+    "train_rows": 10,
+    "validation_rows": 3
+  }
+}

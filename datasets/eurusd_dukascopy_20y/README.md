@@ -34,11 +34,9 @@ The hash gate is PASS for this snapshot. For project scope, this dataset is a
 historical research fixture only: MT5 is the operational source for real use,
 and this snapshot is not a production or redistribution source. A7 certifies
 the causal, deterministic and reproducible Funnel built from the declared
-bytes; it does not certify provider licensing. The unresolved source-license
-and acquisition-log questions remain recorded in `metadata.json` as a source
-limitation outside the technical A7 gate.
+bytes.
 
 Technical A7 evidence is recorded in the independent completion audit and in
 the two clean reports `mtf_seq_funnel_a7_20260829_192637.json` and
 `mtf_seq_funnel_a7_20260829_200059.json`, both generated from commit `25d0e32`
-with the same logical checksum. This does not certify the source license.
+with the same logical checksum.

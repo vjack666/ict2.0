@@ -1,0 +1,33 @@
+{
+  "can_trade": false,
+  "data_end_with_resolution_buffer": "2023-01-09",
+  "diagnostic_only": true,
+  "full_context": {
+    "direction_flip_invalidations": 2,
+    "excluded_post_oos_trades": 0,
+    "open_or_unresolved": 4,
+    "resolution_buffer_end": "2023-01-09",
+    "resolved": 1,
+    "signals": 5,
+    "sl": 1,
+    "tp": 0,
+    "trades": 5
+  },
+  "h4_only": {
+    "direction_flip_invalidations": 33,
+    "excluded_post_oos_trades": 1,
+    "open_or_unresolved": 7,
+    "resolution_buffer_end": "2023-01-09",
+    "resolved": 7,
+    "signals": 14,
+    "sl": 7,
+    "tp": 0,
+    "trades": 14
+  },
+  "horizon_bars": 200,
+  "note": "TP/SL only are outcomes; OPEN remains unresolved.",
+  "oos_end": "2022-12-30T23:45:00+00:00",
+  "scope": "FIXED_OOS_WINDOW_CONTEXT_COMPARISON",
+  "start": "2022-10-01",
+  "status": "COMPLETED_DIAGNOSTIC_ONLY"
+}

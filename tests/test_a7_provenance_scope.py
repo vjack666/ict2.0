@@ -16,12 +16,11 @@ def _report(**overrides):
     return report
 
 
-def test_a7_technical_provenance_does_not_require_source_authorization():
+def test_a7_technical_provenance_does_not_require_fixture_legal_metadata():
     report = _report(
         provenance_source={
             "metadata_sha256": "meta-hash",
             "source_provenance_complete": False,
-            "license_review_status": "REVIEW_BLOCKED",
         }
     )
     assert _a7_technical_provenance_pass(report)

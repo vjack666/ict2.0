@@ -1,0 +1,500 @@
+{
+  "artifact_checksum": "b3352b1a36f60264c74f3deeffcba08c75a7bcf850740f189d87783012e0c929",
+  "chunks": [
+    {
+      "checksum": "36eb83b683ae36d819dcc81ccda06d430b0830504c13753dccd4e4018927af2a",
+      "end": 499,
+      "end_time": "2007-12-10T02:45:00+00:00",
+      "id": "CHUNK-000000",
+      "path": "chunks/CHUNK-000000.json",
+      "start": 0,
+      "start_time": "2007-12-02T22:15:00+00:00"
+    },
+    {
+      "checksum": "1d7987519d288cef33fb5efd8ff416986aac4533946d62a2090c8e2062aa257e",
+      "end": 999,
+      "end_time": "2007-12-17T07:30:00+00:00",
+      "id": "CHUNK-000001",
+      "path": "chunks/CHUNK-000001.json",
+      "start": 500,
+      "start_time": "2007-12-10T03:00:00+00:00"
+    },
+    {
+      "checksum": "a0888872ed2c6b2d6947665649a5f2dddc5ff5510759b9aa68ad6b5960093e2c",
+      "end": 1499,
+      "end_time": "2007-12-24T12:15:00+00:00",
+      "id": "CHUNK-000002",
+      "path": "chunks/CHUNK-000002.json",
+      "start": 1000,
+      "start_time": "2007-12-17T07:45:00+00:00"
+    },
+    {
+      "checksum": "4febefca74ceb5cc6e249c83d39cba797fc987f4493cf04e520c2afb50571a6e",
+      "end": 1999,
+      "end_time": "2007-12-31T17:00:00+00:00",
+      "id": "CHUNK-000003",
+      "path": "chunks/CHUNK-000003.json",
+      "start": 1500,
+      "start_time": "2007-12-24T12:30:00+00:00"
+    },
+    {
+      "checksum": "a85117c49b7b18046ed4fe2df3e719cfe6b1e587bbb9cbf0b6c2fa4cea654eb2",
+      "end": 2499,
+      "end_time": "2008-01-07T21:45:00+00:00",
+      "id": "CHUNK-000004",
+      "path": "chunks/CHUNK-000004.json",
+      "start": 2000,
+      "start_time": "2007-12-31T17:15:00+00:00"
+    },
+    {
+      "checksum": "20a4459ca0d2b982c3cac338979d5615754184e39df31532274ed7a3f79308cc",
+      "end": 2999,
+      "end_time": "2008-01-15T02:30:00+00:00",
+      "id": "CHUNK-000005",
+      "path": "chunks/CHUNK-000005.json",
+      "start": 2500,
+      "start_time": "2008-01-07T22:00:00+00:00"
+    },
+    {
+      "checksum": "963108801dea1f52b9b3ce391600a1c14c93489d22171ed268ddbf28245da36d",
+      "end": 3499,
+      "end_time": "2008-01-22T07:15:00+00:00",
+      "id": "CHUNK-000006",
+      "path": "chunks/CHUNK-000006.json",
+      "start": 3000,
+      "start_time": "2008-01-15T02:45:00+00:00"
+    },
+    {
+      "checksum": "7b73daed034c2bf8dc0181e95c87966c68da5406d504640bab595614f0910b68",
+      "end": 3999,
+      "end_time": "2008-01-29T12:00:00+00:00",
+      "id": "CHUNK-000007",
+      "path": "chunks/CHUNK-000007.json",
+      "start": 3500,
+      "start_time": "2008-01-22T07:30:00+00:00"
+    },
+    {
+      "checksum": "72dec2cdf1ac1c43b8625c6e96c099381b104383997d4b707634b824802a665f",
+      "end": 4499,
+      "end_time": "2008-02-05T16:45:00+00:00",
+      "id": "CHUNK-000008",
+      "path": "chunks/CHUNK-000008.json",
+      "start": 4000,
+      "start_time": "2008-01-29T12:15:00+00:00"
+    },
+    {
+      "checksum": "879274d53c54ff72abc757016dec185c1aff3e92fa78a33a7e2009eb2ff02fc3",
+      "end": 4999,
+      "end_time": "2008-02-12T21:30:00+00:00",
+      "id": "CHUNK-000009",
+      "path": "chunks/CHUNK-000009.json",
+      "start": 4500,
+      "start_time": "2008-02-05T17:00:00+00:00"
+    },
+    {
+      "checksum": "152f8cc36755e881344601dbc9c96c2505a57ba8890b8a2c6ee715b9670919de",
+      "end": 5499,
+      "end_time": "2008-02-20T02:15:00+00:00",
+      "id": "CHUNK-000010",
+      "path": "chunks/CHUNK-000010.json",
+      "start": 5000,
+      "start_time": "2008-02-12T21:45:00+00:00"
+    },
+    {
+      "checksum": "641f5c4c17d21d7aaa64fffaada6a8a69dcfb64594711428f98bd4422307f361",
+      "end": 5999,
+      "end_time": "2008-02-27T07:00:00+00:00",
+      "id": "CHUNK-000011",
+      "path": "chunks/CHUNK-000011.json",
+      "start": 5500,
+      "start_time": "2008-02-20T02:30:00+00:00"
+    },
+    {
+      "checksum": "9ff4264a8026ea05499e49ec8f0012e648a130497a483ae5ec0475a9b4f0b169",
+      "end": 6499,
+      "end_time": "2008-03-05T11:45:00+00:00",
+      "id": "CHUNK-000012",
+      "path": "chunks/CHUNK-000012.json",
+      "start": 6000,
+      "start_time": "2008-02-27T07:15:00+00:00"
+    },
+    {
+      "checksum": "45dc39229db79b89980a88af265e1f53b880e084d7a4d3fd2384ef51276a8923",
+      "end": 6999,
+      "end_time": "2008-03-12T15:30:00+00:00",
+      "id": "CHUNK-000013",
+      "path": "chunks/CHUNK-000013.json",
+      "start": 6500,
+      "start_time": "2008-03-05T12:00:00+00:00"
+    },
+    {
+      "checksum": "c35288d47126bcddce14e287d5669a7499743fefff2d9f9d0d49da6b0bb10931",
+      "end": 7499,
+      "end_time": "2008-03-19T20:15:00+00:00",
+      "id": "CHUNK-000014",
+      "path": "chunks/CHUNK-000014.json",
+      "start": 7000,
+      "start_time": "2008-03-12T15:45:00+00:00"
+    },
+    {
+      "checksum": "f72a1b466ce369b93c90221538a30010c550fef12f503bbe27d28d4491237a27",
+      "end": 7999,
+      "end_time": "2008-03-27T01:00:00+00:00",
+      "id": "CHUNK-000015",
+      "path": "chunks/CHUNK-000015.json",
+      "start": 7500,
+      "start_time": "2008-03-19T20:30:00+00:00"
+    },
+    {
+      "checksum": "f5f501d4e177453d0df7cb858f80fed99df0e2e5ca77cd309a61e7fb39c6b49a",
+      "end": 8499,
+      "end_time": "2008-04-03T05:45:00+00:00",
+      "id": "CHUNK-000016",
+      "path": "chunks/CHUNK-000016.json",
+      "start": 8000,
+      "start_time": "2008-03-27T01:15:00+00:00"
+    },
+    {
+      "checksum": "3940c18314ecab6d38f292d8756b75891fbeed3bcd4c727818621d7a4ac5636b",
+      "end": 8999,
+      "end_time": "2008-04-10T10:30:00+00:00",
+      "id": "CHUNK-000017",
+      "path": "chunks/CHUNK-000017.json",
+      "start": 8500,
+      "start_time": "2008-04-03T06:00:00+00:00"
+    },
+    {
+      "checksum": "65954fe7a368a97a45ad1c3ea4b2c0ff5300e34d953eacbad5418ff086fb32f3",
+      "end": 9499,
+      "end_time": "2008-04-17T15:15:00+00:00",
+      "id": "CHUNK-000018",
+      "path": "chunks/CHUNK-000018.json",
+      "start": 9000,
+      "start_time": "2008-04-10T10:45:00+00:00"
+    },
+    {
+      "checksum": "e47866bd6d3106ec912ebcc4f6dcece0d3ea48823dcef352437e779e101919ef",
+      "end": 9999,
+      "end_time": "2008-04-24T20:00:00+00:00",
+      "id": "CHUNK-000019",
+      "path": "chunks/CHUNK-000019.json",
+      "start": 9500,
+      "start_time": "2008-04-17T15:30:00+00:00"
+    },
+    {
+      "checksum": "953b7b71a3be95cc67bb67a65af0f6b1fe9ea76f7133beae877779ee83d40d18",
+      "end": 10499,
+      "end_time": "2008-05-02T00:45:00+00:00",
+      "id": "CHUNK-000020",
+      "path": "chunks/CHUNK-000020.json",
+      "start": 10000,
+      "start_time": "2008-04-24T20:15:00+00:00"
+    },
+    {
+      "checksum": "245b22ff3e87b5136f313797590a1112a3ffd9b5112078245b4441f02365e19c",
+      "end": 10999,
+      "end_time": "2008-05-09T05:30:00+00:00",
+      "id": "CHUNK-000021",
+      "path": "chunks/CHUNK-000021.json",
+      "start": 10500,
+      "start_time": "2008-05-02T01:00:00+00:00"
+    },
+    {
+      "checksum": "1684487f3a8b11b89462a2fa8a27a28f1f0699903473b8b1e0fd028fac89d3aa",
+      "end": 11499,
+      "end_time": "2008-05-16T10:15:00+00:00",
+      "id": "CHUNK-000022",
+      "path": "chunks/CHUNK-000022.json",
+      "start": 11000,
+      "start_time": "2008-05-09T05:45:00+00:00"
+    },
+    {
+      "checksum": "b830105306f30a2bd8c5c9206de5ce365edaf832bb5b607b06eee283630574d6",
+      "end": 11999,
+      "end_time": "2008-05-23T15:00:00+00:00",
+      "id": "CHUNK-000023",
+      "path": "chunks/CHUNK-000023.json",
+      "start": 11500,
+      "start_time": "2008-05-16T10:30:00+00:00"
+    },
+    {
+      "checksum": "9916d19d5d035c8cce677e67f938fc8193108a2412a53d615d563032d341edc5",
+      "end": 12499,
+      "end_time": "2008-05-30T19:45:00+00:00",
+      "id": "CHUNK-000024",
+      "path": "chunks/CHUNK-000024.json",
+      "start": 12000,
+      "start_time": "2008-05-23T15:15:00+00:00"
+    },
+    {
+      "checksum": "820bc9e54445c1d9f7f70c50e931f7e0089e04fd2c1baf4e6fbf5d4b068f0c54",
+      "end": 12999,
+      "end_time": "2008-06-09T00:15:00+00:00",
+      "id": "CHUNK-000025",
+      "path": "chunks/CHUNK-000025.json",
+      "start": 12500,
+      "start_time": "2008-05-30T20:00:00+00:00"
+    },
+    {
+      "checksum": "b63eadd04a59352cfd5479a3ffcbbb64d5189c69d4ff610d52209dd01aa2b148",
+      "end": 13499,
+      "end_time": "2008-06-16T05:00:00+00:00",
+      "id": "CHUNK-000026",
+      "path": "chunks/CHUNK-000026.json",
+      "start": 13000,
+      "start_time": "2008-06-09T00:30:00+00:00"
+    },
+    {
+      "checksum": "d98a4851031214c9bec956800945bee6158e768188a70737eee8a3e6db6441c4",
+      "end": 13999,
+      "end_time": "2008-06-23T09:45:00+00:00",
+      "id": "CHUNK-000027",
+      "path": "chunks/CHUNK-000027.json",
+      "start": 13500,
+      "start_time": "2008-06-16T05:15:00+00:00"
+    },
+    {
+      "checksum": "3dedde698742b76855c9dc900bcd10c11743c45edfd981de6ab44cae97680eb8",
+      "end": 14499,
+      "end_time": "2008-06-30T14:30:00+00:00",
+      "id": "CHUNK-000028",
+      "path": "chunks/CHUNK-000028.json",
+      "start": 14000,
+      "start_time": "2008-06-23T10:00:00+00:00"
+    },
+    {
+      "checksum": "e20f5e8d2f5bec81e78d48a810ac202055fb8b8bc49e508d92b242eff9c5cdea",
+      "end": 14999,
+      "end_time": "2008-07-07T19:15:00+00:00",
+      "id": "CHUNK-000029",
+      "path": "chunks/CHUNK-000029.json",
+      "start": 14500,
+      "start_time": "2008-06-30T14:45:00+00:00"
+    },
+    {
+      "checksum": "de16330285a3bdae0622b81f28480442dda714a392fe86578614de6c78ff1d63",
+      "end": 15499,
+      "end_time": "2008-07-15T00:00:00+00:00",
+      "id": "CHUNK-000030",
+      "path": "chunks/CHUNK-000030.json",
+      "start": 15000,
+      "start_time": "2008-07-07T19:30:00+00:00"
+    },
+    {
+      "checksum": "d67496b0a43bef706daded3e9dcb22dcd9ba6bcf751e8647d7cc4669f1ced6c2",
+      "end": 15999,
+      "end_time": "2008-07-22T04:45:00+00:00",
+      "id": "CHUNK-000031",
+      "path": "chunks/CHUNK-000031.json",
+      "start": 15500,
+      "start_time": "2008-07-15T00:15:00+00:00"
+    },
+    {
+      "checksum": "f88349b1b5a5d6ebba6cc25b5254f0acb800634ef4cbacf8d7bef4b421ed53f3",
+      "end": 16499,
+      "end_time": "2008-07-29T09:30:00+00:00",
+      "id": "CHUNK-000032",
+      "path": "chunks/CHUNK-000032.json",
+      "start": 16000,
+      "start_time": "2008-07-22T05:00:00+00:00"
+    },
+    {
+      "checksum": "20311ef5dbcd782cd0bdc578bb8ed293c48ba71bc6c8678ffb8727522da5c79b",
+      "end": 16999,
+      "end_time": "2008-08-05T14:15:00+00:00",
+      "id": "CHUNK-000033",
+      "path": "chunks/CHUNK-000033.json",
+      "start": 16500,
+      "start_time": "2008-07-29T09:45:00+00:00"
+    },
+    {
+      "checksum": "bb387be907ea3715cd8bc5471b6ac7e6f3bd3678915b1f0a63c054ec06eb8b72",
+      "end": 17499,
+      "end_time": "2008-08-12T19:00:00+00:00",
+      "id": "CHUNK-000034",
+      "path": "chunks/CHUNK-000034.json",
+      "start": 17000,
+      "start_time": "2008-08-05T14:30:00+00:00"
+    },
+    {
+      "checksum": "803aef519a7c23829bde5f79f24bcc36c067c2bb554c583b6ed03bb7e4415814",
+      "end": 17999,
+      "end_time": "2008-08-19T23:45:00+00:00",
+      "id": "CHUNK-000035",
+      "path": "chunks/CHUNK-000035.json",
+      "start": 17500,
+      "start_time": "2008-08-12T19:15:00+00:00"
+    },
+    {
+      "checksum": "cf0c363a94e95a5b763871d9ece7830e2d93f7d059791353eea5c1dcd8f45898",
+      "end": 18499,
+      "end_time": "2008-08-27T04:30:00+00:00",
+      "id": "CHUNK-000036",
+      "path": "chunks/CHUNK-000036.json",
+      "start": 18000,
+      "start_time": "2008-08-20T00:00:00+00:00"
+    },
+    {
+      "checksum": "ac841fa15f644462c35042ad905e01d173ccd1a8fc66a8b6e2267c008775ea36",
+      "end": 18999,
+      "end_time": "2008-09-03T09:15:00+00:00",
+      "id": "CHUNK-000037",
+      "path": "chunks/CHUNK-000037.json",
+      "start": 18500,
+      "start_time": "2008-08-27T04:45:00+00:00"
+    },
+    {
+      "checksum": "91b9e4c1170aadc0ff5d5553e08bd3504c5c6c210c9c03ac724325bf775adddf",
+      "end": 19499,
+      "end_time": "2008-09-10T14:00:00+00:00",
+      "id": "CHUNK-000038",
+      "path": "chunks/CHUNK-000038.json",
+      "start": 19000,
+      "start_time": "2008-09-03T09:30:00+00:00"
+    },
+    {
+      "checksum": "fbfa85dcfb898a88bc6686e2c6ae03df562544c6ad24ddc014c9e96a934cdd63",
+      "end": 19999,
+      "end_time": "2008-09-17T18:45:00+00:00",
+      "id": "CHUNK-000039",
+      "path": "chunks/CHUNK-000039.json",
+      "start": 19500,
+      "start_time": "2008-09-10T14:15:00+00:00"
+    },
+    {
+      "checksum": "9a30e97b12272570ef576ab56ba025048c5600adc006a0009446431f0c0c1a41",
+      "end": 20499,
+      "end_time": "2008-09-24T23:30:00+00:00",
+      "id": "CHUNK-000040",
+      "path": "chunks/CHUNK-000040.json",
+      "start": 20000,
+      "start_time": "2008-09-17T19:00:00+00:00"
+    },
+    {
+      "checksum": "1758bddacd1d411693df0ffeee232e47e34ef7befa34833750742deb8c9b9119",
+      "end": 20999,
+      "end_time": "2008-10-02T04:15:00+00:00",
+      "id": "CHUNK-000041",
+      "path": "chunks/CHUNK-000041.json",
+      "start": 20500,
+      "start_time": "2008-09-24T23:45:00+00:00"
+    },
+    {
+      "checksum": "609505d7a1fa5ff4f70cdb7ec9c5db65f75650d4a352a5c6ac9f474e0e6ca2cb",
+      "end": 21499,
+      "end_time": "2008-10-09T09:00:00+00:00",
+      "id": "CHUNK-000042",
+      "path": "chunks/CHUNK-000042.json",
+      "start": 21000,
+      "start_time": "2008-10-02T04:30:00+00:00"
+    },
+    {
+      "checksum": "7b254fce522fa8936bde660b53dac727acbab62ae486bd2e80aa43efa7df8620",
+      "end": 21999,
+      "end_time": "2008-10-16T13:45:00+00:00",
+      "id": "CHUNK-000043",
+      "path": "chunks/CHUNK-000043.json",
+      "start": 21500,
+      "start_time": "2008-10-09T09:15:00+00:00"
+    },
+    {
+      "checksum": "08bc65fb89d3a039b8982cc8bf3364952ead61d0126f0ff1ec6e226a9f934b02",
+      "end": 22499,
+      "end_time": "2008-10-23T18:30:00+00:00",
+      "id": "CHUNK-000044",
+      "path": "chunks/CHUNK-000044.json",
+      "start": 22000,
+      "start_time": "2008-10-16T14:00:00+00:00"
+    },
+    {
+      "checksum": "21707842eba7aef9e578fcbedd94a24a9b13409490719de63c17854f1c48a54c",
+      "end": 22999,
+      "end_time": "2008-10-30T23:15:00+00:00",
+      "id": "CHUNK-000045",
+      "path": "chunks/CHUNK-000045.json",
+      "start": 22500,
+      "start_time": "2008-10-23T18:45:00+00:00"
+    },
+    {
+      "checksum": "c10b338109ee4a995e0aea5034bf6b7354fe20fc71b8a4d9fdbdf1a11f33ea96",
+      "end": 23499,
+      "end_time": "2008-11-07T05:00:00+00:00",
+      "id": "CHUNK-000046",
+      "path": "chunks/CHUNK-000046.json",
+      "start": 23000,
+      "start_time": "2008-10-30T23:30:00+00:00"
+    },
+    {
+      "checksum": "fb2413f64358c3e84a1bb33541d9c3294781b8a767a1a9885db98bba61ea8a56",
+      "end": 23999,
+      "end_time": "2008-11-14T09:45:00+00:00",
+      "id": "CHUNK-000047",
+      "path": "chunks/CHUNK-000047.json",
+      "start": 23500,
+      "start_time": "2008-11-07T05:15:00+00:00"
+    },
+    {
+      "checksum": "c55295ba756a27c0e7d057ffd1ee2e2a3e9038d43f11c4d81c203f89806ce1f8",
+      "end": 24499,
+      "end_time": "2008-11-21T14:30:00+00:00",
+      "id": "CHUNK-000048",
+      "path": "chunks/CHUNK-000048.json",
+      "start": 24000,
+      "start_time": "2008-11-14T10:00:00+00:00"
+    },
+    {
+      "checksum": "aecb5e76f2c7a10f460b5aa0fd8e868ede7a6cb9b1835e5e5f2882f2eec65157",
+      "end": 24999,
+      "end_time": "2008-11-28T19:15:00+00:00",
+      "id": "CHUNK-000049",
+      "path": "chunks/CHUNK-000049.json",
+      "start": 24500,
+      "start_time": "2008-11-21T14:45:00+00:00"
+    },
+    {
+      "checksum": "4b33ac1f9674573037b5967665dad5150066ba8993a1247a92e9b5a850c60bd1",
+      "end": 25499,
+      "end_time": "2008-12-07T23:45:00+00:00",
+      "id": "CHUNK-000050",
+      "path": "chunks/CHUNK-000050.json",
+      "start": 25000,
+      "start_time": "2008-11-28T19:30:00+00:00"
+    },
+    {
+      "checksum": "5bf65a14d434bfe7eee27c4ed97fc8719dbf3de91133393b02c39b42005c3059",
+      "end": 25999,
+      "end_time": "2008-12-15T04:30:00+00:00",
+      "id": "CHUNK-000051",
+      "path": "chunks/CHUNK-000051.json",
+      "start": 25500,
+      "start_time": "2008-12-08T00:00:00+00:00"
+    },
+    {
+      "checksum": "26c1b56a27c642ec46a14afb1be28f5e9be0739d137e1b67e3fdf8714dea0127",
+      "end": 26499,
+      "end_time": "2008-12-22T09:15:00+00:00",
+      "id": "CHUNK-000052",
+      "path": "chunks/CHUNK-000052.json",
+      "start": 26000,
+      "start_time": "2008-12-15T04:45:00+00:00"
+    },
+    {
+      "checksum": "2f7da94a93922cb47557d9398b6f19875f85dcafa4bd75007187d55eda39b21f",
+      "end": 26999,
+      "end_time": "2008-12-29T17:45:00+00:00",
+      "id": "CHUNK-000053",
+      "path": "chunks/CHUNK-000053.json",
+      "start": 26500,
+      "start_time": "2008-12-22T09:30:00+00:00"
+    },
+    {
+      "checksum": "518bbc0be0371d98f957c8a8f33a2ff7b8999f6c46e50b9246f2272702a7d46c",
+      "end": 27213,
+      "end_time": "2009-01-01T00:00:00+00:00",
+      "id": "CHUNK-000054",
+      "path": "chunks/CHUNK-000054.json",
+      "start": 27000,
+      "start_time": "2008-12-29T18:00:00+00:00"
+    }
+  ]
+}

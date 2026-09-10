@@ -9,7 +9,8 @@ DATA_MAT_DIR = Path("data/materialized/v2")
 def materialize_v2_dataset(events: list, output_path=None) -> str:
     DATA_MAT_DIR.mkdir(parents=True, exist_ok=True)
     path = output_path or DATA_MAT_DIR / "ai_outcome_v2_full.jsonl"
-    rows = [{"event": ev.event_code(), "audit_ref": ev.episode_id, "tristate_sum_check": 1.0} for ev in events]
+    rows = [{"episode_id": ev.episode_id, "audit_ref": ev.episode_id,
+             "tristate_sum_check": 1.0, "v2_profile_ref": "V2_A..F"} for ev in events]
     with open(path, "w") as f:
         for r in rows:
             f.write(json.dumps(r) + "\n")

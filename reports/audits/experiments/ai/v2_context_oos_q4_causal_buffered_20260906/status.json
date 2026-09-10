@@ -1,0 +1,12 @@
+{
+  "can_trade": false,
+  "completed": [
+    "H4_ONLY",
+    "FULL_CONTEXT"
+  ],
+  "current_step": null,
+  "diagnostic_only": true,
+  "state": "FINALIZADO",
+  "summary": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\v2_context_oos_q4_causal_buffered_20260906\\summary.json",
+  "updated_at": "2026-09-06T16:43:54.973401+00:00"
+}

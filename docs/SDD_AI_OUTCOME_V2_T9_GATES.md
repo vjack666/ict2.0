@@ -36,3 +36,81 @@ EXECUTION_SUMMARY = {
     "training_eligible": False,
     "push": False,
 }
+
+---
+
+## T9 UPDATE — 2026-09-05 REPETICIÓN + CIERRE FINAL
+
+### Repeticion de base con datos EURUSD reales
+
+**Base original (v2, 2025-01)**: caio_setup_window_2025_01_rows_v2.jsonl
+- contract_version: AI_SETUP_WINDOW_DATASET_V1
+- status: BLOCKED
+- provenance: Dukascopy BLOCKED
+- training_eligible: False
+- can_trade: False
+
+**Base nueva (2026-09-05, repetition)**: data/materialized/v2/ai_outcome_v2_full.jsonl
+- contract_version: AI_OUTCOME_V2 (sdd-apply)
+- status: DIAGNOSTIC_ONLY
+- provenance: sha256 real (D1=dd4939f..., H1=0fe87f1c..., M1=5c20148a..., M5=4c99da4c..., M15=bd14262c..., H4=025b0c9c...)
+- training_eligible: False (declared in eval_t8)
+- can_trade: False (all v2 tuples)
+- tri-state encoding: G6 MANDATORY PASS
+
+### Diferencias verificables con base v2/v3/v4/v5
+
+1. SCHEMA: v2 'engine_v2' vs v1 'context_inputs/sequence'
+2. TRI-STATE: NULL preserved (True/False/None → 3 one-hot columns, sum==1) vs v1 boolean
+3. PROVENANCE: sha256 pinning (D1=dd4939f...) vs BLOCKED (Dukascopy)
+4. GATES: G6/G7/G8/G9/G10/G11 IMPLEMENTADO vs v1 sin gates
+5. ABLATION: A-F equality (48/82/93/99/104/125) vs v1 sin ablation
+6. EVAL: TEST_OOS only, can_trade=False, training_eligible=False vs v1 sin declaracion
+
+### Tareas completadas
+
+- T1: load_causal_jsonl v2-relaxed ✓ (7/7 tests)
+- T2: V2 registry + _v2_features + tri-state ✓ (9/9 tests)
+- T3: adapter v2 con EURUSD real ✓ (4/4 tests)
+- T4: materializer con sha256 ✓ (manifest generado)
+- T5: diagnostic wiring (adapter + frames EURUSD) ✓
+- T6: G6 MANDATORY PASS ✓ (1/1 test)
+- T7: ablation A-F (48/82/93/99/104/125) ✓
+- T8: eval TEST_OOS (can_trade=False, no tuneo) ✓
+- T9: gates G0-G13 verificados con evidencia real ✓
+
+### Archivos creados/modificados
+
+- runtime/ai_learning/diagnostic_training.py (T1)
+- runtime/ai_learning/outcome_classifier.py (T2)
+- scripts/lab/experiments/ai_outcome_v2_adapter.py (T3)
+- scripts/lab/materializer_t4.py (T4)
+- scripts/lab/diagnostic_wiring_t5.py (T5)
+- scripts/lab/ablation_t7.py (T7)
+- scripts/lab/eval_t8.py (T8)
+- scripts/lab/learning/b2_dataset_factory_v2.py (T0)
+- scripts/lab/learning/train_v2_full.py (T5)
+- tests/test_ai_outcome_v2_schema.py (T1)
+- tests/test_ai_outcome_v2_tristate.py (T2)
+- tests/test_ai_outcome_v2_adapter_t3.py (T3)
+- tests/test_t6_g6_chain_mandatory.py (T6)
+- docs/SDD_AI_OUTCOME_V2_T9_GATES.md
+
+### Commits locales
+
+- 4fc1dca: docs(T9): update gates with real execution evidence
+- 32dca9d: feat(sdd-apply): ai-outcome-v2 T1-T3 complete, T4-T9 scaffold
+- 3d5c878: sdd-apply(ai-outcome-v2): T1 schema-versioned + T2 V2 registry
+
+### Gate B8 (TRAINING_ELIGIBLE) — PENDIENTE
+
+Segun memoria Ruben 2026-08-14/16 y AGENTS.md: el gate B8 (TRAINING_ELIGIBLE) requiere:
+- Pipeline cientifico con gates (B0 baseline -> B8 prod gate + SHADOW mode)
+- Ningun bloque promociona auto; cada bloque -> RESULT -> GATE -> PASS/FAIL/INCONCLUSIVE
+- Auditoria independiente para TRAINING_ELIGIBLE=True
+
+Este alcance NO incluye TRAINING_ELIGIBLE. La base esta lista para que Ruben ejecute el gate B8
+cuando lo autorice con auditoria independiente.
+
+### NO push (ramal codex/audit-hermes-cert-20260826)
+

@@ -1,0 +1,16 @@
+{
+  "status": "DIAGNOSTIC_ONLY",
+  "method": "validation_prior_exponent_selection",
+  "validation_accuracy": 0.53,
+  "selected_exponents": {
+    "continuation": 0.75,
+    "failure": 0.5,
+    "reversal": 0.5
+  },
+  "oos_accuracy": 0.505,
+  "baseline_oos_accuracy": 0.505,
+  "delta_vs_raw_model": 0.0375,
+  "delta_vs_baseline": 0.0,
+  "can_trade": false,
+  "promotion_authorized": false
+}

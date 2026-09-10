@@ -1,0 +1,9 @@
+{
+  "state": "FAILED",
+  "updated_at": "2026-09-06T20:17:54.055925+00:00",
+  "can_trade": false,
+  "mode": "DIAGNOSTIC_ONLY",
+  "error_type": "AttributeError",
+  "error": "'Series' object has no attribute 'columns'",
+  "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\scripts\\run_mechanical_bot_monthly.py\", line 49, in run_month\n    artifact = run_month_from_parquets(data_dir, start, end, events_path=events_path)\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\backtest\\mechanical_bot_monthly.py\", line 385, in run_month_from_parquets\n    result = replay.run(start, end)\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\backtest\\mechanical_bot_monthly.py\", line 216, in run\n    context = freeze_context(self.frames, cutoff)\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\backtest\\mechanical_bot_monthly.py\", line 149, in freeze_context\n    stack = build_context_stack(canonical, cutoff, tfs=(\"D1\", \"H4\", \"H1\", \"M15\"))\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\engine\\plan.py\", line 483, in build_context_stack\n    stack = {tf: snapshot_tf(ms, tf, t, closed_idx=_ci.get(tf)) for tf in tfs if tf in ms or tf in tfs}\n                 ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\engine\\plan.py\", line 202, in snapshot_tf\n    \"trend\": _bias_from_frame(df, t),\n             ~~~~~~~~~~~~~~~~^^^^^^^\n  File \"C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\engine\\plan.py\", line 109, in _bias_from_frame\n    or \"choch_proj_level\" not in source.columns\n                                 ^^^^^^^^^^^^^^\n  File \"C:\\Users\\v_jac\\AppData\\Roaming\\Python\\Python314\\site-packages\\pandas\\core\\generic.py\", line 6206, in __getattr__\n    return object.__getattribute__(self, name)\n           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^\nAttributeError: 'Series' object has no attribute 'columns'\n"
+}

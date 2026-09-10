@@ -1,0 +1,50 @@
+{
+  "status": "DIAGNOSTIC_ONLY",
+  "can_trade": false,
+  "initial_balance_usd": 5000.0,
+  "final_balance_usd": 5000.0,
+  "gross_pnl_usd": 0,
+  "net_pnl_usd": 0,
+  "costs_usd": 0,
+  "cycles": 0,
+  "tp_cycles": 0,
+  "sl_risk_cycles": 0,
+  "max_drawdown_usd": 0.0,
+  "max_drawdown_pct": 0.0,
+  "ambiguous_cases": 0,
+  "sessions": {
+    "LONDON": {
+      "cycles": 0,
+      "gross_pnl_usd": 0.0,
+      "net_pnl_usd": 0.0,
+      "costs_usd": 0.0,
+      "tp": 0,
+      "sl": 0
+    },
+    "NEW_YORK": {
+      "cycles": 0,
+      "gross_pnl_usd": 0.0,
+      "net_pnl_usd": 0.0,
+      "costs_usd": 0.0,
+      "tp": 0,
+      "sl": 0
+    }
+  },
+  "balance_points": [
+    {
+      "time": "start",
+      "balance": 5000.0,
+      "drawdown_usd": 0.0,
+      "pnl_cumulative": 0.0
+    }
+  ],
+  "pnl_values": [],
+  "source": "reports\\mechanical_bot\\debug-2026-08-01-v3\\backtest.json",
+  "records_read": 1,
+  "plots": [
+    "reports\\mechanical_bot\\debug-2026-08-01-v3\\balance.png",
+    "reports\\mechanical_bot\\debug-2026-08-01-v3\\drawdown.png",
+    "reports\\mechanical_bot\\debug-2026-08-01-v3\\pnl_acumulado.png",
+    "reports\\mechanical_bot\\debug-2026-08-01-v3\\distribucion_pnl.png"
+  ]
+}

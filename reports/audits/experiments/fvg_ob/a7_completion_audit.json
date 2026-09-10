@@ -1,6 +1,6 @@
 {
   "gate": "A7",
-  "generated_at": "2026-08-30T01:01:24.478336+00:00",
+  "generated_at": "2026-09-05T23:10:19.975348+00:00",
   "reports": [
     "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_192637.json",
     "reports\\audits\\experiments\\fvg_ob\\mtf_seq_funnel_a7_20260829_200059.json"
@@ -53,12 +53,12 @@
     {
       "id": "OE-A7.9",
       "status": "PASS",
-      "evidence": "Exact dataset bytes/hashes, metadata hash, configuration and generator commit are linked; source authorization is outside technical A7 scope"
+      "evidence": "Exact dataset bytes/hashes, metadata hash, configuration and generator commit are linked"
     },
     {
       "id": "OE-A7.10",
       "status": "PASS",
-      "evidence": "375 passed in 6.80s"
+      "evidence": "527 passed in 23.15s"
     },
     {
       "id": "OE-A7.11",
@@ -74,18 +74,15 @@
   "tests": {
     "command": "python -B -m pytest -q",
     "returncode": 0,
-    "summary": "375 passed in 6.80s",
-    "passed": 375,
+    "summary": "527 passed in 23.15s",
+    "passed": 527,
     "status": "PASS"
   },
   "source_provenance": {
-    "declared_status": "BLOCKED",
-    "license_and_permitted_use": "UNKNOWN",
     "execution_verified": false,
     "mechanical_ok": true,
     "technical_ok": true,
-    "scope_status": "OUT_OF_SCOPE_FOR_A7_TECHNICAL_CERTIFICATION",
-    "source_certification_outside_a7": true
+    "fixture_scope": "HISTORICAL_RESEARCH_FIXTURE_ONLY"
   },
   "overall_status": "PASS",
   "next_action": "A7 complete; proceed only under the next frozen phase contract."

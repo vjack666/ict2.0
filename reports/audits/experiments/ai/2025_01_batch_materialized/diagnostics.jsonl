@@ -1,0 +1,4 @@
+{"batch": 1, "diagnostic": "A7_EVIDENCE_MISSING", "partition": "2025-01"}
+{"batch": 1, "diagnostic": "RESEARCH_GATE_MISSING", "partition": "2025-01"}
+{"batch": 0, "diagnostic": "FUNNEL_PROVENANCE_NOT_PASS", "partition": "_global"}
+{"batch": 0, "diagnostic": "BACKTEST_PROVENANCE_NOT_PASS", "partition": "_global"}

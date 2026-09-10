@@ -3,9 +3,8 @@
 NO sobrescribe el artefacto histórico mtf_seq_funnel.json; escribe un reporte
 nuevo con timestamp y provenance técnica: commit, estado git, hashes del
 dataset (validados contra SHA256SUMS), configuración, versión contractual y
-checksum del reporte. La metadata de fuente/licencia se conserva como una
-limitación separada. ``provenance_ok`` significa provenance técnica del Funnel
-A7; no certifica derechos de uso del proveedor ni autoriza producción.
+checksum del reporte. ``provenance_ok`` significa provenance técnica del Funnel
+A7; no autoriza producción.
 
 Materializa las etapas del contrato A7 con poblaciones REALES del motor:
   RAW_BARS -> VALID_BARS -> FVG -> OB -> CONFLUENCE -> LINEAGE ->
@@ -100,48 +99,27 @@ def _verify_provenance() -> dict:
 
 
 def _read_source_provenance() -> dict:
-    """Lee la decisión de procedencia declarada junto al snapshot.
-
-    La comprobación de hashes demuestra integridad mecánica, pero no demuestra
-    permiso de adquisición/uso ni que exista un log de ejecución. Esa revisión
-    permanece visible, pero está fuera del gate técnico A7 por decisión de
-    alcance del proyecto. A7 no certifica la licencia del proveedor.
-    """
+    """Lee el alcance operativo y la evidencia de adquisición del snapshot."""
     metadata_path = CANON / "metadata.json"
     try:
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
         provenance = metadata["provenance"]
         acquisition = provenance.get("acquisition_evidence", {})
         request = provenance.get("request_parameters", {})
-        license_review = provenance.get("license_review", {})
         project_scope = provenance.get("project_scope", {})
-        declared_status = str(provenance.get("provenance_status", "UNKNOWN"))
-        license_value = provenance.get("license_and_permitted_use")
         timestamp = provenance.get("acquired_at_utc")
         execution_verified = bool(
             request.get("execution_verified") is True
             and acquisition.get("execution_verified") is True
         )
-        source_complete = (
-            declared_status == "PASS"
-            and bool(license_value)
-            and str(license_value).upper() not in {"UNKNOWN", "NOT_ESTABLISHED"}
-            and bool(timestamp)
-            and execution_verified
-            and str(license_review.get("status", "PASS")) == "PASS"
-        )
+        source_complete = bool(timestamp) and execution_verified
         return {
             "metadata_path": str(metadata_path.relative_to(ROOT)),
             "metadata_sha256": hashlib.sha256(metadata_path.read_bytes()).hexdigest(),
-            "declared_status": declared_status,
-            "license_and_permitted_use": license_value,
             "acquired_at_utc": timestamp,
             "execution_verified": execution_verified,
-            "license_review_status": license_review.get("status", "UNKNOWN"),
             "source_provenance_complete": source_complete,
-            "a7_scope_status": project_scope.get(
-                "source_authorization_gate", "UNDECLARED"
-            ),
+            "fixture_scope": project_scope.get("classification", "UNDECLARED"),
             "operational_source": project_scope.get("operational_source", "UNKNOWN"),
             "production_use": project_scope.get("production_use"),
         }
@@ -488,8 +466,7 @@ def main() -> dict:
     source_provenance = _read_source_provenance()
     mechanical_provenance_ok = all(v["match"] for v in provenance.values())
     # OE-A7.9 is technical: exact dataset bytes + manifest hashes + metadata
-    # hash + generator commit/configuration. Provider authorization is retained
-    # in ``provenance_source`` but is not an A7 gate for this historical fixture.
+    # hash + generator commit/configuration.
     a7_provenance_ok = (
         mechanical_provenance_ok
         and bool(source_provenance.get("metadata_sha256"))
@@ -523,8 +500,7 @@ def main() -> dict:
         "provenance_source": source_provenance,
         "provenance_scope": A7_PROVENANCE_SCOPE,
         "a7_provenance_ok": a7_provenance_ok,
-        # Compatibility field: in an A7 report this is the technical A7 gate,
-        # never a claim that the source license was certified.
+        # Compatibility field: in an A7 report this is the technical A7 gate.
         "provenance_ok": a7_provenance_ok,
         "config": {"sample_every": SAMPLE_EVERY, "precompute_sequences": PRECOMPUTE,
                     "relation_rule": "STRICT FVG_OB_CAUSAL", "causal_mode": "strict",

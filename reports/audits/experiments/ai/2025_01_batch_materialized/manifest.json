@@ -1,0 +1,81 @@
+{
+  "batches": [
+    {
+      "batch": 1,
+      "diagnostic_count": 2,
+      "episodes": 1,
+      "partition": "2025-01",
+      "path": "partitions/2025-01/batch_00001.jsonl",
+      "rows": 1,
+      "rows_sha256": "a102c510343e1a2756a319aa4f40fdba07d54653e1aec366f598b48bf7b0ed2e",
+      "status": "BLOCKED",
+      "training_eligible": false
+    }
+  ],
+  "can_trade": false,
+  "causality": {
+    "features_source": "Funnel episode.features_at_t",
+    "future_features_exported": false,
+    "labels_source": "canonical backtest trade outcome",
+    "no_replay_or_relabel": true,
+    "outcome_horizon_bars": 200
+  },
+  "contract_version": "AI_OUTCOME_BATCH_MATERIALIZER_V1",
+  "counts": {
+    "batches": 1,
+    "candles_indexed": 6205,
+    "diagnostics": 4,
+    "episodes_seen_accepted": 1,
+    "events_validated": 6805,
+    "rows": 1,
+    "trades_indexed": 1
+  },
+  "dataset_hash": "9bf2861ffa5d019f86343d2b88c1d9ebb455cfad2f87d9075068aca098575f18",
+  "diagnostics_path": "diagnostics.jsonl",
+  "generator": {
+    "branch": "codex/audit-hermes-cert-20260826",
+    "commit": "fd62bfd1851d78f92b47920eeee7e25ad4fd7848",
+    "script": "scripts/lab/experiments/ai_outcome_batch_materializer.py",
+    "worktree_state": "DIRTY"
+  },
+  "local_only": true,
+  "next_action": "Resolver provenance/A7/research_gate y ampliar volumen antes de ejecutar ai_outcome_train.py.",
+  "partitioning": {
+    "full_backtest_arrays_loaded": false,
+    "max_episodes_per_batch": 256,
+    "memory_model": "compact candle timestamp index + temporary on-disk SQLite trade index + bounded episode batch",
+    "mode": "month",
+    "source_arrays_streamed": [
+      "candles",
+      "events",
+      "trades",
+      "episodes"
+    ]
+  },
+  "source_artifacts": {
+    "backtest": {
+      "bytes": 3639953,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\visual_backtest_2025_01_h200_prefix.json",
+      "sha256": "409b49306825a428985974b87d22f7f9b6342b5cd7817cf6dc9eb162e412c92e"
+    },
+    "funnel": {
+      "bytes": 6641,
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\visual_backtest_2025_01_h200_funnel.json",
+      "sha256": "f38cfc0d74622e43bb790f7e424196f7c0a8479e2b4a935c10949641c15ac6f5"
+    }
+  },
+  "source_contracts": {
+    "backtest": "1.0",
+    "funnel": "EPISODES_FUNNEL_V1",
+    "materializer": "scripts/lab/experiments/ai_outcome_dataset.py"
+  },
+  "status": "BLOCKED",
+  "temporal_splits": {
+    "counts": {
+      "HOLDOUT": 1
+    },
+    "no_random_shuffle": true,
+    "policy": "ai_outcome_dataset.REGISTERED_SPLIT_BLOCKS"
+  },
+  "training_eligible": false
+}

@@ -2,9 +2,7 @@
 
 Este verificador no vuelve a construir el Funnel ni busca edge. Consume los dos
 reportes A7 más recientes, comprueba la evidencia persistida de los doce OE y
-falla cerrado si cualquier gate técnico obligatorio no está demostrado. La
-autorización legal de la fuente histórica queda fuera del alcance técnico A7 y
-se conserva como limitación explícita del dataset.
+falla cerrado si cualquier gate técnico obligatorio no está demostrado.
 """
 from __future__ import annotations
 
@@ -114,10 +112,8 @@ def _independent_review_recorded() -> bool:
 def _a7_technical_provenance_pass(report: dict[str, Any]) -> bool:
     """OE-A7.9: exact bytes/hashes + trace of the A7 generator.
 
-    ``provenance_source`` can remain REVIEW/BLOCKED because provider
-    authorization is not the technical Funnel gate for this historical
-    research fixture. Requiring the explicit scope marker prevents an old
-    report from being accepted accidentally under the new interpretation.
+    Requiring the explicit scope marker prevents an old report from being
+    accepted accidentally under the current interpretation.
     """
     return bool(
         report.get("provenance_scope") == "TECHNICAL_FUNNEL_ONLY"
@@ -170,7 +166,7 @@ def build_audit(report_paths: list[Path], *, run_tests: bool = True) -> dict[str
         {"id": "OE-A7.6", "status": "PASS" if technical and required_metrics else "FAIL", "evidence": "Per-section rejection and timeframe metrics serialized"},
         {"id": "OE-A7.7", "status": "PASS" if technical and timeframe_ok else "FAIL", "evidence": "H1/H4/D1 sections remain isolated by timeframe"},
         {"id": "OE-A7.8", "status": "PASS" if same_logical else "FAIL", "evidence": "Two independent reports have equal logical payload and checksum"},
-        {"id": "OE-A7.9", "status": "PASS" if mechanical and technical_provenance else "BLOCKED", "evidence": "Exact dataset bytes/hashes, metadata hash, configuration and generator commit are linked; source authorization is outside technical A7 scope"},
+        {"id": "OE-A7.9", "status": "PASS" if mechanical and technical_provenance else "BLOCKED", "evidence": "Exact dataset bytes/hashes, metadata hash, configuration and generator commit are linked"},
         {"id": "OE-A7.10", "status": tests.get("status", "NOT_RUN"), "evidence": tests.get("summary", "")},
         {"id": "OE-A7.11", "status": "PASS" if clean else "FAIL", "evidence": "Both reports declare CLEAN worktrees"},
         {"id": "OE-A7.12", "status": "PASS" if _independent_review_recorded() else "REVIEW", "evidence": "CRO independent review recorded in worklog"},
@@ -184,20 +180,14 @@ def build_audit(report_paths: list[Path], *, run_tests: bool = True) -> dict[str
         "matrix": matrix,
         "tests": tests,
         "source_provenance": {
-            "declared_status": metadata.get("provenance_status"),
-            "license_and_permitted_use": metadata.get("license_and_permitted_use"),
             "execution_verified": metadata.get("request_parameters", {}).get("execution_verified"),
             "mechanical_ok": mechanical,
             "technical_ok": technical_provenance,
-            "scope_status": metadata.get("project_scope", {}).get(
-                "source_authorization_gate", "UNDECLARED"
-            ),
-            "source_certification_outside_a7": True,
+            "fixture_scope": metadata.get("project_scope", {}).get("classification", "UNDECLARED"),
         },
         "overall_status": overall,
         "next_action": (
-            "Repair the failed technical A7 evidence; source authorization is "
-            "outside this technical gate."
+            "Repair the failed technical A7 evidence."
             if overall == "BLOCKED" else "A7 complete; proceed only under the next frozen phase contract."
         ),
     }

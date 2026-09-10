@@ -1,0 +1,32 @@
+{
+  "can_trade": false,
+  "data_end_with_resolution_buffer": "2022-07-08",
+  "diagnostic_only": true,
+  "full_context": {
+    "direction_flip_invalidations": 0,
+    "excluded_post_oos_trades": 0,
+    "open_or_unresolved": 0,
+    "resolution_buffer_end": "2022-07-08",
+    "resolved": 0,
+    "signals": 0,
+    "sl": 0,
+    "tp": 0,
+    "trades": 0
+  },
+  "h4_only": {
+    "direction_flip_invalidations": 23,
+    "excluded_post_oos_trades": 0,
+    "open_or_unresolved": 4,
+    "resolution_buffer_end": "2022-07-08",
+    "resolved": 8,
+    "signals": 12,
+    "sl": 6,
+    "tp": 2,
+    "trades": 12
+  },
+  "horizon_bars": 200,
+  "note": "Resolved TP/SL only; OPEN rows are not interpreted as wins or losses.",
+  "oos_end": "2022-06-30T23:45:00+00:00",
+  "scope": "Q2_2022_OOS_AFTER_Q1_CONTEXT_CHANGE",
+  "status": "COMPLETED_DIAGNOSTIC_ONLY"
+}

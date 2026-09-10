@@ -1,0 +1,18 @@
+{
+  "state": "FINALIZADO",
+  "updated_at": "2026-09-06T20:26:46.660119+00:00",
+  "can_trade": false,
+  "mode": "DIAGNOSTIC_ONLY",
+  "artifact_path": "reports\\mechanical_bot\\debug-2026-08-01-v4\\backtest.json",
+  "events_path": "reports\\mechanical_bot\\debug-2026-08-01-v4\\events.jsonl",
+  "report_summary": "reports\\mechanical_bot\\debug-2026-08-01-v4\\summary.json",
+  "summary": {
+    "starting_balance": 5000.0,
+    "ending_balance": 5000.0,
+    "net_pnl_usd": 0.0,
+    "cycles_closed": 0,
+    "take_profit_cycles": 0,
+    "loss_cycles": 0,
+    "max_drawdown_usd": 0.0
+  }
+}

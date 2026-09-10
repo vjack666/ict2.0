@@ -1,0 +1,362 @@
+{
+  "artifact_hash": "6e3bb7c217446bbd53e8606b2e2846a304cc7b278013b49a95cd1279f3285d9b",
+  "artifact_kind": "ai_outcome_classifier_diagnostic_only",
+  "can_trade": false,
+  "certified_snapshot": false,
+  "config": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "can_trade": false,
+    "iterations": 500,
+    "l2": 0.0001,
+    "learning_rate": 0.05,
+    "min_class_rows": 5,
+    "mode": "DIAGNOSTIC_ONLY",
+    "seed": 20260831,
+    "target": "label_end_12",
+    "train_fraction": 0.6,
+    "validation_fraction": 0.2
+  },
+  "diagnostic_authorization": {
+    "certified_snapshot": false,
+    "dataset_hash": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+    "promotion_authorized": false,
+    "scope": "DIAGNOSTIC_ONLY",
+    "status": "PASS",
+    "verdict": "TRAINING_ELIGIBLE"
+  },
+  "diagnostics": [
+    "ajuste ejecutado sólo para diagnóstico local; no es certificación ni promoción"
+  ],
+  "fit_executed": true,
+  "input": {
+    "format": "causal_materialized_jsonl",
+    "rows": 53761,
+    "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+    "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+    "source_name": "wyckoff_intraday_2006_2010.jsonl"
+  },
+  "metrics": {
+    "algorithm": "deterministic_multinomial_softmax",
+    "calibration_status": "NOT_CALIBRATED",
+    "classes": [
+      "continuation",
+      "reversal",
+      "failure"
+    ],
+    "model_training_executed": true,
+    "oos_scope": "TEST_OOS never used for fitting",
+    "policy": "SHADOW_ONLY_NO_ORDER",
+    "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+    "target": "label_end_12",
+    "test_oos": {
+      "accuracy": 0.4030503115409653,
+      "class_counts": {
+        "continuation": 3230,
+        "failure": 4290,
+        "reversal": 3233
+      },
+      "log_loss": 1.090154339549795,
+      "rows": 10753
+    },
+    "train": {
+      "accuracy": 0.42866443452380953,
+      "class_counts": {
+        "continuation": 8916,
+        "failure": 13723,
+        "reversal": 9617
+      },
+      "log_loss": 1.0770977116242293,
+      "rows": 32256
+    },
+    "validation": {
+      "accuracy": 0.39890252976190477,
+      "class_counts": {
+        "continuation": 3086,
+        "failure": 4267,
+        "reversal": 3399
+      },
+      "log_loss": 1.089248953787133,
+      "rows": 10752
+    }
+  },
+  "minimum_window": {
+    "additional_rows_at_least": 0,
+    "available_class_counts": {
+      "continuation": 15232,
+      "failure": 22280,
+      "reversal": 16249
+    },
+    "available_rows": 53761,
+    "earliest_qualifying_window": {
+      "end_event_time": "2006-01-03T18:30:00+00:00",
+      "rows_required": 50,
+      "start_event_time": "2006-01-02T10:15:00+00:00",
+      "test_rows": 10,
+      "train_class_counts": {
+        "continuation": 9,
+        "failure": 12,
+        "reversal": 9
+      },
+      "train_rows": 30,
+      "validation_rows": 10
+    },
+    "minimum_partition_rows": {
+      "test": 10,
+      "train": 30,
+      "validation": 10
+    },
+    "minimum_total_rows": 50,
+    "minimum_train_class_rows": 5,
+    "window_policy": "chronological prefix; 60% train, 20% validation, remainder test"
+  },
+  "model": {
+    "artifact_hash": "150f67d666284267e18966f1896186115293d07e2d87212174e6f099c97a1773",
+    "bias": [
+      -0.16848708203645466,
+      -0.09238864328025027,
+      0.2608757253167149
+    ],
+    "can_trade": false,
+    "classes": [
+      "continuation",
+      "reversal",
+      "failure"
+    ],
+    "dataset_hash": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+    "experiment_id": "EXP-AI-OUTCOME-DIAGNOSTIC-ONLY",
+    "feature_names": [
+      "direction",
+      "sequence_depth",
+      "ict_m15_bos_bullish",
+      "ict_m15_bos_bearish",
+      "ict_m15_choch_bullish",
+      "ict_m15_choch_bearish",
+      "ict_m15_displacement_bullish",
+      "ict_m15_displacement_bearish",
+      "ict_m15_fvg_bullish",
+      "ict_m15_fvg_bearish",
+      "ict_m15_sweep_up",
+      "ict_m15_sweep_down"
+    ],
+    "mean": [
+      0.01097470238095238,
+      1.6303013392857142,
+      0.24426463293650794,
+      0.22941468253968253,
+      0.11951264880952381,
+      0.1232638888888889,
+      0.026568700396825396,
+      0.025638640873015872,
+      0.15318080357142858,
+      0.14983258928571427,
+      0.13901289682539683,
+      0.13647073412698413
+    ],
+    "metrics": {
+      "algorithm": "deterministic_multinomial_softmax",
+      "calibration_status": "NOT_CALIBRATED",
+      "classes": [
+        "continuation",
+        "reversal",
+        "failure"
+      ],
+      "model_training_executed": true,
+      "oos_scope": "TEST_OOS never used for fitting",
+      "policy": "SHADOW_ONLY_NO_ORDER",
+      "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+      "target": "label_end_12",
+      "test_oos": {
+        "accuracy": 0.4030503115409653,
+        "class_counts": {
+          "continuation": 3230,
+          "failure": 4290,
+          "reversal": 3233
+        },
+        "log_loss": 1.090154339549795,
+        "rows": 10753
+      },
+      "train": {
+        "accuracy": 0.42866443452380953,
+        "class_counts": {
+          "continuation": 8916,
+          "failure": 13723,
+          "reversal": 9617
+        },
+        "log_loss": 1.0770977116242293,
+        "rows": 32256
+      },
+      "validation": {
+        "accuracy": 0.39890252976190477,
+        "class_counts": {
+          "continuation": 3086,
+          "failure": 4267,
+          "reversal": 3399
+        },
+        "log_loss": 1.089248953787133,
+        "rows": 10752
+      }
+    },
+    "model_id": "ICT_OUTCOME_CLASSIFIER_V1_DIAGNOSTIC",
+    "model_version": "diagnostic-1.0.0",
+    "scale": [
+      0.9999397761403772,
+      0.6234192179407808,
+      0.42965034857755413,
+      0.42045640199067297,
+      0.3243907760464261,
+      0.32873987069542937,
+      0.16081916725324494,
+      0.15805474041363032,
+      0.36016169283892063,
+      0.35690724911888855,
+      0.34595998517410437,
+      0.34328774061096523
+    ],
+    "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+    "schema_version": "1.0",
+    "seed": 20260831,
+    "shadow_mode": true,
+    "snapshot_id": "DIAGNOSTIC_JSONL_7a610960d3035282",
+    "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+    "target": "label_end_12",
+    "weights": [
+      [
+        0.021221981193144557,
+        0.01517499280595755,
+        0.0011340772105076146,
+        0.017070894065370264,
+        -0.00665839575183577,
+        -0.0013951112951500035,
+        0.0417585574754979,
+        0.009791277097677511,
+        0.02503479936533236,
+        0.007195109363069578,
+        -0.01045075030986326,
+        -0.019235421623356397
+      ],
+      [
+        0.007240937103445532,
+        0.015528200444186822,
+        0.02357263594316384,
+        0.029991700698085415,
+        -0.005732296398179397,
+        -0.004399199555134078,
+        0.03643688564934503,
+        0.01442234512600978,
+        0.009064408935349145,
+        -0.006990849787344422,
+        -0.0015604975817674251,
+        0.007239457161071679
+      ],
+      [
+        -0.013196225128674641,
+        -0.026476603789909365,
+        -0.004979762643975407,
+        -0.034668402204590505,
+        -0.000745574143332573,
+        -0.010501799215743296,
+        -0.0463792319651112,
+        -0.06877400537558058,
+        -0.016654062427865858,
+        -0.010705239597826065,
+        0.02913669719278484,
+        0.01920719530258364
+      ]
+    ]
+  },
+  "promotion_authorized": false,
+  "reason_code": null,
+  "schema_version": "1.0",
+  "scientific_training_eligible": false,
+  "shadow_mode": true,
+  "status": "DIAGNOSTIC_ONLY_COMPLETED",
+  "target": "label_end_12",
+  "temporal_split": {
+    "oos_scope": "test",
+    "oos_test_rows": 10753,
+    "selection_rows": 43008,
+    "selection_scope": "train+validation",
+    "split_source": "diagnostic_configured_temporal",
+    "test_rows": 10753,
+    "time_column": "event_time",
+    "train_end": "2009-02-02T22:15:00+00:00",
+    "train_rows": 32256,
+    "validation_end": "2010-01-12T21:15:00+00:00",
+    "validation_rows": 10752
+  },
+  "train_class_counts": {
+    "continuation": 8916,
+    "failure": 13723,
+    "reversal": 9617
+  },
+  "training_plan": {
+    "config": {
+      "algorithm": "deterministic_multinomial_softmax",
+      "can_trade": false,
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.05,
+      "min_class_rows": 5,
+      "mode": "DIAGNOSTIC_ONLY",
+      "seed": 20260831,
+      "target": "label_end_12",
+      "train_fraction": 0.6,
+      "validation_fraction": 0.2
+    },
+    "dataset_hash": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+    "features": [
+      "direction",
+      "sequence_depth",
+      "ict_m15_bos_bullish",
+      "ict_m15_bos_bearish",
+      "ict_m15_choch_bullish",
+      "ict_m15_choch_bearish",
+      "ict_m15_displacement_bullish",
+      "ict_m15_displacement_bearish",
+      "ict_m15_fvg_bullish",
+      "ict_m15_fvg_bearish",
+      "ict_m15_sweep_up",
+      "ict_m15_sweep_down"
+    ],
+    "labels": [
+      "label_end_12"
+    ],
+    "metrics": {
+      "data_digest": "14f51ec4cd3bb55b0ef8a52d3487f55adbd45bf2ae117fcf45ab0a65b54ce329",
+      "model_training_executed": false,
+      "oos_scope": "test",
+      "oos_test_rows": 10753,
+      "pipeline_schema_version": "1.0",
+      "selection_rows": 43008,
+      "selection_scope": "train+validation",
+      "split_source": "diagnostic_configured_temporal",
+      "test_rows": 10753,
+      "train_rows": 32256,
+      "validation_rows": 10752
+    },
+    "model_id": "ICT_OUTCOME_CLASSIFIER_V1_DIAGNOSTIC",
+    "model_training": {
+      "executed": false,
+      "kind": "contract-skeleton"
+    },
+    "model_version": "diagnostic-1.0.0",
+    "pipeline_schema_version": "1.0",
+    "run_id": "9428d0ddf0b368457876361bc84d858bd48c367935af0f562fb986a1e68ff8d2",
+    "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+    "seed": 20260831,
+    "snapshot_id": "DIAGNOSTIC_JSONL_7a610960d3035282",
+    "split": {
+      "oos_scope": "test",
+      "oos_test_rows": 10753,
+      "selection_rows": 43008,
+      "selection_scope": "train+validation",
+      "split_source": "diagnostic_configured_temporal",
+      "test_rows": 10753,
+      "time_column": "event_time",
+      "train_end": "2009-02-02T22:15:00+00:00",
+      "train_rows": 32256,
+      "validation_end": "2010-01-12T21:15:00+00:00",
+      "validation_rows": 10752
+    }
+  }
+}

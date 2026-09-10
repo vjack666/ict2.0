@@ -1,0 +1,134 @@
+{
+  "ai_training_authorized": false,
+  "can_trade": false,
+  "missing_years": [],
+  "population": {
+    "complete_records": 113,
+    "eligible_records": 93,
+    "episodes": 93
+  },
+  "provenance": {
+    "certified": false,
+    "formal_status": "BLOCKED_PROVENANCE",
+    "reason": "Dukascopy license/permitted-use and acquired_at_utc remain unknown."
+  },
+  "run_id": "t7f_2006_2010_completion",
+  "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+  "technical_gates_pass": true,
+  "yearly": [
+    {
+      "checksum": "ebed712a70b44318ff6ea57a4d24eaaa6f935ca842f89ca0317fb8dc1be82bdc",
+      "counts": {
+        "complete_records": 35,
+        "eligible_records": 34,
+        "episodes": 34,
+        "rejections": 23,
+        "setup_records": 57,
+        "trades": 0
+      },
+      "dataset_hash": "547380dd0be1bdfea0d76bb110f35854a1150bbf5c814043d0079fa71bb51d8f",
+      "gates": {
+        "chunk_manifest": true,
+        "determinism": true,
+        "full_prefix": true,
+        "schema": true
+      },
+      "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+      "year": 2006
+    },
+    {
+      "checksum": "c6f28e76a109358ad93508a34cd27b89a94fa6c7b950b6324878fdb5f99f28d9",
+      "counts": {
+        "complete_records": 8,
+        "eligible_records": 4,
+        "episodes": 4,
+        "rejections": 13,
+        "setup_records": 17,
+        "trades": 0
+      },
+      "dataset_hash": "0bb12d6d17871f75b358044b0a5db6b3f6f045891fc17593691af72e2c24dca3",
+      "gates": {
+        "chunk_manifest": true,
+        "determinism": true,
+        "full_prefix": true,
+        "schema": true
+      },
+      "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+      "year": 2007
+    },
+    {
+      "checksum": "b3352b1a36f60264c74f3deeffcba08c75a7bcf850740f189d87783012e0c929",
+      "counts": {
+        "complete_records": 8,
+        "eligible_records": 5,
+        "episodes": 5,
+        "rejections": 17,
+        "setup_records": 22,
+        "trades": 0
+      },
+      "dataset_hash": "e098941d2ab25c952c297aa2981b5c405332bcaa2df8f9b2a54831888591e821",
+      "gates": {
+        "chunk_manifest": true,
+        "determinism": true,
+        "full_prefix": true,
+        "schema": true
+      },
+      "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+      "year": 2008
+    },
+    {
+      "checksum": "6c92a22c1ba701623e0ca6f82e23a701346e0c670106446a5b89935768c1bdf9",
+      "counts": {
+        "complete_records": 51,
+        "eligible_records": 43,
+        "episodes": 43,
+        "rejections": 40,
+        "setup_records": 83,
+        "trades": 0
+      },
+      "dataset_hash": "2001cb54a9788448434fa3ab0735106f57327ce8276879feaeb1a8205401f46f",
+      "gates": {
+        "chunk_manifest": true,
+        "determinism": true,
+        "full_prefix": true,
+        "schema": true
+      },
+      "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+      "year": 2009
+    },
+    {
+      "checksum": "3aaf8c7941750e05d100843f1940f26d5ead9b8fe0642b06ab4ac9bb6cad44fa",
+      "counts": {
+        "complete_records": 11,
+        "eligible_records": 7,
+        "episodes": 7,
+        "rejections": 11,
+        "setup_records": 18,
+        "trades": 0
+      },
+      "dataset_hash": "21501c0635bcc0346c3352b650d91ae7b6d62d1cafd5140d5960a4c2f7ae61ab",
+      "gates": {
+        "chunk_manifest": true,
+        "determinism": true,
+        "full_prefix": true,
+        "schema": true
+      },
+      "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+      "year": 2010
+    }
+  ],
+  "years_found": [
+    2006,
+    2007,
+    2008,
+    2009,
+    2010
+  ],
+  "years_requested": [
+    2006,
+    2007,
+    2008,
+    2009,
+    2010
+  ]
+}

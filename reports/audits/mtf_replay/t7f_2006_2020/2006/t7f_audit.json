@@ -1,0 +1,128 @@
+{
+  "ai_training_executed": false,
+  "can_trade": false,
+  "checksum": "ebed712a70b44318ff6ea57a4d24eaaa6f935ca842f89ca0317fb8dc1be82bdc",
+  "commit": "4a565e5d31f7d36e34c0f413bebf750509ff438b",
+  "counts": {
+    "complete_records": 35,
+    "eligible_records": 34,
+    "episodes": 34,
+    "rejections": 23,
+    "setup_records": 57,
+    "trades": 0
+  },
+  "dataset_hash": "547380dd0be1bdfea0d76bb110f35854a1150bbf5c814043d0079fa71bb51d8f",
+  "edge_measured": false,
+  "full_prefix": [
+    {
+      "cutoff": "2006-04-02T21:15:00+00:00",
+      "ratio": 0.25,
+      "replay_pass": true
+    },
+    {
+      "cutoff": "2006-07-02T21:45:00+00:00",
+      "ratio": 0.5,
+      "replay_pass": true
+    },
+    {
+      "cutoff": "2006-10-01T22:15:00+00:00",
+      "ratio": 0.75,
+      "replay_pass": true
+    },
+    {
+      "cutoff": "2006-11-23T23:30:00+00:00",
+      "ratio": 0.9,
+      "replay_pass": true
+    }
+  ],
+  "gates": {
+    "chunk_manifest": true,
+    "determinism": true,
+    "full_prefix": true,
+    "schema": true
+  },
+  "population_status": "COMPLETE_SETUP_POPULATION",
+  "producer": {
+    "bos_m15_linked": 262,
+    "displacement_m15_linked": 37,
+    "fvg_m15_linked": 9,
+    "ob_h4": 23
+  },
+  "producer_config": {
+    "poi_to_child_max_hours": 120
+  },
+  "provenance": {
+    "formal_status": "BLOCKED_PROVENANCE",
+    "mechanical_integrity": "PASS",
+    "mt5_used": false
+  },
+  "resources": {
+    "elapsed_seconds_run_1": 68.98996509995777,
+    "peak_working_set_mb_run_1": 450.5078125
+  },
+  "run_id": "t7f",
+  "sources": [
+    {
+      "bytes": 120305,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-01-01-2006-02-01.csv",
+      "sha256": "eab929e175c7c5fec7796fc921fd2078205d039966040ac0fd798379677f91e8"
+    },
+    {
+      "bytes": 108879,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-02-01-2006-03-01.csv",
+      "sha256": "09ff5e98108d2ce013aa5d83c8b17a7bf0d16ba94a12da9abf5dae66ec0eaad0"
+    },
+    {
+      "bytes": 124775,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-03-01-2006-04-01.csv",
+      "sha256": "88a1d3ac77b72973ad5a1048f0e597aa27bd104c8f4652ce0204ad078d91cd04"
+    },
+    {
+      "bytes": 109481,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-04-01-2006-05-01.csv",
+      "sha256": "9acccaec1296bd8e0241b3803b270d420c1712d901b2f8b3f037c12444934a0a"
+    },
+    {
+      "bytes": 126305,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-05-01-2006-06-01.csv",
+      "sha256": "2d888f8a9006ad238199fa4ca6cfa4ebd96a76c76cc4566038b8bb9667d608eb"
+    },
+    {
+      "bytes": 120733,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-06-01-2006-07-01.csv",
+      "sha256": "bb7eb29ef68fab1c910e8b9548fb13e8a7407a5964ec8d244c9240462250505e"
+    },
+    {
+      "bytes": 116539,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-07-01-2006-08-01.csv",
+      "sha256": "6ac97107dfd764e6d3dcf23cd4216ba5df42d2315c9a9b4e5c195022c9b61dca"
+    },
+    {
+      "bytes": 126910,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-08-01-2006-09-01.csv",
+      "sha256": "f6adba0f3ffacf7ce3f7109e3163f19ecdeefa52c0bb63b5fe3feea77a513036"
+    },
+    {
+      "bytes": 115276,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-09-01-2006-10-01.csv",
+      "sha256": "29b6e92112e056aa368357121249b94abf7db36cd3e7028f821fb3936dc29b2c"
+    },
+    {
+      "bytes": 122041,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-10-01-2006-11-01.csv",
+      "sha256": "efaf6d17d210911b0462cc7d96c0c4eeb3b00906bcbe869ef5904173422312f7"
+    },
+    {
+      "bytes": 121501,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-11-01-2006-12-01.csv",
+      "sha256": "0f481f3524497b1b35b90074817b3f3db7dc012935a76ec13e61adb9132f7f87"
+    },
+    {
+      "bytes": 115981,
+      "path": "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly/2006/eurusd-m15-bid-2006-12-01-2007-01-01.csv",
+      "sha256": "9c3936bb36a33da620e3f0245829a0b9393a21f5f43185180dc1e09cf08211d9"
+    }
+  ],
+  "status": "PASS_TECHNICAL_BLOCKED_PROVENANCE",
+  "year": 2006
+}

@@ -77,8 +77,8 @@ A0-A9 sólo puede declararse `PASS` cuando:
 El gate A7 es técnico: valida bytes, hashes, causalidad, lineage, MTF y
 reproducibilidad del Funnel. El snapshot histórico de Dukascopy se conserva
 solo como fixture de investigación porque MT5 no cubre toda la ventana; no es
-fuente de producción. La licencia del proveedor queda fuera del gate técnico
-A7 y no debe confundirse con una autorización de backtest, promoción o trading.
+fuente de producción ni debe confundirse con una autorización de backtest,
+promoción o trading.
 
 ## 7. Backtest
 

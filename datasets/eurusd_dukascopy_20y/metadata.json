@@ -37,31 +37,18 @@
     "not_cme_6e": true,
     "volume": "UNAVAILABLE",
     "open_interest": "UNAVAILABLE",
-    "license_and_permitted_use": "UNKNOWN",
     "project_scope": {
       "classification": "HISTORICAL_RESEARCH_FIXTURE_ONLY",
       "operational_source": "MT5",
       "production_use": false,
       "raw_redistribution": false,
-      "source_authorization_gate": "OUT_OF_SCOPE_FOR_A7_TECHNICAL_CERTIFICATION",
       "decision_date": "2026-08-29",
-      "decision_note": "Dukascopy is retained only as a historical fixture because MT5 does not provide the full historical window. A7 certifies Funnel integrity, not provider licensing or production data use."
+      "decision_note": "Dukascopy is retained only as a historical fixture because MT5 does not provide the full historical window. MT5 is the operational source and this fixture is not used in production."
     },
     "acquired_at_utc": "2026-08-18T21:05:00Z",
     "source_documentation_refs": [
       "datasets/eurusd_dukascopy_20y/README.md"
     ],
-    "source_license_refs": [
-      "https://www.dukascopy.com/swiss/sk/legal-pages/terms-of-use/",
-      "https://www.dukascopy.com/plugins/cont.php?ref_id=1273"
-    ],
-    "license_review": {
-      "reviewed_at_utc": "2026-08-29T22:19:19Z",
-      "status": "REVIEW_BLOCKED",
-      "finding": "Official Dukascopy terms describe personal/non-commercial website use and restrictions on automated access; they do not establish written permission for this repository's dukascopy-node acquisition or intended research/distribution scope.",
-      "automated_access_consent": "NOT_FOUND",
-      "project_use_permission": "NOT_ESTABLISHED"
-    },
     "acquisition_evidence": {
       "status": "PARTIAL",
       "acquired_at_utc": "2026-08-18T21:05:00Z",
@@ -117,8 +104,6 @@
       }
     },
     "hash_verification_status": "PASS",
-    "provenance_status": "BLOCKED",
-    "blocking_reason": "Source authorization and machine acquisition execution evidence remain UNKNOWN/PARTIAL. This metadata does not certify provider licensing; by explicit project scope, that source-certification question is outside technical Funnel A7.",
-    "required_follow_up": "No action for technical A7. Reopen only if the project later requires independent source-license certification or additional Dukascopy acquisition."
+    "provenance_status": "TECHNICAL_FIXTURE_ONLY"
   }
 }

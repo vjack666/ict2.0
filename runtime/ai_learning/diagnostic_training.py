@@ -440,10 +440,6 @@ def run_diagnostic_training(
     if feature_names != FEATURE_NAMES and feature_names not in INTRADAY_FEATURE_PROFILES.values():
         raise DiagnosticTrainingError("perfil de features no registrado")
     rows = load_causal_jsonl(jsonl_path, target=target)
-    try:
-        feature_health = validate_temporal_feature_health(rows.rows)
-    except FeatureHealthError as exc:
-        raise DiagnosticTrainingError(str(exc)) from exc
     config = {
         "algorithm": "deterministic_multinomial_softmax",
         "target": target,
@@ -458,7 +454,6 @@ def run_diagnostic_training(
         "can_trade": False,
     }
     payload = _base_payload(rows, target=target, config=config)
-    payload["feature_health"] = feature_health
     payload["minimum_window"] = _minimum_window(
         rows.rows,
         target=target,
@@ -486,6 +481,12 @@ def run_diagnostic_training(
             "split_source": "diagnostic_configured_temporal",
         }
         return _with_hash(payload)
+
+    try:
+        feature_health = validate_temporal_feature_health(rows.rows)
+    except FeatureHealthError as exc:
+        raise DiagnosticTrainingError(str(exc)) from exc
+    payload["feature_health"] = feature_health
 
     split = _build_split(
         rows.rows,

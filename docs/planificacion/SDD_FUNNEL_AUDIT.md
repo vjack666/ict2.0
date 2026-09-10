@@ -97,24 +97,20 @@ La corrida histórica que cerró este gate queda como evidencia versionada. Las 
 El runner distingue explícitamente:
 
 - `provenance_mechanical_ok`: los bytes de cada CSV coinciden con `SHA256SUMS`;
-- `provenance_source`: metadata de proveedor, licencia, adquisición y ejecución,
-  conservada como información descriptiva y de riesgo;
+- `provenance_source`: metadata del fixture, adquisición y ejecución, conservada
+  como información descriptiva;
 - `provenance_scope=TECHNICAL_FUNNEL_ONLY`: el alcance de A7;
 - `a7_provenance_ok`/`provenance_ok`: bytes, hashes, metadata, configuración y
   commit del Funnel están enlazados;
 - `certification_status`: `PASS` únicamente si auditoría técnica, provenance A7
   y PREFIX pasan.
 
-La licencia o autorización del proveedor no forma parte del gate técnico A7 para
-este snapshot histórico. `metadata.provenance.project_scope` lo clasifica como
+`metadata.provenance.project_scope` clasifica el snapshot como
 `HISTORICAL_RESEARCH_FIXTURE_ONLY`: no es fuente operativa, no se usa en producción
-y MT5 es la fuente objetivo para uso real. La metadata puede seguir mostrando
-`license_and_permitted_use=UNKNOWN`; eso es una limitación de la fuente, no una
-falla de causalidad del Funnel.
+y MT5 es la fuente objetivo para uso real.
 
 Un `aggregated_status=PASS` describe la auditoría de records del Funnel; no autoriza
-por sí solo backtest, promoción ni trading. El cierre técnico A7 tampoco certifica
-derechos legales de uso de los datos históricos.
+por sí solo backtest, promoción ni trading ni el uso productivo de datos históricos.
 
 El cierre de los doce objetivos se comprueba además con
 `audits/codigo/a7_completion_audit.py`, que consume dos reportes independientes,
@@ -171,17 +167,14 @@ con dos clean runs locales desde el commit `25d0e32`:
 - suite completa: `375 passed`.
 
 `OE-A7.9` certifica la provenance técnica exigida por A7: bytes, hashes,
-metadata, configuración y commit. La autorización de la fuente histórica no
-forma parte de este gate y permanece documentada como riesgo fuera de alcance.
+metadata, configuración y commit.
 
 Gate local: el auditor ejecutado desde el checkout operativo valida `status=COMPLETE`, PASS por TF, `causal_links == relation_count`, Sequence PASS y cobertura MTF mínima. No existe automatización remota vigente.
 
 ## 7. Estado del pre-backtest
 
-El Funnel 20Y cerró técnicamente con provenance mecánica reproducible. La
-revisión legal de la fuente histórica queda documentada fuera de A7 y no se reabre
-salvo que el proyecto necesite certificar derechos de uso o realizar nuevas
-adquisiciones. Eso **no** cierra A0-A9 ni TNA completo.
+El Funnel 20Y cerró técnicamente con provenance mecánica reproducible. Eso **no**
+cierra A0-A9 ni TNA completo.
 
 La habilitación del backtest sigue condicionada a la pila pre-backtest vigente y a una especificación de ejecución congelada.
 

@@ -1,0 +1,1054 @@
+{
+  "can_trade": false,
+  "candidate_count": 12,
+  "candidates": [
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_01_ict_only_lr0.02_l20.0001.json",
+      "artifact_file_sha256": "1079e45ee0fa8d5f845a579a569eb7c65a63d54e4e1da273538824e119e2d37e",
+      "artifact_hash": "88264b106a45eadb8c6c30b6a5c3bbe93ff7122ec244f92fd4bd055818557053",
+      "can_trade": false,
+      "candidate_id": "C01",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.02,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4030503115409653,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0897199546497347,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42866443452380953,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0771470287177118,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39890252976190477,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.088969298478607,
+          "rows": 10752
+        }
+      },
+      "profile": "ICT_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_02_ict_only_lr0.02_l20.001.json",
+      "artifact_file_sha256": "9afff6224d2cf6b0d09bc6949108ef43e7c639ce11ccdb97e8861c5783f04911",
+      "artifact_hash": "e746ea173d438959bf93e7d2b7552ca6b8405d16d737c5e52cf66d04ebd4c59c",
+      "can_trade": false,
+      "candidate_id": "C02",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.001,
+      "learning_rate": 0.02,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4030503115409653,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0897171476089809,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42866443452380953,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0771475531889207,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39890252976190477,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0889674970588334,
+          "rows": 10752
+        }
+      },
+      "profile": "ICT_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_03_ict_only_lr0.05_l20.0001.json",
+      "artifact_file_sha256": "1d482debec63383344f24b450cef2cad3db6ac113f2124265186ad1799499212",
+      "artifact_hash": "6e3bb7c217446bbd53e8606b2e2846a304cc7b278013b49a95cd1279f3285d9b",
+      "can_trade": false,
+      "candidate_id": "C03",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.05,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4030503115409653,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.090154339549795,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42866443452380953,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0770977116242293,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39890252976190477,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.089248953787133,
+          "rows": 10752
+        }
+      },
+      "profile": "ICT_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_04_ict_only_lr0.05_l20.001.json",
+      "artifact_file_sha256": "13246742a8e7a80a631db4e6ca47e36668786f7495b945ba5ec8b12236910b64",
+      "artifact_hash": "a190c196709cfd06cd6177dfbdc4e65f3d38a44f43f9c84bde9a293ee4453d54",
+      "can_trade": false,
+      "candidate_id": "C04",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.001,
+      "learning_rate": 0.05,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4030503115409653,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0901492338014596,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42866443452380953,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0770980516772295,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39890252976190477,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0892460310735974,
+          "rows": 10752
+        }
+      },
+      "profile": "ICT_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_05_wyckoff_only_lr0.02_l20.0001.json",
+      "artifact_file_sha256": "5e5f7a2e912c6bc8c98a79e575c7763526c3e3b534a1ab2aadffed87e8a03d41",
+      "artifact_hash": "2efd44e9c470c41bd24c04ba9cd37963359a16b4c31a20f7040d1ee6c314ff67",
+      "can_trade": false,
+      "candidate_id": "C05",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.02,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.40007439784246257,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0905960253060438,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.4263392857142857,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.076976861747506,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39732142857142855,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0876945318678584,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_06_wyckoff_only_lr0.02_l20.001.json",
+      "artifact_file_sha256": "b0a0e5e7c1a24698d06488931e9ad9b8a8a2c4897410b1c1687ea433fac2d8bc",
+      "artifact_hash": "bf2e6397a3810c0b77d971c3b5366b78c83591f20888e913c85d55b9c2de7f4d",
+      "can_trade": false,
+      "candidate_id": "C06",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.001,
+      "learning_rate": 0.02,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.40007439784246257,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0905913342785578,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.4263392857142857,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0769774786160966,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39732142857142855,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0876950614690202,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_07_wyckoff_only_lr0.05_l20.0001.json",
+      "artifact_file_sha256": "df1995e7a32a229d4e4e88bdef8596eef7181596645892d2b07e48ff45ac8827",
+      "artifact_hash": "0c1524ae98f98d254211cf6df1d04dd2ea9b45a5de91f264f736c8b6156a36f7",
+      "can_trade": false,
+      "candidate_id": "C07",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.05,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4001673951455408,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.090932584932586,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42627728174603174,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0769372063059386,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.3971354166666667,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0879009883609942,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_08_wyckoff_only_lr0.05_l20.001.json",
+      "artifact_file_sha256": "0b961472ed2e19e66b74c191edec155b6a3499706d872532bcc51ac4e5930c0e",
+      "artifact_hash": "2cb68f494d6330bbcef8fa38defac81e3a5d0aa7b29b22d1398e16d327fdf10c",
+      "can_trade": false,
+      "candidate_id": "C08",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.001,
+      "learning_rate": 0.05,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.4001673951455408,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0909266408809117,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42627728174603174,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0769373853388409,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.3971354166666667,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0879014467585464,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ONLY",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_09_wyckoff_ict_combined_lr0.02_l20.0001.json",
+      "artifact_file_sha256": "b24a6b00b1522beda72feabab9ffb18b5e6539b48fa520acf0b28b7dcadfa12b",
+      "artifact_hash": "14818bb989a19c949ea8b70166dea54a980fa6557f26b85e0f9b442c456a3982",
+      "can_trade": false,
+      "candidate_id": "C09",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.02,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.40249232772249605,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0896972908634985,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42878844246031744,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0760617124061889,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39880952380952384,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0874248619465716,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ICT_COMBINED",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_10_wyckoff_ict_combined_lr0.02_l20.001.json",
+      "artifact_file_sha256": "92890d1208cefe542833ca4202ca301ddeb6c9774c1f9b29cb1fa92ee0525013",
+      "artifact_hash": "a2789a4f2b8db4dc97af53e6fe4907abe77743a98a887165bc4285b8e0bd58c3",
+      "can_trade": false,
+      "candidate_id": "C10",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.001,
+      "learning_rate": 0.02,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.40249232772249605,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0896949148662325,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42878844246031744,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.076062208929589,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.39880952380952384,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0874242639552552,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ICT_COMBINED",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_11_wyckoff_ict_combined_lr0.05_l20.0001.json",
+      "artifact_file_sha256": "0c5f6a82b659de71c4fafc1722c49d5f3ff4a2efaade4c12dae7802bd2789c8a",
+      "artifact_hash": "18d17a2cfa33960752b007e059823080aa5617216ebb01660bd9f52dcd43e65c",
+      "can_trade": false,
+      "candidate_id": "C11",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.0001,
+      "learning_rate": 0.05,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.40267832232865247,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.0901123428024249,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.4289124503968254,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.075941471184837,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.3986235119047619,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.087645334876339,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ICT_COMBINED",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    },
+    {
+      "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_12_wyckoff_ict_combined_lr0.05_l20.001.json",
+      "artifact_file_sha256": "bb54b8a0a956c5187d018dbd53d95812a74878283b1bd779f358dc2e5dcebdd8",
+      "artifact_hash": "5015f4377f9f546586f5c410c166cf40ebbdb3ada8f085b0da96a6e6955a9697",
+      "can_trade": false,
+      "candidate_id": "C12",
+      "fit_executed": true,
+      "input": {
+        "format": "causal_materialized_jsonl",
+        "rows": 53761,
+        "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+        "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+        "source_name": "wyckoff_intraday_2006_2010.jsonl"
+      },
+      "iterations": 500,
+      "l2": 0.001,
+      "learning_rate": 0.05,
+      "metrics": {
+        "algorithm": "deterministic_multinomial_softmax",
+        "calibration_status": "NOT_CALIBRATED",
+        "classes": [
+          "continuation",
+          "reversal",
+          "failure"
+        ],
+        "model_training_executed": true,
+        "oos_scope": "TEST_OOS never used for fitting",
+        "policy": "SHADOW_ONLY_NO_ORDER",
+        "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+        "target": "label_end_12",
+        "test_oos": {
+          "accuracy": 0.40258532502557426,
+          "class_counts": {
+            "continuation": 3230,
+            "failure": 4290,
+            "reversal": 3233
+          },
+          "log_loss": 1.090108276670709,
+          "rows": 10753
+        },
+        "train": {
+          "accuracy": 0.42885044642857145,
+          "class_counts": {
+            "continuation": 8916,
+            "failure": 13723,
+            "reversal": 9617
+          },
+          "log_loss": 1.0759423662456802,
+          "rows": 32256
+        },
+        "validation": {
+          "accuracy": 0.3986235119047619,
+          "class_counts": {
+            "continuation": 3086,
+            "failure": 4267,
+            "reversal": 3399
+          },
+          "log_loss": 1.0876437981764702,
+          "rows": 10752
+        }
+      },
+      "profile": "WYCKOFF_ICT_COMBINED",
+      "seed": 20260831,
+      "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+      "status": "DIAGNOSTIC_ONLY_COMPLETED",
+      "temporal_split": {
+        "oos_scope": "test",
+        "oos_test_rows": 10753,
+        "selection_rows": 43008,
+        "selection_scope": "train+validation",
+        "split_source": "diagnostic_configured_temporal",
+        "test_rows": 10753,
+        "time_column": "event_time",
+        "train_end": "2009-02-02T22:15:00+00:00",
+        "train_rows": 32256,
+        "validation_end": "2010-01-12T21:15:00+00:00",
+        "validation_rows": 10752
+      }
+    }
+  ],
+  "code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+  "generated_at_utc": "2026-09-01T14:13:26.824887+00:00",
+  "holdout_2021_2025_used": false,
+  "input": {
+    "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010.jsonl",
+    "rows": 53761,
+    "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+    "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922"
+  },
+  "mode": "DIAGNOSTIC_ONLY",
+  "next_action": "Congelar el candidato y ejecutar evaluación HOLDOUT 2021-2025 sin reajuste; luego calibración, abstención y drift.",
+  "report_hash": "0ec1bced4fc309297c1bfb1280934e56872b66d6a00cfa30b3e6c02af8545cce",
+  "schema_version": "1.0",
+  "scientific_training_eligible": false,
+  "selected_candidate": {
+    "artifact": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\audits\\experiments\\ai\\wyckoff_intraday_2006_2010_optimization_postcommit_18bb22e\\candidate_10_wyckoff_ict_combined_lr0.02_l20.001.json",
+    "artifact_file_sha256": "92890d1208cefe542833ca4202ca301ddeb6c9774c1f9b29cb1fa92ee0525013",
+    "artifact_hash": "a2789a4f2b8db4dc97af53e6fe4907abe77743a98a887165bc4285b8e0bd58c3",
+    "can_trade": false,
+    "candidate_id": "C10",
+    "fit_executed": true,
+    "input": {
+      "format": "causal_materialized_jsonl",
+      "rows": 53761,
+      "schema_hash": "0f4b7f8635027bc3f1a168c23b24448d62b6ca00e26407f3ba25fff9381387dc",
+      "sha256": "7a610960d3035282db7a0e620b66c4312c66137c1b5f52ff3badab7237da9922",
+      "source_name": "wyckoff_intraday_2006_2010.jsonl"
+    },
+    "iterations": 500,
+    "l2": 0.001,
+    "learning_rate": 0.02,
+    "metrics": {
+      "algorithm": "deterministic_multinomial_softmax",
+      "calibration_status": "NOT_CALIBRATED",
+      "classes": [
+        "continuation",
+        "reversal",
+        "failure"
+      ],
+      "model_training_executed": true,
+      "oos_scope": "TEST_OOS never used for fitting",
+      "policy": "SHADOW_ONLY_NO_ORDER",
+      "selection_scope": "TRAIN only for fitting; VALIDATION for reporting",
+      "target": "label_end_12",
+      "test_oos": {
+        "accuracy": 0.40249232772249605,
+        "class_counts": {
+          "continuation": 3230,
+          "failure": 4290,
+          "reversal": 3233
+        },
+        "log_loss": 1.0896949148662325,
+        "rows": 10753
+      },
+      "train": {
+        "accuracy": 0.42878844246031744,
+        "class_counts": {
+          "continuation": 8916,
+          "failure": 13723,
+          "reversal": 9617
+        },
+        "log_loss": 1.076062208929589,
+        "rows": 32256
+      },
+      "validation": {
+        "accuracy": 0.39880952380952384,
+        "class_counts": {
+          "continuation": 3086,
+          "failure": 4267,
+          "reversal": 3399
+        },
+        "log_loss": 1.0874242639552552,
+        "rows": 10752
+      }
+    },
+    "profile": "WYCKOFF_ICT_COMBINED",
+    "seed": 20260831,
+    "source_code_commit": "18bb22e60bd37708e55c9e4b3014fa5750432860",
+    "status": "DIAGNOSTIC_ONLY_COMPLETED",
+    "temporal_split": {
+      "oos_scope": "test",
+      "oos_test_rows": 10753,
+      "selection_rows": 43008,
+      "selection_scope": "train+validation",
+      "split_source": "diagnostic_configured_temporal",
+      "test_rows": 10753,
+      "time_column": "event_time",
+      "train_end": "2009-02-02T22:15:00+00:00",
+      "train_rows": 32256,
+      "validation_end": "2010-01-12T21:15:00+00:00",
+      "validation_rows": 10752
+    }
+  },
+  "selected_candidate_id": "C10",
+  "selection_metric": "validation.log_loss ascending; validation.accuracy descending on tie",
+  "selection_scope": "TRAIN fit + VALIDATION selection only",
+  "shadow_mode": true,
+  "status": "DIAGNOSTIC_OPTIMIZATION_COMPLETED",
+  "target": "label_end_12",
+  "test_oos_used_for_selection": false
+}

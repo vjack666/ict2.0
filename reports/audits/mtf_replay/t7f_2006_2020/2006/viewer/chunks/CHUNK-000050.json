@@ -1,0 +1,729 @@
+{
+  "artifact_checksum": "ebed712a70b44318ff6ea57a4d24eaaa6f935ca842f89ca0317fb8dc1be82bdc",
+  "artifact_kind": "MTF_REPLAY_CHUNK",
+  "candles_by_tf": {
+    "H4": [
+      {
+        "close": 1.31949,
+        "high": 1.32039,
+        "index": 1610,
+        "low": 1.31762,
+        "observation_time": "2006-12-29T20:00:00+00:00",
+        "open": 1.31849,
+        "tf": "H4"
+      },
+      {
+        "close": 1.3192,
+        "high": 1.32049,
+        "index": 1611,
+        "low": 1.31867,
+        "observation_time": "2006-12-30T00:00:00+00:00",
+        "open": 1.31961,
+        "tf": "H4"
+      },
+      {
+        "close": 1.31913,
+        "high": 1.31962,
+        "index": 1612,
+        "low": 1.31878,
+        "observation_time": "2007-01-01T00:00:00+00:00",
+        "open": 1.31937,
+        "tf": "H4"
+      }
+    ],
+    "M15": [
+      {
+        "close": 1.31942,
+        "high": 1.31978,
+        "index": 24949,
+        "low": 1.31908,
+        "observation_time": "2006-12-29T19:30:00+00:00",
+        "open": 1.31953,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31953,
+        "high": 1.31967,
+        "index": 24950,
+        "low": 1.31894,
+        "observation_time": "2006-12-29T19:45:00+00:00",
+        "open": 1.31943,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31949,
+        "high": 1.31974,
+        "index": 24951,
+        "low": 1.31908,
+        "observation_time": "2006-12-29T20:00:00+00:00",
+        "open": 1.31955,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31928,
+        "high": 1.31977,
+        "index": 24952,
+        "low": 1.3192,
+        "observation_time": "2006-12-29T20:15:00+00:00",
+        "open": 1.31961,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31904,
+        "high": 1.31961,
+        "index": 24953,
+        "low": 1.31884,
+        "observation_time": "2006-12-29T20:30:00+00:00",
+        "open": 1.31922,
+        "tf": "M15"
+      },
+      {
+        "close": 1.3192,
+        "high": 1.31969,
+        "index": 24954,
+        "low": 1.31892,
+        "observation_time": "2006-12-29T20:45:00+00:00",
+        "open": 1.31918,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31953,
+        "high": 1.32011,
+        "index": 24955,
+        "low": 1.31907,
+        "observation_time": "2006-12-29T21:00:00+00:00",
+        "open": 1.31912,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31933,
+        "high": 1.32024,
+        "index": 24956,
+        "low": 1.31867,
+        "observation_time": "2006-12-29T21:15:00+00:00",
+        "open": 1.31944,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31993,
+        "high": 1.32013,
+        "index": 24957,
+        "low": 1.31908,
+        "observation_time": "2006-12-29T21:30:00+00:00",
+        "open": 1.31944,
+        "tf": "M15"
+      },
+      {
+        "close": 1.32019,
+        "high": 1.32046,
+        "index": 24958,
+        "low": 1.31967,
+        "observation_time": "2006-12-29T21:45:00+00:00",
+        "open": 1.31989,
+        "tf": "M15"
+      },
+      {
+        "close": 1.3192,
+        "high": 1.32049,
+        "index": 24959,
+        "low": 1.3192,
+        "observation_time": "2006-12-29T22:00:00+00:00",
+        "open": 1.32023,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31925,
+        "high": 1.31962,
+        "index": 24960,
+        "low": 1.31895,
+        "observation_time": "2006-12-31T22:15:00+00:00",
+        "open": 1.31937,
+        "tf": "M15"
+      },
+      {
+        "close": 1.3191,
+        "high": 1.31953,
+        "index": 24961,
+        "low": 1.31885,
+        "observation_time": "2006-12-31T22:30:00+00:00",
+        "open": 1.3193,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31933,
+        "high": 1.31943,
+        "index": 24962,
+        "low": 1.31894,
+        "observation_time": "2006-12-31T22:45:00+00:00",
+        "open": 1.31916,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31904,
+        "high": 1.31944,
+        "index": 24963,
+        "low": 1.31894,
+        "observation_time": "2006-12-31T23:00:00+00:00",
+        "open": 1.31933,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31915,
+        "high": 1.31921,
+        "index": 24964,
+        "low": 1.31884,
+        "observation_time": "2006-12-31T23:15:00+00:00",
+        "open": 1.31896,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31907,
+        "high": 1.31924,
+        "index": 24965,
+        "low": 1.31887,
+        "observation_time": "2006-12-31T23:30:00+00:00",
+        "open": 1.3191,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31909,
+        "high": 1.31924,
+        "index": 24966,
+        "low": 1.3189,
+        "observation_time": "2006-12-31T23:45:00+00:00",
+        "open": 1.31908,
+        "tf": "M15"
+      },
+      {
+        "close": 1.31913,
+        "high": 1.31924,
+        "index": 24967,
+        "low": 1.31878,
+        "observation_time": "2007-01-01T00:00:00+00:00",
+        "open": 1.31907,
+        "tf": "M15"
+      }
+    ]
+  },
+  "chunk": {
+    "checksum": "c3903b1dacc4ce89f16fcc93d995c0f090b8d5e8cd5709d299c0cfbe98242d4a",
+    "end": 25019,
+    "end_time": "2007-01-01T00:00:00+00:00",
+    "id": "CHUNK-000050",
+    "path": "chunks/CHUNK-000050.json",
+    "start": 25000,
+    "start_time": "2006-12-29T19:30:00+00:00"
+  },
+  "episodes": [],
+  "invalidations": [],
+  "rejections": [],
+  "schema_version": "2.0",
+  "setups": [],
+  "state_deltas": [
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25000",
+      "observation_time": "2006-12-29T19:30:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25001",
+      "observation_time": "2006-12-29T19:45:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "H4",
+      "id": "DELTA-25002",
+      "observation_time": "2006-12-29T20:00:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25003",
+      "observation_time": "2006-12-29T20:15:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25004",
+      "observation_time": "2006-12-29T20:30:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25005",
+      "observation_time": "2006-12-29T20:45:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25006",
+      "observation_time": "2006-12-29T21:00:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25007",
+      "observation_time": "2006-12-29T21:15:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25008",
+      "observation_time": "2006-12-29T21:30:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25009",
+      "observation_time": "2006-12-29T21:45:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25010",
+      "observation_time": "2006-12-29T22:00:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "H4",
+      "id": "DELTA-25011",
+      "observation_time": "2006-12-30T00:00:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25012",
+      "observation_time": "2006-12-31T22:15:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25013",
+      "observation_time": "2006-12-31T22:30:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25014",
+      "observation_time": "2006-12-31T22:45:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25015",
+      "observation_time": "2006-12-31T23:00:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25016",
+      "observation_time": "2006-12-31T23:15:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25017",
+      "observation_time": "2006-12-31T23:30:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "M15",
+      "id": "DELTA-25018",
+      "observation_time": "2006-12-31T23:45:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    },
+    {
+      "authority_tf": "H4",
+      "id": "DELTA-25019",
+      "observation_time": "2007-01-01T00:00:00+00:00",
+      "parent_ids": [],
+      "transitions": []
+    }
+  ],
+  "timeline": [
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25000",
+      "index": 25000,
+      "observation_time": "2006-12-29T19:30:00+00:00",
+      "parent_ids": [
+        "DELTA-25000"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25001",
+      "index": 25001,
+      "observation_time": "2006-12-29T19:45:00+00:00",
+      "parent_ids": [
+        "DELTA-25001"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "H4",
+      "closed_tfs": [
+        "H4",
+        "M15"
+      ],
+      "id": "TICK-25002",
+      "index": 25002,
+      "observation_time": "2006-12-29T20:00:00+00:00",
+      "parent_ids": [
+        "DELTA-25002"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25003",
+      "index": 25003,
+      "observation_time": "2006-12-29T20:15:00+00:00",
+      "parent_ids": [
+        "DELTA-25003"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25004",
+      "index": 25004,
+      "observation_time": "2006-12-29T20:30:00+00:00",
+      "parent_ids": [
+        "DELTA-25004"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25005",
+      "index": 25005,
+      "observation_time": "2006-12-29T20:45:00+00:00",
+      "parent_ids": [
+        "DELTA-25005"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25006",
+      "index": 25006,
+      "observation_time": "2006-12-29T21:00:00+00:00",
+      "parent_ids": [
+        "DELTA-25006"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25007",
+      "index": 25007,
+      "observation_time": "2006-12-29T21:15:00+00:00",
+      "parent_ids": [
+        "DELTA-25007"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25008",
+      "index": 25008,
+      "observation_time": "2006-12-29T21:30:00+00:00",
+      "parent_ids": [
+        "DELTA-25008"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25009",
+      "index": 25009,
+      "observation_time": "2006-12-29T21:45:00+00:00",
+      "parent_ids": [
+        "DELTA-25009"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25010",
+      "index": 25010,
+      "observation_time": "2006-12-29T22:00:00+00:00",
+      "parent_ids": [
+        "DELTA-25010"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "H4",
+      "closed_tfs": [
+        "H4"
+      ],
+      "id": "TICK-25011",
+      "index": 25011,
+      "observation_time": "2006-12-30T00:00:00+00:00",
+      "parent_ids": [
+        "DELTA-25011"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25012",
+      "index": 25012,
+      "observation_time": "2006-12-31T22:15:00+00:00",
+      "parent_ids": [
+        "DELTA-25012"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25013",
+      "index": 25013,
+      "observation_time": "2006-12-31T22:30:00+00:00",
+      "parent_ids": [
+        "DELTA-25013"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25014",
+      "index": 25014,
+      "observation_time": "2006-12-31T22:45:00+00:00",
+      "parent_ids": [
+        "DELTA-25014"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25015",
+      "index": 25015,
+      "observation_time": "2006-12-31T23:00:00+00:00",
+      "parent_ids": [
+        "DELTA-25015"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25016",
+      "index": 25016,
+      "observation_time": "2006-12-31T23:15:00+00:00",
+      "parent_ids": [
+        "DELTA-25016"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25017",
+      "index": 25017,
+      "observation_time": "2006-12-31T23:30:00+00:00",
+      "parent_ids": [
+        "DELTA-25017"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "M15",
+      "closed_tfs": [
+        "M15"
+      ],
+      "id": "TICK-25018",
+      "index": 25018,
+      "observation_time": "2006-12-31T23:45:00+00:00",
+      "parent_ids": [
+        "DELTA-25018"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    },
+    {
+      "authority_tf": "H4",
+      "closed_tfs": [
+        "H4",
+        "M15"
+      ],
+      "id": "TICK-25019",
+      "index": 25019,
+      "observation_time": "2007-01-01T00:00:00+00:00",
+      "parent_ids": [
+        "DELTA-25019"
+      ],
+      "phases": [
+        "CLOSE_BATCH",
+        "APPLY_AUTHORITY",
+        "SNAPSHOT",
+        "EMIT"
+      ]
+    }
+  ],
+  "trades": []
+}

@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 from threading import Event, Thread
 
@@ -142,6 +142,144 @@ def test_analysis_exposes_context_but_keeps_m5_m1_diagnostic_only(tmp_path):
     analysis = service.analyze()
     assert analysis["context"]["context_state"]["H4"] == "BULLISH"
     assert analysis["context"]["m5_m1"]["M5"] == "NOT_CONFIRMED"
+
+
+def _readiness_service(tmp_path, payload, *, sessions=False):
+    path = tmp_path / "snapshot.json"
+    if payload is not None:
+        path.write_text(json.dumps(payload), encoding="utf-8")
+
+    class ReadinessAdapter(FakeAdapter):
+        execution_enabled = True
+
+    return MechanicalBotService(BotConfig(enabled=True), adapter=ReadinessAdapter(), snapshot_path=path,
+                                state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl",
+                                entry_sessions_enabled=sessions)
+
+
+def _ready_payload(**overrides):
+    payload = {"symbol": "EURUSD", "direction": "bullish", "probability": .70, "confirmed": True,
+               "asof_time": datetime.now(timezone.utc).isoformat()}
+    payload.update(overrides)
+    return payload
+
+
+def _gate(analysis, identifier):
+    return next(item for item in analysis["readiness"]["gates"] if item["id"] == identifier)
+
+
+def test_readiness_reports_execution_enabled_without_blocking_scan_start(tmp_path):
+    service = _readiness_service(tmp_path, _ready_payload())
+    service.adapter.execution_enabled = False
+    analysis = service.analyze()
+    gate = _gate(analysis, "execution_enabled")
+    assert gate["passed"] is False and gate["code"] == "EXECUTION_DISABLED"
+    assert analysis["readiness"]["scan_can_start"] is False
+
+
+@pytest.mark.parametrize(("payload", "code"), [
+    (None, "SNAPSHOT_MISSING"),
+    (_ready_payload(asof_time="not-a-timestamp"), "SNAPSHOT_INVALID"),
+    (_ready_payload(symbol="GBPUSD"), "SNAPSHOT_SYMBOL_MISMATCH"),
+    (_ready_payload(asof_time=(datetime.now(timezone.utc) + timedelta(minutes=21)).isoformat()), "SNAPSHOT_FUTURE"),
+    (_ready_payload(asof_time=(datetime.now(timezone.utc) - timedelta(minutes=21)).isoformat()), "SNAPSHOT_STALE"),
+])
+def test_readiness_reports_snapshot_gate_failures(tmp_path, payload, code):
+    service = _readiness_service(tmp_path, payload)
+    gate = _gate(service.analyze(), "snapshot")
+    assert gate["passed"] is False and gate["code"] == code
+    assert "age_seconds" in gate["observed"]
+    assert gate["required"]["max_age_seconds"] == service.bot.config.stale_after.total_seconds()
+
+
+@pytest.mark.parametrize(("payload", "identifier", "code"), [
+    (_ready_payload(direction="SIDEWAYS"), "direction", "DIRECTION_INVALID"),
+    (_ready_payload(probability=.69), "probability", "PROBABILITY_BELOW_MINIMUM"),
+    (_ready_payload(probability=float("nan")), "probability", "PROBABILITY_INVALID"),
+    (_ready_payload(probability=".70"), "probability", "PROBABILITY_INVALID"),
+])
+def test_readiness_reports_direction_and_probability_failures(tmp_path, payload, identifier, code):
+    service = _readiness_service(tmp_path, payload)
+    gate = _gate(service.analyze(), identifier)
+    assert gate["passed"] is False and gate["code"] == code
+
+
+def test_readiness_reports_missing_confirmation_reading_and_cross(tmp_path, monkeypatch):
+    service = _readiness_service(tmp_path, _ready_payload(confirmed=False))
+    assert _gate(service.analyze(), "m15_confirmation")["code"] == "M15_CONFIRMATION_MISSING"
+
+    service = _readiness_service(tmp_path, _ready_payload())
+    assert _gate(service.analyze(), "m15_confirmation")["code"] == "M15_READING_MISSING"
+
+    incompatible = StochasticReading(k=50, d=40, previous_k=35, previous_d=30)
+    monkeypatch.setattr("mechanical_bot.service.stochastic_14_3_3", lambda *_args: incompatible)
+    assert _gate(service.analyze(), "m15_confirmation")["code"] == "M15_CROSS_INCOMPATIBLE"
+
+
+def test_readiness_reports_session_gate_and_all_ready(tmp_path, monkeypatch):
+    service = _readiness_service(tmp_path, _ready_payload(), sessions=True)
+    service._session_schedule = lambda: {"enabled": True, "sessions": [{"name": "LONDON", "active": False}]}  # type: ignore[method-assign]
+    assert _gate(service.analyze(), "session")["code"] == "OUTSIDE_ENTRY_WINDOW"
+
+    service._session_schedule = lambda: {"enabled": True, "sessions": [{"name": "LONDON", "active": True}]}  # type: ignore[method-assign]
+    bullish_cross = StochasticReading(k=25, d=20, previous_k=15, previous_d=15)
+    monkeypatch.setattr("mechanical_bot.service.stochastic_14_3_3", lambda *_args: bullish_cross)
+    analysis = service.analyze()
+    readiness = analysis["readiness"]
+    assert readiness["ready"] is True
+    assert [item["id"] for item in readiness["gates"]] == ["execution_enabled", "snapshot", "direction", "probability", "m15_confirmation", "session"]
+    assert readiness["evaluated_at"].endswith("+00:00")
+
+
+def test_readiness_marks_disabled_session_gate_as_not_required(tmp_path):
+    service = _readiness_service(tmp_path, _ready_payload())
+    gate = _gate(service.analyze(), "session")
+    assert gate["passed"] is True and gate["required"] == "no requerido"
+
+
+def test_non_finite_probability_stays_fail_closed_and_json_safe(tmp_path):
+    service = _readiness_service(tmp_path, _ready_payload(probability=float("nan")))
+    analysis = service.analyze()
+    assert analysis["snapshot"] is None
+    assert _gate(analysis, "probability")["code"] == "PROBABILITY_INVALID"
+    json.dumps(analysis, allow_nan=False)
+
+
+def test_malformed_snapshot_and_m15_read_failure_are_visible(tmp_path):
+    service = _readiness_service(tmp_path, _ready_payload())
+    service.snapshot_path.write_text("{not-json", encoding="utf-8")
+    assert _gate(service.analyze(), "snapshot")["code"] == "SNAPSHOT_INVALID"
+
+    service.snapshot_path.write_text(json.dumps(_ready_payload()), encoding="utf-8")
+    service.adapter.closed_m15_candles = lambda _symbol: (_ for _ in ()).throw(RuntimeError("M15_STALE"))
+    gate = _gate(service.analyze(), "m15_confirmation")
+    assert gate["passed"] is False and gate["code"] == "M15_DATA_UNAVAILABLE"
+    assert "M15_STALE" in gate["detail"]
+
+
+def test_snapshot_age_boundary_is_inclusive_at_twenty_minutes(tmp_path):
+    service = _readiness_service(tmp_path, _ready_payload())
+    evaluated_at = datetime(2026, 9, 10, 15, 0, tzinfo=timezone.utc)
+    stochastic = StochasticReading(k=25, d=20, previous_k=15, previous_d=15)
+    for age, expected in ((timedelta(minutes=20), "PASS"), (timedelta(minutes=20, microseconds=1), "SNAPSHOT_STALE")):
+        snapshot = Snapshot("BUY", .70, True, evaluated_at - age, "EURUSD")
+        raw = {"symbol": snapshot.symbol, "direction": snapshot.direction, "probability": snapshot.probability,
+               "confirmed": snapshot.confirmed, "asof_time": snapshot.asof_time.isoformat()}
+        gate = _gate({"readiness": service._readiness(raw, snapshot, stochastic, evaluated_at)}, "snapshot")
+        assert gate["code"] == expected
+
+
+def test_session_schedule_uses_local_weekday_and_exact_half_open_window(tmp_path):
+    service = _readiness_service(tmp_path, _ready_payload(), sessions=True)
+
+    def london(at):
+        return next(item for item in service._session_schedule(at)["sessions"] if item["name"] == "LONDON")
+
+    assert london(datetime(2026, 1, 5, 8, 0, tzinfo=timezone.utc))["active"] is True
+    assert london(datetime(2026, 1, 5, 12, 0, tzinfo=timezone.utc))["active"] is False
+    assert london(datetime(2026, 1, 10, 9, 0, tzinfo=timezone.utc))["active"] is False
+    # Europe/London is UTC+1 in July; 07:00 UTC is the inclusive 08:00 local boundary.
+    assert london(datetime(2026, 7, 6, 7, 0, tzinfo=timezone.utc))["active"] is True
 
 
 def test_real_account_is_visible_as_a_persistent_warning(tmp_path):

@@ -7,6 +7,7 @@ but can never create an order.
 from __future__ import annotations
 
 import json
+import math
 import traceback
 from dataclasses import asdict
 from datetime import datetime, time, timezone
@@ -68,7 +69,7 @@ class MechanicalBotService:
                     "black_box": self.blackbox.summary()}
 
     def analyze(self) -> dict[str, Any]:
-        raw = self._read_snapshot()
+        raw, snapshot_error = self._read_snapshot_with_status()
         snapshot = self._snapshot_from_raw(raw)
         result = self.status()
         result["snapshot"] = {"direction": snapshot.direction, "probability": snapshot.probability, "confirmed": snapshot.confirmed,
@@ -82,11 +83,138 @@ class MechanicalBotService:
             "bos": raw.get("bos", []),
             "m5_m1": raw.get("m5_m1", "DIAGNOSTIC_ONLY_NO_VETO"),
         } if raw else None
+        stochastic = None
+        stochastic_error = None
         if self.adapter is not None:
-            candles = self.adapter.closed_m15_candles(self.bot.config.symbol)
-            reading = stochastic_14_3_3(candles, self.bot.config)
-            result["stochastic_m15"] = None if reading is None else asdict(reading)
+            try:
+                candles = self.adapter.closed_m15_candles(self.bot.config.symbol)
+                stochastic = stochastic_14_3_3(candles, self.bot.config)
+            except Exception as exc:
+                stochastic_error = str(exc)
+            result["stochastic_m15"] = None if stochastic is None else asdict(stochastic)
+        result["readiness"] = self._readiness(raw, snapshot, stochastic, datetime.now(timezone.utc),
+                                               snapshot_error=snapshot_error, stochastic_error=stochastic_error)
         return result
+
+    def _readiness(self, raw: dict[str, Any] | None, snapshot: Snapshot | None, stochastic: Any,
+                   evaluated_at: datetime, *, snapshot_error: str | None = None,
+                   stochastic_error: str | None = None) -> dict[str, Any]:
+        """Describe the existing entry gates without changing their authority.
+
+        This is deliberately a dashboard projection.  ``tick`` remains the
+        only place that invokes the state machine and can reach the adapter.
+        """
+        def gate(identifier: str, label: str, passed: bool, code: str, detail: str,
+                 *, observed: Any = None, required: Any = None) -> dict[str, Any]:
+            item = {"id": identifier, "label": label, "passed": passed, "code": code, "detail": detail}
+            if observed is not None:
+                item["observed"] = _json_safe(observed)
+            if required is not None:
+                item["required"] = _json_safe(required)
+            return item
+
+        now = _as_utc(evaluated_at)
+        execution_enabled = bool(getattr(self.adapter, "execution_enabled", False))
+        execution_gate = gate(
+            "execution_enabled", "Ejecución habilitada", execution_enabled,
+            "PASS" if execution_enabled else "EXECUTION_DISABLED",
+            "El adaptador permite el loop de MT5." if execution_enabled else "El adaptador tiene execution_enabled=false; no se puede ejecutar.",
+            observed=execution_enabled, required=True,
+        )
+
+        snapshot_code, snapshot_detail = "PASS", "Snapshot canónico válido y fresco."
+        age_seconds: float | None = None
+        asof: datetime | None = None
+        if raw is None:
+            snapshot_code = snapshot_error or "SNAPSHOT_MISSING"
+            snapshot_detail = ("No hay snapshot canónico disponible." if snapshot_code == "SNAPSHOT_MISSING"
+                               else "El snapshot existe, pero no se puede leer como JSON canónico.")
+        elif snapshot is None:
+            snapshot_code, snapshot_detail = "SNAPSHOT_INVALID", "El snapshot no tiene la forma canónica requerida."
+        else:
+            asof = _as_utc(snapshot.asof_time)
+            if snapshot.symbol != self.bot.config.symbol:
+                snapshot_code, snapshot_detail = "SNAPSHOT_SYMBOL_MISMATCH", "El símbolo del snapshot no coincide con el símbolo configurado."
+            else:
+                age_seconds = (now - asof).total_seconds()
+                max_age = self.bot.config.stale_after.total_seconds()
+                if age_seconds < 0:
+                    snapshot_code, snapshot_detail = "SNAPSHOT_FUTURE", "El snapshot está %.1f s en el futuro." % abs(age_seconds)
+                elif age_seconds > max_age:
+                    snapshot_code, snapshot_detail = "SNAPSHOT_STALE", "Antigüedad %.1f s; máximo permitido %.0f s." % (age_seconds, max_age)
+                else:
+                    snapshot_detail = "Snapshot válido; antigüedad %.1f s de %.0f s permitidos." % (age_seconds, max_age)
+        snapshot_gate = gate(
+            "snapshot", "Snapshot canónico", snapshot_code == "PASS", snapshot_code, snapshot_detail,
+            observed={"symbol": None if snapshot is None else snapshot.symbol, "asof_time": None if asof is None else asof.isoformat(),
+                      "age_seconds": age_seconds},
+            required={"symbol": self.bot.config.symbol, "max_age_seconds": self.bot.config.stale_after.total_seconds()},
+        )
+
+        raw_direction = None if raw is None else raw.get("direction")
+        direction = None
+        if isinstance(raw_direction, str):
+            normalized = raw_direction.upper()
+            if normalized in {"BUY", "BULLISH", "LONG"}:
+                direction = "BUY"
+            elif normalized in {"SELL", "BEARISH", "SHORT"}:
+                direction = "SELL"
+        direction_gate = gate(
+            "direction", "Dirección", direction in {"BUY", "SELL"},
+            "PASS" if direction in {"BUY", "SELL"} else "DIRECTION_INVALID",
+            "Dirección normalizada a %s." % direction if direction in {"BUY", "SELL"} else
+            "Dirección observada %r; se requiere BUY o SELL." % raw_direction,
+            observed=raw_direction, required=["BUY", "SELL"],
+        )
+
+        probability = None if raw is None else raw.get("probability")
+        probability_valid = (isinstance(probability, (int, float)) and not isinstance(probability, bool)
+                             and math.isfinite(probability) and 0.0 <= probability <= 1.0)
+        probability_ok = probability_valid and probability >= self.bot.config.min_probability
+        probability_code = "PASS" if probability_ok else ("PROBABILITY_BELOW_MINIMUM" if probability_valid else "PROBABILITY_INVALID")
+        probability_gate = gate(
+            "probability", "Probabilidad", probability_ok,
+            probability_code,
+            "La probabilidad alcanza el mínimo configurado." if probability_ok else
+            ("Probabilidad %.1f%%; mínimo requerido %.1f%%." % (probability * 100, self.bot.config.min_probability * 100)
+             if probability_valid else "Probabilidad observada %r; debe ser numérica, finita y estar entre 0 y 1." % probability),
+            observed=probability, required={"min_probability": self.bot.config.min_probability},
+        )
+
+        confirmed = None if raw is None else raw.get("confirmed")
+        if confirmed is not True:
+            m15_passed, m15_code, m15_detail = False, "M15_CONFIRMATION_MISSING", "El snapshot no tiene confirmed=true de forma estricta."
+        elif direction not in {"BUY", "SELL"}:
+            m15_passed, m15_code, m15_detail = False, "M15_DIRECTION_UNAVAILABLE", "No se puede contrastar el cruce M15 sin una dirección válida."
+        elif stochastic_error is not None:
+            m15_passed, m15_code = False, "M15_DATA_UNAVAILABLE"
+            m15_detail = "No se pudieron leer velas M15 cerradas: %s" % stochastic_error
+        elif stochastic is None:
+            m15_passed, m15_code, m15_detail = False, "M15_READING_MISSING", "No hay lectura estocástica M15 de velas cerradas."
+        elif direction == "BUY" and stochastic.crossed_up_from_oversold(self.bot.config.oversold):
+            m15_passed, m15_code, m15_detail = True, "PASS", "Cruce M15 alcista compatible desde sobreventa."
+        elif direction == "SELL" and stochastic.crossed_down_from_overbought(self.bot.config.overbought):
+            m15_passed, m15_code, m15_detail = True, "PASS", "Cruce M15 bajista compatible desde sobrecompra."
+        else:
+            m15_passed, m15_code = False, "M15_CROSS_INCOMPATIBLE"
+            m15_detail = "Sin cruce %s compatible: K %.2f / D %.2f; previo K %.2f / D %.2f." % (
+                direction, stochastic.k, stochastic.d, stochastic.previous_k, stochastic.previous_d)
+        m15_gate = gate("m15_confirmation", "Confirmación M15", m15_passed, m15_code, m15_detail,
+                        observed=None if stochastic is None else asdict(stochastic), required="confirmed=true y cruce estocástico M15 compatible")
+
+        schedule = self._session_schedule()
+        active = [item["name"] for item in schedule["sessions"] if item.get("active")]
+        session_passed = not self.entry_sessions_enabled or bool(active)
+        session_gate = gate(
+            "session", "Sesión de entrada", session_passed,
+            "PASS" if session_passed else "OUTSIDE_ENTRY_WINDOW",
+            "Gate de sesión no requerido por la configuración actual." if not self.entry_sessions_enabled else
+            ("Sesión activa: %s." % ", ".join(active) if active else "No hay una sesión de entrada activa."),
+            observed={"enabled": self.entry_sessions_enabled, "active_sessions": active}, required="sesión activa" if self.entry_sessions_enabled else "no requerido",
+        )
+        gates = [execution_gate, snapshot_gate, direction_gate, probability_gate, m15_gate, session_gate]
+        return {"ready": all(item["passed"] for item in gates), "scan_can_start": execution_enabled,
+                "gates": gates, "evaluated_at": now.isoformat()}
 
     def arm(self) -> dict[str, Any]:
         with self._state_lock:
@@ -257,20 +385,21 @@ class MechanicalBotService:
             self._persist_state()
             raise RuntimeError("mechanical bot stopped: black-box decision persistence failed") from exc
 
-    def _session_schedule(self) -> dict[str, Any]:
+    def _session_schedule(self, at: datetime | None = None) -> dict[str, Any]:
         """Expose London and New York 08:00--12:00 in both requested clocks."""
         guayaquil = ZoneInfo("America/Guayaquil")
-        now = datetime.now(guayaquil)
+        now = datetime.now(guayaquil) if at is None else _as_utc(at).astimezone(guayaquil)
         definitions = (("LONDON", ZoneInfo("Europe/London")), ("NEW_YORK", ZoneInfo("America/New_York")))
         sessions = []
         for name, zone in definitions:
-            local_today = now.astimezone(zone).date()
+            local_now = now.astimezone(zone)
+            local_today = local_now.date()
             start = datetime.combine(local_today, time(8, 0), tzinfo=zone)
             end = datetime.combine(local_today, time(12, 0), tzinfo=zone)
             sessions.append({
                 "name": name,
                 "weekdays_only": True,
-                "active": now.weekday() < 5 and start <= now.astimezone(zone) < end,
+                "active": local_now.weekday() < 5 and start <= local_now < end,
                 "start_local": start.isoformat(), "end_local": end.isoformat(),
                 "start_guayaquil": start.astimezone(guayaquil).isoformat(), "end_guayaquil": end.astimezone(guayaquil).isoformat(),
                 "start_utc": start.astimezone(timezone.utc).isoformat(), "end_utc": end.astimezone(timezone.utc).isoformat(),
@@ -281,11 +410,16 @@ class MechanicalBotService:
         return self._snapshot_from_raw(self._read_snapshot())
 
     def _read_snapshot(self) -> dict[str, Any] | None:
+        return self._read_snapshot_with_status()[0]
+
+    def _read_snapshot_with_status(self) -> tuple[dict[str, Any] | None, str | None]:
         try:
             raw = json.loads(self.snapshot_path.read_text(encoding="utf-8"))
-            return raw if isinstance(raw, dict) else None
+            return (raw, None) if isinstance(raw, dict) else (None, "SNAPSHOT_INVALID")
+        except FileNotFoundError:
+            return None, "SNAPSHOT_MISSING"
         except (OSError, ValueError, KeyError, TypeError):
-            return None
+            return None, "SNAPSHOT_INVALID"
 
     def _snapshot_from_raw(self, raw: dict[str, Any] | None) -> Snapshot | None:
         try:
@@ -294,7 +428,8 @@ class MechanicalBotService:
             direction, probability, confirmed, asof_time, symbol = raw["direction"], raw["probability"], raw["confirmed"], raw["asof_time"], raw["symbol"]
             if not isinstance(direction, str) or type(confirmed) is not bool or not isinstance(symbol, str) or not symbol.strip():
                 return None
-            if not isinstance(probability, (int, float)) or isinstance(probability, bool):
+            if (not isinstance(probability, (int, float)) or isinstance(probability, bool)
+                    or not math.isfinite(probability)):
                 return None
             return Snapshot(direction, float(probability), confirmed,
                             datetime.fromisoformat(str(asof_time).replace("Z", "+00:00")), symbol)
@@ -359,6 +494,8 @@ def _strategy_fields(raw: dict[str, Any] | None) -> dict[str, Any]:
 def _json_safe(value: Any) -> Any:
     if isinstance(value, datetime):
         return value.isoformat()
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
     if isinstance(value, dict):
         return {key: _json_safe(item) for key, item in value.items()}
     if isinstance(value, (list, tuple)):

@@ -95,6 +95,19 @@ def test_demo_wait_arms_without_fabricating_snapshot():
     assert result["snapshot"] is None
 
 
+def test_bot_refresh_publishes_structured_readiness_to_terminal_state():
+    class Service:
+        def analyze(self):
+            return {"state": "WAIT_SIGNAL", "execution_enabled": True, "readiness": {
+                "ready": False,
+                "gates": [{"id": "snapshot", "passed": False, "code": "SNAPSHOT_MISSING", "detail": "No snapshot"}],
+            }}
+
+    runtime = TerminalRuntime(service=Service())
+    runtime.read_bot()
+    assert runtime.snapshot()["bot"]["readiness"]["gates"][0]["code"] == "SNAPSHOT_MISSING"
+
+
 def test_manual_actions_route_the_operator_selected_side_to_service():
     class Service:
         def __init__(self):

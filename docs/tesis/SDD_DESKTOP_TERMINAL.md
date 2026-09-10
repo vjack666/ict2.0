@@ -55,3 +55,20 @@ El panel debe mostrar por separado `direction_hint`, sesgo de cada TF, fase y
 ejecución. Un conflicto es una salida explicable y no una señal agregada.
 Las FVG se diferencian por `z.direction`: alcistas en verde y bajistas en rojo,
 con dirección escrita en la etiqueta y en la tabla.
+
+## Addendum V3 — readiness explicable y fail-closed (2026-09-10)
+
+**Armar bot** inicia exclusivamente el loop de espera; no equivale a señal ni a
+orden. La posibilidad de una entrada automática se publica por separado como
+`readiness.ready` y exige simultáneamente: `execution_enabled=true`, snapshot
+canónico válido del símbolo y con antigüedad máxima de 20 minutos, dirección
+BUY/SELL, probabilidad finita `>=0.70`, `confirmed=true` más cruce estocástico
+M15 direccional sobre velas cerradas, y sesión Londres o Nueva York activa.
+
+Cada requisito expone `passed`, `code`, `detail`, valor observado y valor
+requerido. La sesión usa ventanas locales `[08:00,12:00)` con weekday y DST de
+cada plaza; ICT Terminal la habilita siempre como gate de entrada. El frontend
+solo presenta este contrato del servicio y falla cerrado si está ausente. Todos
+los gates vuelven a evaluarse en el tick antes de cualquier `order_send`.
+El motor canónico conserva `can_trade=false` por defecto; readiness no cambia
+esa autoridad ni constituye promoción o señal.

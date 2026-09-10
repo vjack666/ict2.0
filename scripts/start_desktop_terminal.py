@@ -75,7 +75,9 @@ def main():
         error, adapter, mt5 = str(exc), None, None
     service = MechanicalBotService(BotConfig(enabled=True), adapter=adapter)
     service.demo_wait_enabled = bool(args.demo_test and adapter is not None)
-    service.entry_sessions_enabled = bool(args.demo_test)
+    # ICT Terminal treats the documented London/New York window as an entry
+    # gate in every mode. Arming may still start the scan loop outside it.
+    service.entry_sessions_enabled = True
     runtime = TerminalRuntime(mt5, service, server_offset_seconds=int(args.server_utc_offset_hours * 3600))
     try:
         server = create_server(runtime, args.port)

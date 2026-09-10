@@ -4,6 +4,11 @@ User selected design 1 on 2026-09-07: dark institutional terminal, horizontal
 tabs, instrument list left, central chart, context inspector right. Preserve
 real MT5 data and explicit missing states instead of illustrative mock values.
 
+For bot controls, show an explicit per-gate readiness panel. Keep loop arming
+visually and semantically separate from entry readiness: the button starts the
+scanner, while execution, snapshot age/validity, direction, probability,
+closed-M15 confirmation, and session remain visible fail-closed requirements.
+
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
 
 Before making substantial visual changes, use the Product Design plugin's `get-context` skill when the visual source is unclear or no longer matches the current goal. When the user gives durable prototype-specific design feedback, preferences, or decisions, record them in `AGENTS.md`.

@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from engine.Wyckoff import (
+    WyckoffEvent,
     WyckoffEventType,
     WyckoffPhaseState,
     build_wyckoff_snapshot,
@@ -74,7 +75,36 @@ def test_spring_event_is_causal_and_future_does_not_change_snapshot():
     )
     assert before.to_dict() == after.to_dict()
     assert any(event["event_type"] == WyckoffEventType.SPRING.value for event in before.to_dict()["events"])
-    assert before.to_dict()["phase_state"] == WyckoffPhaseState.COUNTERTREND.value
+    assert before.to_dict()["phase_state"] == WyckoffPhaseState.TRANSITION.value
+
+
+def _event(event_type: WyckoffEventType, **detail: object) -> WyckoffEvent:
+    return WyckoffEvent(
+        event_id=f"TEST_{event_type.value}",
+        event_type=event_type,
+        tf="D1",
+        event_time=pd.Timestamp("2020-01-01", tz="UTC"),
+        source_ref="TEST",
+        detail=detail,
+    )
+
+
+def test_countertrend_requires_an_event_with_the_opposing_wyckoff_polarity():
+    phase = WyckoffPhase.MARKDOWN
+    incompatible = classify_alignment(phase, 1, (_event(WyckoffEventType.SPRING),))
+    compatible = classify_alignment(phase, 1, (_event(WyckoffEventType.SOW),))
+
+    assert incompatible[0] is WyckoffPhaseState.TRANSITION
+    assert compatible[0] is WyckoffPhaseState.COUNTERTREND
+
+
+def test_countertrend_requires_direction_on_a_range_break():
+    phase = WyckoffPhase.MARKDOWN
+    unspecified = classify_alignment(phase, 1, (_event(WyckoffEventType.RANGE_BREAK),))
+    bearish_break = classify_alignment(phase, 1, (_event(WyckoffEventType.RANGE_BREAK, direction="BEARISH"),))
+
+    assert unspecified[0] is WyckoffPhaseState.TRANSITION
+    assert bearish_break[0] is WyckoffPhaseState.COUNTERTREND
 
 
 def test_conflict_is_evidence_and_never_changes_ict_direction_or_entry_policy():

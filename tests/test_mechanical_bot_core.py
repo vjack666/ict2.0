@@ -107,7 +107,7 @@ def test_tp_and_risk_only_use_bot_positions_for_same_symbol():
     risk.arm(); risk.decide_entry(snapshot(), oversold_cross(), 1.1, 1_000, NOW)
     unrelated = Position("EURUSD", 9, "BUY", .1, 1.1, -9_999)
     assert risk.monitor(1.1, positions(-19) + [unrelated]) is None
-    assert risk.monitor(1.1, positions(-20)).reason == "max_floating_loss"
+    assert risk.monitor(1.1, positions(-30)).reason == "max_floating_loss"
 
 
 def test_missing_own_positions_fails_closed_and_never_reenters():

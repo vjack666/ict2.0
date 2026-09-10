@@ -2,7 +2,9 @@ from datetime import datetime, timezone
 import json
 from threading import Event, Thread
 
-from mechanical_bot.core import BotAction, BotConfig, Cycle, Position, Snapshot
+import pytest
+
+from mechanical_bot.core import BotAction, BotConfig, Cycle, Position, Snapshot, StochasticReading
 from mechanical_bot.mt5_adapter import AccountStatus
 from mechanical_bot.service import MechanicalBotService
 
@@ -43,6 +45,50 @@ def test_service_is_off_by_default_and_reports_demo_account(tmp_path):
     assert status["account"]["environment"] == "DEMO"
     assert status["m5_m1"] == "DIAGNOSTIC_ONLY_NO_VETO"
     assert service.analyze()["snapshot"] is None
+
+
+def test_missing_snapshot_arms_into_wait_signal_and_records_black_box_decision(tmp_path):
+    blackbox = tmp_path / "blackbox.jsonl"
+    service = MechanicalBotService(
+        BotConfig(enabled=True), adapter=FakeAdapter(), snapshot_path=tmp_path / "missing.json",
+        state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl", blackbox_path=blackbox,
+    )
+    service.arm()
+    status = service.tick()
+    assert status["state"] == "WAIT_SIGNAL"
+    decision = json.loads(blackbox.read_text(encoding="utf-8").splitlines()[-1])
+    assert decision["event"] == "DECISION"
+    assert decision["reason"] == "WAIT_DIRECTION"
+    assert decision["raw_snapshot_hash"] is None
+    assert status["black_box"]["path"] == str(blackbox)
+
+
+def test_rejected_snapshot_abstains_without_killing_runner_state(tmp_path):
+    path = tmp_path / "snap.json"
+    path.write_text(json.dumps({
+        "symbol": "EURUSD", "direction": "BUY", "probability": 2.0, "confirmed": True,
+        "asof_time": datetime.now(timezone.utc).isoformat(),
+    }), encoding="utf-8")
+    blackbox = tmp_path / "blackbox.jsonl"
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=FakeAdapter(), snapshot_path=path,
+                                  state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl", blackbox_path=blackbox)
+    service.arm()
+    status = service.tick()
+    assert status["state"] == "WAIT_SIGNAL"
+    decision = json.loads(blackbox.read_text(encoding="utf-8").splitlines()[-1])
+    assert decision["reason"].startswith("SNAPSHOT_REJECTED:")
+    assert decision["stochastic"] is None
+
+
+def test_entry_session_blocks_only_new_entries_and_keeps_wait_signal(tmp_path):
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=FakeAdapter(), snapshot_path=tmp_path / "missing.json",
+                                  state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl",
+                                  blackbox_path=tmp_path / "blackbox.jsonl", entry_sessions_enabled=True)
+    service._session_schedule = lambda: {"enabled": True, "sessions": [{"name": "LONDON", "active": False}, {"name": "NEW_YORK", "active": False}]}  # type: ignore[method-assign]
+    service.arm()
+    assert service.tick()["state"] == "WAIT_SIGNAL"
+    decision = json.loads((tmp_path / "blackbox.jsonl").read_text(encoding="utf-8").splitlines()[-1])
+    assert decision["reason"] == "OUTSIDE_ENTRY_WINDOW"
 
 
 def test_manual_close_executes_only_bot_cycle_and_records_event(tmp_path):
@@ -131,7 +177,7 @@ def test_disarm_waits_for_running_tick_and_blocks_later_execution(tmp_path, monk
     adapter = BlockingAdapter()
     service = MechanicalBotService(BotConfig(enabled=True), adapter=adapter, snapshot_path=tmp_path / "snap.json", state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl")
     service.bot.arm()
-    monkeypatch.setattr(service, "_load_snapshot", lambda: Snapshot("BUY", .7, True, datetime.now(timezone.utc), "EURUSD"))
+    monkeypatch.setattr(service, "_read_snapshot", lambda: {"symbol": "EURUSD", "direction": "BUY", "probability": .7, "confirmed": True, "asof_time": datetime.now(timezone.utc).isoformat()})
     monkeypatch.setattr(service.bot, "decide_entry", lambda *_args: BotAction("OPEN", "test", "BUY", .1))
     tick_thread = Thread(target=service.tick)
     tick_thread.start(); assert adapter.started.wait(timeout=1)
@@ -142,3 +188,74 @@ def test_disarm_waits_for_running_tick_and_blocks_later_execution(tmp_path, monk
     assert service.status()["state"] == "OFF"
     service.tick()
     assert adapter.executions == 1
+
+
+def test_manual_sell_selection_waits_for_stochastic_without_sending_order(tmp_path, monkeypatch):
+    class ExecutionAdapter(FakeAdapter):
+        execution_enabled = True
+        def __init__(self):
+            super().__init__()
+            self.executions = []
+        def execute(self, action, **kwargs):
+            self.executions.append((action, kwargs))
+            return super().execute(action, **kwargs)
+
+    adapter = ExecutionAdapter()
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=adapter,
+                                  snapshot_path=tmp_path / "missing.json", state_path=tmp_path / "state.json",
+                                  log_path=tmp_path / "events.jsonl", blackbox_path=tmp_path / "blackbox.jsonl")
+    service._session_schedule = lambda: {"enabled": True, "sessions": [{"name": "LONDON", "active": True}]}  # type: ignore[method-assign]
+    monkeypatch.setattr(service, "start_runner", lambda: None)
+    service.arm()
+
+    selected = service.manual_entry("SELL")
+    assert selected["state"] == "WAIT_STOCHASTIC"
+    assert selected["manual_direction"] == "SELL"
+    assert selected["cycle"] is None
+    assert adapter.executions == []
+
+    monkeypatch.setattr("mechanical_bot.service.stochastic_14_3_3", lambda *_args: None)
+    waiting = service.tick()
+    assert waiting["state"] == "WAIT_STOCHASTIC"
+    assert waiting["manual_direction"] == "SELL"
+    assert waiting["cycle"] is None
+    assert adapter.executions == []
+    decision = json.loads((tmp_path / "blackbox.jsonl").read_text(encoding="utf-8").splitlines()[-1])
+    assert decision["reason"] == "WAIT_MANUAL_DIRECTION_STOCHASTIC"
+
+
+def test_manual_london_rejects_buy_and_allows_one_pending_sell_cycle(tmp_path, monkeypatch):
+    class ExecutionAdapter(FakeAdapter):
+        execution_enabled = True
+        def __init__(self):
+            super().__init__()
+            self.executions = []
+        def execute(self, action, **kwargs):
+            self.executions.append(action)
+            return super().execute(action, **kwargs)
+
+    adapter = ExecutionAdapter()
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=adapter,
+                                  snapshot_path=tmp_path / "missing.json", state_path=tmp_path / "state.json",
+                                  log_path=tmp_path / "events.jsonl", blackbox_path=tmp_path / "blackbox.jsonl")
+    service._session_schedule = lambda: {"enabled": True, "sessions": [{"name": "LONDON", "active": True}]}  # type: ignore[method-assign]
+    monkeypatch.setattr(service, "start_runner", lambda: None)
+    service.arm()
+
+    with pytest.raises(RuntimeError, match="LONDON_SELL_ONLY"):
+        service.manual_entry("BUY")
+    assert adapter.executions == []
+
+    service.manual_entry("SELL")
+    bearish_cross = StochasticReading(k=75, d=82, previous_k=85, previous_d=82)
+    monkeypatch.setattr("mechanical_bot.service.stochastic_14_3_3", lambda *_args: bearish_cross)
+    entered = service.tick()
+    assert entered["state"] == "INITIAL_ENTRY"
+    assert entered["manual_direction"] is None
+    assert entered["cycle"]["direction"] == "SELL"
+    assert len(adapter.executions) == 1
+    assert adapter.executions[0].kind == "OPEN"
+
+    with pytest.raises(RuntimeError, match="cycle already active"):
+        service.manual_entry("SELL")
+    assert len(adapter.executions) == 1

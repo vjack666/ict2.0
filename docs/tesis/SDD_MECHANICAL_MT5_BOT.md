@@ -1,7 +1,7 @@
 # SDD — Bot mecánico MT5 con estocástico M15
 
 **Estado:** implementación local, separado del motor inteligente.
-**Fecha:** 2026-09-06.
+**Fecha:** 2026-09-10.
 **Autoridad:** instrucción explícita del cliente.
 **Ámbito:** `mechanical_bot/` y `scripts/mechanical_bot_*`; no modifica `engine/`.
 
@@ -9,14 +9,15 @@
 
 El bot recibe un *snapshot* externo de dirección y probabilidad. Es una capa de ejecución mecánica independiente: el motor sigue siendo de observación y conserva `can_trade=false`.
 
-El snapshot debe incluir `symbol`, `direction`, `probability`, `confirmed` y `asof_time`. Puede transportar `context_state`, `zones`, `bos` y `m5_m1`; el dashboard los muestra como evidencia del productor canónico. Si falta cualquiera de los campos de decisión, está vencido (más de 20 minutos), no está confirmado o su probabilidad es menor de 0.70, el bot no abre una posición.
+El modo automático usa un snapshot con `symbol`, `direction`, `probability`, `confirmed` y `asof_time`. El modo manual permite seleccionar BUY o SELL y esperar el cruce M15 sin fabricar snapshot; queda etiquetado `MANUAL_OVERRIDE`.
 
 ## Entrada
 
-| Dirección del snapshot | Confirmación final M15 (14,3,3) | Acción |
+| Modo/dirección | Confirmación final M15 (14,3,3) | Acción |
 | --- | --- | --- |
 | BUY, probabilidad >= 0.70 | %K cruza por encima de %D desde zona <=20 | Compra 0.10 |
 | SELL, probabilidad >= 0.70 | %K cruza por debajo de %D desde zona >=80 | Venta 0.10 |
+| Manual SELL | %K cruza por debajo de %D desde zona >=80 | Venta 0.10 |
 
 M5 y M1 son diagnóstico visible. No se leen para permitir, rechazar o cancelar una entrada.
 
@@ -24,7 +25,7 @@ M5 y M1 son diagnóstico visible. No se leen para permitir, rechazar o cancelar 
 
 Cada ciclo conserva precio inicial, hora de la señal y balance al armarlo. Solo admite tres órdenes: 0.10 inicial, 0.20 a 20 pips adversos y 0.30 a 40 pips adversos, siempre medidos desde la primera entrada.
 
-Se cierran únicamente las posiciones del símbolo y `magic_number` del bot cuando el P/L agregado llega a +60 USD o a -2% del balance inicial. Tras el cierre el mismo snapshot no puede reabrir el ciclo. Si el proceso se reinicia, se restaura el ciclo como `OFF`; posiciones faltantes generan `ERROR` y nunca una reentrada inferida.
+Se cierran únicamente las posiciones del símbolo y `magic_number` del bot cuando el P/L agregado llega a +60 USD o a -3% del balance inicial. Tras el cierre el mismo snapshot no puede reabrir el ciclo. Si el proceso se reinicia, se restaura el ciclo como `OFF`; posiciones faltantes generan `ERROR` y nunca una reentrada inferida.
 
 ## Ejecución y cuenta
 
@@ -64,7 +65,8 @@ probabilidad finita dentro de [0, 1] y timestamp no futuro. OFF/ERROR/CLOSING
 no producen entradas. Apagar espera el tick activo y conserva el ciclo.
 Los cierres cotejan posiciones propias antes y después: una respuesta parcial
 no acredita un ciclo cerrado. Los accesos nativos MT5 se protegen con RLock.
-El productor de latest_snapshot.json sigue pendiente; WAIT_SNAPSHOT bloquea el
-armado. No se generaron órdenes reales para verificar esta integración.
+El productor de latest_snapshot.json sigue pendiente para el modo automático;
+WAIT_SNAPSHOT bloquea solo esa ruta. El modo manual puede armarse, seleccionar
+un lado y esperar el cruce estocástico M15 sin snapshot.
 
 Las pruebas focales cubren frescura y confirmación del snapshot, umbral 70%, cruces M15, independencia M5/M1, escalera 0.10/0.20/0.30, cierres agregados, filtro magic/símbolo, recuperación, retcodes MT5 y estados demo/real.

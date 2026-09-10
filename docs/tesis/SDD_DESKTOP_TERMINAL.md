@@ -42,3 +42,16 @@ errores y acciones protegidas. Build frontend, inspección visual y navegación
 de cinco pestañas en Browser. Medir latencia HTTP y tamaño de bundle. Evidencia
 de MT5 real en modo lectura, sin afirmar cero latencia. Cierre con worklog,
 índice, Graphify, auditoría independiente y commit selectivo local sin push.
+
+## Addendum V2 — control manual y lectura de conflictos (2026-09-10)
+
+La interfaz expone **Activar bot**, **Compra manual** y **Venta manual**. Activar
+solo inicia el controlador. Seleccionar un lado registra `manual_direction` y
+deja el estado `WAIT_STOCHASTIC`; la orden se envía únicamente tras el cruce M15.
+Durante Londres, Compra manual se rechaza con `LONDON_SELL_ONLY`.
+
+El panel debe mostrar por separado `direction_hint`, sesgo de cada TF, fase y
+`phase_state` de Wyckoff, gatillo estocástico, dirección manual y autoridad de
+ejecución. Un conflicto es una salida explicable y no una señal agregada.
+Las FVG se diferencian por `z.direction`: alcistas en verde y bajistas en rojo,
+con dirección escrita en la etiqueta y en la tabla.

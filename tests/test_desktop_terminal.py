@@ -73,14 +73,13 @@ def test_disabled_actions_and_missing_producer_fail_closed():
         def _load_snapshot(self):
             return None
         def arm(self):
-            pytest.fail("Must never arm")
+            return {"state": "ARMED", "execution_enabled": True}
     service = Service()
     runtime = TerminalRuntime(service=service)
     with pytest.raises(RuntimeError, match="EXECUTION_DISABLED"):
         runtime.action("arm")
     service.enabled = True
-    with pytest.raises(RuntimeError, match="WAIT_SNAPSHOT"):
-        runtime.action("arm")
+    assert runtime.action("arm")["ok"] is True
 
 
 def test_demo_wait_arms_without_fabricating_snapshot():
@@ -94,6 +93,25 @@ def test_demo_wait_arms_without_fabricating_snapshot():
     result = runtime.action("arm")
     assert result["state"] == "ARMED"
     assert result["snapshot"] is None
+
+
+def test_manual_actions_route_the_operator_selected_side_to_service():
+    class Service:
+        def __init__(self):
+            self.selected = []
+        def status(self):
+            return {"execution_enabled": True}
+        def manual_entry(self, side):
+            self.selected.append(side)
+            return {"state": "WAIT_STOCHASTIC", "manual_direction": side}
+
+    service = Service()
+    runtime = TerminalRuntime(service=service)
+    sell = runtime.action("manual-sell")
+    buy = runtime.action("manual-buy")
+    assert service.selected == ["SELL", "BUY"]
+    assert sell["manual_direction"] == "SELL"
+    assert buy["manual_direction"] == "BUY"
 
 
 def test_http_origin_token_and_path_boundary(tmp_path):

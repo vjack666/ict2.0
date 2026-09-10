@@ -1,0 +1,20 @@
+{
+  "symbol": "EURUSD",
+  "timeframe": "M15",
+  "direction": "BUY",
+  "probability": 0.75,
+  "confirmed": true,
+  "asof_time": "2026-09-11T00:00:00+00:00",
+  "state": "ON",
+  "session": "08:00-12:00",
+  "weekday": "Thursday",
+  "stochastic": {
+    "k": 52.21,
+    "d": 34.86,
+    "crossed_down_from_overbought": false,
+    "crossed_up_from_oversold": false
+  },
+  "h4_location": "MID",
+  "h1_alignment": "ALIGNED",
+  "d1_bias": "BULLISH"
+}

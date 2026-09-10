@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "state": "OFF",
+  "state": "ON",
   "cycle": null,
   "last_closed_signal_time": null,
-  "manual_direction": null
+  "manual_direction": "BUY"
 }

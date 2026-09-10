@@ -179,7 +179,11 @@ class MT5Adapter:
         except BlackBoxWriteError as exc:
             raise RuntimeError("order blocked: black-box pre-send persistence failed") from exc
         try:
-            result = self._mt5.order_send(request)
+            # MetaTrader5 5.0.5735 rejects an unnamed positional mapping with
+            # ``(-2, "Unnamed arguments not allowed")``.  Its Python binding
+            # accepts one *named* mapping; expanding it as keyword fields is
+            # not the MT5 API and can silently fail on a different signature.
+            result = self._mt5.order_send(request=request)
         except Exception as exc:
             self._record_outcome(correlation_id, operation, request_hash, result=None, error=str(exc), exception_type=type(exc).__name__)
             raise

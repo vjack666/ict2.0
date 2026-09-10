@@ -41,6 +41,7 @@ class MechanicalBotService:
         self.snapshot_path, self.state_path, self.log_path = snapshot_path, state_path, log_path
         self.blackbox = BlackBoxJournal(blackbox_path)
         self.entry_sessions_enabled = entry_sessions_enabled is True
+        self.manual_direction: str | None = None
         if self.adapter is not None and hasattr(self.adapter, "set_blackbox"):
             self.adapter.set_blackbox(self.blackbox)
         self._runner: Thread | None = None
@@ -66,6 +67,7 @@ class MechanicalBotService:
             return {"state": self.bot.state.value, "symbol": self.bot.config.symbol, "execution_enabled": bool(getattr(self.adapter, "execution_enabled", False)),
                     "account": account, "cycle": cycle, "m5_m1": "DIAGNOSTIC_ONLY_NO_VETO",
                     "session_schedule": self._session_schedule(), "demo_wait_enabled": bool(getattr(self, "demo_wait_enabled", False)),
+                    "manual_direction": self.manual_direction,
                     "black_box": self.blackbox.summary()}
 
     def analyze(self) -> dict[str, Any]:
@@ -241,6 +243,30 @@ class MechanicalBotService:
                 return self.status()
             return self._execute("CLOSE_ALL", "manual_close")
 
+    def manual_entry(self, direction: str) -> dict[str, Any]:
+        """Select a direction and wait for its M15 stochastic confirmation."""
+        with self._state_lock:
+            side = str(direction).upper()
+            if side not in {"BUY", "SELL"}:
+                raise ValueError("direction must be BUY or SELL")
+            if self.adapter is None or not bool(getattr(self.adapter, "execution_enabled", False)):
+                raise RuntimeError("EXECUTION_DISABLED")
+            sessions = self._session_schedule()["sessions"]
+            active = {item["name"] for item in sessions if item["active"]}
+            if not active:
+                raise RuntimeError("OUTSIDE_ENTRY_WINDOW")
+            if "LONDON" in active and side != "SELL":
+                raise RuntimeError("LONDON_SELL_ONLY")
+            if self.bot.state == BotState.OFF:
+                raise RuntimeError("BOT_NOT_ACTIVE")
+            if self.bot.cycle is not None:
+                raise RuntimeError("cycle already active")
+            self.manual_direction = side
+            self.bot.state = BotState.WAIT_STOCHASTIC
+            self._persist_state()
+            self._record("MANUAL_DIRECTION_SELECTED", direction=side, reason="WAIT_M15_STOCHASTIC")
+            return self.status()
+
     def tick(self) -> dict[str, Any]:
         """Run one bounded decision tick; callers schedule it, never a hidden loop."""
         with self._state_lock:
@@ -260,6 +286,18 @@ class MechanicalBotService:
                 if self.entry_sessions_enabled and not any(item["active"] for item in self._session_schedule()["sessions"]):
                     self.bot.state = BotState.WAIT_SIGNAL
                     abstention = "OUTSIDE_ENTRY_WINDOW"
+                elif self.manual_direction is not None:
+                    side = self.manual_direction
+                    allowed = ((side == "BUY" and stochastic is not None and stochastic.crossed_up_from_oversold(self.bot.config.oversold)) or
+                               (side == "SELL" and stochastic is not None and stochastic.crossed_down_from_overbought(self.bot.config.overbought)))
+                    if allowed:
+                        account = self.adapter.account_status()
+                        price = self.adapter.tick_price(self.bot.config.symbol, side)
+                        action = self.bot.manual_entry(side, price, account.balance, now)
+                        self.manual_direction = None
+                    else:
+                        self.bot.state = BotState.WAIT_STOCHASTIC
+                        abstention = "WAIT_MANUAL_DIRECTION_STOCHASTIC"
                 elif snapshot is None:
                     self.bot.state = BotState.WAIT_SIGNAL
                     # Arming starts the live loop immediately. Missing engine
@@ -312,7 +350,9 @@ class MechanicalBotService:
         with self._runner_lock:
             runner = self._runner
         if runner is not None and runner.is_alive() and runner is not current_thread():
-            runner.join()
+            # MT5 calls are external I/O; never let the dashboard hang forever
+            # if a terminal call stops responding during shutdown.
+            runner.join(timeout=8.0)
 
     def _run(self) -> None:
         while not self._runner_stop.is_set():
@@ -447,17 +487,25 @@ class MechanicalBotService:
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
         cycle = None if self.bot.cycle is None else _json_safe(asdict(self.bot.cycle))
         body = {
-            "schema_version": 1,
+            "schema_version": 2,
             "state": self.bot.state.value,
             "cycle": cycle,
             "last_closed_signal_time": None if self.bot.last_closed_signal_time is None else self.bot.last_closed_signal_time.isoformat(),
+            # A selected manual side is durable only so a restart can make its
+            # cancellation explicit.  It is never a resumable order intent.
+            "manual_direction": self.manual_direction,
         }
         temporary = self.state_path.with_suffix(self.state_path.suffix + ".tmp")
         temporary.write_text(json.dumps(body, ensure_ascii=False, indent=2), encoding="utf-8")
         temporary.replace(self.state_path)
 
     def _restore_state(self) -> None:
-        """Recover a saved cycle without automatically arming or executing it."""
+        """Recover a saved cycle without automatically arming or executing it.
+
+        A manual selection has no restart authority.  Persisting it lets the
+        next process produce an auditable cancellation rather than presenting
+        a misleading WAIT_STOCHASTIC state or silently reopening an order.
+        """
         try:
             body = json.loads(self.state_path.read_text(encoding="utf-8"))
             cycle_raw = body.get("cycle")
@@ -476,6 +524,14 @@ class MechanicalBotService:
             # It requires the human to arm it again, then the normal tick sees
             # the restored cycle and only manages its own magic-number trades.
             self.bot.state = BotState.OFF
+            pending_direction = body.get("manual_direction")
+            if pending_direction in {"BUY", "SELL"}:
+                self.manual_direction = None
+                self.blackbox.record("CANCELLED_BY_RESTART", direction=pending_direction,
+                                     reason="MANUAL_DIRECTION_NOT_RESUMABLE")
+                self._persist_state()
+                self._record("CANCELLED_BY_RESTART", direction=pending_direction,
+                             reason="MANUAL_DIRECTION_NOT_RESUMABLE")
         except (OSError, ValueError, KeyError, TypeError):
             return
 

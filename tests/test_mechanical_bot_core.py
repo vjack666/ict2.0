@@ -75,6 +75,15 @@ def test_buy_and_sell_only_open_on_matching_stochastic_cross():
     assert (action.kind, action.side) == ("OPEN", "SELL")
 
 
+def test_sell_cross_requires_closed_overbought_prior_k_and_d_alignment():
+    valid = StochasticReading(k=75, d=82, previous_k=85, previous_d=82)
+    assert valid.crossed_down_from_overbought(80) is True
+    assert valid.crossed_down_from_overbought(86) is False
+    assert StochasticReading(k=75, d=82, previous_k=85, previous_d=79).crossed_down_from_overbought(80) is False
+    assert StochasticReading(k=75, d=82, previous_k=81, previous_d=85).crossed_down_from_overbought(80) is False
+    assert StochasticReading(k=82, d=75, previous_k=85, previous_d=82).crossed_down_from_overbought(80) is False
+
+
 def test_default_configuration_is_off_and_never_enters():
     bot = MechanicalBot()
     assert bot.state == BotState.OFF

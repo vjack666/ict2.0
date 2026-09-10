@@ -122,7 +122,15 @@ class StochasticReading:
         return self.previous_k <= threshold and self.previous_d <= threshold and self.previous_k <= self.previous_d and self.k > self.d
 
     def crossed_down_from_overbought(self, threshold: float = 80.0) -> bool:
-        return self.previous_k >= threshold and self.previous_d >= threshold and self.previous_k >= self.previous_d and self.k < self.d
+        """Strict closed-M15 bearish cross from overbought.
+
+        Both prior stochastic lines must be in overbought and K must have
+        been at/above D before the newly closed observation puts K below D.
+        This keeps the threshold an actual entry gate rather than display-only
+        diagnostic information.
+        """
+        return (self.previous_k >= threshold and self.previous_d >= threshold
+                and self.previous_k >= self.previous_d and self.k < self.d)
 
 
 def stochastic_14_3_3(candles: Sequence[Candle], config: BotConfig = BotConfig()) -> StochasticReading | None:
@@ -215,6 +223,19 @@ class MechanicalBot:
         self.cycle = Cycle(direction=direction, initial_price=price, balance_at_start=balance, signal_time=snapshot.asof_time)
         self.state = BotState.INITIAL_ENTRY
         return BotAction("OPEN", "confirmed_snapshot_and_m15_stochastic_cross", direction, self.config.initial_lot)
+
+    def manual_entry(self, direction: str, price: float, balance: float, now: datetime) -> BotAction:
+        """Create exactly one operator-selected cycle entry."""
+        if self.state == BotState.OFF:
+            raise RuntimeError("bot is not armed")
+        if self.cycle is not None:
+            raise RuntimeError("cycle already active")
+        side = str(direction).upper()
+        if side not in {"BUY", "SELL"}:
+            raise ValueError("direction must be BUY or SELL")
+        self.cycle = Cycle(direction=side, initial_price=price, balance_at_start=balance, signal_time=now)
+        self.state = BotState.INITIAL_ENTRY
+        return BotAction("OPEN", f"manual_{side.lower()}_london", side, self.config.initial_lot)
 
     def monitor(self, price: float, positions: Iterable[Position]) -> BotAction | None:
         """Evaluate only this bot's positions; caller executes returned action explicitly."""

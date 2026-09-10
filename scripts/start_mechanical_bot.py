@@ -86,7 +86,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         from mechanical_bot.mt5_adapter import MT5Adapter
         terminal_path = str(args.terminal_path) if args.terminal_path.is_file() else None
-        adapter = MT5Adapter(terminal_path=terminal_path, execution_enabled=args.execution_enabled)
+        adapter = MT5Adapter(terminal_path=terminal_path, execution_enabled=args.execution_enabled,
+                             server_utc_offset_seconds=int(3 * 3600))
         adapter.connect()
     except Exception as exc:
         print(f"MT5 no disponible para el dashboard: {exc}")

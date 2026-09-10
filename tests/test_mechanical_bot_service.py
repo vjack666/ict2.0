@@ -4,7 +4,7 @@ from threading import Event, Thread
 
 import pytest
 
-from mechanical_bot.core import BotAction, BotConfig, Cycle, Position, Snapshot, StochasticReading
+from mechanical_bot.core import BotAction, BotConfig, BotState, Cycle, Position, Snapshot, StochasticReading
 from mechanical_bot.mt5_adapter import AccountStatus
 from mechanical_bot.service import MechanicalBotService
 
@@ -297,6 +297,38 @@ def test_restart_restores_cycle_but_fails_closed_until_rearmed(tmp_path):
     recovered = MechanicalBotService(BotConfig(enabled=True), adapter=FakeAdapter(), snapshot_path=tmp_path / "snap.json", state_path=state, log_path=tmp_path / "events.jsonl")
     assert recovered.bot.state.value == "OFF"
     assert recovered.bot.cycle is not None and recovered.bot.cycle.entries == 2
+
+
+def test_restart_cancels_persisted_manual_direction_without_resuming_it(tmp_path):
+    state = tmp_path / "state.json"
+    log = tmp_path / "events.jsonl"
+    blackbox = tmp_path / "blackbox.jsonl"
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=FakeAdapter(), snapshot_path=tmp_path / "snap.json",
+                                  state_path=state, log_path=log, blackbox_path=blackbox)
+    service.bot.state = BotState.WAIT_STOCHASTIC
+    service.manual_direction = "SELL"
+    service._persist_state()
+
+    recovered = MechanicalBotService(BotConfig(enabled=True), adapter=FakeAdapter(), snapshot_path=tmp_path / "snap.json",
+                                     state_path=state, log_path=log, blackbox_path=blackbox)
+    assert recovered.status()["state"] == "OFF"
+    assert recovered.status()["manual_direction"] is None
+    persisted = json.loads(state.read_text(encoding="utf-8"))
+    assert persisted["state"] == "OFF" and persisted["manual_direction"] is None
+    event = json.loads(log.read_text(encoding="utf-8").splitlines()[-1])
+    assert event["event"] == "CANCELLED_BY_RESTART"
+    decision = json.loads(blackbox.read_text(encoding="utf-8").splitlines()[-1])
+    assert decision["event"] == "CANCELLED_BY_RESTART"
+
+
+def test_manual_entry_rejects_invalid_direction(tmp_path):
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=FakeAdapter(), snapshot_path=tmp_path / "snap.json",
+                                    state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl",
+                                    blackbox_path=tmp_path / "blackbox.jsonl")
+    service._session_schedule = lambda: {"enabled": True, "sessions": [{"name": "NEW_YORK", "active": True}]}  # type: ignore[method-assign]
+    service.bot.state = BotState.ARMED
+    with pytest.raises(ValueError, match="direction must be BUY or SELL"):
+        service.manual_entry("HOLD")
 
 
 def test_disarm_waits_for_running_tick_and_blocks_later_execution(tmp_path, monkeypatch):

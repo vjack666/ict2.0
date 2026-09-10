@@ -1,0 +1,4 @@
+year,month,decision_time,direction,htf_aligned,sequence_depth,can_trade
+2006,1,2006-01-30 08:45:00+00:00,SHORT,ALIGNED,7,False
+2006,2,2006-01-30 08:45:00+00:00,SHORT,ALIGNED,7,False
+2006,7,2006-06-29 18:45:00+00:00,LONG,ALIGNED,7,False

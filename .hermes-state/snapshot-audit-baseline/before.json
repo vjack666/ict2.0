@@ -1,0 +1,53 @@
+{
+  "observed_at": "2026-09-10T16:04:15.1433770-05:00",
+  "connection": {
+    "status": "READY",
+    "error": null,
+    "updated_at": "2026-09-10T16:04:14.573678-05:00",
+    "tick_age_seconds": 12.6,
+    "server_utc_offset_hours": 3.0
+  },
+  "engine_status": "READY",
+  "schema": "MT5_OPERATIONAL_SNAPSHOT_V1",
+  "decision_time": "2026-09-10T16:04:00-05:00",
+  "missing_timeframes": [],
+  "policy": "OBSERVE_ONLY_NO_ORDER",
+  "can_trade": false,
+  "entry_authorized": false,
+  "bot_state": "OFF",
+  "execution_enabled": true,
+  "snapshot_gate": {
+    "id": "snapshot",
+    "label": "Snapshot canónico",
+    "passed": false,
+    "code": "SNAPSHOT_MISSING",
+    "detail": "No hay snapshot canónico disponible.",
+    "observed": {
+      "symbol": null,
+      "asof_time": null,
+      "age_seconds": null
+    },
+    "required": {
+      "symbol": "EURUSD",
+      "max_age_seconds": 1200.0
+    }
+  },
+  "snapshot_file_exists": false,
+  "last_events": [
+    {
+      "time": "2026-09-10T16:04:09.537613-05:00",
+      "event": "ENGINE_UPDATED",
+      "detail": "5131.8 ms"
+    },
+    {
+      "time": "2026-09-10T16:03:08.998253-05:00",
+      "event": "ENGINE_UPDATED",
+      "detail": "6557.8 ms"
+    },
+    {
+      "time": "2026-09-10T16:02:08.529181-05:00",
+      "event": "ENGINE_UPDATED",
+      "detail": "5477.9 ms"
+    }
+  ]
+}

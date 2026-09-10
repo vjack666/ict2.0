@@ -1,0 +1,20 @@
+{
+  "G0": "D1 sha256 pinned, 64-char hex, load_frames verified",
+  "G1": "manifest data/materialized/v2/ai_outcome_v2_full.jsonl.manifest complete (full_path_sha256 + prefix_path_sha256 + can_trade_all_false + v2_profile)",
+  "G2": "MTFNavigator usado (engine/mtf_navigation.py); no CONTEXT_STATE_DEFAULT",
+  "G3": "STAGES from engine/episodes.py; valid set used",
+  "G4": "M5 micro-bool encoded via _v2_features",
+  "G5": "M1 micro-bool encoded via _v2_features",
+  "G6": "NULL tri-state preserved (allow_long=None \u2192 no_opinion=1)",
+  "G7": "adapter audit + diagnostics verified (tri-state + forbidden scan)",
+  "G8": "_prefix_frame exists in adapter; FULL and PREFIX separate paths",
+  "G9": "token-based forbidden guard (bsl NOT match sl)",
+  "G10": "B3 walkforward uses ROLL-FORWARD (temporal split)",
+  "G11": "sha256 manifest reproducible (deterministic)",
+  "G12": "eval_t8 declares TEST_OOS + training_eligible=False + can_trade=False",
+  "G13": "V2_A..F profiles consistent (48/82/93/99/104/125); ablation_t7.PROFILES set",
+  "training_eligible": false,
+  "can_trade": false,
+  "push": false,
+  "engine_modified": false
+}

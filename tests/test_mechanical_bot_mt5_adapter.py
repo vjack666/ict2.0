@@ -74,24 +74,25 @@ def test_open_uses_bot_magic_and_requires_mt5_success(tmp_path):
         rejected.execute(BotAction("OPEN", "test", "BUY", .1), symbol="EURUSD", magic_number=42)
 
 
-def test_order_send_uses_named_request_after_positional_mapping_rejection(tmp_path):
-    class KeywordOnlyMT5(FakeMT5):
-        def order_send(self, *, request):
+def test_order_send_passes_mapping_positionally_without_losing_fields(tmp_path):
+    class NativeSignatureMT5(FakeMT5):
+        def order_send(self, request, /):
             self.requests.append(request)
             return SimpleNamespace(retcode=10009, order=7, deal=8)
 
-    mt5 = KeywordOnlyMT5()
-    # This models the binding failure seen in production before the adapter
-    # calls it.  The only accepted invocation is request=<mapping>.
+    mt5 = NativeSignatureMT5()
+    # Live 5.0.5735 returns 10013 with an empty TradeRequest for a named
+    # mapping. A positional-only double prevents that regression locally.
     with pytest.raises(TypeError):
-        mt5.order_send({"symbol": "EURUSD"})
-    with pytest.raises(TypeError):
-        mt5.order_send(**{"symbol": "EURUSD"})
+        mt5.order_send(request={"symbol": "EURUSD"})
     result = MT5Adapter(mt5=mt5, execution_enabled=True, blackbox=_journal(tmp_path)).execute(
         BotAction("OPEN", "test", "BUY", .1), symbol="EURUSD", magic_number=42,
     )
     assert result[0]["retcode"] == 10009
     assert mt5.requests[0]["symbol"] == "EURUSD"
+    assert mt5.requests[0]["magic"] == 42
+    assert mt5.requests[0]["volume"] == .1
+    assert len(mt5.requests) == 1
 
 
 def test_close_only_targets_matching_symbol_and_magic_number(tmp_path):

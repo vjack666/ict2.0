@@ -45,7 +45,36 @@ def test_service_is_off_by_default_and_reports_demo_account(tmp_path):
     assert status["adapter_configured"] is True
     assert status["account"]["environment"] == "DEMO"
     assert status["m5_m1"] == "DIAGNOSTIC_ONLY_NO_VETO"
-    assert service.analyze()["snapshot"] is None
+    analysis = service.analyze()
+    assert analysis["snapshot"] is None
+    assessment = analysis["signal_assessment"]
+    assert assessment["status"] == "NO_SIGNAL"
+    assert assessment["code"] == "MECHANICAL_PRODUCER_UNAVAILABLE"
+    assert assessment["entry_authorized"] is False
+    assert assessment["required_fields"] == ["symbol", "direction", "probability", "confirmed", "asof_time"]
+
+
+def test_invalid_mechanical_snapshot_explains_contract_failure_without_authorizing_entry(tmp_path):
+    path = tmp_path / "invalid.json"
+    path.write_text(json.dumps({"symbol": "EURUSD", "direction": "BUY"}), encoding="utf-8")
+    service = MechanicalBotService(adapter=FakeAdapter(), snapshot_path=path,
+                                   state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl")
+    assessment = service.analyze()["signal_assessment"]
+    assert assessment["status"] == "NO_SIGNAL"
+    assert assessment["code"] == "MECHANICAL_SNAPSHOT_INVALID"
+    assert assessment["missing_fields"] == ["probability", "confirmed", "asof_time"]
+    assert assessment["entry_authorized"] is False
+
+
+def test_valid_mechanical_snapshot_is_only_a_candidate_until_readiness_passes(tmp_path):
+    path = tmp_path / "candidate.json"
+    path.write_text(json.dumps({"symbol": "EURUSD", "direction": "BUY", "probability": .70,
+                                "confirmed": True, "asof_time": datetime.now(timezone.utc).isoformat()}), encoding="utf-8")
+    service = MechanicalBotService(adapter=FakeAdapter(), snapshot_path=path,
+                                   state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl")
+    assessment = service.analyze()["signal_assessment"]
+    assert assessment["status"] == "CANDIDATE_SIGNAL"
+    assert assessment["entry_authorized"] is False
 
 
 def test_missing_snapshot_arms_into_wait_signal_and_records_black_box_decision(tmp_path):

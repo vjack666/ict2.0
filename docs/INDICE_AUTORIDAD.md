@@ -65,6 +65,13 @@ ejecutiva y las reglas de delegación están en
 | `docs/tesis/PLAN_LTF_ENTRY_LAYER.md` | Plan de trabajo para conectar LTF/EXEC al uso diario. | Activo |
 | `docs/tesis/SDD_LTF_ENTRY_LAYER.md` | Contrato de diseño LTF-1; observación, no órdenes. | Normativo LTF-1 |
 
+### Productor mecánico de señal
+
+| Archivo | Rol | Estado |
+| --- | --- | --- |
+| `docs/tesis/SDD_MECHANICAL_MT5_BOT.md` | Consumidor mecánico, gates M15 y gestión de ciclo. | Implementación local; no define productor automático. |
+| `docs/tesis/SDD_MECHANICAL_SIGNAL_PRODUCER_V1.md` | Respuesta `NO_SIGNAL` explicable y contrato de la futura señal automática. | Fase 1 diagnóstica implementada; Fase 2 `DRAFT_BLOCKED`. |
+
 ### Motor autónomo de misiones Hermes
 
 | Archivo | Rol | Estado |

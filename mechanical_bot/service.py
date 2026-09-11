@@ -87,6 +87,9 @@ class MechanicalBotService:
             "bos": raw.get("bos", []),
             "m5_m1": raw.get("m5_m1", "DIAGNOSTIC_ONLY_NO_VETO"),
         } if raw else None
+        result["signal_assessment"] = self._signal_assessment(
+            raw, snapshot, snapshot_error, datetime.now(timezone.utc)
+        )
         stochastic = None
         stochastic_error = None
         if self.adapter is not None:
@@ -99,6 +102,53 @@ class MechanicalBotService:
         result["readiness"] = self._readiness(raw, snapshot, stochastic, datetime.now(timezone.utc),
                                                snapshot_error=snapshot_error, stochastic_error=stochastic_error)
         return result
+
+    def _signal_assessment(self, raw: dict[str, Any] | None, snapshot: Snapshot | None,
+                           snapshot_error: str | None, evaluated_at: datetime) -> dict[str, Any]:
+        """Explain signal absence without synthesising a tradable snapshot.
+
+        ``snapshot`` remains ``None`` when no producer published the mechanical
+        contract.  This companion payload is intentionally complete so an
+        operator receives a reasoned ``NO_SIGNAL`` response rather than having
+        to infer meaning from nullable transport fields.
+        """
+        required_fields = ("symbol", "direction", "probability", "confirmed", "asof_time")
+        evaluation_time = _as_utc(evaluated_at).isoformat()
+        if raw is None:
+            return {
+                "status": "NO_SIGNAL",
+                "code": "MECHANICAL_PRODUCER_UNAVAILABLE" if snapshot_error in {None, "SNAPSHOT_MISSING"} else "MECHANICAL_SNAPSHOT_UNREADABLE",
+                "detail": "No existe una señal mecánica publicada. El análisis canónico permanece separado y no se convierte en BUY, SELL ni probabilidad.",
+                "required_fields": list(required_fields),
+                "observed_fields": [],
+                "next_condition": "Un productor autorizado debe publicar los cinco campos del contrato mecánico con datos causales y vigentes.",
+                "entry_authorized": False,
+                "evaluated_at": evaluation_time,
+            }
+        observed_fields = sorted(str(key) for key in raw)
+        missing_fields = [field for field in required_fields if field not in raw]
+        if snapshot is None:
+            return {
+                "status": "NO_SIGNAL",
+                "code": "MECHANICAL_SNAPSHOT_INVALID",
+                "detail": "La señal mecánica publicada no cumple el contrato estricto; se mantiene bloqueada.",
+                "required_fields": list(required_fields),
+                "observed_fields": observed_fields,
+                "missing_fields": missing_fields,
+                "next_condition": "Corregir el productor para publicar tipos válidos, timestamp ISO-8601 y los cinco campos requeridos.",
+                "entry_authorized": False,
+                "evaluated_at": evaluation_time,
+            }
+        return {
+            "status": "CANDIDATE_SIGNAL",
+            "code": "MECHANICAL_SNAPSHOT_AVAILABLE",
+            "detail": "Existe una señal mecánica candidata; los gates de readiness siguen siendo la única autoridad de entrada.",
+            "required_fields": list(required_fields),
+            "observed_fields": observed_fields,
+            "next_condition": "Validar frescura, probabilidad, confirmación M15, sesión y autoridad de ejecución.",
+            "entry_authorized": False,
+            "evaluated_at": evaluation_time,
+        }
 
     def _readiness(self, raw: dict[str, Any] | None, snapshot: Snapshot | None, stochastic: Any,
                    evaluated_at: datetime, *, snapshot_error: str | None = None,

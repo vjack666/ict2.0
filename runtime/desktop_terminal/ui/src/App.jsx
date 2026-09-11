@@ -143,6 +143,28 @@ function ReadinessPanel({ readiness }) {
     </section>
   );
 }
+function SignalAssessment({ assessment }) {
+  if (!assessment) return null;
+  const noSignal = assessment.status === "NO_SIGNAL";
+  return (
+    <section className={`readiness-panel ${noSignal ? "is-blocked" : "is-ready"}`} aria-label="Respuesta del productor de señal">
+      <div className="readiness-head">
+        <div>
+          <small>PRODUCTOR MECÁNICO · RESPUESTA EXPLICABLE</small>
+          <h3>{noSignal ? "Sin señal mecánica" : "Señal candidata disponible"}</h3>
+        </div>
+        <Badge tone={noSignal ? "warn" : "good"}>{assessment.status}</Badge>
+      </div>
+      <p>{assessment.detail}</p>
+      <Row label="Código" value={assessment.code} />
+      <Row label="Siguiente condición" value={assessment.next_condition} />
+      {assessment.missing_fields?.length > 0 && (
+        <Row label="Campos faltantes" value={assessment.missing_fields.join(", ")} />
+      )}
+      <p className="readiness-footnote">Esta respuesta no autoriza una entrada; el readiness conserva la autoridad final.</p>
+    </section>
+  );
+}
 function useFeed() {
   const [state, setState] = useState(EMPTY),
     [error, setError] = useState(""),
@@ -771,6 +793,7 @@ function BotControl({ state, onAction, onEmergencyDisarm, pending }) {
           <p>{state.canonical_snapshot_health?.detail ?? "Esperando evaluación del motor."}</p>
           <Row label="Fecha del análisis" value={stamp(state.canonical_snapshot_health?.decision_time)} />
         </section>
+        <SignalAssessment assessment={b.signal_assessment} />
         <ReadinessPanel readiness={b.readiness} />
         <div className="action-row">
           <button

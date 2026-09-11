@@ -80,6 +80,33 @@ evaluar.
 
 ## 4. Contrato Fase 2B — productor automático pendiente
 
+El gate implementado `engine.mechanical_signal_publication` acepta un
+certificado independiente solo si todos estos campos tienen estado `PASS`:
+`direction_rule`, `confirmation`, `calibration`, `abstention_ood`,
+`costs_fill`, `causality`, `provenance`, `edge` y
+`production_authorization`.
+
+La regla direccional congelada para una futura publicación es única:
+`CANDIDATE_CONTEXT_DIRECTION_V1`. Un `CANDIDATE_SETUP` con
+`context_direction=BULLISH` mapea a `BUY`; con `BEARISH` mapea a `SELL`. Es
+aceptable únicamente si el certificado declara esa misma regla. `confirmed`
+significa `PHASE2A_CHAIN_COMPLETE_CLOSED_M15_V1`: cadena cerrada completa al
+`decision_time`; no incorpora el cruce estocástico, que sigue siendo un gate
+posterior del bot.
+
+El certificado de calibración debe aportar una probabilidad finita entre 0 y
+1, `fit_partition=VALIDATION_ONLY`,
+`oos_partition=HOLDOUT_NEVER_USED_FOR_FIT`, Brier y hash de la curva de
+fiabilidad. El gate no calcula ni acepta `score_to_probability()` como
+evidencia. Cuando cualquiera de estos requisitos falla, devuelve `BLOCKED` y
+no genera el contrato JSON ni escribe `latest_snapshot.json`.
+
+La implementación no está conectada al publicador porque el estado actual del
+preregistro económico es `DRAFT_BLOCKED / NO EJECUTAR`: provenance,
+reproducibilidad, costes/fill, horizonte, potencia/estabilidad y autorización
+no tienen `PASS`. Esta frontera evita confundir infraestructura de validación
+con una certificación científica.
+
 La futura salida operable deberá ser atómica y contener:
 
 ```json

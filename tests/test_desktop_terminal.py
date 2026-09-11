@@ -65,28 +65,27 @@ def test_incremental_response_omits_only_unchanged_heavy_payloads():
     assert "candles_by_tf" in full and "snapshot" in full["engine"]
 
 
-def test_disabled_actions_and_missing_producer_fail_closed():
+def test_arm_allows_observation_but_manual_actions_remain_execution_gated():
     class Service:
         enabled = False
         def status(self):
-            return {"execution_enabled": self.enabled}
+            return {"adapter_configured": True, "execution_enabled": self.enabled}
         def _load_snapshot(self):
             return None
         def arm(self):
             return {"state": "ARMED", "execution_enabled": True}
     service = Service()
     runtime = TerminalRuntime(service=service)
-    with pytest.raises(RuntimeError, match="EXECUTION_DISABLED"):
-        runtime.action("arm")
-    service.enabled = True
     assert runtime.action("arm")["ok"] is True
+    with pytest.raises(RuntimeError, match="EXECUTION_DISABLED"):
+        runtime.action("manual-sell")
 
 
 def test_demo_wait_arms_without_fabricating_snapshot():
     class Service:
         demo_wait_enabled = True
         def status(self):
-            return {"execution_enabled": True}
+            return {"adapter_configured": True, "execution_enabled": True}
         def arm(self):
             return {"state": "ARMED", "snapshot": None}
     runtime = TerminalRuntime(service=Service())

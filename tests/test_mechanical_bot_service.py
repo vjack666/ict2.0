@@ -42,6 +42,7 @@ def test_service_is_off_by_default_and_reports_demo_account(tmp_path):
     service = MechanicalBotService(adapter=FakeAdapter(), snapshot_path=tmp_path / "missing.json", state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl")
     status = service.status()
     assert status["state"] == "OFF"
+    assert status["adapter_configured"] is True
     assert status["account"]["environment"] == "DEMO"
     assert status["m5_m1"] == "DIAGNOSTIC_ONLY_NO_VETO"
     assert service.analyze()["snapshot"] is None
@@ -168,13 +169,29 @@ def _gate(analysis, identifier):
     return next(item for item in analysis["readiness"]["gates"] if item["id"] == identifier)
 
 
-def test_readiness_reports_execution_enabled_without_blocking_scan_start(tmp_path):
+def test_readiness_allows_scan_with_execution_disabled_but_keeps_execution_gate_closed(tmp_path):
     service = _readiness_service(tmp_path, _ready_payload())
     service.adapter.execution_enabled = False
     analysis = service.analyze()
     gate = _gate(analysis, "execution_enabled")
     assert gate["passed"] is False and gate["code"] == "EXECUTION_DISABLED"
-    assert analysis["readiness"]["scan_can_start"] is False
+    assert analysis["readiness"]["scan_can_start"] is True
+
+
+def test_disabled_execution_runner_records_observation_without_creating_an_order(tmp_path):
+    blackbox = tmp_path / "blackbox.jsonl"
+    snapshot = tmp_path / "snapshot.json"
+    snapshot.write_text(json.dumps(_ready_payload()), encoding="utf-8")
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=FakeAdapter(),
+                                  snapshot_path=snapshot, state_path=tmp_path / "state.json",
+                                  log_path=tmp_path / "events.jsonl", blackbox_path=blackbox)
+    service.arm()
+    status = service.tick()
+    decision = json.loads(blackbox.read_text(encoding="utf-8").splitlines()[-1])
+    assert status["state"] == "WAIT_SIGNAL"
+    assert status["cycle"] is None
+    assert decision["event"] == "DECISION"
+    assert decision["reason"] == "EXECUTION_DISABLED_SCAN_ONLY"
 
 
 @pytest.mark.parametrize(("payload", "code"), [

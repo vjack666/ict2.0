@@ -317,7 +317,9 @@ class TerminalRuntime:
             raise RuntimeError("BOT_UNAVAILABLE")
         with self.action_lock:
             status = self.service.status()
-            if action in {"arm", "close-cycle", "manual-buy", "manual-sell"} and not status.get("execution_enabled"):
+            if action == "arm" and not status.get("adapter_configured", False):
+                raise RuntimeError("MT5_ADAPTER_UNAVAILABLE")
+            if action in {"close-cycle", "manual-buy", "manual-sell"} and not status.get("execution_enabled"):
                 raise RuntimeError("EXECUTION_DISABLED")
             # Arming is explicit human authorization. Snapshot and stochastic
             # checks remain in tick(), immediately before any OPEN action.

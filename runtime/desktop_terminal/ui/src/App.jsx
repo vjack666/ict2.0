@@ -782,7 +782,7 @@ function BotControl({ state, onAction, onEmergencyDisarm, pending }) {
             Analizar
           </button>
           <button
-            disabled={!b.execution_enabled || pending}
+            disabled={!b.adapter_configured || pending}
             onClick={() => setConfirm("arm")}
           >
             <Play size={16} />

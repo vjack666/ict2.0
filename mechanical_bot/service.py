@@ -18,7 +18,7 @@ from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 from mechanical_bot.blackbox import BlackBoxJournal, BlackBoxWriteError, canonical_hash
-from mechanical_bot.core import BotConfig, BotState, Cycle, MechanicalBot, Snapshot, SnapshotRejected, stochastic_14_3_3
+from mechanical_bot.core import BotConfig, BotState, Cycle, MechanicalBot, Snapshot, SnapshotRejected, stochastic_14_3_3, validate_snapshot
 from mechanical_bot.mt5_adapter import MT5Adapter
 
 
@@ -64,7 +64,9 @@ class MechanicalBotService:
                 except Exception as exc:
                     account = {"status": "UNAVAILABLE", "error": str(exc)}
             cycle = None if self.bot.cycle is None else _json_safe(asdict(self.bot.cycle))
-            return {"state": self.bot.state.value, "symbol": self.bot.config.symbol, "execution_enabled": bool(getattr(self.adapter, "execution_enabled", False)),
+            return {"state": self.bot.state.value, "symbol": self.bot.config.symbol,
+                    "adapter_configured": self.adapter is not None,
+                    "execution_enabled": bool(getattr(self.adapter, "execution_enabled", False)),
                     "account": account, "cycle": cycle, "m5_m1": "DIAGNOSTIC_ONLY_NO_VETO",
                     "session_schedule": self._session_schedule(), "demo_wait_enabled": bool(getattr(self, "demo_wait_enabled", False)),
                     "manual_direction": self.manual_direction,
@@ -215,7 +217,10 @@ class MechanicalBotService:
             observed={"enabled": self.entry_sessions_enabled, "active_sessions": active}, required="sesión activa" if self.entry_sessions_enabled else "no requerido",
         )
         gates = [execution_gate, snapshot_gate, direction_gate, probability_gate, m15_gate, session_gate]
-        return {"ready": all(item["passed"] for item in gates), "scan_can_start": execution_enabled,
+        # The scanner can be armed with a connected MT5 reader even when order
+        # execution is disabled.  The execution gate remains independently
+        # false and tick() will record observation only in that state.
+        return {"ready": all(item["passed"] for item in gates), "scan_can_start": self.adapter is not None,
                 "gates": gates, "evaluated_at": now.isoformat()}
 
     def arm(self) -> dict[str, Any]:
@@ -223,7 +228,7 @@ class MechanicalBotService:
             self.bot.arm()
             self._persist_state()
             self._record("ARMED")
-            if self.adapter is not None and bool(getattr(self.adapter, "execution_enabled", False)):
+            if self.adapter is not None:
                 self.start_runner()
             return self.status()
 
@@ -303,6 +308,18 @@ class MechanicalBotService:
                     # Arming starts the live loop immediately. Missing engine
                     # data blocks direction, but the scanner remains active.
                     abstention = "WAIT_DIRECTION"
+                elif not bool(getattr(self.adapter, "execution_enabled", False)):
+                    # Keep acquiring and recording closed-bar evidence, but do
+                    # not let an observation-only runner create a cycle or
+                    # reach _execute().
+                    try:
+                        validate_snapshot(snapshot, self.bot.config, now)
+                    except SnapshotRejected as exc:
+                        self.bot.state = BotState.WAIT_SIGNAL
+                        abstention = f"SNAPSHOT_REJECTED:{exc}"
+                    else:
+                        self.bot.state = BotState.WAIT_SIGNAL
+                        abstention = "EXECUTION_DISABLED_SCAN_ONLY"
                 else:
                     account = self.adapter.account_status()
                     price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
@@ -329,13 +346,13 @@ class MechanicalBotService:
             return self._execute(action.kind, action.reason, action=action, correlation_id=correlation_id)
 
     def start_runner(self, interval_seconds: float = 15.0) -> None:
-        """Run bounded MT5 ticks only after explicit arming and execution enablement.
+        """Run bounded MT5 observation ticks after explicit arming.
 
         The loop waits on an event rather than busy-spinning.  It is intentionally
         owned by this service so the dashboard's Arm/Stop controls operate the
         same state machine and cannot create duplicate runners.
         """
-        if self.adapter is None or not bool(getattr(self.adapter, "execution_enabled", False)):
+        if self.adapter is None:
             return
         with self._runner_lock:
             if self._runner is not None and self._runner.is_alive():

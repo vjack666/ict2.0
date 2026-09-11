@@ -12,6 +12,8 @@ from concurrent.futures import ProcessPoolExecutor
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
+from runtime.desktop_terminal.snapshot_health import canonical_health
+from concurrent.futures.process import BrokenProcessPool
 
 ROOT = Path(__file__).resolve().parents[2]
 TF_SECONDS = {"D1": 86400, "H4": 14400, "H1": 3600, "M15": 900, "M5": 300, "M1": 60}
@@ -90,6 +92,8 @@ class TerminalRuntime:
         self.refresh_event = threading.Event()
         self.executor = executor
         self.future = None
+        self.engine_failures = 0
+        self.engine_retry_at = 0.0
         self.engine_signature = None
         self.bars_signature = None
         self.closed_bars = {}
@@ -106,6 +110,8 @@ class TerminalRuntime:
         with self.lock:
             # Detach the HTTP reader from subsequent writer mutations.
             payload = {**self.state, "engine": dict(self.state["engine"])}
+            payload["canonical_snapshot_health"] = canonical_health(
+                self.state["engine"], self.state["connection"], self.symbol)
             if str(bars_version) == str(self.state["bars_version"]):
                 payload.pop("candles_by_tf", None)
             if str(engine_version) == str(self.state["engine_version"]):
@@ -172,6 +178,7 @@ class TerminalRuntime:
                     self.state["connection"] = {"status": "ERROR", "error": str(exc), "updated_at": utc_now()}
                     self.state["engine"]["status"] = "ERROR"
                     self.state["engine"]["error"] = "MT5 feed unavailable; prior snapshot is historical"
+                    self.engine_signature = None
                 if old_error != str(exc):
                     self.event("FEED_ERROR", exc)
             with self.lock:
@@ -248,17 +255,20 @@ class TerminalRuntime:
                     self.state["engine"] = {"status": result["snapshot"]["status"], **result}
                     self.state["engine_version"] += 1
                 self._publish_bot_snapshot(result.get("snapshot"))
+                self.engine_failures = 0
+                self.engine_retry_at = 0.0
                 self.event("ENGINE_UPDATED", f'{result["duration_ms"]} ms')
             except Exception as exc:
-                with self.lock:
-                    self.state["engine"] = {"status": "ERROR", "snapshot": None, "error": str(exc)}
-                    self.state["engine_version"] += 1
-                self.event("ENGINE_ERROR", exc)
+                self._engine_failed(exc)
             self.future = None
         with self.lock:
             closed = self.closed_bars
             signature = self.bars_signature
         if not closed or signature is None:
+            return
+        if self.state["connection"].get("status") != "READY":
+            return
+        if time.monotonic() < self.engine_retry_at:
             return
         stale = [tf for tf, rows in closed.items()
                  if time.time() - (rows[-1]["time"] + TF_SECONDS[tf]) >
@@ -272,12 +282,30 @@ class TerminalRuntime:
             return
         self.refresh_event.clear()
         decision = datetime.fromtimestamp(closed["M1"][-1]["time"] + 60, timezone.utc).isoformat()
-        self.future = self.executor.submit(compute_snapshot, closed, self.symbol, decision)
+        try:
+            self.future = self.executor.submit(compute_snapshot, closed, self.symbol, decision)
+        except Exception as exc:
+            self._engine_failed(exc)
+            return
         self.engine_signature = signature
         with self.lock:
             self.state["engine"]["status"] = "RUNNING"
             self.state["engine"]["started_at"] = utc_now()
             self.state["engine"]["error"] = None
+
+    def _engine_failed(self, exc):
+        self.engine_signature = None
+        self.engine_failures += 1
+        delay = min(60, 5 * 2 ** min(self.engine_failures - 1, 4))
+        self.engine_retry_at = time.monotonic() + delay
+        with self.lock:
+            self.state["engine"] = {"status": "ERROR", "snapshot": None, "error": str(exc),
+                                    "retry_after_seconds": delay}
+            self.state["engine_version"] += 1
+        if isinstance(exc, BrokenProcessPool):
+            self.executor.shutdown(wait=False, cancel_futures=True)
+            self.executor = ProcessPoolExecutor(max_workers=1)
+        self.event("ENGINE_ERROR", f"{exc}; retry in {delay}s")
 
     def action(self, action):
         if action not in {"analyze", "arm", "disarm", "close-cycle", "manual-buy", "manual-sell"}:

@@ -47,8 +47,15 @@ El inicio normal y todas las pruebas reales de esta entrega usan ejecución
 deshabilitada. El flag `--execution-enabled` habilita el adaptador, pero la
 interfaz exige también armado manual y el snapshot válido que consume el bot.
 No se debe abrir simultáneamente otro ejecutor sobre el mismo símbolo/magic.
-El productor de `runtime/mechanical_bot/latest_snapshot.json` no existe aún:
-la app informa `WAIT_SNAPSHOT` y no fabrica probabilidad ni confirma una entrada.
+El productor de señal de `runtime/mechanical_bot/latest_snapshot.json` no existe aún:
+el controlador conserva `WAIT_SNAPSHOT` y no fabrica probabilidad ni confirma una entrada.
+La API publica por separado `canonical_snapshot_health`: valida el análisis
+`MT5_OPERATIONAL_SNAPSHOT_V1`, su símbolo, política de lectura, antigüedad máxima
+de 180 segundos y cierres de las seis TF. La UI diferencia análisis vigente
+de señal operable pendiente. Feed no vigente o error del motor invalidan la salud;
+un análisis anterior solo puede seguir vigente durante un cálculo si cumple
+todos los controles temporales. Los errores del worker se reintentan con espera
+de 5 a 60 segundos, sin esperar una vela nueva ni duplicar tareas pendientes.
 
 Apagar espera el tick en curso, conserva el ciclo y no liquida posiciones.
 Cerrar ciclo verifica las posiciones propias antes y después; un cierre parcial

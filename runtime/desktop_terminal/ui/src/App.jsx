@@ -75,7 +75,7 @@ function Empty({ children }) {
 }
 const READINESS_LABELS = {
   execution_enabled: "Ejecución habilitada",
-  snapshot: "Snapshot válido y vigente",
+  snapshot: "Señal operable válida y vigente",
   direction: "Dirección operable",
   probability: "Probabilidad ≥ 70 %",
   m15_confirmation: "Confirmación M15",
@@ -126,7 +126,9 @@ function ReadinessPanel({ readiness }) {
               <strong>
                 {READINESS_LABELS[gate.id] ?? gate.label ?? gate.id}
               </strong>
-              <p>{gate.detail ?? gate.code}</p>
+              <p>{gate.id === "snapshot" && gate.code === "SNAPSHOT_MISSING"
+                ? "No hay señal operable publicada con dirección, probabilidad y confirmación. Consulta el estado del análisis canónico arriba."
+                : gate.detail ?? gate.code}</p>
             </div>
             <Badge tone={gate.passed ? "good" : "warn"}>
               {gate.passed ? "CUMPLE" : "FALLA"}
@@ -759,6 +761,16 @@ function BotControl({ state, onAction, onEmergencyDisarm, pending }) {
           El ejecutor consume su snapshot operativo y confirma con estocástico
           M15. La lectura ICT/Wyckoff se presenta por separado.
         </p>
+        <section className="readiness-panel" aria-label="Salud del snapshot canónico">
+          <div className="readiness-head">
+            <h3>Snapshot canónico · análisis</h3>
+            <Badge tone={state.canonical_snapshot_health?.valid === true ? "good" : "warn"}>
+              {state.canonical_snapshot_health?.valid === true ? "VÁLIDO Y VIGENTE" : "NO VIGENTE"}
+            </Badge>
+          </div>
+          <p>{state.canonical_snapshot_health?.detail ?? "Esperando evaluación del motor."}</p>
+          <Row label="Fecha del análisis" value={stamp(state.canonical_snapshot_health?.decision_time)} />
+        </section>
         <ReadinessPanel readiness={b.readiness} />
         <div className="action-row">
           <button
@@ -858,7 +870,8 @@ function BotControl({ state, onAction, onEmergencyDisarm, pending }) {
         <Row label="Balance" value={num(a.balance, 2)} />
         <Row label="Equity" value={num(a.equity, 2)} />
         <hr />
-        <Row label="Snapshot" value={b.snapshot ? "Publicado" : "Ausente"} />
+        <Row label="Análisis canónico" value={state.canonical_snapshot_health?.valid === true ? "Vigente" : "No vigente"} />
+        <Row label="Señal operable" value={b.snapshot ? "Publicada" : "Pendiente"} />
         <Row
           label="Probabilidad"
           value={

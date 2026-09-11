@@ -72,3 +72,20 @@ solo presenta este contrato del servicio y falla cerrado si está ausente. Todos
 los gates vuelven a evaluarse en el tick antes de cualquier `order_send`.
 El motor canónico conserva `can_trade=false` por defecto; readiness no cambia
 esa autoridad ni constituye promoción o señal.
+
+## Addendum V4 — disponibilidad canónica y señal mecánica (2026-09-10)
+
+La salud del análisis `MT5_OPERATIONAL_SNAPSHOT_V1` se presenta separada de
+los seis requisitos de entrada del servicio mecánico. Un análisis vigente
+no implica que exista una señal con probabilidad y confirmación autorizadas.
+La ausencia de esa señal debe describirse como tal, sin afirmar que falta
+el análisis canónico cuando está disponible.
+
+La salud diagnóstica valida esquema, símbolo, estado, reloj con zona horaria,
+antigüedad y cierres de las seis temporalidades contra `decision_time`.
+Un fallo de feed, cálculo o vigencia impide mostrarla como válida. El cálculo
+fallido admite reintentos acotados sin esperar una vela nueva.
+El canal de lectura permanece separado de `runtime/mechanical_bot/latest_snapshot.json`;
+no se derivan probabilidad, confirmación ni autoridad de entrada a partir del
+contexto. Se conservan `OBSERVE_ONLY_NO_ORDER`, `can_trade=false` y
+`entry_authorized=false`. Esta salud técnica no es certificación histórica.

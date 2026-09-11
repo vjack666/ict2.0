@@ -15,6 +15,7 @@ import pandas as pd
 
 from engine.Wyckoff import build_wyckoff_snapshot
 from engine.daily_motor import build_daily_motor_snapshot
+from engine.mechanical_signal_assessment import assess_mechanical_signal
 from engine.ltf_canonical_feed import build_canonical_objects, build_ltf_canonical_feed
 from engine.market_state import MarketState as ObjectMarketState
 from engine.mtf_navigation import MTFNavigator, NavigatorConfig
@@ -227,7 +228,7 @@ def build_mt5_operational_snapshot(
     status = "BLOCKED" if missing else "READY"
     if provenance_errors:
         status = "BLOCKED"
-    return _safe({
+    snapshot = _safe({
         "schema_version": "MT5_OPERATIONAL_SNAPSHOT_V1",
         "source": "MT5_LOCAL",
         "symbol": symbol,
@@ -271,6 +272,10 @@ def build_mt5_operational_snapshot(
         "entry_authorized": False,
         "can_trade": False,
     })
+    # Diagnostic-only.  There is deliberately no fallback that turns context,
+    # a zone, or a score into a mechanical BUY/SELL contract.
+    snapshot["mechanical_signal_assessment"] = assess_mechanical_signal(snapshot)
+    return snapshot
 
 
 __all__ = ["REQUIRED_TFS", "OBJECT_TFS", "build_object_market_state", "build_mt5_operational_snapshot"]

@@ -103,6 +103,20 @@ class MechanicalBotService:
                                                snapshot_error=snapshot_error, stochastic_error=stochastic_error)
         return result
 
+    def record_signal_assessment(self, assessment: dict[str, Any], canonical_snapshot: dict[str, Any]) -> None:
+        """Persist a canonical diagnostic assessment once per engine update.
+
+        This has no state-machine or broker effect.  The canonical snapshot is
+        represented by its full-content hash so the journal remains bounded.
+        """
+        self.blackbox.record(
+            "SIGNAL_ASSESSMENT",
+            assessment=assessment,
+            canonical_snapshot_hash=canonical_hash(canonical_snapshot),
+            snapshot_source=canonical_snapshot.get("source"),
+            decision_time=canonical_snapshot.get("decision_time"),
+        )
+
     def _signal_assessment(self, raw: dict[str, Any] | None, snapshot: Snapshot | None,
                            snapshot_error: str | None, evaluated_at: datetime) -> dict[str, Any]:
         """Explain signal absence without synthesising a tradable snapshot.

@@ -13,6 +13,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from runtime.desktop_terminal.snapshot_health import canonical_health
+from mechanical_bot.blackbox import BlackBoxWriteError
 from concurrent.futures.process import BrokenProcessPool
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -241,6 +242,10 @@ class TerminalRuntime:
         if self.service:
             with self.action_lock:
                 bot = self.service.analyze()
+            with self.lock:
+                canonical = self.state["engine"].get("snapshot")
+            if isinstance(canonical, dict) and isinstance(canonical.get("mechanical_signal_assessment"), dict):
+                bot["signal_assessment"] = canonical["mechanical_signal_assessment"]
             bot["snapshot_status"] = "AVAILABLE" if bot.get("snapshot") else "WAIT_SNAPSHOT"
             with self.lock:
                 self.state["bot"] = bot
@@ -255,6 +260,12 @@ class TerminalRuntime:
                     self.state["engine"] = {"status": result["snapshot"]["status"], **result}
                     self.state["engine_version"] += 1
                 self._publish_bot_snapshot(result.get("snapshot"))
+                assessment = result.get("snapshot", {}).get("mechanical_signal_assessment")
+                if self.service is not None and isinstance(assessment, dict):
+                    try:
+                        self.service.record_signal_assessment(assessment, result["snapshot"])
+                    except BlackBoxWriteError as exc:
+                        self.event("SIGNAL_ASSESSMENT_AUDIT_ERROR", str(exc))
                 self.engine_failures = 0
                 self.engine_retry_at = 0.0
                 self.event("ENGINE_UPDATED", f'{result["duration_ms"]} ms')

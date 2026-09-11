@@ -63,6 +63,8 @@ def test_snapshot_is_blocked_when_required_mt5_timeframe_is_missing():
     assert result["missing_timeframes"] == ["M1"]
     assert result["policy"] == "OBSERVE_ONLY_NO_ORDER"
     assert result["entry_authorized"] is False
+    assert result["mechanical_signal_assessment"]["entry_authorized"] is False
+    assert result["mechanical_signal_assessment"]["can_trade"] is False
 
 
 def test_source_artifacts_populate_hashes_and_mismatch_blocks(tmp_path):

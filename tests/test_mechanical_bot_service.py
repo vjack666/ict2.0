@@ -93,6 +93,22 @@ def test_missing_snapshot_arms_into_wait_signal_and_records_black_box_decision(t
     assert status["black_box"]["path"] == str(blackbox)
 
 
+def test_canonical_signal_assessment_is_recorded_with_its_source_hash(tmp_path):
+    blackbox = tmp_path / "blackbox.jsonl"
+    service = MechanicalBotService(
+        adapter=FakeAdapter(), snapshot_path=tmp_path / "missing.json", state_path=tmp_path / "state.json",
+        log_path=tmp_path / "events.jsonl", blackbox_path=blackbox,
+    )
+    canonical = {"source": "MT5_LOCAL", "decision_time": "2026-09-11T15:00:00+00:00", "can_trade": False}
+    assessment = {"status": "NO_SIGNAL", "code": "NO_SWEEP", "entry_authorized": False}
+    service.record_signal_assessment(assessment, canonical)
+    record = json.loads(blackbox.read_text(encoding="utf-8").splitlines()[-1])
+    assert record["event"] == "SIGNAL_ASSESSMENT"
+    assert record["assessment"] == assessment
+    assert record["snapshot_source"] == "MT5_LOCAL"
+    assert len(record["canonical_snapshot_hash"]) == 64
+
+
 def test_rejected_snapshot_abstains_without_killing_runner_state(tmp_path):
     path = tmp_path / "snap.json"
     path.write_text(json.dumps({

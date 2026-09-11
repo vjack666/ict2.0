@@ -107,6 +107,19 @@ def test_bot_refresh_publishes_structured_readiness_to_terminal_state():
     assert runtime.snapshot()["bot"]["readiness"]["gates"][0]["code"] == "SNAPSHOT_MISSING"
 
 
+def test_bot_projects_canonical_diagnostic_assessment_without_snapshot_file():
+    class Service:
+        def analyze(self):
+            return {"state": "WAIT_SIGNAL", "snapshot": None, "signal_assessment": {"code": "OLD"}}
+
+    runtime = TerminalRuntime(service=Service())
+    runtime.state["engine"]["snapshot"] = {"mechanical_signal_assessment": {"status": "NO_SIGNAL", "code": "NO_SWEEP"}}
+    runtime.read_bot()
+    bot = runtime.snapshot()["bot"]
+    assert bot["snapshot_status"] == "WAIT_SNAPSHOT"
+    assert bot["signal_assessment"]["code"] == "NO_SWEEP"
+
+
 def test_manual_actions_route_the_operator_selected_side_to_service():
     class Service:
         def __init__(self):

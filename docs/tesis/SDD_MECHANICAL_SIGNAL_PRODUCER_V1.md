@@ -1,6 +1,7 @@
 # SDD — Productor de señal mecánica v1
 
-**Estado:** Fase 1 `IMPLEMENTED_DIAGNOSTIC_ONLY`; Fase 2 `DRAFT_BLOCKED`.
+**Estado:** Fase 1 `IMPLEMENTED_DIAGNOSTIC_ONLY`; Fase 2A
+`IMPLEMENTED_DIAGNOSTIC_ONLY`; Fase 2B `DRAFT_BLOCKED`.
 **Autoridad:** cliente; D2 implementa, D5 audita.
 **Ámbito:** respuesta explicable del productor y futuro contrato de señal para
 `mechanical_bot/`. No modifica la autoridad de `engine/`.
@@ -42,7 +43,42 @@ respuesta autoridad para el operador es `signal_assessment`; ningún valor se
 rellena con `direction_hint`, contexto, IA diagnóstica o una probabilidad
 sintética.
 
-## 3. Contrato Fase 2 — productor automático pendiente
+## 3. Contrato Fase 2A — cadena determinista diagnóstica
+
+El ensamblador canónico publica `mechanical_signal_assessment` y el terminal lo
+proyecta al operador. Nunca escribe `latest_snapshot.json`. La respuesta tiene
+solo tres estados: `BLOCKED`, `NO_SIGNAL` y `CANDIDATE_SETUP`; este último no
+incluye `BUY`, `SELL`, `probability` ni `confirmed`.
+
+La cadena congelada y su mínima evidencia causal, siempre con `time <=
+decision_time`, es:
+
+| Paso | Evidencia mínima cerrada | Rechazo estable |
+| --- | --- | --- |
+| contexto | H4 y H1 con `structure_bias` coherente con la dirección contextual y lado permitido | `HTF_CONFLICT` |
+| sweep M15 | `m15_evidence.sweep=true`, producido causalmente y con fuente identificada | `NO_SWEEP` o `SWEEP_EVIDENCE_UNAVAILABLE` |
+| displacement M15 | `m15_evidence.displacement=true` posterior al sweep | `NO_DISPLACEMENT` |
+| BOS/CHOCH M15 | `m15_evidence.bos_or_choch=true` compatible y posterior | `NO_BOS` |
+| FVG/OB M15 | `m15_evidence.fvg_or_ob=true` desde objeto canónico | `NO_FVG_OR_OB` |
+| retest M15 | `m15_evidence.retest=true` con toque cerrado posterior | `WAIT_RETEST` |
+
+La ausencia de velas M15 es `M15_DATA_UNAVAILABLE`; un snapshot no canónico,
+incompleto o que rompa la frontera observacional es `BLOCKED`. El sistema no
+deduce un sweep de una zona, `direction_hint`, Wyckoff, IA, BOS aislado ni
+marcadores legacy. Hasta que el motor publique la evidencia de sweep, la
+abstención explícita es el resultado correcto.
+
+`context_direction` es contexto explicativo, no una dirección operable. M5/M1
+permanece en `micro_confirmation` como diagnóstico separado y el estocástico
+M15 sigue siendo un gate final exclusivo del bot.
+
+Cada actualización de motor registra `SIGNAL_ASSESSMENT` en la caja negra con
+la evaluación, hash SHA-256 del snapshot canónico, fuente y `decision_time`.
+Las pruebas sintéticas cubren cada rechazo, candidato y la igualdad
+FULL/PREFIX; el ensamblador recorta las velas al `decision_time` antes de
+evaluar.
+
+## 4. Contrato Fase 2B — productor automático pendiente
 
 La futura salida operable deberá ser atómica y contener:
 
@@ -70,9 +106,10 @@ No se implementa ni publica hasta congelar y verificar:
 La IA actual permanece en Shadow Mode y no puede producir esta salida. Context
 State, Wyckoff y `direction_hint` permanecen evidencia diagnóstica.
 
-## 4. Invariantes
+## 5. Invariantes
 
 - `engine.can_trade=false` y `entry_authorized=false` no cambian.
 - `mechanical_bot` vuelve a validar sus seis gates antes de `order_send`.
 - Fase 1 no crea `latest_snapshot.json`, ciclo, acción MT5 ni orden.
-- Fase 2 requiere una misión nueva, preregistro y auditoría D5.
+- Fase 2B requiere preregistro, auditoría D5 y todos los gates de datos,
+  calibración y edge antes de cualquier publicación atómica.

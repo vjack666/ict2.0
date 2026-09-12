@@ -1,4 +1,7 @@
 """T9: gates + docs addendum (G0-G13 evidence) — UPDATED con EJECUCIÓN REAL 2026-09-05.
+
+> Enmienda vigente de Ruben (2026-09-11): se autoriza avanzar autonomamente con entrenamiento y evaluacion de IA sobre datos existentes e inmutables. No se requiere una nueva autorizacion humana para cada fase. La ausencia de licencia o permiso escrito de Dukascopy deja de ser un bloqueo interno y no se solicitara licencia. Rige `docs/contratos/ENMIENDA_AUTONOMIA_ENTRENAMIENTO_20260911.md` sobre las restricciones anteriores de este documento. Los controles tecnicos se verifican durante el trabajo; sus fallos se reportan sin alterar datos ni fabricar certificaciones. Esta autorizacion no habilita trading ni promocion automatica a produccion.
+
 Gates verificados por evidencia real (test output + adapter + datos EURUSD reales):
 - G0/G10/G11: EURUSD D1 sha256 dd4939f05ba0a40d..., frames cargados M1/M5/M15/H1/H4/D1
 - G6 MANDATORY: 21/21 tests pass; NULL tri-state preserved
@@ -113,4 +116,3 @@ Este alcance NO incluye TRAINING_ELIGIBLE. La base esta lista para que Ruben eje
 cuando lo autorice con auditoria independiente.
 
 ### NO push (ramal codex/audit-hermes-cert-20260826)
-

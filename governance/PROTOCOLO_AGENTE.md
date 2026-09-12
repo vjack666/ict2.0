@@ -1,5 +1,8 @@
 # PROTOCOLO DEL AGENTE — Procedimiento obligatorio para todo agente
 
+> Enmienda vigente de Ruben (2026-09-11): se autoriza avanzar autonomamente con entrenamiento y evaluacion de IA sobre datos existentes e inmutables. No se requiere una nueva autorizacion humana para cada fase. La ausencia de licencia o permiso escrito de Dukascopy deja de ser un bloqueo interno y no se solicitara licencia. Rige `docs/contratos/ENMIENDA_AUTONOMIA_ENTRENAMIENTO_20260911.md` sobre las restricciones anteriores de este documento. Los controles tecnicos se verifican durante el trabajo; sus fallos se reportan sin alterar datos ni fabricar certificaciones. Esta autorizacion no habilita trading ni promocion automatica a produccion.
+
+
 > Parte de la gobernanza de `agents/governance/`. ESTE DOCUMENTO ES OBLIGATORIO para
 > todos los agentes (gobernanza y código). Ningún agente actúa sin seguirlo.
 >

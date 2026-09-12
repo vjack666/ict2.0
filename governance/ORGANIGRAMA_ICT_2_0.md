@@ -1,5 +1,8 @@
 # Organigrama y modelo operativo — ICT 2.0
 
+> Enmienda vigente de Ruben (2026-09-11): se autoriza avanzar autonomamente con entrenamiento y evaluacion de IA sobre datos existentes e inmutables. No se requiere una nueva autorizacion humana para cada fase. La ausencia de licencia o permiso escrito de Dukascopy deja de ser un bloqueo interno y no se solicitara licencia. Rige `docs/contratos/ENMIENDA_AUTONOMIA_ENTRENAMIENTO_20260911.md` sobre las restricciones anteriores de este documento. Los controles tecnicos se verifican durante el trabajo; sus fallos se reportan sin alterar datos ni fabricar certificaciones. Esta autorizacion no habilita trading ni promocion automatica a produccion.
+
+
 ## 1. Principio
 
 ICT 2.0 se organiza como una empresa-laboratorio: el cliente define el destino, Codex ejerce la dirección ejecutiva operativa, y los departamentos trabajan sobre rutas canónicas con contratos, límites y evidencia. Los “pisos” son una vista de responsabilidades; no autorizan por sí mismos una migración física de carpetas.

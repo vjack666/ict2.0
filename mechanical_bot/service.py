@@ -92,6 +92,13 @@ class MechanicalBotService:
         )
         stochastic = None
         stochastic_error = None
+        market_objects: list[Any] = []
+        if raw:
+            # El evaluador POI+Stoch consume MarketObjects (o dicts con campos
+            # canónicos) desde object_projection del snapshot.
+            for obj in raw.get("object_projection", []):
+                if isinstance(obj, dict):
+                    market_objects.append(obj)
         if self.adapter is not None:
             try:
                 candles = self.adapter.closed_m15_candles(self.bot.config.symbol)
@@ -99,8 +106,23 @@ class MechanicalBotService:
             except Exception as exc:
                 stochastic_error = str(exc)
             result["stochastic_m15"] = None if stochastic is None else asdict(stochastic)
+        poi_stoch_result = None
+        if market_objects and stochastic is not None and stochastic_error is None and self.adapter is not None:
+            try:
+                from engine.poi_stoch_evaluator import evaluate_poi_stoch_m15
+                price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
+                poi_stoch_result = evaluate_poi_stoch_m15(
+                    market_objects=market_objects,
+                    price=price,
+                    closed_m15_candles_fn=lambda sym, cnt: self.adapter.closed_m15_candles(sym),
+                    bot_cycle=self.bot.cycle,
+                    config=self.bot.config,
+                )
+            except Exception:
+                poi_stoch_result = None
         result["readiness"] = self._readiness(raw, snapshot, stochastic, datetime.now(timezone.utc),
-                                               snapshot_error=snapshot_error, stochastic_error=stochastic_error)
+                                               snapshot_error=snapshot_error, stochastic_error=stochastic_error,
+                                               poi_stoch_result=poi_stoch_result)
         return result
 
     def record_signal_assessment(self, assessment: dict[str, Any], canonical_snapshot: dict[str, Any]) -> None:
@@ -166,7 +188,8 @@ class MechanicalBotService:
 
     def _readiness(self, raw: dict[str, Any] | None, snapshot: Snapshot | None, stochastic: Any,
                    evaluated_at: datetime, *, snapshot_error: str | None = None,
-                   stochastic_error: str | None = None) -> dict[str, Any]:
+                   stochastic_error: str | None = None,
+                   poi_stoch_result: dict[str, Any] | None = None) -> dict[str, Any]:
         """Describe the existing entry gates without changing their authority.
 
         This is deliberately a dashboard projection.  ``tick`` remains the
@@ -249,6 +272,73 @@ class MechanicalBotService:
             observed=probability, required={"min_probability": self.bot.config.min_probability},
         )
 
+        schedule = self._session_schedule()
+        active = [item["name"] for item in schedule["sessions"] if item.get("active")]
+        session_passed = not self.entry_sessions_enabled or bool(active)
+        session_gate = gate(
+            "session", "Sesión de entrada", session_passed,
+            "PASS" if session_passed else "OUTSIDE_ENTRY_WINDOW",
+            "Gate de sesión no requerido por la configuración actual." if not self.entry_sessions_enabled else
+            ("Sesión activa: %s." % ", ".join(active) if active else "No hay una sesión de entrada activa."),
+            observed={"enabled": self.entry_sessions_enabled, "active_sessions": active}, required="sesión activa" if self.entry_sessions_enabled else "no requerido",
+        )
+
+        # ---------- Simplified POI + Stoch M15 path ----------
+        # Reemplaza los gates direction + probability + m15_confirmation
+        # por un único gate POI+Stoch cuando el resultado del evaluador
+        # esté disponible.  Los gates execution_enabled, snapshot y session
+        # se mantienen como controles operativos independientes.
+        # El gate de probabilidad (min_probability=0.70) pasa a ser un
+        # parámetro configurable del evaluador, no un bloqueo rígido del bot.
+        poi_stoch = poi_stoch_result
+        if isinstance(poi_stoch, dict) and "status" in poi_stoch:
+            poi_passed = poi_stoch.get("status") == "ENTRY_VALID"
+            poi_code = poi_stoch.get("status", "NO_STATUS")
+            poi_detail = poi_stoch.get("reason", "")
+            poi_gate = gate(
+                "poi_stoch_m15", "POI + estocástico M15", poi_passed, poi_code, poi_detail,
+                observed=poi_stoch, required="ENTRY_VALID",
+            )
+            gates = [execution_gate, snapshot_gate, session_gate, poi_gate]
+            return {
+                "ready": all(item["passed"] for item in gates),
+                "scan_can_start": self.adapter is not None,
+                "gates": gates,
+                "evaluated_at": now.isoformat(),
+                "strategy": "poi_stoch_m15",
+            }
+
+        # ---------- Legacy full-system path (9 gates) ----------
+        raw_direction = None if raw is None else raw.get("direction")
+        direction = None
+        if isinstance(raw_direction, str):
+            normalized = raw_direction.upper()
+            if normalized in {"BUY", "BULLISH", "LONG"}:
+                direction = "BUY"
+            elif normalized in {"SELL", "BEARISH", "SHORT"}:
+                direction = "SELL"
+        direction_gate = gate(
+            "direction", "Dirección", direction in {"BUY", "SELL"},
+            "PASS" if direction in {"BUY", "SELL"} else "DIRECTION_INVALID",
+            "Dirección normalizada a %s." % direction if direction in {"BUY", "SELL"} else
+            "Dirección observada %r; se requiere BUY o SELL." % raw_direction,
+            observed=raw_direction, required=["BUY", "SELL"],
+        )
+
+        probability = None if raw is None else raw.get("probability")
+        probability_valid = (isinstance(probability, (int, float)) and not isinstance(probability, bool)
+                             and math.isfinite(probability) and 0.0 <= probability <= 1.0)
+        probability_ok = probability_valid and probability >= self.bot.config.min_probability
+        probability_code = "PASS" if probability_ok else ("PROBABILITY_BELOW_MINIMUM" if probability_valid else "PROBABILITY_INVALID")
+        probability_gate = gate(
+            "probability", "Probabilidad", probability_ok,
+            probability_code,
+            "La probabilidad alcanza el mínimo configurado." if probability_ok else
+            ("Probabilidad %.1f%%; mínimo requerido %.1f%%." % (probability * 100, self.bot.config.min_probability * 100)
+             if probability_valid else "Probabilidad observada %r; debe ser numérica, finita y estar entre 0 y 1." % probability),
+            observed=probability, required={"min_probability": self.bot.config.min_probability},
+        )
+
         confirmed = None if raw is None else raw.get("confirmed")
         if confirmed is not True:
             m15_passed, m15_code, m15_detail = False, "M15_CONFIRMATION_MISSING", "El snapshot no tiene confirmed=true de forma estricta."
@@ -270,22 +360,13 @@ class MechanicalBotService:
         m15_gate = gate("m15_confirmation", "Confirmación M15", m15_passed, m15_code, m15_detail,
                         observed=None if stochastic is None else asdict(stochastic), required="confirmed=true y cruce estocástico M15 compatible")
 
-        schedule = self._session_schedule()
-        active = [item["name"] for item in schedule["sessions"] if item.get("active")]
-        session_passed = not self.entry_sessions_enabled or bool(active)
-        session_gate = gate(
-            "session", "Sesión de entrada", session_passed,
-            "PASS" if session_passed else "OUTSIDE_ENTRY_WINDOW",
-            "Gate de sesión no requerido por la configuración actual." if not self.entry_sessions_enabled else
-            ("Sesión activa: %s." % ", ".join(active) if active else "No hay una sesión de entrada activa."),
-            observed={"enabled": self.entry_sessions_enabled, "active_sessions": active}, required="sesión activa" if self.entry_sessions_enabled else "no requerido",
-        )
         gates = [execution_gate, snapshot_gate, direction_gate, probability_gate, m15_gate, session_gate]
         # The scanner can be armed with a connected MT5 reader even when order
         # execution is disabled.  The execution gate remains independently
         # false and tick() will record observation only in that state.
         return {"ready": all(item["passed"] for item in gates), "scan_can_start": self.adapter is not None,
-                "gates": gates, "evaluated_at": now.isoformat()}
+                "gates": gates, "evaluated_at": now.isoformat(),
+                "strategy": "full"}
 
     def arm(self) -> dict[str, Any]:
         with self._state_lock:
@@ -385,13 +466,40 @@ class MechanicalBotService:
                         self.bot.state = BotState.WAIT_SIGNAL
                         abstention = "EXECUTION_DISABLED_SCAN_ONLY"
                 else:
+                    # Estrategia simplificada POI + estocástico M15:
+                    # usa el evaluador en lugar de decide_entry(snapshot, stochastic).
                     account = self.adapter.account_status()
-                    price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
                     try:
-                        action = self.bot.decide_entry(snapshot, stochastic, price, account.balance, now)
-                    except SnapshotRejected as exc:
+                        price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
+                    except Exception:
+                        price = 0.0
+                    try:
+                        from engine.poi_stoch_evaluator import evaluate_poi_stoch_m15
+                        poi_stoch_result = evaluate_poi_stoch_m15(
+                            market_objects=raw.get("object_projection", []) if raw else [],
+                            price=price,
+                            closed_m15_candles_fn=lambda sym, cnt: self.adapter.closed_m15_candles(sym) if self.adapter else [],
+                            bot_cycle=self.bot.cycle,
+                            config=self.bot.config,
+                        )
+                        if poi_stoch_result.get("status") == "ENTRY_VALID":
+                            poi = poi_stoch_result.get("poi_selected")
+                            # Dirección de la POI seleccionada.  El evaluador
+                            # puede retornar un dict deserializado o un objeto;
+                            # usar el mismo patrón de lectura genérica que el
+                            # propio evaluador.
+                            if isinstance(poi, dict):
+                                poi_direction = poi.get("direction", 0)
+                            else:
+                                poi_direction = getattr(poi, "direction", 0)
+                            direction_str = "BUY" if poi_direction == 1 else "SELL"
+                            action = self.bot.manual_entry(direction_str, price, account.balance, now)
+                        else:
+                            self.bot.state = BotState.WAIT_SIGNAL
+                            abstention = f"POI_STOCH:{poi_stoch_result.get('status','UNKNOWN')}"
+                    except Exception as exc:
                         self.bot.state = BotState.WAIT_SIGNAL
-                        abstention = f"SNAPSHOT_REJECTED:{exc}"
+                        abstention = f"POI_STOCH_ERROR:{exc}"
                     if action is None and abstention is None:
                         if stochastic is None:
                             abstention = "WAIT_STOCHASTIC_NO_READING"

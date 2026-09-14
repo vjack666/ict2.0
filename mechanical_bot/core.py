@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 import math
-from typing import Iterable, Mapping, Protocol, Sequence
+from typing import Any, Iterable, Mapping, Protocol, Sequence
 
 
 class BotState(str, Enum):
@@ -38,6 +38,7 @@ class BotConfig:
     oversold: float = 20.0
     overbought: float = 80.0
     pip_size: float = 0.0001
+    tolerance_pips: float = 5.0
     initial_lot: float = 0.10
     reentry_lots: tuple[float, float] = (0.20, 0.30)
     reentry_pips: tuple[float, float] = (20.0, 40.0)
@@ -102,6 +103,50 @@ def validate_snapshot(snapshot: Snapshot, config: BotConfig, now: datetime) -> s
     if direction == "UNKNOWN" or snapshot.probability < config.min_probability:
         raise SnapshotRejected("snapshot has insufficient directional probability")
     return direction
+
+
+def validate_poi_stoch_entry(
+    poi_stoch_result: dict[str, Any],
+    config: BotConfig,
+    now: datetime,
+) -> str:
+    """Return BUY/SELL para la estrategia simplificada POI + estocástico M15.
+
+    Valida que el resultado de evaluate_poi_stoch_m15() represente una entrada
+    válida (ENTRY_VALID) y devuelve la dirección normalizada. La confirmación
+    ya no es el campo ``confirmed`` del snapshot sino el cruce estocástico M15
+    evaluado por el nuevo evaluador.
+
+    Args:
+        poi_stoch_result: dict retornado por evaluate_poi_stoch_m15().
+        config: BotConfig (usado para validar frescidad y otros controles).
+        now: datetime de evaluación.
+
+    Returns:
+        "BUY" o "SELL" si la entrada es válida.
+
+    Raises:
+        SnapshotRejected: si el resultado no representa una entrada válida.
+    """
+    if not isinstance(poi_stoch_result, dict):
+        raise SnapshotRejected("poi_stoch_result must be a dict")
+    status = poi_stoch_result.get("status")
+    if status != "ENTRY_VALID":
+        raise SnapshotRejected(f"poi_stoch status is {status!r}, expected ENTRY_VALID")
+    poi = poi_stoch_result.get("poi_selected")
+    if poi is None:
+        raise SnapshotRejected("poi_stoch_result has no poi_selected")
+    # El evaluador puede retornar un objeto o un dict deserializado; usar el
+    # mismo patrón de lectura genérica.
+    if isinstance(poi, dict):
+        direction_int = poi.get("direction", 0)
+    else:
+        direction_int = getattr(poi, "direction", 0)
+    if direction_int == 1:
+        return "BUY"
+    if direction_int == -1:
+        return "SELL"
+    raise SnapshotRejected(f"poi_selected has invalid direction: {direction_int}")
 
 
 @dataclass(frozen=True)

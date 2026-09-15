@@ -1,0 +1,208 @@
+{
+  "generated_at": "2026-09-15T22:10:00Z",
+  "project_root": "C:/Users/v_jac/Desktop/ICT SYSTEM",
+  "git_commit_short": "c495efc",
+  "python": "3.11.15",
+  "tensorflow": "2.21.0",
+  "can_trade": false,
+  "shadow_mode": true,
+  "summary": {
+    "linea_actual": "failure_anatomy_v1",
+    "estado_linea": "READY_FOR_TRAINING_REVIEW",
+    "tf_outcome_v1_003_estado": "REVIEW",
+    "failure_anatomy_v1_entrenado": false,
+    "failure_risk_v1_entrenado": false
+  },
+  "versions": {
+    "v1.001": {
+      "corpus": "SEQ_CTX_01_CANONICAL_BOS.jsonl",
+      "corpus_eventos": 100,
+      "features": ["sequence_direction", "d1_bias", "h1_alignment", "h4_location", "context_bucket", "sequence_depth"],
+      "input_dim": 6,
+      "architecture": "Dense(64)+Dropout(0.10)+Dense(32)+Dense(3,softmax)",
+      "seed": 20260915,
+      "epochs": 50,
+      "batch_size": 256,
+      "git_commit": "d717d4490e50",
+      "status": "BLOCKED/REVIEW",
+      "TRAIN_n": 36,
+      "VALIDATION_n": 44,
+      "TEST_OOS_n": 20,
+      "TEST_OOS": {
+        "accuracy": 0.4500,
+        "balanced_accuracy": 0.4259,
+        "log_loss": 1.0821,
+        "brier": 0.6431,
+        "ece": 0.0878,
+        "per_class": {
+          "continuation": {"precision": 0.5833, "recall": 0.7778, "f1": 0.6667, "support": 9},
+          "reversal": {"precision": 0.2500, "recall": 0.5000, "f1": 0.3333, "support": 4},
+          "failure": {"precision": 0.0000, "recall": 0.0000, "f1": 0.0000, "support": 7}
+        },
+        "failure_support": 7,
+        "failure_recall": 0.0000,
+        "failure_precision": 0.0000,
+        "failure_f1": 0.0000
+      },
+      "full_prefix_status": "FAIL",
+      "observaciones": "idx_to_label invertido; failure colapsó completamente; OOS muy pequeño (20)"
+    },
+    "v1.002": {
+      "corpus": "SEQ_CTX_01_CANONICAL_BOS.jsonl + SEQ_CTX_01_LITE.jsonl",
+      "corpus_eventos": 292,
+      "features_plus": ["constraints", "context_bucket", "h1_alignment", "d1_bias", "h4_location"],
+      "input_dim": 6,
+      "architecture": "Dense(64)+Dropout(0.10)+Dense(32)+Dense(3,softmax)",
+      "seed": 20260915,
+      "epochs_requested": 50,
+      "epochs_actual": 23,
+      "batch_size": 256,
+      "class_weight": {"continuation": 1.0, "reversal": 0.7273, "failure": 1.6},
+      "git_commit": "3ded9afe5c53",
+      "status": "REVIEW",
+      "TRAIN_n": 120,
+      "VALIDATION_n": 96,
+      "TEST_OOS_n": 76,
+      "TEST_OOS": {
+        "accuracy": 0.4474,
+        "balanced_accuracy": 0.4256,
+        "log_loss": 1.0893,
+        "brier": 0.6583,
+        "ece": 0.0878,
+        "per_class": {
+          "continuation": {"precision": 0.4898, "recall": 0.8000, "f1": 0.6076, "support": 30},
+          "reversal": {"precision": 0.3636, "recall": 0.4000, "f1": 0.3810, "support": 20},
+          "failure": {"precision": 0.4000, "recall": 0.0769, "f1": 0.1290, "support": 26}
+        },
+        "failure_support": 26,
+        "failure_recall": 0.0769,
+        "failure_precision": 0.4000,
+        "failure_f1": 0.1290
+      },
+      "full_prefix_status": "NO_REPRODUCIDO",
+      "observaciones": "failure ya no colapsa totalmente, pero recall sigue bajo; soporte OOS failure=26 < 30"
+    },
+    "v1.003": {
+      "corpus": "SEQ_CTX_01_CANONICAL_BOS.jsonl + SEQ_CTX_01_LITE.jsonl",
+      "corpus_eventos": 292,
+      "features_plus": ["sequence_direction", "sequence_depth", "allow_long", "allow_short", "structure_mode", "context_bucket", "d1_bias", "h1_alignment", "h4_location", "direction_hint", "h1_bias", "h4_bias", "sequence_stages_binary"],
+      "input_dim": 41,
+      "architecture": "BatchNorm+Dense(96)+Dropout(0.20)+Dense(48)+Dropout(0.10)+Softmax",
+      "seed": 20260916,
+      "epochs_requested": 80,
+      "epochs_actual": 70,
+      "batch_size": 64,
+      "learning_rate": 0.0008,
+      "class_weight": {"continuation": 1.0, "reversal": 0.7273, "failure": 1.6},
+      "git_commit": "475e339e6c5a",
+      "status": "REVIEW",
+      "TRAIN_n": 120,
+      "VALIDATION_n": 96,
+      "TEST_OOS_n": 76,
+      "TEST_OOS": {
+        "accuracy": 0.5132,
+        "balanced_accuracy": 0.5158,
+        "log_loss": 1.0199,
+        "brier": 0.5964,
+        "ece": 0.1493,
+        "per_class": {
+          "continuation": {"precision": 0.6452, "recall": 0.6667, "f1": 0.6557, "support": 30},
+          "reversal": {"precision": 0.5200, "recall": 0.6500, "f1": 0.5778, "support": 20},
+          "failure": {"precision": 0.3000, "recall": 0.2308, "f1": 0.2609, "support": 26}
+        },
+        "failure_support": 26,
+        "failure_recall": 0.2308,
+        "failure_precision": 0.3000,
+        "failure_f1": 0.2609
+      },
+      "VALIDATION": {
+        "accuracy": 0.6562,
+        "balanced_accuracy": 0.6084,
+        "log_loss": 0.7756,
+        "brier": 0.4775,
+        "per_class": {
+          "continuation": {"precision": 0.8333, "recall": 0.6410, "f1": 0.7246, "support": 39},
+          "reversal": {"precision": 0.6458, "recall": 0.8158, "f1": 0.7209, "support": 38},
+          "failure": {"precision": 0.3889, "recall": 0.3684, "f1": 0.3784, "support": 19}
+        }
+      },
+      "full_prefix_status": "SIN REPRODUCCION_COMPLETA",
+      "observaciones": "Mejoró detección de failure vs v1.002, pero sigue debajo de umbral interpretativo n>=30; ECE 0.1493"
+    },
+    "failure_anatomy_v1": {
+      "tipo": "dataset_materializado",
+      "estado": "READY_FOR_TRAINING_REVIEW",
+      "contrato": "docs/contratos/FAILURE_TAXONOMY_V1.md",
+      "target": "is_failure binario (label_end_6 == failure)",
+      "source_files": ["SEQ_CTX_01_CANONICAL_BOS.jsonl", "SEQ_CTX_01_LITE.jsonl"],
+      "TRAIN_n": 120,
+      "TRAIN_failure": 25,
+      "TRAIN_hash": "f34cc94cb50be5652ede901ba18e9a9c519834b8717be0750906bb51cf708863",
+      "VALIDATION_n": 96,
+      "VALIDATION_failure": 19,
+      "VALIDATION_hash": "58e7ea4cc88b772c5734bb77c6096aec6545f46bec6aa5fbd281c9d76604b3ad",
+      "TEST_OOS_n": 76,
+      "TEST_OOS_failure": 26,
+      "TEST_OOS_hash": "68e6b1e7a1792d93c6fe49ba49fbf113589d54a3c15c5d4f02ba90b5e3d11695",
+      "drivers_count_global": {
+        "HTF_CONFLICT": 174,
+        "ADVERSE_CONTEXT": 82,
+        "IMMATURE_SEQUENCE": 0,
+        "CONSTRAINT_CONTRADICTION": 132,
+        "WEAK_STRUCTURE": 0,
+        "LOW_SUPPORT_REGIME": 195,
+        "DIRECTIONAL_AMBIGUITY": 277,
+        "UNKNOWN": 0
+      },
+      "observaciones": "IMMATURE_SEQUENCE, WEAK_STRUCTURE, UNKNOWN no aparecen porque las filas disponibles tienen secuencias maduras con DISPLACEMENT y STRUCTURE"
+    }
+  },
+  "comparativa_versiones": {
+    "failure_recall": {
+      "v1.001": 0.0000,
+      "v1.002": 0.0769,
+      "v1.003": 0.2308,
+      "failure_anatomy_v1": "pendiente"
+    },
+    "failure_f1": {
+      "v1.001": 0.0000,
+      "v1.002": 0.1290,
+      "v1.003": 0.2609,
+      "failure_anatomy_v1": "pendiente"
+    },
+    "accuracy": {
+      "v1.001": 0.4500,
+      "v1.002": 0.4474,
+      "v1.003": 0.5132,
+      "failure_anatomy_v1": "pendiente"
+    },
+    "failure_support": {
+      "v1.001": 7,
+      "v1.002": 26,
+      "v1.003": 26,
+      "failure_anatomy_v1": 26
+    }
+  },
+  "splits_explicacion": {
+    "TRAIN": "Datos que la red ve durante el entrenamiento. Se usan para ajustar los pesos.",
+    "VALIDATION": "Datos que la red no ve durante el entrenamiento. Se monitorean para detectar sobreajuste y elegir cuándo detenerlo.",
+    "TEST_OOS": "Datos completamente reservados. Se tocan una sola vez al final para evaluar generalización honesta. No se usan para ajustar arquitectura, features ni thresholds."
+  },
+  "drivers_taxonomia": {
+    "HTF_CONFLICT": "La dirección de la secuencia entra en conflicto con sesgos o alineación HTF observables en features_at_t.",
+    "ADVERSE_CONTEXT": "El contexto alrededor de la secuencia es adverso o explícitamente en contra.",
+    "IMMATURE_SEQUENCE": "La secuencia aún no muestra suficiente madurez estructural antes del outcome.",
+    "CONSTRAINT_CONTRADICTION": "Las restricciones operativas contradicen la dirección de la secuencia.",
+    "WEAK_STRUCTURE": "La estructura observada antes del resultado es débil o incompleta.",
+    "LOW_SUPPORT_REGIME": "El patrón pertenece a un régimen con soporte insuficiente en TRAIN/DESIGN.",
+    "DIRECTIONAL_AMBIGUITY": "La dirección no tiene autoridad clara en las features disponibles antes del resultado.",
+    "UNKNOWN": "Ningún driver anterior se activa. La taxonomía v1 no puede explicar la causa con las features actuales."
+  },
+  "git_commit_actual": "c495efc feat(ai): materialize failure anatomy dataset",
+  "archivos_evidencia": {
+    "tf_outcome_v1_001": "data/ml/tensorflow/tf_outcome_v1_001/",
+    "tf_outcome_v1_002": "data/ml/tensorflow/tf_outcome_v1_002/",
+    "tf_outcome_v1_003": "data/ml/tensorflow/tf_outcome_v1_003/",
+    "failure_anatomy_v1": "data/ml/tensorflow/failure_anatomy_v1/"
+  }
+}

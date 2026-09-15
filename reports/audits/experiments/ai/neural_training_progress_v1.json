@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T22:10:00Z",
+  "generated_at": "2026-09-16T11:00:00Z",
   "project_root": "C:/Users/v_jac/Desktop/ICT SYSTEM",
   "git_commit_short": "c495efc",
   "python": "3.11.15",
@@ -7,11 +7,12 @@
   "can_trade": false,
   "shadow_mode": true,
   "summary": {
-    "linea_actual": "failure_anatomy_v1",
-    "estado_linea": "READY_FOR_TRAINING_REVIEW",
+    "linea_actual": "failure_anatomy_v1 + failure_risk_v1",
+    "estado_linea": "failure_risk_v1 entrenado — estado REVIEW",
     "tf_outcome_v1_003_estado": "REVIEW",
-    "failure_anatomy_v1_entrenado": false,
-    "failure_risk_v1_entrenado": false
+    "failure_risk_v1_estado": "REVIEW",
+    "failure_risk_v1_entrenado": true,
+    "fusion_late": "no iniciada"
   },
   "versions": {
     "v1.001": {
@@ -130,8 +131,8 @@
       "observaciones": "Mejoró detección de failure vs v1.002, pero sigue debajo de umbral interpretativo n>=30; ECE 0.1493"
     },
     "failure_anatomy_v1": {
-      "tipo": "dataset_materializado",
-      "estado": "READY_FOR_TRAINING_REVIEW",
+      "tipo": "dataset_materializado_con_modelo_entrenado",
+      "estado": "READY_FOR_TRAINReview (entrenado)",
       "contrato": "docs/contratos/FAILURE_TAXONOMY_V1.md",
       "target": "is_failure binario (label_end_6 == failure)",
       "source_files": ["SEQ_CTX_01_CANONICAL_BOS.jsonl", "SEQ_CTX_01_LITE.jsonl"],
@@ -144,17 +145,32 @@
       "TEST_OOS_n": 76,
       "TEST_OOS_failure": 26,
       "TEST_OOS_hash": "68e6b1e7a1792d93c6fe49ba49fbf113589d54a3c15c5d4f02ba90b5e3d11695",
-      "drivers_count_global": {
-        "HTF_CONFLICT": 174,
-        "ADVERSE_CONTEXT": 82,
-        "IMMATURE_SEQUENCE": 0,
-        "CONSTRAINT_CONTRADICTION": 132,
-        "WEAK_STRUCTURE": 0,
-        "LOW_SUPPORT_REGIME": 195,
-        "DIRECTIONAL_AMBIGUITY": 277,
-        "UNKNOWN": 0
+      "modelo": {
+        "nombre": "failure_risk_v1",
+        "descripcion": "Modelo binario entrenado sobre failure_anatomy_v1",
+        "arquitectura": "Input(29) → Dense(48, relu, l2) → Dropout(0.10) → Dense(24, relu, l2) → Dense(1, sigmoid)",
+        "seed": 42,
+        "epochs": 23,
+        "batch_size": 16,
+        "optimizer": "Adam",
+        "learning_rate": 0.001,
+        "loss": "BinaryCrossentropy",
+        "hash_modelo": "489d490d8c380edd1c061b8142692098ae9d01391100a45a03e96e0a3f3888b5"
       },
-      "observaciones": "IMMATURE_SEQUENCE, WEAK_STRUCTURE, UNKNOWN no aparecen porque las filas disponibles tienen secuencias maduras con DISPLACEMENT y STRUCTURE"
+      "TEST_OOS_modelo": {
+        "accuracy": 0.6579,
+        "balanced_accuracy": 0.5831,
+        "log_loss": 0.6995,
+        "brier": 0.2443,
+        "ece": 0.1952,
+        "failure_precision": 0.5000,
+        "failure_recall": 0.3462,
+        "failure_f1": 0.4091,
+        "failure_support": 26,
+        "roc_auc": 0.6108,
+        "pr_auc": 0.4122
+      },
+      "observaciones": "failure_risk_v1 mejora recall y F1 vs v1.003 pero tiene sobreajuste (ROC-AUC TRAIN 0.9408 vs OOS 0.6108), mala calibración (ECE 0.1952) y PR-AUC inferior al baseline LR (0.4122 vs 0.4222)"
     }
   },
   "comparativa_versiones": {
@@ -162,26 +178,80 @@
       "v1.001": 0.0000,
       "v1.002": 0.0769,
       "v1.003": 0.2308,
-      "failure_anatomy_v1": "pendiente"
+      "failure_risk_v1": 0.3462
     },
     "failure_f1": {
       "v1.001": 0.0000,
       "v1.002": 0.1290,
       "v1.003": 0.2609,
-      "failure_anatomy_v1": "pendiente"
+      "failure_risk_v1": 0.4091
     },
     "accuracy": {
       "v1.001": 0.4500,
       "v1.002": 0.4474,
       "v1.003": 0.5132,
-      "failure_anatomy_v1": "pendiente"
+      "failure_risk_v1": 0.6579
     },
     "failure_support": {
       "v1.001": 7,
       "v1.002": 26,
       "v1.003": 26,
-      "failure_anatomy_v1": 26
+      "failure_risk_v1": 26
+    },
+    "roc_auc": {
+      "v1.001": null,
+      "v1.002": null,
+      "v1.003": null,
+      "failure_risk_v1": 0.6108
+    },
+    "pr_auc": {
+      "v1.001": null,
+      "v1.002": null,
+      "v1.003": null,
+      "failure_risk_v1": 0.4122
     }
+  },
+  "baselines_test_oos": {
+    "majority_class": {
+      "accuracy": 0.6579,
+      "failure_recall": 0.0000,
+      "failure_f1": 0.0000,
+      "roc_auc": 0.5000,
+      "pr_auc": 0.3421,
+      "brier": 0.3421
+    },
+    "prevalence": {
+      "accuracy": 0.6579,
+      "failure_recall": 0.0000,
+      "failure_f1": 0.0000,
+      "roc_auc": 0.5000,
+      "pr_auc": 0.3421,
+      "brier": 0.2430
+    },
+    "driver_count": {
+      "accuracy": 0.4474,
+      "failure_recall": 0.3846,
+      "failure_f1": 0.3226,
+      "roc_auc": 0.4038,
+      "pr_auc": 0.3040,
+      "brier": 0.2689
+    },
+    "logistic_regression": {
+      "accuracy": 0.5000,
+      "failure_recall": 0.2692,
+      "failure_f1": 0.2692,
+      "roc_auc": 0.5254,
+      "pr_auc": 0.4222,
+      "brier": 0.3107
+    }
+  },
+  "failure_risk_v1_vs_baselines": {
+    "accuracy": "+0.1579 vs LR, +0.0000 vs majority",
+    "failure_recall": "+0.0770 vs LR",
+    "failure_f1": "+0.1399 vs LR",
+    "roc_auc": "+0.0854 vs LR",
+    "pr_auc": "−0.0100 vs LR (ligeramente peor)",
+    "brier": "−0.0664 vs LR"
   },
   "splits_explicacion": {
     "TRAIN": "Datos que la red ve durante el entrenamiento. Se usan para ajustar los pesos.",
@@ -203,6 +273,25 @@
     "tf_outcome_v1_001": "data/ml/tensorflow/tf_outcome_v1_001/",
     "tf_outcome_v1_002": "data/ml/tensorflow/tf_outcome_v1_002/",
     "tf_outcome_v1_003": "data/ml/tensorflow/tf_outcome_v1_003/",
-    "failure_anatomy_v1": "data/ml/tensorflow/failure_anatomy_v1/"
+    "failure_anatomy_v1": "data/ml/tensorflow/failure_anatomy_v1/",
+    "failure_risk_v1": "data/ml/tensorflow/failure_risk_v1/",
+    "modelo": "data/ml/tensorflow/failure_risk_v1/model.keras",
+    "training_record": "data/ml/tensorflow/failure_risk_v1/training_record.json",
+    "predictions": "data/ml/tensorflow/failure_risk_v1/predictions.json",
+    "comparison": "data/ml/tensorflow/failure_risk_v1/comparison.json"
+  },
+  "graficas": {
+    "principal": "reports/audits/experiments/ai/neural_training_progress_v1.png",
+    "learning_map": "reports/audits/experiments/ai/neural_learning_map_v1.png",
+    "script_generador": "scripts/lab/experiments/generate_neural_progress_charts.py",
+    "version_script": "0.1.0 — provisional, para entrega visual"
+  },
+  "confirmaciones": {
+    "can_trade": false,
+    "shadow_mode": true,
+    "trading_autorizado": false,
+    "fusion_iniciada": false,
+    "modelo_fusionado_oos": false,
+    "phase_7_abierto": false
   }
 }

@@ -27,7 +27,10 @@ from typing import cast
 import numpy as np
 import pandas as pd
 
-from detectors import detect_displacement, detect_fvg, detect_liquidity, detect_order_blocks
+from detectors.displacement import detect_displacement
+from detectors.fvg import detect_fvg
+from detectors.liquidity import detect_liquidity
+from detectors.ob import detect_order_blocks
 from engine._util import avg_candle_range
 from engine.bos import StructureConfig, detect_market_structure
 

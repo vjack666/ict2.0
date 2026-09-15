@@ -18,8 +18,12 @@ from uuid import uuid4
 from zoneinfo import ZoneInfo
 
 from mechanical_bot.blackbox import BlackBoxJournal, BlackBoxWriteError, canonical_hash
-from mechanical_bot.core import BotConfig, BotState, Cycle, MechanicalBot, Snapshot, SnapshotRejected, stochastic_14_3_3, validate_snapshot
+from mechanical_bot.core import (
+    BotAction, BotConfig, BotState, Cycle, MechanicalBot, Snapshot,
+    SnapshotRejected, stochastic_14_3_3, validate_poi_stoch_entry, validate_snapshot,
+)
 from mechanical_bot.mt5_adapter import MT5Adapter
+from engine.poi_stoch_evaluator import evaluate_poi_stoch_m15
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +51,9 @@ class MechanicalBotService:
         self._runner: Thread | None = None
         self._runner_stop = Event()
         self._runner_lock = RLock()
+        # Lightweight probe used by readiness/scan_can_start without taking
+        # _state_lock (readers may call analyze() concurrently with tick()).
+        self._runner_alive = False
         # This lock covers the state machine and its broker action as one
         # transaction.  RLock permits status/persistence calls while holding it.
         self._state_lock = RLock()
@@ -63,10 +70,12 @@ class MechanicalBotService:
                                "environment": "DEMO" if info.is_demo else "REAL", "real_account_warning": not info.is_demo}
                 except Exception as exc:
                     account = {"status": "UNAVAILABLE", "error": str(exc)}
-            cycle = None if self.bot.cycle is None else _json_safe(asdict(self.bot.cycle))
-            return {"state": self.bot.state.value, "symbol": self.bot.config.symbol,
+        cycle = None if self.bot.cycle is None else _json_safe(asdict(self.bot.cycle))
+        runner_alive = self._runner is not None and self._runner.is_alive()
+        return {"state": self.bot.state.value, "symbol": self.bot.config.symbol,
                     "adapter_configured": self.adapter is not None,
                     "execution_enabled": bool(getattr(self.adapter, "execution_enabled", False)),
+                    "scanner_active": bool(self.adapter is not None and runner_alive),
                     "account": account, "cycle": cycle, "m5_m1": "DIAGNOSTIC_ONLY_NO_VETO",
                     "session_schedule": self._session_schedule(), "demo_wait_enabled": bool(getattr(self, "demo_wait_enabled", False)),
                     "manual_direction": self.manual_direction,
@@ -107,19 +116,27 @@ class MechanicalBotService:
                 stochastic_error = str(exc)
             result["stochastic_m15"] = None if stochastic is None else asdict(stochastic)
         poi_stoch_result = None
-        if market_objects and stochastic is not None and stochastic_error is None and self.adapter is not None:
+        poi_stoch_error = None
+        snapshot_direction = None
+        if snapshot is not None:
+            snapshot_direction = snapshot.direction
+        if market_objects and self.adapter is not None:
             try:
                 from engine.poi_stoch_evaluator import evaluate_poi_stoch_m15
-                price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
+                side = "BUY" if snapshot_direction == "BUY" else "SELL"
+                price = self.adapter.tick_price(self.bot.config.symbol, side)
                 poi_stoch_result = evaluate_poi_stoch_m15(
                     market_objects=market_objects,
                     price=price,
-                    closed_m15_candles_fn=lambda sym, cnt: self.adapter.closed_m15_candles(sym),
+                    closed_m15_candles_fn=lambda sym, count: self.adapter.closed_m15_candles(sym, count=count),
                     bot_cycle=self.bot.cycle,
                     config=self.bot.config,
+                    check_proximity=True,
+                    price_type=side,
                 )
-            except Exception:
-                poi_stoch_result = None
+            except Exception as exc:
+                poi_stoch_error = str(exc)
+                result["poi_stoch_error"] = poi_stoch_error
         result["readiness"] = self._readiness(raw, snapshot, stochastic, datetime.now(timezone.utc),
                                                snapshot_error=snapshot_error, stochastic_error=stochastic_error,
                                                poi_stoch_result=poi_stoch_result)
@@ -189,7 +206,8 @@ class MechanicalBotService:
     def _readiness(self, raw: dict[str, Any] | None, snapshot: Snapshot | None, stochastic: Any,
                    evaluated_at: datetime, *, snapshot_error: str | None = None,
                    stochastic_error: str | None = None,
-                   poi_stoch_result: dict[str, Any] | None = None) -> dict[str, Any]:
+                   poi_stoch_result: dict[str, Any] | None = None,
+                   account: dict[str, Any] | None = None) -> dict[str, Any]:
         """Describe the existing entry gates without changing their authority.
 
         This is deliberately a dashboard projection.  ``tick`` remains the
@@ -205,6 +223,7 @@ class MechanicalBotService:
             return item
 
         now = _as_utc(evaluated_at)
+        scanner_active = bool(self._runner is not None and self._runner.is_alive())
         execution_enabled = bool(getattr(self.adapter, "execution_enabled", False))
         execution_gate = gate(
             "execution_enabled", "Ejecución habilitada", execution_enabled,
@@ -302,7 +321,8 @@ class MechanicalBotService:
             gates = [execution_gate, snapshot_gate, session_gate, poi_gate]
             return {
                 "ready": all(item["passed"] for item in gates),
-                "scan_can_start": self.adapter is not None,
+                "scan_can_start": scanner_active and not execution_enabled and self.bot.cycle is None,
+                "scanner_active": scanner_active,
                 "gates": gates,
                 "evaluated_at": now.isoformat(),
                 "strategy": "poi_stoch_m15",
@@ -364,7 +384,9 @@ class MechanicalBotService:
         # The scanner can be armed with a connected MT5 reader even when order
         # execution is disabled.  The execution gate remains independently
         # false and tick() will record observation only in that state.
-        return {"ready": all(item["passed"] for item in gates), "scan_can_start": self.adapter is not None,
+        return {"ready": all(item["passed"] for item in gates),
+                "scan_can_start": scanner_active and not execution_enabled and self.bot.cycle is None,
+                "scanner_active": scanner_active,
                 "gates": gates, "evaluated_at": now.isoformat(),
                 "strategy": "full"}
 
@@ -480,46 +502,75 @@ class MechanicalBotService:
                         abstention = "EXECUTION_DISABLED_SCAN_ONLY"
                 else:
                     # Estrategia simplificada POI + estocástico M15:
-                    # usa el evaluador en lugar de decide_entry(snapshot, stochastic).
-                    account = self.adapter.account_status()
-                    try:
-                        price = self.adapter.tick_price(self.bot.config.symbol, "BUY")
-                    except Exception:
-                        price = 0.0
-                    try:
-                        from engine.poi_stoch_evaluator import evaluate_poi_stoch_m15
-                        poi_stoch_result = evaluate_poi_stoch_m15(
-                            market_objects=raw.get("object_projection", []) if raw else [],
-                            price=price,
-                            closed_m15_candles_fn=lambda sym, cnt: self.adapter.closed_m15_candles(sym) if self.adapter else [],
-                            bot_cycle=self.bot.cycle,
-                            config=self.bot.config,
-                        )
-                        if poi_stoch_result.get("status") == "ENTRY_VALID":
+                    # lee object_projection del snapshot, evalúa POI+Stoch,
+                    # valida con validate_poi_stoch_entry y crea acción.
+                    market_objects = []
+                    if raw is not None:
+                        for obj in raw.get("object_projection", []):
+                            if isinstance(obj, dict):
+                                market_objects.append(obj)
+                    if not market_objects:
+                        self.bot.state = BotState.WAIT_SIGNAL
+                        abstention = "NO_OBJECT_PROJECTION"
+                    else:
+                        # Primera evaluación para obtener dirección.
+                        try:
+                            poi_stoch_result = evaluate_poi_stoch_m15(
+                                market_objects=market_objects,
+                                price=0.0,
+                                closed_m15_candles_fn=lambda sym, count: self.adapter.closed_m15_candles(sym, count=count),
+                                bot_cycle=self.bot.cycle,
+                                config=self.bot.config,
+                                check_proximity=False,
+                            )
+                        except Exception as exc:
+                            self.bot.state = BotState.WAIT_SIGNAL
+                            abstention = f"POI_STOCH_ERROR:{exc}"
+                            poi_stoch_result = None
+
+                        if poi_stoch_result is not None and poi_stoch_result.get("status") == "ENTRY_VALID":
+                            # Determinar lado para precio correcto.
                             poi = poi_stoch_result.get("poi_selected")
-                            # Dirección de la POI seleccionada.  El evaluador
-                            # puede retornar un dict deserializado o un objeto;
-                            # usar el mismo patrón de lectura genérica que el
-                            # propio evaluador.
                             if isinstance(poi, dict):
                                 poi_direction = poi.get("direction", 0)
                             else:
                                 poi_direction = getattr(poi, "direction", 0)
-                            direction_str = "BUY" if poi_direction == 1 else "SELL"
-                            action = self.bot.manual_entry(direction_str, price, account.balance, now)
-                        else:
+                            side = "BUY" if poi_direction == 1 else "SELL"
+                            try:
+                                price = self.adapter.tick_price(self.bot.config.symbol, side)
+                            except Exception as exc:
+                                self.bot.state = BotState.WAIT_SIGNAL
+                                abstention = f"POI_STOCH_PRICE_UNAVAILABLE:{exc}"
+                                poi_stoch_result = None
+                            else:
+                                # Reevaluar con precio correcto por dirección.
+                                try:
+                                    poi_stoch_result = evaluate_poi_stoch_m15(
+                                        market_objects=market_objects,
+                                        price=price,
+                                        closed_m15_candles_fn=lambda sym, count: self.adapter.closed_m15_candles(sym, count=count),
+                                        bot_cycle=self.bot.cycle,
+                                        config=self.bot.config,
+                                        check_proximity=True,
+                                        price_type=side,
+                                    )
+                                except Exception as exc:
+                                    self.bot.state = BotState.WAIT_SIGNAL
+                                    abstention = f"POI_STOCH_ERROR:{exc}"
+                                    poi_stoch_result = None
+
+                        if poi_stoch_result is not None and poi_stoch_result.get("status") == "ENTRY_VALID":
+                            # Validar con la función de validación final antes de crear acción.
+                            try:
+                                direction = validate_poi_stoch_entry(poi_stoch_result, self.bot.config, now)
+                            except SnapshotRejected as exc:
+                                self.bot.state = BotState.WAIT_SIGNAL
+                                abstention = f"POI_STOCH_VALIDATION_REJECTED:{exc}"
+                            else:
+                                action = BotAction("OPEN", "poi_stoch_m15_auto", direction, self.bot.config.initial_lot)
+                        elif poi_stoch_result is not None:
                             self.bot.state = BotState.WAIT_SIGNAL
-                            abstention = f"POI_STOCH:{poi_stoch_result.get('status','UNKNOWN')}"
-                    except Exception as exc:
-                        self.bot.state = BotState.WAIT_SIGNAL
-                        abstention = f"POI_STOCH_ERROR:{exc}"
-                    if action is None and abstention is None:
-                        if stochastic is None:
-                            abstention = "WAIT_STOCHASTIC_NO_READING"
-                        elif self.bot.last_closed_signal_time is not None and _as_utc(snapshot.asof_time) <= _as_utc(self.bot.last_closed_signal_time):
-                            abstention = "REUSED_CLOSED_SIGNAL"
-                        else:
-                            abstention = "WAIT_STOCHASTIC_CROSS"
+                            abstention = f"POI_STOCH_NOT_READY:{poi_stoch_result.get('status')}"
             else:
                 price = self.adapter.tick_price(self.bot.config.symbol, self.bot.cycle.direction)
                 action = self.bot.monitor(price, self.adapter.positions())
@@ -546,8 +597,10 @@ class MechanicalBotService:
             self._runner_stop.clear()
             self._runner = Thread(target=self._run, name="mechanical-bot", daemon=True)
             self._runner.start()
+            self._runner_alive = True
 
     def stop_runner(self) -> None:
+        self._runner_alive = False
         self._runner_stop.set()
         with self._runner_lock:
             runner = self._runner
@@ -557,17 +610,21 @@ class MechanicalBotService:
             runner.join(timeout=8.0)
 
     def _run(self) -> None:
-        while not self._runner_stop.is_set():
-            try:
-                self.tick()
-            except Exception as exc:
-                with self._state_lock:
-                    self.bot.state = BotState.ERROR
-                    self._persist_state()
-                    self._record("RUNNER_ERROR", error=str(exc), traceback=traceback.format_exc())
-                return
-            if self._runner_stop.wait(self._runner_interval_seconds):
-                return
+        self._runner_alive = True
+        try:
+            while not self._runner_stop.is_set():
+                try:
+                    self.tick()
+                except Exception as exc:
+                    with self._state_lock:
+                        self.bot.state = BotState.ERROR
+                        self._persist_state()
+                        self._record("RUNNER_ERROR", error=str(exc), traceback=traceback.format_exc())
+                    return
+                if self._runner_stop.wait(self._runner_interval_seconds):
+                    return
+        finally:
+            self._runner_alive = False
 
     def _execute(self, kind: str, reason: str, *, action: Any | None = None, correlation_id: str | None = None) -> dict[str, Any]:
         with self._state_lock:

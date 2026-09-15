@@ -136,9 +136,29 @@ def test_m15_readiness_uses_only_closed_fresh_candles():
         def copy_rates_from_pos(self, symbol, timeframe, start_pos, count):
             self.copy_args = (symbol, timeframe, start_pos, count)
             now = int(datetime.now(timezone.utc).timestamp())
-            return [{"time": now - 900, "high": 1.2, "low": 1.0, "close": 1.1} for _ in range(count)]
+            last_closed = (now // 900 - 1) * 900
+            return [{"time": last_closed, "high": 1.2, "low": 1.0, "close": 1.1} for _ in range(count)]
 
     mt5 = CandleMT5()
     candles = MT5Adapter(mt5=mt5, execution_enabled=False).closed_m15_candles("EURUSD", count=20)
     assert mt5.copy_args == ("EURUSD", mt5.TIMEFRAME_M15, 1, 20)
     assert len(candles) == 20
+
+
+@pytest.mark.parametrize(("opened_at", "now_epoch", "message"), [
+    (1_800, 2_699, "still open"),
+    (3_600, 2_700, "future"),
+    (0, 3_000, "stale"),
+])
+def test_m15_epoch_guard_rejects_open_future_and_expired_bars(opened_at, now_epoch, message):
+    with pytest.raises(RuntimeError, match=message):
+        MT5Adapter._assert_closed_m15_epoch(opened_at, now_epoch=now_epoch)
+
+
+def test_m15_epoch_guard_accepts_closed_utc_epoch_without_broker_offset():
+    MT5Adapter._assert_closed_m15_epoch(1_800, now_epoch=2_701)
+
+
+def test_nonzero_broker_offset_is_rejected_instead_of_applied():
+    with pytest.raises(ValueError, match="already UTC"):
+        MT5Adapter(mt5=FakeMT5(), server_utc_offset_seconds=10_800)

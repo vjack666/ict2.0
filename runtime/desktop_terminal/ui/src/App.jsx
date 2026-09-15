@@ -513,8 +513,8 @@ function Instruments({ state }) {
           value={state.tick ? `${state.tick.age_seconds} s` : "—"}
         />
         <Row
-          label="Reloj terminal"
-          value={`UTC+${state.connection.server_utc_offset_hours ?? "?"}`}
+          label="Reloj MT5"
+          value="Epoch UTC"
         />
         <Row label="Gráfico" value="UTC" />
         <Row label="Cuenta" value={state.account?.login} />
@@ -805,24 +805,57 @@ function BotControl({ state, onAction, onEmergencyDisarm, pending }) {
             Analizar
           </button>
           <button
-            disabled={!b.adapter_configured || pending}
+            className={`scan-button ${b.scanner_active ? "active" : ""}`}
+            disabled={!b.adapter_configured || pending || b.scanner_active || b.execution_enabled}
             onClick={() => setConfirm("arm")}
           >
             <Play size={16} />
-            Armar bot · iniciar loop
+            {b.scanner_active
+              ? "Escaneo armado · loop corriendo"
+              : "Armar escaneo · iniciar loop"}
           </button>
-          <button
-            disabled={!b.execution_enabled || pending || b.state === "OFF"}
-            onClick={() => setConfirm("manual-buy")}
-          >
-            Compra manual
-          </button>
-          <button
-            disabled={!b.execution_enabled || pending || b.state === "OFF"}
-            onClick={() => setConfirm("manual-sell")}
-          >
-            Venta manual
-          </button>
+          {b.execution_enabled ? (
+            b.readiness?.ready && b.state !== "OFF" && !cycle ? (
+              <>
+                <button
+                  disabled={pending || b.state === "OFF" || !!cycle}
+                  onClick={() => setConfirm("manual-buy")}
+                >
+                  Compra manual
+                </button>
+                <button
+                  disabled={pending || b.state === "OFF" || !!cycle}
+                  onClick={() => setConfirm("manual-sell")}
+                >
+                  Venta manual
+                </button>
+              </>
+            ) : (
+              <button
+                disabled={pending || b.state === "OFF"}
+                title="Todos los requisitos del readiness deben cumplir para operar"
+              >
+                Listo para operar: {b.readiness?.ready ? "SÍ" : "NO"}
+              </button>
+            )
+          ) : b.adapter_configured ? (
+            <button
+              className="secondary"
+              disabled={pending || b.state === "OFF"}
+              onClick={() => onAction("enable-execution")}
+              title="Habilitar ejecución en caliente · DEMO · sin POI · loop de estocástico M15 cerrado"
+            >
+              <Shield size={15} />
+              Habilitar ejecución (DEMO)
+            </button>
+          ) : (
+            <button
+              disabled={pending || b.state === "OFF"}
+              title="Ejecución deshabilitada · DEMO no activada"
+            >
+              Ejecución: DESHABILITADA
+            </button>
+          )}
           <button
             className="danger"
             title="Detener nuevas entradas inmediatamente"
@@ -839,6 +872,15 @@ function BotControl({ state, onAction, onEmergencyDisarm, pending }) {
             Cerrar ciclo
           </button>
         </div>
+        {state.positions.length > 0 && !b.cycle && (
+          <div className="position-warning">
+            <AlertTriangle size={16} />
+            <span>
+              Posiciones abiertas no acreditadas por el bot mecánico — el bot no
+              las gestiona hasta que se cierren manualmente.
+            </span>
+          </div>
+        )}
         {confirm && (
           <div className="confirmation">
             <h3>

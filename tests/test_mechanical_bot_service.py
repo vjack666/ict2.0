@@ -18,7 +18,7 @@ class FakeAdapter:
     def account_status(self):
         return AccountStatus(123, "Demo", 1_000.0, 1_000.0, True)
 
-    def closed_m15_candles(self, _symbol):
+    def closed_m15_candles(self, _symbol, count=80):
         return []
 
     def tick_price(self, _symbol, _side):
@@ -122,6 +122,33 @@ def test_poi_observation_contract_with_can_trade_false_cannot_reach_adapter(tmp_
     assert adapter.executions == 0
     decision = json.loads(blackbox.read_text(encoding="utf-8").splitlines()[-1])
     assert decision["reason"] == "CAN_TRADE_FALSE"
+
+
+@pytest.mark.parametrize(("opened_at", "now_epoch", "expected"), [
+    (1_800, 2_699, "still open"),
+    (3_600, 2_700, "future"),
+    (0, 3_000, "stale"),
+])
+def test_poi_stoch_service_keeps_clock_rejections_fail_closed(tmp_path, opened_at, now_epoch, expected):
+    """The service surfaces the adapter's M15 clock failure without trading."""
+    class ClockAdapter(FakeAdapter):
+        def closed_m15_candles(self, _symbol, count=80):
+            from mechanical_bot.mt5_adapter import MT5Adapter
+            MT5Adapter._assert_closed_m15_epoch(opened_at, now_epoch=now_epoch)
+            return super().closed_m15_candles(_symbol, count)
+
+    path = tmp_path / "poi-observation.json"
+    payload = _ready_payload()
+    payload["object_projection"] = []
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    service = MechanicalBotService(adapter=ClockAdapter(), snapshot_path=path,
+                                   state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl",
+                                   blackbox_path=tmp_path / "blackbox.jsonl")
+    result = service.analyze()
+    gate = _gate(result, "m15_confirmation")
+    assert gate["passed"] is False
+    assert expected in gate["detail"]
+    assert result["execution_enabled"] is False
 
 
 def test_canonical_signal_assessment_is_recorded_with_its_source_hash(tmp_path):
@@ -251,7 +278,9 @@ def test_readiness_allows_scan_with_execution_disabled_but_keeps_execution_gate_
     analysis = service.analyze()
     gate = _gate(analysis, "execution_enabled")
     assert gate["passed"] is False and gate["code"] == "EXECUTION_DISABLED"
-    assert analysis["readiness"]["scan_can_start"] is True
+    # scan_can_start requiere runner vivo (scanner_active); sin runner el scan
+    # no puede iniciarse aunque execution esté disabled.
+    assert analysis["readiness"]["scan_can_start"] is False
 
 
 def test_disabled_execution_runner_records_observation_without_creating_an_order(tmp_path):
@@ -425,12 +454,25 @@ def test_manual_entry_rejects_invalid_direction(tmp_path):
 
 
 def test_disarm_waits_for_running_tick_and_blocks_later_execution(tmp_path, monkeypatch):
+    """Ruta POI+Stoch real: object_projection → evaluate_poi_stoch_m15 → _execute.
+
+    El test anterior monkeypaba service.bot.decide_entry, que el nuevo código de
+    tick() ya no invoca (ahora lee object_projection y evalúa POI+Stoch M15). Este
+    test reemplaza ese monkeypatch por MarketObjects sintéticos elegibles y un
+    monkeypatch de evaluate_poi_stoch_m15 que retorna ENTRY_VALID, y verifica que
+    tick() alcanza el adaptador y que el disarm bloquea ejecuciones posteriores.
+    """
+    from engine.market_object import ObjectType, Role, ObjectState
+
     class BlockingAdapter(FakeAdapter):
         execution_enabled = True
+
         def __init__(self):
             super().__init__()
-            self.started, self.release = Event(), Event()
+            self.started = Event()
+            self.release = Event()
             self.executions = 0
+
         def execute(self, action, **kwargs):
             self.executions += 1
             self.started.set()
@@ -438,19 +480,105 @@ def test_disarm_waits_for_running_tick_and_blocks_later_execution(tmp_path, monk
             return super().execute(action, **kwargs)
 
     adapter = BlockingAdapter()
-    service = MechanicalBotService(BotConfig(enabled=True), adapter=adapter, snapshot_path=tmp_path / "snap.json", state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl")
+    service = MechanicalBotService(
+        BotConfig(enabled=True),
+        adapter=adapter,
+        snapshot_path=tmp_path / "snap.json",
+        state_path=tmp_path / "state.json",
+        log_path=tmp_path / "events.jsonl",
+    )
+
+    # 2. Snapshot crudo inyectado: es lo que _read_snapshot() devuelve.
+    now_iso = datetime.now(timezone.utc).isoformat()
+    raw_snapshot = {
+        "symbol": "EURUSD",
+        "direction": "BUY",
+        "probability": 0.75,
+        "confirmed": True,
+        "asof_time": now_iso,
+        "object_projection": [
+            {
+                "id": "poi-1",
+                "symbol": "EURUSD",
+                "type": ObjectType.FVG.value,
+                "origin_tf": "H4",
+                "role": Role.REFINEMENT.value,
+                "direction": 1,
+                "state": ObjectState.ACTIVE.value,
+                "zone_low": 1.0500,
+                "zone_high": 1.0550,
+            },
+            {
+                "id": "poi-2",
+                "symbol": "EURUSD",
+                "type": ObjectType.ORDER_BLOCK.value,
+                "origin_tf": "D1",
+                "role": Role.REFINEMENT.value,
+                "direction": -1,
+                "state": ObjectState.ACTIVE.value,
+                "zone_low": 1.1400,
+                "zone_high": 1.1450,
+            },
+        ],
+    }
+
+    # 2. Monkeypa evaluate_poi_stoch_m15 → ENTRY_VALID con dirección BUY.
+    import engine.poi_stoch_evaluator as poi_mod
+
+    def fake_evaluate(*_args, **_kwargs):
+        return {
+            "status": "ENTRY_VALID",
+            "poi_selected": {"direction": 1, "type": "FVG"},
+            "decision_time": datetime.now(timezone.utc).isoformat(),
+            "reason": "Entrada válida sintética",
+            "distance_pips": 0.0,
+            "price": 0.0,
+            "stochastic": {"cross_type": "CROSS_UP_FROM_OVERSOLD"},
+            "candles_available": 80,
+            "next_condition": "SIN_CONDICION",
+        }
+
+    # 3. Monkeypa evaluate_poi_stoch_m15 en el namespace de mechanical_bot.service
+    #    (donde tick() hace el lookup), y también stochastic_14_3_3 para la ruta real.
+    import mechanical_bot.core as core_mod
+    import mechanical_bot.service as svc_mod
+
+    def fake_read_snapshot():
+        return raw_snapshot
+
+    def fake_stochastic(*_args, **_kwargs):
+        return StochasticReading(k=25.0, d=18.0, previous_k=18.0, previous_d=18.0)
+
+    service._read_snapshot = fake_read_snapshot
+    monkeypatch.setattr(svc_mod, "stochastic_14_3_3", fake_stochastic)
+    monkeypatch.setattr(svc_mod, "evaluate_poi_stoch_m15", fake_evaluate)
+
+    # 3. Sesiones activas para que el tick no se abstenga por ventana.
+    service._session_schedule = lambda: {"enabled": True, "sessions": [{"name": "LONDON", "active": True}]}
+
+    # 4. Armar.
     service.bot.arm()
-    monkeypatch.setattr(service, "_read_snapshot", lambda: {"symbol": "EURUSD", "direction": "BUY", "probability": .7, "confirmed": True, "asof_time": datetime.now(timezone.utc).isoformat()})
-    monkeypatch.setattr(service.bot, "decide_entry", lambda *_args: BotAction("OPEN", "test", "BUY", .1))
+
+    # 5. Ejecutar tick() en hilo; debe llegar al adaptador y ejecutar.
     tick_thread = Thread(target=service.tick)
-    tick_thread.start(); assert adapter.started.wait(timeout=1)
+    tick_thread.start()
+    assert adapter.started.wait(timeout=2), "tick() no alcanzó el adaptador en tiempo"
+    assert adapter.executions == 1, f"se esperaba 1 ejecución, hubo {adapter.executions}"
+
+    # 6. Disarm bloquea mientras tick() está en vuelo (holding _state_lock).
     disarm_thread = Thread(target=service.disarm)
-    disarm_thread.start(); assert disarm_thread.is_alive()
+    disarm_thread.start()
+    assert disarm_thread.is_alive(), "disarm no se bloqueó esperando tick()"
+
+    # Liberar el adaptador para desbloquear tick(), luego join de ambos hilos.
     adapter.release.set()
-    tick_thread.join(timeout=2); disarm_thread.join(timeout=2)
-    assert service.status()["state"] == "OFF"
+    tick_thread.join(timeout=2)
+    disarm_thread.join(timeout=2)
+    assert service.status()["state"] == "OFF", f"disarm no estableció OFF: {service.status()['state']}"
+
+    # 7. Un tick() posterior NO debe ejecutar (desarmado).
     service.tick()
-    assert adapter.executions == 1
+    assert adapter.executions == 1, f"se esperaba 1 ejecución tras disarm, hubo {adapter.executions}"
 
 
 def test_manual_sell_selection_waits_for_stochastic_without_sending_order(tmp_path, monkeypatch):

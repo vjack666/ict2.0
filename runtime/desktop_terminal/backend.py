@@ -46,7 +46,9 @@ def compute_snapshot(candles, symbol, decision_time):
 
 
 def normalize_rates(rates, tf, now, server_offset_seconds=0):
-    """Reject bad/time-disordered bars; classify closure by actual TF boundary."""
+    """Reject bad/time-disordered UTC-epoch bars and classify their closure."""
+    if server_offset_seconds != 0:
+        raise ValueError("MT5_EPOCH_OFFSET_UNSUPPORTED")
     if rates is None or len(rates) == 0:
         raise ValueError(f"NO_RATES:{tf}")
     closed, opened, previous = [], None, 0
@@ -86,7 +88,7 @@ class LockedMT5:
 class TerminalRuntime:
     def __init__(self, mt5=None, service=None, symbol="EURUSD", executor=None, server_offset_seconds=0):
         self.mt5, self.service, self.symbol = mt5, service, symbol
-        self.server_offset_seconds = server_offset_seconds
+        self.server_offset_seconds = int(server_offset_seconds)
         self.lock = threading.RLock()
         self.action_lock = threading.Lock()
         self.stop_event = threading.Event()
@@ -272,16 +274,16 @@ class TerminalRuntime:
             raise RuntimeError("MT5_TICK_OR_ACCOUNT_UNAVAILABLE")
         if not all(math.isfinite(float(v)) and v > 0 for v in (tick.bid, tick.ask)):
             raise RuntimeError("INVALID_TICK")
-        tick_time = tick.time - self.server_offset_seconds
+        tick_time = tick.time
         if tick_time > time.time() + 5:
-            raise RuntimeError("MT5_CLOCK_OFFSET_MISMATCH: revise --server-utc-offset-hours")
+            raise RuntimeError("MT5_CLOCK_EPOCH_MISMATCH: MT5 epoch is unexpectedly in the future")
         age = max(0, time.time() - tick_time)
         positions = self.mt5.positions_get()
         if positions is None:
             raise RuntimeError("MT5_POSITIONS_UNAVAILABLE")
         with self.lock:
             self.state["tick"] = {"bid": tick.bid, "ask": tick.ask, "time": tick_time,
-                                  "time_msc": tick.time_msc - self.server_offset_seconds * 1000, "digits": info.digits,
+                                  "time_msc": tick.time_msc, "digits": info.digits,
                                   "spread_points": round((tick.ask - tick.bid) / info.point, 2), "age_seconds": round(age, 1)}
             self.state["account"] = {"login": account.login, "server": account.server,
                                      "balance": account.balance, "equity": account.equity,
@@ -292,7 +294,7 @@ class TerminalRuntime:
                                         "profit": p.profit} for p in positions]
             self.state["connection"] = {"status": "READY" if age <= 30 else "STALE", "error": None,
                                          "updated_at": utc_now(), "tick_age_seconds": round(age, 1),
-                                         "server_utc_offset_hours": self.server_offset_seconds / 3600}
+                                         "server_utc_offset_hours": 0.0}
             for tf, opened in self.state["open_candles_by_tf"].items():
                 if opened and opened["time"] <= tick_time < opened["time"] + TF_SECONDS[tf]:
                     self.state["open_candles_by_tf"][tf] = {**opened, "close": tick.bid,
@@ -395,7 +397,7 @@ class TerminalRuntime:
         self.event("ENGINE_ERROR", f"{exc}; retry in {delay}s")
 
     def action(self, action):
-        if action not in {"analyze", "arm", "disarm", "close-cycle", "manual-buy", "manual-sell"}:
+        if action not in {"analyze", "arm", "disarm", "close-cycle", "manual-buy", "manual-sell", "enable-execution"}:
             raise ValueError("UNKNOWN_ACTION")
         if action == "analyze":
             self.refresh_event.set()
@@ -406,14 +408,69 @@ class TerminalRuntime:
             status = self.service.status()
             if action == "arm" and not status.get("adapter_configured", False):
                 raise RuntimeError("MT5_ADAPTER_UNAVAILABLE")
-            if action in {"close-cycle", "manual-buy", "manual-sell"} and not status.get("execution_enabled"):
-                raise RuntimeError("EXECUTION_DISABLED")
-            # Arming is explicit human authorization. Snapshot and stochastic
-            # checks remain in tick(), immediately before any OPEN action.
-            if action in {"manual-buy", "manual-sell"}:
-                result = self.service.manual_entry("BUY" if action == "manual-buy" else "SELL")
+            if action == "enable-execution":
+                if not status.get("execution_enabled"):
+                    if not status.get("adapter_configured", False):
+                        raise RuntimeError("MT5_ADAPTER_UNAVAILABLE")
+                    account = status.get("account")
+                    if not account or not account.get("environment") == "DEMO":
+                        raise RuntimeError("EXECUTION_ENABLED_REAL_ACCOUNT_NOT_ALLOWED")
+                    raw_positions = list(self.service.adapter.positions())
+                    bot_positions = [
+                        p for p in raw_positions
+                        if p.symbol == self.service.bot.config.symbol
+                        and int(p.magic_number) == int(self.service.bot.config.magic_number)
+                    ]
+                    if bot_positions:
+                        raise RuntimeError("EXECUTION_ENABLED_BOT_POSITIONS_OPEN")
+                    if raw_positions:
+                        stray = {
+                            "count_total": len(raw_positions),
+                            "count_bot_owned": len(bot_positions),
+                            "non_bot_positions": [
+                                {"symbol": str(getattr(p, "symbol", "")),
+                                 "magic_number": int(getattr(p, "magic_number", 0)),
+                                 "side": str(getattr(p, "side", "")),
+                                 "volume": float(getattr(p, "volume", 0.0)),
+                                 "profit_usd": float(getattr(p, "profit_usd", 0.0))}
+                                for p in raw_positions if p not in bot_positions
+                            ],
+                        }
+                    else:
+                        stray = None
+                    self.service.adapter.set_execution_enabled(True)
+                    result = {
+                        "ok": True,
+                        "action": action,
+                        "execution_enabled": True,
+                        "enabling_context": {
+                            "account": account,
+                            "positions_total": len(raw_positions),
+                            "positions_bot_owned": len(bot_positions),
+                            "non_bot_positions": stray,
+                        },
+                    }
+                    self.event("EXECUTION_ENABLED", {
+                        "from": False,
+                        "to": True,
+                        "account": account,
+                        "non_bot_positions_snapshot": stray,
+                    })
+                else:
+                    result = {"ok": True, "action": action, "execution_enabled": True}
+            elif action in {"close-cycle", "manual-buy", "manual-sell"}:
+                if not status.get("execution_enabled"):
+                    raise RuntimeError("EXECUTION_DISABLED")
+                # Arming is explicit human authorization. Snapshot and stochastic
+                # checks remain in tick(), immediately before any OPEN action.
+                if action in {"manual-buy", "manual-sell"}:
+                    result = self.service.manual_entry(
+                        "BUY" if action == "manual-buy" else "SELL"
+                    )
+                else:
+                    result = self.service.close_cycle()
             else:
-                method = {"arm": "arm", "disarm": "disarm", "close-cycle": "close_cycle"}[action]
+                method = {"arm": "arm", "disarm": "disarm"}[action]
                 result = getattr(self.service, method)()
         with self.lock:
             self.state["bot"] = {**self.state["bot"], **result}

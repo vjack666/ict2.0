@@ -110,6 +110,7 @@ def _poi_dict(
     zone_low: float = 1.0000,
     zone_high: float = 1.0010,
     creation_time: object = 1000,
+    origin_tf: str = "D1",
 ) -> dict:
     return {
         "id": id,
@@ -120,6 +121,7 @@ def _poi_dict(
         "zone_low": zone_low,
         "zone_high": zone_high,
         "creation_time": creation_time,
+        "origin_tf": origin_tf,
     }
 
 
@@ -368,24 +370,33 @@ class TestCrossFinding:
         # La lectura final no tiene cruce (flat)
         assert _cross_type(reading, 1) == "NO_CROSS"
         # Pero el cruce anterior está vencido
-        assert _cross_vencido(candles, cfg, reading, 1) is True
+        assert _cross_vencido(candles, cfg, reading, 1, cross_index=19) is True
 
     def test_cruce_no_vencido_si_hay_nuevo_en_3_velas(self):
-        """Cruce + nuevo cruce en las próximas 3 velas → no vence."""
+        """Cruce en vela 20 + nuevo cruce en vela 24 → no vence (cross_index=19)."""
         cfg = _default_config()
-        base = _build_candles_for_cross_up(cfg)
         rng = 0.0002
-        start = 1.0000 + 20 * 0.00001
-        for i in range(3):
-            base.append(Candle(high=start + rng, low=start, close=start + 0.80 * rng))
-            start += 0.00001
+        base = 1.0000
+        candles: list[Candle] = []
+        # 19 velas flat con cierre en 5% del rango (raw_k≈5)
+        for _ in range(19):
+            candles.append(Candle(high=base + rng, low=base, close=base + 0.05 * rng))
+        # Vela 20 (idx 19): close en 80% del rango → cruce alcista detectado
+        candles.append(Candle(high=base + rng, low=base, close=base + 0.80 * rng))
+        # 4 velas flat para resetear previous_k (índices 20-23)
+        for _ in range(4):
+            candles.append(Candle(high=base + rng, low=base, close=base + 0.05 * rng))
+        # Vela 25 (idx 24): close en 80% del rango → nuevo cruce alcista
+        candles.append(Candle(high=base + rng, low=base, close=base + 0.80 * rng))
 
-        reading = stochastic_14_3_3(base, cfg)
+        reading = stochastic_14_3_3(candles, cfg)
         assert reading is not None
-        # Hay nuevo cruce en las últimas 3 velas
-        for idx in [-1, -2, -3]:
-            assert _hubo_cruce_valido_en_vela(base, cfg, idx, 1) is True
-        assert _cross_vencido(base, cfg, reading, 1) is False
+        # Verificar que el cruce en idx 24 fue detectado
+        assert _hubo_cruce_valido_en_vela(candles, cfg, 24, 1) is True
+        # cross_index=19: 3 velas después (21,22,23) NO tienen cruce → VENCE
+        assert _cross_vencido(candles, cfg, reading, 1, cross_index=19) is True
+        # cross_index=24: 3 velas después (25,26,27) no existen → NO hay suficientes velas para vencer
+        assert _cross_vencido(candles, cfg, reading, 1, cross_index=24) is False
 
     def test_no_vence_sin_suficientes_velas_despues_cruce(self):
         """Cruce en última vela → no hay suficientes velas después para vencer."""
@@ -393,27 +404,27 @@ class TestCrossFinding:
         candles = _build_candles_for_cross_up(cfg)
         reading = stochastic_14_3_3(candles, cfg)
         assert reading is not None
-        assert _cross_vencido(candles, cfg, reading, 1) is False
+        assert _cross_vencido(candles, cfg, reading, 1, cross_index=len(candles)-1) is False
 
     def test_cruce_vencido_por_inversion_k_d(self):
         """Cruce vigente pero con k <= d → vencido por inversión."""
         cfg = _default_config()
         candles = _build_candles_for_cross_up(cfg)
         reading_inv = _reading(k=20.0, d=23.0, previous_k=18.0, previous_d=19.0)
-        assert _cross_vencido(candles, cfg, reading_inv, 1) is True
+        assert _cross_vencido(candles, cfg, reading_inv, 1, cross_index=len(candles)-1) is True
 
     def test_vencido_por_inversion_k_d_bajista(self):
         """Cruce bajista con k >= d → vencido."""
         cfg = _default_config()
         candles = _build_candles_for_cross_down(cfg)
         reading_inv = _reading(k=82.0, d=79.0, previous_k=85.0, previous_d=83.0)
-        assert _cross_vencido(candles, cfg, reading_inv, -1) is True
+        assert _cross_vencido(candles, cfg, reading_inv, -1, cross_index=len(candles)-1) is True
 
     def test_no_vence_sin_suficientes_velas_para_3(self):
         cfg = _default_config()
         candles = _make_candles_low_close(3)
         reading = _reading(k=25.0, d=22.0, previous_k=18.0, previous_d=19.0)
-        assert _cross_vencido(candles, cfg, reading, 1) is False
+        assert _cross_vencido(candles, cfg, reading, 1, cross_index=len(candles)-1) is False
 
 
 # ===========================================================================
@@ -474,12 +485,15 @@ class TestEvaluatePoiStochM15:
         candles = _make_candles_low_close(80)
         fn = _closed_m15_fn(candles)
 
+        # MITIGATED → no candidato (estado no elegible)
         poi_mitigated = _poi_dict(state="MITIGATED")
-        poi_refinement = _poi_dict(role="REFINEMENT")
+        # BOS → no candidato (tipo no elegible)
         poi_bos = _poi_dict(type="BOS")
+        # M5 origin_tf → no candidato (TF no acordada)
+        poi_m5 = _poi_dict(origin_tf="M5")
 
         result = evaluate_poi_stoch_m15(
-            [poi_mitigated, poi_refinement, poi_bos],
+            [poi_mitigated, poi_bos, poi_m5],
             price,
             fn,
             None,
@@ -614,7 +628,11 @@ class TestEvaluatePoiStochM15:
         assert "venció" in result["reason"].lower()
 
     def test_cross_expired_por_inversion_k_d(self):
-        """Inversión K/D en la vela actual → CROSS_EXPIRED."""
+        """Inversión K/D en la vela actual → CROSS_EXPIRED.
+
+        El cruce ocurre en la vela 20 (idx 19), luego 3 velas con K/D invertido
+        (k <= d) hacen que el cruce vencido por M1.
+        """
         cfg = _config_dict()
         poi = _poi_dict(
             direction=1, state="ACTIVE", type="FVG",
@@ -623,20 +641,25 @@ class TestEvaluatePoiStochM15:
         )
         price = 1.0012
 
-        # Construir velas que produzcan lectura con k <= d
+        # Construir: 19 velas bajas + 1 cruce + 3 velas con K/D invertido
         rng = 0.0002
         base = 1.0000
         candles: list[Candle] = []
         for _ in range(19):
             candles.append(Candle(high=base + rng, low=base, close=base + 0.05 * rng))
-        # Última vela: close tal que k <= d (cruce invertido)
-        candles.append(Candle(high=base + rng, low=base, close=base + 0.10 * rng))
+        # Vela 20 (idx 19): cruce alcista
+        candles.append(Candle(high=base + rng, low=base, close=base + 0.80 * rng))
+        # 3 velas de caída para invertir K/D
+        for i in range(1, 4):
+            candles.append(Candle(high=base + rng + i*0.0001, low=base + i*0.0001,
+                                    close=base + 0.01 * i * rng))
 
         fn = _closed_m15_fn(candles)
 
         result = evaluate_poi_stoch_m15([poi], price, fn, None, cfg)
 
-        assert result["status"] == "CROSS_EXPIRED"
+        assert result["status"] == "CROSS_EXPIRED", \
+            f"Esperado CROSS_EXPIRED, obtenido {result['status']}. k={result['stochastic'].get('k')}, d={result['stochastic'].get('d')}"
         assert result["poi_selected"] is not None
 
     def test_cycle_active_same_direction(self):
@@ -901,6 +924,8 @@ class TestEvaluatePoiStochM15:
             "stochastic",
             "candles_available",
             "next_condition",
+            "price_type",
+            "cross_id",
         }
         assert set(result.keys()) == expected_fields
 
@@ -1135,7 +1160,7 @@ class TestEdgeCases:
 # ===========================================================================
 
 class TestStochasticDict:
-    def test_con lectura_completa(self):
+    def test_con_lectura_completa(self):
         reading = _reading(k=25.0, d=22.0, previous_k=18.0, previous_d=19.0)
         d = _stochastic_dict(reading, "CROSS_UP_FROM_OVERSOLD")
         assert d == {
@@ -1146,6 +1171,6 @@ class TestStochasticDict:
             "cross_type": "CROSS_UP_FROM_OVERSOLD",
         }
 
-    def test_con lectura_none(self):
+    def test_con_lectura_none(self):
         d = _stochastic_dict(None, "NO_CROSS")
         assert d == {"cross_type": "NO_CROSS"}

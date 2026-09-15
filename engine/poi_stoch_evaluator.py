@@ -10,6 +10,7 @@ argumentos produce el mismo ``status``.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from hashlib import sha256
 from typing import Any, Callable
 
 from mechanical_bot.core import BotConfig, Candle, StochasticReading, stochastic_14_3_3
@@ -110,23 +111,44 @@ def _cross_vencido(
     config: BotConfig,
     reading: StochasticReading,
     direction: int,
+    cross_index: int | None = None,
 ) -> bool:
     """Verifica si el cruce estocástico venció según sección 8 del contrato.
 
+    H6: verifica 3 velas DESPUÉS de la vela del cruce (índice cross_index),
+    no incluye la vela del cruce en la verificación.
+
     Los dos mecanismos de caducidad:
 
-    1. Inversión K/D: para cruce alcista (k > d), si k <= d; para cruce
-       bajista (k < d), si k >= d.
-    2. Tres velas consecutivas sin nuevo cruce válido: se recorren las
-       últimas 3 velas (candles[-3], candles[-2], candles[-1]) y si en
-       ninguna de ellas hubo cruce válido del tipo requerido, el cruce
-       anterior vence.
+    1. Inversión K/D en la vela DECISIÓN (última vela cerrada): para
+       cruce alcista (k > d), si k <= d; para cruce bajista (k < d), si
+       k >= d.
+    2. Tres velas consecutivas DESPUÉS del cruce sin nuevo cruce válido.
 
-    Si no hay suficientes velas históricas para verificar (menos de 3
-    velas además de la del cruce), no se puede probar la caducidad y
-    se considera que el cruce está vigente (retorna False).
+    Args:
+        candles: lista de velas M15 cerradas, orden ascendente por tiempo.
+        config: BotConfig con k_period, k_smoothing, d_period, oversold,
+                overbought.
+        reading: lectura estocástica de la última vela (candles[-1]).
+        direction: +1 para cruce alcista, -1 para bajista.
+        cross_index: índice de la vela donde ocurrió el cruce. Si es None,
+                     se toma len(candles) - 1 (comportamiento legacy para
+                     compatibilidad, pero los tests nuevos lo pasan explícito).
+
+    Returns:
+        True si el cruce venció, False si está vigente.
+
+    Contrato V2 sección 8.2.2: el cruce vence al cerrarse la tercera vela
+    después del cruce SIN nuevo cruce válido. Si hay nuevo cruce válido
+    en cualquiera de esas 3 velas, el vencimiento se reinicia.
     """
-    # Mecanismo 1: inversión de relación K/D en la vela actual
+    # Determinar la vela del cruce
+    if cross_index is None:
+        cross_index = len(candles) - 1
+
+    # Mecanismo 1: inversión de relación K/D en la vela DECISIÓN (última)
+    # No importa si la vela del cruce fue alcista o bajista; lo que importa
+    # es la lectura actual de la vela donde se toma la decisión.
     if direction == 1:
         if reading.k <= reading.d:
             return True
@@ -134,19 +156,18 @@ def _cross_vencido(
         if reading.k >= reading.d:
             return True
 
-    # Mecanismo 2: tres velas consecutivas sin nuevo cruce válido
-    # Necesitamos al menos 3 velas adicionales para la verificación
-    if len(candles) < 4:
-        return False
+    # Mecanismo 2: tres velas DESPUÉS del cruce sin nuevo cruce válido
+    # cross_index + 1, cross_index + 2, cross_index + 3
+    # Necesitamos al menos 3 velas después del cruce
+    if len(candles) < cross_index + 4:
+        return False  # No hay suficientes velas para verificar
 
-    # Verificar las últimas 3 velas (candles[-3], candles[-2], candles[-1])
-    # Si en ninguna hubo cruce válido, el cruce anterior vence.
-    ultimas_indices = [len(candles) - 3, len(candles) - 2, len(candles) - 1]
-    for idx in ultimas_indices:
+    for offset in range(1, 4):
+        idx = cross_index + offset
         if _hubo_cruce_valido_en_vela(candles, config, idx, direction):
-            return False  # Hay un nuevo cruce válido, no vencido
+            return False  # Nuevo cruce válido en alguna de las 3 velas
 
-    return True  # Ninguna de las 3 velas tenía cruce válido
+    return True  # Ninguna de las 3 velas después del cruce tuvo cruce válido
 
 
 def _distance_pips(p: MarketObject | dict, price: float, pip_size: float = 0.0001) -> float:
@@ -184,10 +205,26 @@ def _poi_selected(cercanas: list[object], price: float, pip_size: float = 0.0001
     """Selecciona la POI más cercana al precio según sección 9 del contrato.
 
     Criterio principal: menor distance_pips.
-    Desempate: creation_time más reciente (mayor valor).
+    Desempate por temporalidad (contrato V2 sección 9.4): D1 > H4 > H1.
+    Si misma temporalidad, el más reciente (mayor creation_time) gana.
+
+    Prioridad de temporalidad para desempate:
+        D1  -> 0 (máxima prioridad)
+        H4  -> 1
+        H1  -> 2
+        otro -> 3 (mínima prioridad)
     """
     if not cercanas:
         return None
+
+    _TF_PRIORITY = {"D1": 0, "H4": 1, "H1": 2}
+
+    def _tf_priority(p: object) -> int:
+        if isinstance(p, dict):
+            tf = p.get("origin_tf", "")
+        else:
+            tf = getattr(p, "origin_tf", "") or ""
+        return _TF_PRIORITY.get(tf, 3)
 
     # Calcular distancia para cada POI y encontrar el mínimo
     candidatos_con_dist = []
@@ -195,20 +232,15 @@ def _poi_selected(cercanas: list[object], price: float, pip_size: float = 0.0001
         dist = _distance_pips(p, price, pip_size)
         candidatos_con_dist.append((p, dist))
 
-    # Ordenar por distancia (ascendente), luego por creation_time (descendente)
     def clave(item):
         p, dist = item
-        if isinstance(p, dict):
+        tf_pri = _tf_priority(p)
+        creation = getattr(p, "creation_time", None)
+        if creation is None and isinstance(p, dict):
             creation = p.get("creation_time")
-            if creation is None:
-                creation = ""
-            # Normalizar a comparable: si es string ISO, usar directamente
-            return (dist, -_comparar_creation(creation))
-        else:
-            creation = p.creation_time
-            if creation is None:
-                creation = ""
-            return (dist, -_comparar_creation(creation))
+        if creation is None:
+            creation = ""
+        return (dist, tf_pri, -_comparar_creation(creation))
 
     candidatos_con_dist.sort(key=clave)
     return candidatos_con_dist[0][0]
@@ -235,16 +267,35 @@ def _comparar_creation(creation) -> float:
         return 0.0
 
 
+def _calcular_cross_id(cross_type: str, candles: list[Candle]) -> str:
+    """Calcula ``cross_id`` único según contrato V2 sección 8.3 / 13.3.
+
+    ``cross_id = f"{cross_type}_{firma_vela}"`` donde ``firma_vela`` es el
+    hex digest SHA-256 de ``high|low|close|posicion`` de ``candles[-1]``.
+    """
+    if not candles:
+        return ""
+    ultima = candles[-1]
+    payload = f"{ultima.high}|{ultima.low}|{ultima.close}|{len(candles) - 1}"
+    digest = sha256(payload.encode("utf-8")).hexdigest()
+    return f"{cross_type}_{digest}"
+
+
 def _stochastic_dict(
     reading: StochasticReading | None,
     cross_type: str,
+    cross_id: str | None = None,
 ) -> dict:
     """Construye el dict ``stochastic`` de salida según sección 11.3.
 
     Si reading es None (no hay suficientes velas), retorna solo cross_type.
+    El campo ``cross_id`` se incluye cuando es no-None (contrato V2 sección 8.3).
     """
+    base: dict[str, Any] = {"cross_type": cross_type}
+    if cross_id is not None:
+        base["cross_id"] = cross_id
     if reading is None:
-        return {"cross_type": cross_type}
+        return base
 
     return {
         "k": reading.k,
@@ -252,41 +303,72 @@ def _stochastic_dict(
         "previous_k": reading.previous_k,
         "previous_d": reading.previous_d,
         "cross_type": cross_type,
+        ** ({"cross_id": cross_id} if cross_id is not None else {}),
     }
 
 
 def _filtrar_candidatas(market_objects: list[object]) -> list[object]:
-    """Filtra market_objects para obtener POI elegibles (sección 2).
+    """Filtra market_objects para obtener POI elegibles (contrato V2 sección 2.4).
 
-    Condiciones:
+    El contrato V2 sección 2.4 define criterio alternativo: NO exige Role.POI.
+    Los detectores publican role=REFINEMENT, no role=POI (el papel POI es
+    una intención, no un atributo del objeto material publicado).
+
+    Selección local T2 (contrato V2 sección 2.1):
     - type in (ObjectType.FVG, ObjectType.ORDER_BLOCK)
-    - role == Role.POI
+    - origin_tf in {"D1", "H4", "H1"} (POI-TFs acordadas, contrato V2 sección 4.1)
     - state in (ObjectState.ACTIVE, ObjectState.PARTIALLY_MITIGATED)
+    - símbolo: acepta cualquier símbolo (filtro en el evaluador)
+    - zonas finitas: zone_high >= zone_low (contrato V2 sección 4.3 geometría)
+
+    No se exige role == Role.POI. El papel (role) es metadata de intención;
+    la elegibilidad se determina por tipo, origen temporal, estado, símbolo
+    y geometría.
     """
     elegibles = []
     for obj in market_objects:
         # Manejar tanto objetos MarketObject como dicts
         if isinstance(obj, dict):
             obj_type = obj.get("type")
-            obj_role = obj.get("role")
+            obj_origin_tf = obj.get("origin_tf")
             obj_state = obj.get("state")
+            zone_low = obj.get("zone_low")
+            zone_high = obj.get("zone_high")
         else:
-            obj_type = obj.type
-            obj_role = obj.role
-            obj_state = obj.state
+            obj_type = getattr(obj, "type", None)
+            obj_origin_tf = getattr(obj, "origin_tf", None) or ""
+            obj_state = getattr(obj, "state", None)
+            zone_low = getattr(obj, "zone_low", None)
+            zone_high = getattr(obj, "zone_high", None)
 
-        # Normalizar a enum si es string
+        # Normalizar tipos si son strings
         if isinstance(obj_type, str):
             obj_type = ObjectType(obj_type)
-        if isinstance(obj_role, str):
-            obj_role = Role(obj_role)
         if isinstance(obj_state, str):
             obj_state = ObjectState(obj_state)
 
-        if obj_type in (ObjectType.FVG, ObjectType.ORDER_BLOCK) and \
-           obj_role == Role.POI and \
-           obj_state in (ObjectState.ACTIVE, ObjectState.PARTIALLY_MITIGATED):
-            elegibles.append(obj)
+        # 1. Tipo: FVG o ORDER_BLOCK
+        if obj_type not in (ObjectType.FVG, ObjectType.ORDER_BLOCK):
+            continue
+
+        # 2. Temporalidad acordada (POI-TFs): D1, H4, H1
+        if not obj_origin_tf or obj_origin_tf not in {"D1", "H4", "H1"}:
+            continue
+
+        # 3. Estado: ACTIVE o PARTIALLY_MITIGATED
+        if obj_state not in (ObjectState.ACTIVE, ObjectState.PARTIALLY_MITIGATED):
+            continue
+
+        # 4. Geometría finita: zone_high >= zone_low y ambos son números
+        try:
+            zl = float(zone_low)
+            zh = float(zone_high)
+        except (TypeError, ValueError):
+            continue
+        if not (zl <= zh):
+            continue
+
+        elegibles.append(obj)
 
     return elegibles
 
@@ -322,6 +404,8 @@ def evaluate_poi_stoch_m15(
     config: object,
     *,
     check_proximity: bool = True,
+    price_type: str | None = None,
+    consumed_cross_ids: set[str] | None = None,
 ) -> dict:
     """Evaluador POI + estocástico M15.
 
@@ -335,10 +419,16 @@ def evaluate_poi_stoch_m15(
             pip_size, tolerance_pips.
         check_proximity: si es falso, solo preselecciona una POI operable para
             obtener el lado bid/ask; nunca devuelve una entrada válida.
+        price_type: tipo de precio usado ("ASK" o "BID"). Se infiere de la
+            dirección del POI si no se proporciona (contrato V2 sección 4.2).
+        consumed_cross_ids: conjunto de cross_ids ya utilizados para entradas
+            válidas previas. Si el cross_id actual está en el conjunto, el
+            cruce se considera consumido → CROSS_EXPIRED (contrato V2 §10.2).
 
     Returns:
         dict con campos: decision_time, status, reason, poi_selected,
-        distance_pips, price, stochastic, candles_available, next_condition.
+        distance_pips, price, stochastic, candles_available, next_condition,
+        y opcionalmente price_type y cross_id (contrato V2 sección 11.1).
     """
     # Obtener parámetros de config
     symbol = getattr(config, "symbol", "EURUSD")
@@ -353,13 +443,13 @@ def evaluate_poi_stoch_m15(
         return _build_result(
             decision_time=decision_time,
             status="NO_ELIGIBLE_POI_NEAR_PRICE",
-            reason="No hay POI elegibles (FVG/ORDER_BLOCK con rol POI y estado ACTIVE/PARTIALLY_MITIGATED)",
+            reason="No hay POI elegibles (FVG/ORDER_BLOCK con temporalidad D1/H4/H1 y estado ACTIVE/PARTIALLY_MITIGATED o lista vacía)",
             poi_selected=None,
             distance_pips=None,
             price=price,
             stochastic={"cross_type": "NO_CROSS"},
             candles_available=0,
-            next_condition="SIN_CONDICION",
+            next_condition="AGUARDAR_POI_EN_ZONA",
         )
 
     # Paso 2: Filtrar por dirección operable
@@ -374,7 +464,7 @@ def evaluate_poi_stoch_m15(
             price=price,
             stochastic={"cross_type": "NO_CROSS"},
             candles_available=0,
-            next_condition="SIN_CONDICION",
+            next_condition="AGUARDAR_POI_EN_ZONA",
         )
 
     # Paso 3: Filtrar por proximidad
@@ -398,6 +488,7 @@ def evaluate_poi_stoch_m15(
     if isinstance(poi, dict):
         distance_pips = _distance_pips(poi, price, pip_size)
         direction = poi.get("direction", 0)
+        poi_symbol = poi.get("symbol", symbol)
     else:
         distance_pips = _distance_pips(poi, price, pip_size)
         direction = poi.direction
@@ -416,7 +507,9 @@ def evaluate_poi_stoch_m15(
             next_condition="REEVALUAR_PRECIO_POR_DIRECCION",
         )
 
-    # Paso 4b: Obtener velas M15 antes de los filtros que lo referencian
+    # Paso 4b: Determinar price_type (contrato V2 sección 4.2)
+    if price_type is None:
+        price_type = "ASK" if direction == 1 else "BID"
     bot_config = _config_botconfig(config)
     candles = closed_m15_candles_fn(symbol, count=80)
     candles_available = len(candles)
@@ -487,6 +580,35 @@ def evaluate_poi_stoch_m15(
     cross_type = _cross_type(reading, direction)
 
     if cross_type == "NO_CROSS":
+        # Verificar si el cruce anterior venció (contrato V2 sección 8.2.2)
+        # Buscar la última vela con cruce válido hacia atrás desde candles[-2]
+        prev_cross_index = None
+        for idx in range(len(candles) - 2, -1, -1):
+            idx_reading = _lectura_estocastica_por_vela(candles, bot_config, idx)
+            if idx_reading is not None:
+                idx_cross_type = _cross_type(idx_reading, direction)
+                if idx_cross_type != "NO_CROSS":
+                    prev_cross_index = idx
+                    break
+
+        if prev_cross_index is not None:
+            # Hubo cruce anterior; verificar si venció
+            prev_expired = _cross_vencido(
+                candles, bot_config, reading, direction,
+                cross_index=prev_cross_index,
+            )
+            if prev_expired:
+                return _build_result(
+                    decision_time=decision_time,
+                    status="CROSS_EXPIRED",
+                    reason="El cruce estocástico anterior venció (inversión K/D o 3 velas sin nuevo cruce válido)",
+                    poi_selected=poi,
+                    distance_pips=distance_pips,
+                    price=price,
+                    stochastic=_stochastic_dict(reading, cross_type),
+                    candles_available=candles_available,
+                    next_condition="AGUARDAR_CRUCE_M15",
+                )
         return _build_result(
             decision_time=decision_time,
             status="NO_CROSS",
@@ -494,9 +616,10 @@ def evaluate_poi_stoch_m15(
             poi_selected=poi,
             distance_pips=distance_pips,
             price=price,
-            stochastic=_stochastic_dict(reading, cross_type),
+            stochastic=_stochastic_dict(reading, cross_type, cross_id=None),
             candles_available=candles_available,
             next_condition="AGUARDAR_CRUCE_M15",
+            price_type=price_type,
         )
 
     # Paso 7: Verificar caducidad del cruce
@@ -508,9 +631,10 @@ def evaluate_poi_stoch_m15(
             poi_selected=poi,
             distance_pips=distance_pips,
             price=price,
-            stochastic=_stochastic_dict(reading, cross_type),
+            stochastic=_stochastic_dict(reading, cross_type, cross_id=None),
             candles_available=candles_available,
             next_condition="AGUARDAR_CRUCE_M15",
+            price_type=price_type,
         )
 
     # Paso 8: Verificar ciclo activo
@@ -526,13 +650,36 @@ def evaluate_poi_stoch_m15(
                     poi_selected=poi,
                     distance_pips=distance_pips,
                     price=price,
-                    stochastic=_stochastic_dict(reading, cross_type),
+                    stochastic=_stochastic_dict(reading, cross_type, cross_id=None),
                     candles_available=candles_available,
                     next_condition="AGUARDAR_FIN_CICLO",
+                    price_type=price_type,
                 )
 
     # Paso 9: Entrada válida
     poi_type_label = poi.type.value if isinstance(poi, MarketObject) else poi.get("type", "DESCONOCIDO")
+    cross_id = _calcular_cross_id(cross_type, candles)
+
+    # Verificar que el cross_id no fue consumido previamente (contrato V2 §10.2)
+    if consumed_cross_ids is not None and cross_id in consumed_cross_ids:
+        return _build_result(
+            decision_time=decision_time,
+            status="CROSS_EXPIRED",
+            reason="Cruce ya consumido en evaluación previa",
+            poi_selected=poi,
+            distance_pips=distance_pips,
+            price=price,
+            stochastic=_stochastic_dict(reading, cross_type, cross_id=cross_id),
+            candles_available=candles_available,
+            next_condition="AGUARDAR_CRUCE_NUEVO",
+            price_type=price_type,
+            cross_id=cross_id,
+        )
+
+    # Registrar cross_id como consumido para futuras evaluaciones
+    if consumed_cross_ids is not None:
+        consumed_cross_ids.add(cross_id)
+
     return _build_result(
         decision_time=decision_time,
         status="ENTRY_VALID",
@@ -540,9 +687,11 @@ def evaluate_poi_stoch_m15(
         poi_selected=poi,
         distance_pips=distance_pips,
         price=price,
-        stochastic=_stochastic_dict(reading, cross_type),
+        stochastic=_stochastic_dict(reading, cross_type, cross_id=cross_id),
         candles_available=candles_available,
         next_condition="SIN_CONDICION",
+        price_type=price_type,
+        cross_id=cross_id,
     )
 
 
@@ -556,9 +705,16 @@ def _build_result(
     stochastic: dict,
     candles_available: int,
     next_condition: str,
+    *,
+    price_type: str | None = None,
+    cross_id: str | None = None,
 ) -> dict:
-    """Construye el dict de resultado final."""
-    return {
+    """Construye el dict de resultado final.
+
+    Los campos ``price_type`` y ``cross_id`` se añaden cuando son no-None
+    para cumplir con el contrato V2 sección 11.1.
+    """
+    result: dict[str, Any] = {
         "decision_time": decision_time,
         "status": status,
         "reason": reason,
@@ -569,3 +725,8 @@ def _build_result(
         "candles_available": candles_available,
         "next_condition": next_condition,
     }
+    if price_type is not None:
+        result["price_type"] = price_type
+    if cross_id is not None:
+        result["cross_id"] = cross_id
+    return result

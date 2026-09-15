@@ -39,12 +39,14 @@ class MT5Adapter:
         # Never interpret a string such as "false" as permission to trade.
         self.execution_enabled = execution_enabled is True
         self._lock = RLock()
-        self.server_utc_offset_seconds = int(server_utc_offset_seconds)
         self._blackbox = blackbox
         self._demo_account_login: int | None = None
         self._demo_account_server: str | None = None
         if demo_account_login is not None or demo_account_server is not None:
             self.configure_demo_guard(demo_account_login, demo_account_server)
+        if int(server_utc_offset_seconds) != 0:
+            raise ValueError("MT5Adapter timestamps are already UTC; server_utc_offset_seconds must be 0")
+        self.server_utc_offset_seconds = int(server_utc_offset_seconds)
 
     def set_blackbox(self, journal: BlackBoxJournal) -> None:
         """Attach the mandatory durable pre-send journal before arming."""
@@ -60,6 +62,10 @@ class MT5Adapter:
         with self._lock:
             self._demo_account_login = int(login)
             self._demo_account_server = server.strip()
+
+    def set_execution_enabled(self, enabled: bool) -> None:
+        """Enable or disable order execution at runtime."""
+        self.execution_enabled = enabled is True
 
     def connect(self) -> None:
         with self._lock:
@@ -99,7 +105,7 @@ class MT5Adapter:
             # MT5 exposes Unix seconds on live ticks.  Test doubles without a
             # timestamp remain usable, but a real stale terminal fails closed.
             if hasattr(tick, "time"):
-                self._assert_recent_epoch(getattr(tick, "time"), 30, "MT5 tick", self.server_utc_offset_seconds)
+                self._assert_recent_epoch(getattr(tick, "time"), 30, "MT5 tick")
             return float(tick.ask if side == "BUY" else tick.bid)
 
     def closed_m15_candles(self, symbol: str, count: int = 80) -> list[Candle]:
@@ -108,7 +114,7 @@ class MT5Adapter:
             if rates is None or len(rates) < count:
                 raise RuntimeError(f"MT5 closed M15 candles unavailable for {symbol}")
             try:
-                self._assert_recent_epoch(rates[-1]["time"], 1_800, "MT5 closed M15 candle", self.server_utc_offset_seconds)
+                self._assert_closed_m15_epoch(rates[-1]["time"])
             except (IndexError, KeyError, TypeError):
                 # MT5 native structured arrays always have ``time``.  Keep
                 # lightweight test fixtures compatible while live feeds retain
@@ -222,14 +228,31 @@ class MT5Adapter:
             return f"last_error unavailable: {exc}"
 
     @staticmethod
-    def _assert_recent_epoch(value: Any, max_age_seconds: int, source: str, server_utc_offset_seconds: int = 0) -> None:
+    def _assert_recent_epoch(value: Any, max_age_seconds: int, source: str, *, now_epoch: float | None = None) -> None:
         try:
             timestamp = float(value)
         except (TypeError, ValueError) as exc:
             raise RuntimeError(f"{source} timestamp is invalid") from exc
-        age = (datetime.now(timezone.utc) - datetime.fromtimestamp(timestamp - server_utc_offset_seconds, tz=timezone.utc)).total_seconds()
+        now = datetime.now(timezone.utc).timestamp() if now_epoch is None else float(now_epoch)
+        age = now - timestamp
         if age < -5 or age > max_age_seconds:
             raise RuntimeError(f"{source} is stale or from the future (age_seconds={age:.1f})")
+
+    @classmethod
+    def _assert_closed_m15_epoch(cls, value: Any, *, now_epoch: float | None = None) -> None:
+        """Accept precisely one fresh, closed M15 epoch timestamp in UTC."""
+        try:
+            opened_at = float(value)
+        except (TypeError, ValueError) as exc:
+            raise RuntimeError("MT5 closed M15 candle timestamp is invalid") from exc
+        now = datetime.now(timezone.utc).timestamp() if now_epoch is None else float(now_epoch)
+        if opened_at % 900 != 0:
+            raise RuntimeError("MT5 closed M15 candle timestamp is not M15-aligned")
+        if opened_at > now:
+            raise RuntimeError("MT5 closed M15 candle is from the future")
+        if opened_at + 900 > now:
+            raise RuntimeError("MT5 closed M15 candle is still open")
+        cls._assert_recent_epoch(opened_at, 1_800, "MT5 closed M15 candle", now_epoch=now)
 
     @staticmethod
     def _require_success(result: Any, operation: str) -> None:

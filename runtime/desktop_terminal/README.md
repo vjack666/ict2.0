@@ -32,9 +32,9 @@ cambiar una vela cerrada; no recalcula por cada petición del navegador.
 400 velas por TF y 100 eventos en memoria. Transporte incremental por versión;
 la vela abierta se actualiza con ticks y queda excluida del motor.
 
-El reloj de este terminal mostró UTC+3 el 7 de septiembre de 2026. Se normaliza
-con `--server-utc-offset-hours 3`; revisar el valor si cambia el broker/DST.
-El timestamp demasiado futuro produce error; no se infiere otro offset.
+El reloj visual del terminal puede mostrar UTC+3, pero los campos `time` de la
+API Python de MT5 son epoch Unix UTC y no se corrigen con un offset de broker.
+El timestamp demasiado futuro, abierto o vencido produce error fail-closed.
 El terminal se selecciona con `--terminal-path`; nunca se cambia en silencio.
 
 El snapshot guarda hashes del JSON OHLCV normalizado en memoria y commit del

@@ -29,10 +29,9 @@ def main():
     parser.add_argument("--port", type=int, default=8790)
     parser.add_argument("--terminal-path", default=r"C:\Program Files\FundedNext MT5 Terminal\terminal64.exe")
     parser.add_argument("--desktop", action="store_true")
-    parser.add_argument("--server-utc-offset-hours", type=float, default=3,
-                        help="Desfase explícito del reloj MT5 observado: +3 h el 2026-09-07; ajustar si cambia broker/DST")
     parser.add_argument("--execution-enabled", action="store_true", help="Permite ejecución mecánica después de armado manual y snapshot válido")
     parser.add_argument("--demo-test", action="store_true", help="Prueba armable solo en la cuenta DEMO fijada; permite esperar snapshot")
+    parser.add_argument("--server-utc-offset-hours", type=int, default=0, help="Offset de zona horaria del servidor MT5 en horas (ej. 3 para MetaQuotes-Demo)")
     args = parser.parse_args()
     url = f"http://127.0.0.1:{args.port}"
     try:
@@ -60,7 +59,7 @@ def main():
         import MetaTrader5
         mt5 = LockedMT5(MetaTrader5)
         adapter = MT5Adapter(terminal_path=args.terminal_path, execution_enabled=args.execution_enabled, mt5=mt5,
-                             server_utc_offset_seconds=int(args.server_utc_offset_hours * 3600))
+                             server_utc_offset_seconds=args.server_utc_offset_hours * 3600)
         adapter.connect()
         if args.demo_test:
             if not args.execution_enabled:
@@ -78,7 +77,7 @@ def main():
     # ICT Terminal treats the documented London/New York window as an entry
     # gate in every mode. Arming may still start the scan loop outside it.
     service.entry_sessions_enabled = True
-    runtime = TerminalRuntime(mt5, service, server_offset_seconds=int(args.server_utc_offset_hours * 3600))
+    runtime = TerminalRuntime(mt5, service)
     try:
         server = create_server(runtime, args.port)
     except OSError:

@@ -33,10 +33,9 @@ def test_candle_cache_is_bounded():
     assert len(closed) == 400
 
 
-def test_explicit_broker_offset_preserves_closed_bar_boundary():
-    closed, opened = normalize_rates([bar(10860), bar(10920)], "M1", 160, 10800)
-    assert closed[0]["time"] == 60
-    assert opened["time"] == 120
+def test_broker_wall_clock_offset_is_rejected_for_utc_epochs():
+    with pytest.raises(ValueError, match="MT5_EPOCH_OFFSET_UNSUPPORTED"):
+        normalize_rates([bar(10860), bar(10920)], "M1", 160, 10800)
 
 
 def test_engine_does_not_queue_multiple_jobs_or_block_cache():

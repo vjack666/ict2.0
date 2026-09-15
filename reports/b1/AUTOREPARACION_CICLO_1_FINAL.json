@@ -1,0 +1,44 @@
+{
+  "informe": "B1_O1_TEMPORAL_SMOKE",
+  "fecha": "2026-09-15T13:29:08.217480+00:00",
+  "objetivo_general": "Entregar ensamblador canónico de evidencia M15 histórica que satisfaga al evaluador canónico para cada decision_time, sin inventar evidencia ni usar información del futuro.",
+  "objetivos": {
+    "objetivo_1": {
+      "nombre": "Mapeo de detectores existentes",
+      "estado": "COMPLETADO",
+      "detalle": "7 detectores mapeados. Se identificó engine.historical_event_objects como productor existente de BOS, displacement, FVG/OB vinculados. Gaps: SWEEP (disponible en canonical_sweep) y RETEST (necesita función nueva)."
+    },
+    "objetivo_2": {
+      "nombre": "Diseño del ensamblador",
+      "estado": "COMPLETADO",
+      "detalle": "Creado engine.m15_evidence_assembler.py combinando HEO + canonical_sweep + detección de retest."
+    },
+    "objetivo_3": {
+      "nombre": "Tests sintéticos",
+      "estado": "COMPLETADO",
+      "detalle": "7 tests sintéticos pasados: estructura correcta, determinismo, no modifica inputs, compatibilidad timezone-aware, funciona con decision_time fuera de rango."
+    },
+    "objetivo_4": {
+      "nombre": "Smoke test con datos reales",
+      "estado": "PASS",
+      "detalle": "Se evaluaron 100 decision_times dentro de DESIGN efectivo 2006-2015. Estructura OK: 100/100. HOLDOUT violations: 0. Leakage: 0. Divergencias: 0."
+    }
+  },
+  "resultado_general": "PASS",
+  "corpus_hash": "01fcbc1ab46b89a86b62b51d2d2b1756",
+  "decision_times_evaluados": 100,
+  "temporal_contract": {
+    "design": "[2006-01-01, 2016-01-01)",
+    "holdout": "[2021-01-01, +infinity)",
+    "holdout_touched": false,
+    "source_m15": "data/raw/EURUSD/EURUSD_M15_2006_2015.parquet",
+    "source_m15_sha256": "9f0e2f8276393077d732db8602d3603a8acea2c88f68aad551c45f6ec53125e5",
+    "h4": "derived_in_memory_from_design_m15",
+    "can_trade": false
+  },
+  "notas": [
+    "H4 se deriva en memoria desde el M15 de DESIGN; no se usa el H4 operativo que empieza en 2020 y no se modifica ningún dato fuente.",
+    "Esta evidencia es diagnóstica de investigación B1 y conserva can_trade=false.",
+    "El ensamblador no inventa evidencia: si no hay BOS, displacement, FVG/OB o retest, devuelve present=False con código de rechazo adecuado."
+  ]
+}

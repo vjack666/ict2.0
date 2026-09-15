@@ -522,6 +522,14 @@ class TestEvaluatePoiStochM15:
         assert result["poi_selected"] is None
         assert result["distance_pips"] is None
 
+    def test_preselection_resolves_price_side_without_creating_entry(self):
+        cfg = _config_dict()
+        poi = _poi_dict(zone_low=1.0000, zone_high=1.0010, direction=1, state="ACTIVE", type="FVG")
+        result = evaluate_poi_stoch_m15([poi], 0.0, _closed_m15_fn([]), None, cfg, check_proximity=False)
+        assert result["status"] == "POI_SELECTED_FOR_PRICE"
+        assert result["poi_selected"]["id"] == poi["id"]
+        assert result["next_condition"] == "REEVALUAR_PRECIO_POR_DIRECCION"
+
     def test_insufficient_candles_por_cantidad(self):
         """Menos de 20 velas → INSUFFICIENT_CANDLES."""
         cfg = _config_dict()

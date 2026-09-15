@@ -448,11 +448,24 @@ class MechanicalBotService:
                     else:
                         self.bot.state = BotState.WAIT_STOCHASTIC
                         abstention = "WAIT_MANUAL_DIRECTION_STOCHASTIC"
-                elif snapshot is None:
+                elif raw is None:
                     self.bot.state = BotState.WAIT_SIGNAL
                     # Arming starts the live loop immediately. Missing engine
                     # data blocks direction, but the scanner remains active.
                     abstention = "WAIT_DIRECTION"
+                elif raw.get("schema_version") == "POI_STOCH_M15_OBSERVATION_SNAPSHOT_V1":
+                    # The POI contract deliberately has no legacy direction,
+                    # probability or confirmed fields.  It is valid only as
+                    # observed input and can never override can_trade=false.
+                    if raw.get("can_trade") is not False or raw.get("entry_authorized") is not False:
+                        self.bot.state = BotState.WAIT_SIGNAL
+                        abstention = "POI_OBSERVATION_CONTRACT_INVALID"
+                    elif not bool(getattr(self.adapter, "execution_enabled", False)):
+                        self.bot.state = BotState.WAIT_SIGNAL
+                        abstention = "EXECUTION_DISABLED_SCAN_ONLY"
+                    elif raw.get("can_trade") is False:
+                        self.bot.state = BotState.WAIT_SIGNAL
+                        abstention = "CAN_TRADE_FALSE"
                 elif not bool(getattr(self.adapter, "execution_enabled", False)):
                     # Keep acquiring and recording closed-bar evidence, but do
                     # not let an observation-only runner create a cycle or

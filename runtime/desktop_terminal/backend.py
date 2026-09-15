@@ -126,21 +126,97 @@ class TerminalRuntime:
             self.state["events"] = [{"time": utc_now(), "event": event, "detail": str(detail)}, *self.state["events"]][:100]
 
     def _publish_bot_snapshot(self, snapshot):
-        """Publish only an explicitly operable engine snapshot for the bot.
+        """Atomically project a certified mechanical contract, or explain why not.
 
-        The engine's diagnostic/observe-only snapshots intentionally do not
-        contain direction, probability and confirmation.  Never manufacture
-        those fields: remove any stale file so the bot fails closed.
+        This is a POI+Stoch *observation* contract, not the legacy Phase 2B
+        directional-signal contract.  It transports only closed canonical
+        evidence to the separate controller.  Direction, probability and
+        confirmation are never invented here.  A rejection removes a stale
+        contract and writes a separate, non-executable status artifact with
+        the stable cause.
         """
         path = ROOT / "runtime" / "mechanical_bot" / "latest_snapshot.json"
+        status_path = path.with_name("latest_snapshot_status.json")
         path.parent.mkdir(parents=True, exist_ok=True)
-        required = ("direction", "probability", "confirmed", "asof_time", "symbol")
-        if not isinstance(snapshot, dict) or any(k not in snapshot for k in required):
+
+        def write_atomically(destination, body):
+            temporary = destination.with_suffix(destination.suffix + ".tmp")
+            temporary.write_text(json.dumps(body, ensure_ascii=False, sort_keys=True, allow_nan=False), encoding="utf-8")
+            temporary.replace(destination)
+
+        def reject(code, detail, *, failed_gates=None):
             path.unlink(missing_ok=True)
+            status = {
+                "schema_version": "MECHANICAL_BOT_SNAPSHOT_PUBLICATION_V1",
+                "status": "BLOCKED",
+                "code": code,
+                "detail": detail,
+                "failed_gates": list(failed_gates or []),
+                "published_at": utc_now(),
+                "publication_authorized": False,
+                "can_trade": False,
+                "entry_authorized": False,
+                "snapshot_path": path.name,
+            }
+            write_atomically(status_path, status)
             return False
-        temporary = path.with_suffix(path.suffix + ".tmp")
-        temporary.write_text(json.dumps(snapshot, ensure_ascii=False, sort_keys=True), encoding="utf-8")
-        temporary.replace(path)
+
+        if not isinstance(snapshot, dict):
+            return reject("CANONICAL_SNAPSHOT_UNAVAILABLE", "No se recibió un snapshot canónico; no existe contrato mecánico que publicar.")
+
+        if (snapshot.get("schema_version") != "MT5_OPERATIONAL_SNAPSHOT_V1"
+                or snapshot.get("status") != "READY"
+                or snapshot.get("policy") != "OBSERVE_ONLY_NO_ORDER"
+                or snapshot.get("can_trade") is not False
+                or snapshot.get("entry_authorized") is not False):
+            return reject("CANONICAL_SNAPSHOT_INVALID", "El snapshot canónico no cumple el contrato observado; no se publica evidencia POI.")
+        if not isinstance(snapshot.get("symbol"), str) or snapshot["symbol"] != self.symbol:
+            return reject("CANONICAL_SYMBOL_INVALID", "El símbolo canónico no coincide con el símbolo configurado del bot.")
+        if not isinstance(snapshot.get("decision_time"), str):
+            return reject("CANONICAL_DECISION_TIME_INVALID", "Falta decision_time ISO-8601 del snapshot canónico cerrado.")
+        try:
+            decision_time = datetime.fromisoformat(snapshot["decision_time"].replace("Z", "+00:00"))
+            decision_time = decision_time if decision_time.tzinfo else None
+            if decision_time is None:
+                raise ValueError("naive timestamp")
+            decision_time = decision_time.astimezone(timezone.utc)
+        except (TypeError, ValueError):
+            return reject("CANONICAL_DECISION_TIME_INVALID", "decision_time debe ser ISO-8601 con zona horaria.")
+        now = datetime.now(timezone.utc)
+        if decision_time > now:
+            return reject("CANONICAL_DECISION_TIME_FUTURE", "decision_time canónico está en el futuro; no se publica evidencia POI.")
+        if (now - decision_time).total_seconds() > 180:
+            return reject("CANONICAL_DECISION_TIME_STALE", "decision_time canónico superó 180 segundos; no se publica evidencia POI.")
+        projection = snapshot.get("object_projection")
+        if not isinstance(projection, list) or not all(isinstance(item, dict) for item in projection):
+            return reject("POI_OBJECT_PROJECTION_UNAVAILABLE", "No hay object_projection canónica utilizable; el controlador POI+Stoch no recibe objetos fabricados.")
+
+        # Preserve the canonical projection byte-for-value.  The POI evaluator
+        # still owns selection, price-side and closed-M15 stochastic checks.
+        published = {
+            "schema_version": "POI_STOCH_M15_OBSERVATION_SNAPSHOT_V1",
+            "symbol": snapshot["symbol"],
+            "asof_time": snapshot["decision_time"],
+            "object_projection": projection,
+            "source_schema_version": snapshot["schema_version"],
+            "source_snapshot_status": snapshot["status"],
+            "publication_authorized": False,
+            "can_trade": False,
+            "entry_authorized": False,
+        }
+        write_atomically(path, published)
+        write_atomically(status_path, {
+            "schema_version": "MECHANICAL_BOT_SNAPSHOT_PUBLICATION_V1",
+            "status": "PUBLISHED",
+            "code": "POI_STOCH_OBSERVATION_PUBLISHED",
+            "detail": "Evidencia POI canónica publicada; el bot conserva los gates de frescura, sesión, can_trade y estocástico M15.",
+            "failed_gates": [],
+            "published_at": utc_now(),
+            "publication_authorized": False,
+            "can_trade": False,
+            "entry_authorized": False,
+            "snapshot_path": path.name,
+        })
         return True
 
     def start(self):

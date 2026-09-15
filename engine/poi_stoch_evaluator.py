@@ -320,6 +320,8 @@ def evaluate_poi_stoch_m15(
     closed_m15_candles_fn: Callable,
     bot_cycle: object | None,
     config: object,
+    *,
+    check_proximity: bool = True,
 ) -> dict:
     """Evaluador POI + estocástico M15.
 
@@ -331,6 +333,8 @@ def evaluate_poi_stoch_m15(
         config: objeto de configuración con atributos:
             symbol, k_period, k_smoothing, d_period, oversold, overbought,
             pip_size, tolerance_pips.
+        check_proximity: si es falso, solo preselecciona una POI operable para
+            obtener el lado bid/ask; nunca devuelve una entrada válida.
 
     Returns:
         dict con campos: decision_time, status, reason, poi_selected,
@@ -374,7 +378,7 @@ def evaluate_poi_stoch_m15(
         )
 
     # Paso 3: Filtrar por proximidad
-    cercanas = _filtrar_cercanas(operables, price, tolerance_pips, pip_size)
+    cercanas = operables if not check_proximity else _filtrar_cercanas(operables, price, tolerance_pips, pip_size)
     if not cercanas:
         return _build_result(
             decision_time=decision_time,
@@ -397,6 +401,40 @@ def evaluate_poi_stoch_m15(
     else:
         distance_pips = _distance_pips(poi, price, pip_size)
         direction = poi.direction
+        poi_symbol = getattr(poi, "symbol", symbol)
+
+    if not check_proximity:
+        return _build_result(
+            decision_time=decision_time,
+            status="POI_SELECTED_FOR_PRICE",
+            reason="POI operable preseleccionada; falta reevaluar con bid/ask del lado correspondiente.",
+            poi_selected=poi,
+            distance_pips=distance_pips,
+            price=price,
+            stochastic={"cross_type": "NO_CROSS"},
+            candles_available=0,
+            next_condition="REEVALUAR_PRECIO_POR_DIRECCION",
+        )
+
+    # Paso 4b: Obtener velas M15 antes de los filtros que lo referencian
+    bot_config = _config_botconfig(config)
+    candles = closed_m15_candles_fn(symbol, count=80)
+    candles_available = len(candles)
+
+    # Validar símbolo (contrato V2 sección 4.2): el POI debe ser del
+    # mismo símbolo que el config, o no tener símbolo asignado (hereda).
+    if poi_symbol and poi_symbol != symbol:
+        return _build_result(
+            decision_time=decision_time,
+            status="NO_ELIGIBLE_POI_NEAR_PRICE",
+            reason=f"POI con símbolo {poi_symbol} no coincide con el símbolo del config {symbol}",
+            poi_selected=None,
+            distance_pips=None,
+            price=price,
+            stochastic={"cross_type": "NO_CROSS"},
+            candles_available=candles_available,
+            next_condition="AGUARDAR_POI_EN_ZONA",
+        )
 
     # Validar direction (debe ser +1 o -1, ya que filtramos operables)
     if direction not in (1, -1):

@@ -72,9 +72,85 @@ def test_failure_and_recovery_are_recomputed_on_every_http_read():
 def test_diagnostic_never_publishes_mechanical_signal(tmp_path, monkeypatch):
     import runtime.desktop_terminal.backend as backend
     monkeypatch.setattr(backend, "ROOT", tmp_path)
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return NOW
+    monkeypatch.setattr(backend, "datetime", Clock)
     runtime = TerminalRuntime()
     assert runtime._publish_bot_snapshot(snapshot()) is False
     assert not (tmp_path / "runtime/mechanical_bot/latest_snapshot.json").exists()
+    status = __import__("json").loads((tmp_path / "runtime/mechanical_bot/latest_snapshot_status.json").read_text())
+    assert status["status"] == "BLOCKED"
+    assert status["code"] == "POI_OBJECT_PROJECTION_UNAVAILABLE"
+    assert status["can_trade"] is False
+
+
+def test_missing_poi_projection_removes_stale_snapshot_and_records_cause(tmp_path, monkeypatch):
+    import json
+    import runtime.desktop_terminal.backend as backend
+    monkeypatch.setattr(backend, "ROOT", tmp_path)
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return NOW
+    monkeypatch.setattr(backend, "datetime", Clock)
+    path = tmp_path / "runtime/mechanical_bot/latest_snapshot.json"
+    path.parent.mkdir(parents=True)
+    path.write_text('{"direction":"BUY"}', encoding="utf-8")
+    assert TerminalRuntime()._publish_bot_snapshot(snapshot()) is False
+    assert not path.exists()
+    status = json.loads(path.with_name("latest_snapshot_status.json").read_text())
+    assert status["code"] == "POI_OBJECT_PROJECTION_UNAVAILABLE"
+    assert status["failed_gates"] == []
+    assert status["publication_authorized"] is False
+
+
+def test_poi_observation_publication_is_atomic_and_preserves_projection(tmp_path, monkeypatch):
+    import json
+    import runtime.desktop_terminal.backend as backend
+    monkeypatch.setattr(backend, "ROOT", tmp_path)
+    monkeypatch.setattr(backend, "utc_now", lambda: NOW.isoformat())
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return NOW
+    monkeypatch.setattr(backend, "datetime", Clock)
+    projection = [{"id": "fvg-1", "origin_tf": "H1", "direction": 1}]
+    canonical = snapshot()
+    canonical["object_projection"] = projection
+    assert TerminalRuntime()._publish_bot_snapshot(canonical) is True
+    path = tmp_path / "runtime/mechanical_bot/latest_snapshot.json"
+    published = json.loads(path.read_text())
+    assert published["schema_version"] == "POI_STOCH_M15_OBSERVATION_SNAPSHOT_V1"
+    assert published["symbol"] == "EURUSD" and published["asof_time"] == NOW.isoformat()
+    assert published["object_projection"] == projection
+    assert not {"direction", "probability", "confirmed"}.intersection(published)
+    assert published["can_trade"] is False and published["entry_authorized"] is False
+    assert not path.with_suffix(path.suffix + ".tmp").exists()
+    status = json.loads(path.with_name("latest_snapshot_status.json").read_text())
+    assert status["status"] == "PUBLISHED" and status["code"] == "POI_STOCH_OBSERVATION_PUBLISHED" and status["can_trade"] is False
+
+
+@pytest.mark.parametrize("decision_time,code", [
+    ("not-a-time", "CANONICAL_DECISION_TIME_INVALID"),
+    ("2026-09-10T12:01:00+00:00", "CANONICAL_DECISION_TIME_FUTURE"),
+    ("2026-09-10T11:56:59+00:00", "CANONICAL_DECISION_TIME_STALE"),
+])
+def test_poi_publication_rejects_invalid_future_or_stale_decision_time(tmp_path, monkeypatch, decision_time, code):
+    import json
+    import runtime.desktop_terminal.backend as backend
+    monkeypatch.setattr(backend, "ROOT", tmp_path)
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return NOW
+    monkeypatch.setattr(backend, "datetime", Clock)
+    canonical = snapshot()
+    canonical.update({"decision_time": decision_time, "object_projection": []})
+    assert TerminalRuntime()._publish_bot_snapshot(canonical) is False
+    status = json.loads((tmp_path / "runtime/mechanical_bot/latest_snapshot_status.json").read_text())
+    assert status["code"] == code
 
 
 def test_failed_engine_retries_same_bars_after_backoff(monkeypatch):

@@ -93,6 +93,37 @@ def test_missing_snapshot_arms_into_wait_signal_and_records_black_box_decision(t
     assert status["black_box"]["path"] == str(blackbox)
 
 
+def test_poi_observation_contract_with_can_trade_false_cannot_reach_adapter(tmp_path):
+    class EnabledAdapter(FakeAdapter):
+        execution_enabled = True
+        executions = 0
+
+        def execute(self, action, **kwargs):
+            self.executions += 1
+            return super().execute(action, **kwargs)
+
+    path = tmp_path / "poi-observation.json"
+    path.write_text(json.dumps({
+        "schema_version": "POI_STOCH_M15_OBSERVATION_SNAPSHOT_V1",
+        "symbol": "EURUSD",
+        "asof_time": datetime.now(timezone.utc).isoformat(),
+        "object_projection": [],
+        "can_trade": False,
+        "entry_authorized": False,
+    }), encoding="utf-8")
+    blackbox = tmp_path / "blackbox.jsonl"
+    adapter = EnabledAdapter()
+    service = MechanicalBotService(BotConfig(enabled=True), adapter=adapter, snapshot_path=path,
+                                   state_path=tmp_path / "state.json", log_path=tmp_path / "events.jsonl",
+                                   blackbox_path=blackbox)
+    service.arm()
+    status = service.tick()
+    assert status["state"] == "WAIT_SIGNAL"
+    assert adapter.executions == 0
+    decision = json.loads(blackbox.read_text(encoding="utf-8").splitlines()[-1])
+    assert decision["reason"] == "CAN_TRADE_FALSE"
+
+
 def test_canonical_signal_assessment_is_recorded_with_its_source_hash(tmp_path):
     blackbox = tmp_path / "blackbox.jsonl"
     service = MechanicalBotService(

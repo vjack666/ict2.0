@@ -1,0 +1,52 @@
+{
+  "schema_version": "AI_M15_INTRADAY_ENGINE_REVIEW_V1",
+  "created_at": "2026-09-15",
+  "status": "REVIEW_READY_FOR_SHADOW_DATASET",
+  "can_trade": false,
+  "entry_authorized": false,
+  "objective": "Prepare the next step toward at least one intraday London-NY candidate by bridging M15 causal evidence with AI shadow diagnostics.",
+  "completed": [
+    {
+      "item": "mechanical_signal_assessment_bridge",
+      "status": "PASS",
+      "detail": "assess_mechanical_signal now accepts both legacy boolean m15_evidence and rich assembler payloads with present/time/source."
+    },
+    {
+      "item": "poi_stoch_regression",
+      "status": "PASS",
+      "detail": "Focused POI+Stoch tests remain green after the bridge."
+    },
+    {
+      "item": "ai_shadow_boundary",
+      "status": "PASS",
+      "detail": "AI remains a shadow diagnostic filter; no production fusion and no trade authorization."
+    }
+  ],
+  "tests": {
+    "tests/test_mechanical_signal_assessment.py": "6 passed",
+    "tests/test_poi_stoch_evaluator.py + tests/test_poi_stoch_evaluator_integration.py": "106 passed"
+  },
+  "current_runtime_snapshot_observation": {
+    "latest_snapshot_status": "PUBLISHED",
+    "latest_snapshot_asof_time": "2026-09-11T00:00:00+00:00",
+    "review_date": "2026-09-15",
+    "interpretation": "The file exists but is stale for live-entry proof. It is not evidence of a current tradable setup."
+  },
+  "before_after": {
+    "before": "The canonical M15 assembler emitted rich evidence objects, while the mechanical assessor expected flat booleans. A real assembled M15 chain could be rejected by format instead of market logic.",
+    "after": "The assessor reads both formats and preserves fail-closed behavior. Complete rich M15 evidence can become CANDIDATE_SETUP diagnostic, while missing retest/sweep/etc. still returns explicit NO_SIGNAL/BLOCKED."
+  },
+  "next_work_loop": [
+    "Build M15_INTRADAY_SHADOW_DATASET_V1 from immutable local data.",
+    "For each decision_time, store causal M15 chain, POI+Stoch status, AI shadow scores, and outcome label.",
+    "Select thresholds on validation only.",
+    "Evaluate London-NY TEST/OOS once.",
+    "If minimums fail, redesign features/thresholds and repeat without touching TEST/OOS until a new frozen candidate is ready."
+  ],
+  "minimums_for_next_pass": {
+    "dataset_causality": "source_time <= decision_time for all features",
+    "coverage": "enough London-NY candidates to evaluate honestly",
+    "safety": "can_trade=false and entry_authorized=false",
+    "ai_value": "AI shadow filter must improve failure-risk or macro-F1 over motor-only diagnostic baseline without collapsing coverage"
+  }
+}

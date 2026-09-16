@@ -58,6 +58,37 @@ def test_candidate_requires_all_closed_evidence_but_is_not_trade_authority():
     assert "confirmed" not in result
 
 
+def test_candidate_accepts_rich_m15_evidence_from_assembler():
+    snapshot = _snapshot()
+    snapshot["m15_evidence"] = {
+        "sweep": {"present": True, "time": "2026-09-11T14:15:00+00:00", "source": "canonical_sweep"},
+        "displacement": {"present": True, "time": "2026-09-11T14:30:00+00:00", "source": "historical_event_objects"},
+        "bos_or_choch": {"present": True, "time": "2026-09-11T14:45:00+00:00", "source": "historical_event_objects"},
+        "fvg_or_ob": {"present": True, "time": "2026-09-11T14:45:00+00:00", "source": "historical_event_objects"},
+        "retest": {"present": True, "time": "2026-09-11T15:00:00+00:00", "source": "m15_candle_retest_check"},
+    }
+    result = assess_mechanical_signal(snapshot)
+    assert result["status"] == "CANDIDATE_SETUP"
+    assert result["code"] == "CHAIN_COMPLETE_DIAGNOSTIC"
+    assert result["entry_authorized"] is False
+    assert result["can_trade"] is False
+
+
+def test_rich_m15_evidence_false_present_keeps_explicit_rejection():
+    snapshot = _snapshot()
+    snapshot["m15_evidence"] = {
+        "sweep": {"present": True, "time": "2026-09-11T14:15:00+00:00", "source": "canonical_sweep"},
+        "displacement": {"present": True, "time": "2026-09-11T14:30:00+00:00", "source": "historical_event_objects"},
+        "bos_or_choch": {"present": True, "time": "2026-09-11T14:45:00+00:00", "source": "historical_event_objects"},
+        "fvg_or_ob": {"present": True, "time": "2026-09-11T14:45:00+00:00", "source": "historical_event_objects"},
+        "retest": {"present": False, "time": None, "source": "m15_candle_retest_check_failed"},
+    }
+    result = assess_mechanical_signal(snapshot)
+    assert (result["status"], result["code"]) == ("NO_SIGNAL", "WAIT_RETEST")
+    assert result["entry_authorized"] is False
+    assert result["can_trade"] is False
+
+
 def test_htf_and_data_fail_closed_before_m15_chain():
     conflict = _snapshot()
     conflict["context_state"]["layers"]["H1"]["structure_bias"] = "MIXED"

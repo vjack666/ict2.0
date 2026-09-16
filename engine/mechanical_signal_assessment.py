@@ -26,6 +26,20 @@ def _direction(value: Any) -> int:
         return 0
 
 
+def _present(value: Any) -> bool | None:
+    """Read a causal evidence flag from either legacy bool or rich payload."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, Mapping):
+        present = value.get("present")
+        return present if isinstance(present, bool) else None
+    return None
+
+
+def _source(value: Any) -> Any:
+    return value.get("source") if isinstance(value, Mapping) else None
+
+
 def _result(status: str, code: str, detail: str, snapshot: Mapping[str, Any], *, direction: int = 0,
             evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
     return {
@@ -78,22 +92,28 @@ def assess_mechanical_signal(snapshot: Mapping[str, Any] | None) -> dict[str, An
                        evidence={"h4_bias": h4.get("structure_bias"), "h1_bias": h1.get("structure_bias"), "side_allowed": side_allowed})
 
     evidence = _mapping(snap.get("m15_evidence"))
-    sweep = evidence.get("sweep")
+    sweep = _present(evidence.get("sweep"))
     if sweep is not True:
         code = "NO_SWEEP" if sweep is False else "SWEEP_EVIDENCE_UNAVAILABLE"
         return _result("NO_SIGNAL" if sweep is False else "BLOCKED", code, "No existe evidencia causal explícita de sweep M15 en velas cerradas.", snap, direction=direction,
-                       evidence={"sweep": sweep, "source": evidence.get("source")})
-    displacement = evidence.get("displacement", m15.get("displacement_recent"))
+                       evidence={"sweep": sweep, "source": evidence.get("source") or _source(evidence.get("sweep"))})
+    displacement = _present(evidence.get("displacement"))
+    if displacement is None:
+        displacement = m15.get("displacement_recent")
     if displacement is not True:
         return _result("NO_SIGNAL", "NO_DISPLACEMENT", "Tras el sweep no hay displacement M15 confirmado por vela cerrada.", snap, direction=direction)
-    bos_or_choch = evidence.get("bos_or_choch")
+    bos_or_choch = _present(evidence.get("bos_or_choch"))
     if bos_or_choch is not True:
         return _result("NO_SIGNAL", "NO_BOS", "Tras el displacement no hay BOS/CHOCH M15 compatible confirmado.", snap, direction=direction)
     ltf = _mapping(daily.get("ltf"))
-    zone_present = evidence.get("fvg_or_ob", ltf.get("zone_present"))
+    zone_present = _present(evidence.get("fvg_or_ob"))
+    if zone_present is None:
+        zone_present = ltf.get("zone_present")
     if zone_present is not True:
         return _result("NO_SIGNAL", "NO_FVG_OR_OB", "No hay FVG u Order Block M15 canónico compatible.", snap, direction=direction)
-    retest = evidence.get("retest", ltf.get("retest_observed"))
+    retest = _present(evidence.get("retest"))
+    if retest is None:
+        retest = ltf.get("retest_observed")
     if retest is not True:
         return _result("NO_SIGNAL", "WAIT_RETEST", "La zona M15 existe, pero aún no registra retest cerrado.", snap, direction=direction)
     return _result("CANDIDATE_SETUP", "CHAIN_COMPLETE_DIAGNOSTIC", "Cadena H4/H1→M15 completa como diagnóstico; no crea señal operable.", snap, direction=direction,

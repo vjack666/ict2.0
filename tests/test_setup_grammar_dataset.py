@@ -46,7 +46,7 @@ def test_materialize_complete_local_grammar_without_trade_authority():
     assert labels["retest_entry"] == "RETESTED"
     assert labels["poi_quality"] == "T2_CANDIDATE_UNVERIFIED"
     assert labels["setup_decision"] == "ABSTAIN"
-    assert labels["exec_tf_integrity"] == "UNKNOWN_NO_EXEC_TF_REPLAY"
+    assert labels["exec_tf_integrity"] == "MISSING_EXEC_TF_REPLAY"
     assert out["can_trade"] is False
     assert out["entry_authorized"] is False
 
@@ -64,5 +64,5 @@ def test_materialize_marks_missing_pd_array_and_retest_as_explicit_gap():
     labels = out["grammar_labels"]
     assert labels["po3_phase"] == "D_CONFIRMED"
     assert labels["pd_array_zone"] == "NO_ZONE"
-    assert labels["retest_entry"] == "IMPLEMENTATION_REQUIRED_NO_ZONE_FEATURE"
+    assert labels["retest_entry"] == "MISSING_ZONE_FEATURE"
     assert "PD_ARRAY_ZONE_NOT_MATERIALIZED" in out["diagnostics"]

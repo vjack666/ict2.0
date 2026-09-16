@@ -124,16 +124,16 @@ def htf_narrative(row: dict[str, Any]) -> str:
     context_inputs = features.get("context_inputs") or {}
     direction = int(row.get("direction", 0))
     expected = expected_bias(direction)
-    hint = str(constraints.get("direction_hint", "UNKNOWN")).upper()
-    h1_alignment = str(context_inputs.get("h1_alignment", "UNKNOWN")).upper()
-    context_bucket = str(row.get("context_bucket", "UNKNOWN")).upper()
+    hint = str(constraints.get("direction_hint", "MISSING")).upper()
+    h1_alignment = str(context_inputs.get("h1_alignment", "MISSING")).upper()
+    context_bucket = str(row.get("context_bucket", "MISSING")).upper()
     allowed = side_allowed(row)
 
     if hint == expected and h1_alignment == "ALIGNED" and context_bucket == "ALIGNED" and allowed is True:
         return "HTF_OK"
-    if allowed is False or hint not in {expected, "UNKNOWN"} or h1_alignment == "AGAINST" or context_bucket == "AGAINST":
+    if allowed is False or hint not in {expected, "MISSING"} or h1_alignment == "AGAINST" or context_bucket == "AGAINST":
         return "HTF_CONFLICT"
-    return "HTF_UNKNOWN"
+    return "HTF_INCOMPLETE_EVIDENCE"
 
 
 def po3_phase(stages: set[str]) -> str:
@@ -169,28 +169,28 @@ def retest_entry(stages: set[str]) -> str:
         return "RETESTED"
     if "FVG" in stages or "OB" in stages:
         return "WAIT_RETEST"
-    return "IMPLEMENTATION_REQUIRED_NO_ZONE_FEATURE"
+    return "MISSING_ZONE_FEATURE"
 
 
 def poi_quality(row: dict[str, Any], zone_label: str) -> str:
-    h4_location = str(((row.get("features_at_t") or {}).get("context_inputs") or {}).get("h4_location", "UNKNOWN")).upper()
+    h4_location = str(((row.get("features_at_t") or {}).get("context_inputs") or {}).get("h4_location", "MISSING")).upper()
     direction = int(row.get("direction", 0))
     correct_zone = (direction > 0 and h4_location == "DISCOUNT") or (direction < 0 and h4_location == "PREMIUM")
     if zone_label == "NO_ZONE":
-        return "UNKNOWN_NO_PD_ARRAY"
+        return "MISSING_PD_ARRAY_ZONE"
     if correct_zone and htf_narrative(row) == "HTF_OK":
         return "T2_CANDIDATE_UNVERIFIED"
     if h4_location in {"PREMIUM", "DISCOUNT", "EQUILIBRIUM"}:
         return "SKIP_OR_LOW_QUALITY"
-    return "UNKNOWN"
+    return "MISSING_LOCATION_EVIDENCE"
 
 
 def exec_tf_integrity(row: dict[str, Any]) -> str:
-    timeframe = str(row.get("timeframe", "UNKNOWN")).upper()
+    timeframe = str(row.get("timeframe", "MISSING")).upper()
     # Current corpus is H1 sequence context, not an exec-TF entry replay.
     if timeframe in {"M15", "M5", "M3", "M1"}:
         return "EXEC_CONTEXT_PRESENT_UNVERIFIED"
-    return "UNKNOWN_NO_EXEC_TF_REPLAY"
+    return "MISSING_EXEC_TF_REPLAY"
 
 
 def weak_link(labels: dict[str, str]) -> str:
@@ -201,9 +201,9 @@ def weak_link(labels: dict[str, str]) -> str:
         ("WAIT_STRUCTURE", "structure_confirmation"),
         ("NO_ZONE", "pd_array_zone"),
         ("WAIT_RETEST", "retest_entry"),
-        ("IMPLEMENTATION_REQUIRED_NO_ZONE_FEATURE", "retest_entry"),
+        ("MISSING_ZONE_FEATURE", "retest_entry"),
         ("SKIP_OR_LOW_QUALITY", "poi_quality"),
-        ("UNKNOWN_NO_EXEC_TF_REPLAY", "exec_tf_integrity"),
+        ("MISSING_EXEC_TF_REPLAY", "exec_tf_integrity"),
     ]
     for bad_value, key in order:
         if labels.get(key) == bad_value:
@@ -216,13 +216,13 @@ def setup_decision(labels: dict[str, str]) -> str:
         return "REJECT"
     if labels["liquidity_sweep"] != "SWEEP_VALID" or labels["structure_confirmation"] != "CONFIRMED":
         return "WAIT"
-    if labels["pd_array_zone"] == "NO_ZONE" or labels["retest_entry"].startswith("IMPLEMENTATION_REQUIRED"):
+    if labels["pd_array_zone"] == "NO_ZONE" or labels["retest_entry"].startswith("MISSING"):
         return "ABSTAIN"
     if labels["retest_entry"] == "WAIT_RETEST":
         return "WAIT"
     if labels["poi_quality"] == "SKIP_OR_LOW_QUALITY":
         return "ABSTAIN"
-    if labels["exec_tf_integrity"].startswith("UNKNOWN"):
+    if labels["exec_tf_integrity"].startswith("MISSING"):
         return "ABSTAIN"
     return "PASS"
 
@@ -243,7 +243,7 @@ def materialize_row(row: dict[str, Any]) -> dict[str, Any]:
     labels["weak_link"] = weak_link(labels)
     labels["setup_decision"] = setup_decision(labels)
     label_end_6 = row.get("label_end_6")
-    split = SPLIT_MAP.get(str(row.get("split", "")), "UNKNOWN")
+    split = SPLIT_MAP.get(str(row.get("split", "")), "MISSING_SPLIT")
     output = {
         "schema_version": "SETUP_GRAMMAR_DATASET_V1",
         "event_id": row.get("event_id"),
@@ -266,13 +266,13 @@ def materialize_row(row: dict[str, Any]) -> dict[str, Any]:
         },
         "diagnostics": [],
     }
-    if split == "UNKNOWN":
-        output["diagnostics"].append("UNKNOWN_SPLIT")
+    if split == "MISSING_SPLIT":
+        output["diagnostics"].append("MISSING_SPLIT")
     if has_forbidden_feature(output["features_at_t"]):
         output["diagnostics"].append("FORBIDDEN_FUTURE_FIELD_IN_FEATURES")
     if labels["pd_array_zone"] == "NO_ZONE":
         output["diagnostics"].append("PD_ARRAY_ZONE_NOT_MATERIALIZED")
-    if labels["exec_tf_integrity"] == "UNKNOWN_NO_EXEC_TF_REPLAY":
+    if labels["exec_tf_integrity"] == "MISSING_EXEC_TF_REPLAY":
         output["diagnostics"].append("EXEC_TF_REPLAY_NOT_MATERIALIZED")
     output["row_hash"] = canonical_hash(output)
     return output
@@ -314,6 +314,21 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def strict_status(summary: dict[str, Any]) -> str:
+    diagnostics = summary.get("diagnostics", {})
+    blocking = [
+        "EXEC_TF_REPLAY_NOT_MATERIALIZED",
+        "PD_ARRAY_ZONE_NOT_MATERIALIZED",
+        "MISSING_SPLIT",
+        "FORBIDDEN_FUTURE_FIELD_IN_FEATURES",
+    ]
+    return (
+        "BLOCKED_MISSING_REQUIRED_SETUP_EVIDENCE"
+        if any(diagnostics.get(item, 0) for item in blocking)
+        else "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW"
+    )
+
+
 def write_schema() -> None:
     schema = {
         "schema_version": "SETUP_GRAMMAR_DATASET_V1",
@@ -345,10 +360,13 @@ def write_schema() -> None:
 
 
 def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> None:
+    status = strict_status(summary)
     payload = {
         "schema_version": "SETUP_GRAMMAR_DATASET_REPORT_V1",
         "created_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "status": "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW",
+        "status": status,
+        "training_eligible": status == "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW",
+        "unknown_labels_accepted": False,
         "can_trade": False,
         "entry_authorized": False,
         "git_commit": git_commit(),
@@ -372,7 +390,7 @@ def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> N
         "# Setup Grammar Dataset v1",
         "",
         "**Fecha:** 2026-09-15",
-        "**Estado:** `READY_FOR_SETUP_QUALITY_TRAINING_REVIEW`",
+        f"**Estado:** `{status}`",
         "**Trading:** `can_trade=false`",
         "",
         "## Que se materializo",
@@ -396,7 +414,7 @@ def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> N
         "",
         "## Lectura honesta",
         "",
-        "La materializacion queda lista para revisar entrenamiento de `setup_quality_v1`, pero muestra los huecos esperados: el corpus actual no trae replay de exec TF ni PD Array/retest completos para todas las filas. Eso queda etiquetado, no inventado.",
+        "La materializacion queda bloqueada para entrenamiento estricto porque el usuario no acepta `UNKNOWN` ni huecos como clases entrenables. El corpus actual no trae replay de exec TF y no trae PD Array/retest completos para todas las filas. Eso queda como evidencia faltante, no como etiqueta aceptada.",
         "",
         "## Artefactos",
         "",
@@ -407,7 +425,7 @@ def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> N
         "",
         "## Siguiente paso",
         "",
-        "Entrenar una primera red `setup_quality_v1` solo si se acepta que las etiquetas faltantes sean clases explicitas (`UNKNOWN` / `IMPLEMENTATION_REQUIRED`) y no verdades inventadas.",
+        "Materializar primero replay de exec TF y zona PD Array/retest completa. No entrenar `setup_quality_v1` mientras existan faltantes bloqueantes.",
         "",
     ])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
@@ -428,8 +446,11 @@ def main() -> int:
     artifact_hashes[str((OUT_DIR / "feature_schema.json").relative_to(ROOT))] = sha256_path(OUT_DIR / "feature_schema.json")
     summary = summarize(rows)
     write_reports(summary, artifact_hashes)
+    status = strict_status(summary)
     print(json.dumps({
-        "status": "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW",
+        "status": status,
+        "training_eligible": status == "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW",
+        "unknown_labels_accepted": False,
         "summary": summary,
         "artifacts": artifact_hashes,
     }, indent=2, sort_keys=True))

@@ -42,7 +42,7 @@ Se reemplazó `pd_array_zone()` y `retest_entry()` para que usen el detector sem
 ### Estado
 
 - **Status:** READY_FOR_SETUP_QUALITY_TRAINING_REVIEW
-- **Git commit:** `401cf6bd444e664065b92b8cef07149ac57c0d81`
+- **Git commit:** `73ba0e74222b209815d3d619870387b5d9b8684d`
 
 ### Notas
 

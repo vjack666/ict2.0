@@ -102,16 +102,16 @@ El dataset corregido eliminó 219 falsos positivos (filas etiquetadas USABLE_UNG
 
 ## 8. Veredicto
 
-**setup_quality_v1 reentrenado con dataset corregido: REVIEW — MEJORA vs BASELINES**
+**setup_quality_v1 reentrenado con dataset corregido: REVIEW — ANÁLISIS DE MÉTRICAS**
 
-**Evidencia:**
-- TEST_OOS: setup_decision +4.95%, weak_link +1.70%, failure_risk +1.93% vs baselines
-- VALIDATION: setup_decision +6.20%, weak_link +2.85%, failure_risk +2.10% vs baselines
-- TRAIN: sobreajuste confirmado pero TEST_OOS también mejora → mejora genuina
+**Evidencia por métrica (TEST_OOS):**
+- `setup_decision`: **mejora clara** (+4.95% vs baseline 84.21%).
+- `weak_link`: **mejora marginal / similar** (+1.70% vs baseline 86.84%).
+- `failure_risk`: **mejora marginal / similar** (+1.93% vs baseline 49.92%).
 
-**Decisión:** El modelo muestra mejora consistente en todas las métricas. Shadow mode permanece activo. `can_trade=false`. No reemplazar el modelo anterior hasta que se 유효성 más datos y se confirme que la mejora no es artefacto de la distribución del dataset.
+**Decisión:** El modelo muestra señal de mejora en `setup_decision`, con mejoras marginales en las otras dos métricas. Estado: **REVIEW**. No es certificación. `can_trade=false`. Shadow mode permanece activo. No reemplazar el modelo anterior hasta que se valide más datos y se confirme que la mejora no es artefacto de la distribución del dataset corregido (que eliminó 219 falsos positivos).
 
-**Riesgo:** El dataset corregido es semánticamente correcto pero tiene pocos positivos. La mejora puede ser parcialmente consecuencia de que el dataset es más limpio, no necesariamente porque el modelo aprenda mejor la señal real. Se recomienda más datos para confirmar.
+**Riesgo:** El dataset corregido es semánticamente correcto pero tiene pocos positivos (6 USABLE_UNGRADED). La mejora puede ser parcialmente consecuencia de que el dataset es más limpio, no necesariamente porque el modelo aprenda mejor la señal real. Se recomienda más datos para confirmar.
 
 ---
 

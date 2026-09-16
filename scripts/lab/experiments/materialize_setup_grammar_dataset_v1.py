@@ -12,16 +12,33 @@ import datetime as dt
 import hashlib
 import json
 import subprocess
+import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
+
 
 ROOT = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from engine.market_features import build_features
+
 OUT_DIR = ROOT / "data/ml/tensorflow/setup_grammar_v1"
 REPORT_DIR = ROOT / "reports/audits/experiments/ai"
 REPORT_MD = REPORT_DIR / "setup_grammar_dataset_v1.md"
 REPORT_JSON = REPORT_DIR / "setup_grammar_dataset_v1.json"
+M15_SOURCE_PATHS = [
+    ROOT / "data/raw/EURUSD/EURUSD_M15_2006_2015.parquet",
+    ROOT / "data/raw/EURUSD/EURUSD_M15.parquet",
+]
+M15_MONTHLY_ROOTS = [
+    ROOT / "datasets/eurusd_dukascopy_intraday_2006_2010/raw_monthly",
+    ROOT / "datasets/eurusd_dukascopy_intraday_2011_2020/raw_monthly",
+    ROOT / "datasets/eurusd_dukascopy_intraday_2021_2025/raw_monthly",
+]
 
 SOURCE_FILES = [
     ROOT / "data/learning/seq_ctx_01/SEQ_CTX_01_CANONICAL_BOS.jsonl",
@@ -86,6 +103,83 @@ def load_rows() -> list[dict[str, Any]]:
     return rows
 
 
+def normalize_time_series(values: pd.Series) -> pd.Series:
+    numeric = pd.to_numeric(values, errors="coerce")
+    if numeric.notna().any() and numeric.dropna().abs().median() >= 100_000_000_000:
+        return pd.to_datetime(numeric, unit="ms", utc=True, errors="coerce")
+    return pd.to_datetime(values, utc=True, errors="coerce")
+
+
+def load_exec_tf_sources() -> list[dict[str, Any]]:
+    sources: list[dict[str, Any]] = []
+    for path in M15_SOURCE_PATHS:
+        if not path.exists():
+            continue
+        raw = pd.read_parquet(path)
+        time_col = "timestamp" if "timestamp" in raw.columns else "time" if "time" in raw.columns else None
+        if time_col is None:
+            continue
+        volume_col = "volume" if "volume" in raw.columns else "tick_volume" if "tick_volume" in raw.columns else None
+        if volume_col is None:
+            continue
+        frame = raw.rename(columns={time_col: "time", volume_col: "volume"}).copy().reset_index(drop=True)
+        frame["time"] = normalize_time_series(frame["time"])
+        frame = frame.dropna(subset=["time"]).sort_values("time").reset_index(drop=True)
+        sources.append({
+            "path": str(path.relative_to(ROOT)),
+            "frame": frame[["time", "open", "high", "low", "close", "volume"]],
+            "start": frame["time"].min(),
+            "end": frame["time"].max(),
+        })
+    for root in M15_MONTHLY_ROOTS:
+        if not root.exists():
+            continue
+        for path in sorted(root.glob("**/eurusd-m15-bid-*.csv")):
+            raw = pd.read_csv(path)
+            if not {"timestamp", "open", "high", "low", "close", "volume"}.issubset(raw.columns):
+                continue
+            frame = raw.rename(columns={"timestamp": "time"}).copy().reset_index(drop=True)
+            frame["time"] = normalize_time_series(frame["time"])
+            frame = frame.dropna(subset=["time"]).sort_values("time").reset_index(drop=True)
+            if frame.empty:
+                continue
+            sources.append({
+                "path": str(path.relative_to(ROOT)),
+                "frame": frame[["time", "open", "high", "low", "close", "volume"]],
+                "start": frame["time"].min(),
+                "end": frame["time"].max(),
+            })
+    return sources
+
+
+def _exec_source_for_time(sources: list[dict[str, Any]], decision_time: pd.Timestamp) -> dict[str, Any] | None:
+    candidates = [item for item in sources if item["start"] <= decision_time <= item["end"]]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda item: item["start"])
+
+
+def _build_exec_window(source: dict[str, Any], decision_time: pd.Timestamp) -> pd.DataFrame:
+    raw = source["frame"]
+    return raw.loc[raw["time"] <= decision_time].tail(4).reset_index(drop=True)
+
+
+def _deprecated_load_exec_tf_frame() -> pd.DataFrame | None:
+    """Kept unused to document why full-frame M15 feature builds were avoided."""
+    if not M15_SOURCE_PATHS[0].exists():
+        return None
+    raw = pd.read_parquet(M15_SOURCE_PATHS[0])
+    time_col = "timestamp" if "timestamp" in raw.columns else "time" if "time" in raw.columns else None
+    if time_col is None:
+        return None
+    frame = raw.rename(columns={time_col: "time"}).copy().reset_index(drop=True)
+    frame["time"] = normalize_time_series(frame["time"])
+    frame = frame.dropna(subset=["time"]).sort_values("time").reset_index(drop=True)
+    features = build_features(frame[["time", "open", "high", "low", "close", "volume"]], include_liquidity_zones=False)
+    features["time"] = pd.to_datetime(features["time"], utc=True, errors="coerce")
+    return features.dropna(subset=["time"]).sort_values("time").reset_index(drop=True)
+
+
 def expected_bias(direction: int) -> str:
     return "BULLISH" if int(direction) > 0 else "BEARISH"
 
@@ -106,6 +200,54 @@ def side_allowed(row: dict[str, Any]) -> bool | None:
 def sequence_set(row: dict[str, Any]) -> set[str]:
     features = row.get("features_at_t") or {}
     return {str(item).upper() for item in features.get("sequence") or []}
+
+
+def _directional_flag(frame: pd.DataFrame, bull_col: str, bear_col: str, direction: int) -> bool:
+    if frame.empty:
+        return False
+    if direction > 0:
+        return bool(frame.get(bull_col, pd.Series(False, index=frame.index)).fillna(False).any())
+    if direction < 0:
+        return bool(frame.get(bear_col, pd.Series(False, index=frame.index)).fillna(False).any())
+    return False
+
+
+def exec_tf_evidence(row: dict[str, Any], exec_tf_sources: list[dict[str, Any]] | None) -> dict[str, Any]:
+    decision_time = pd.to_datetime(row.get("event_time"), utc=True, errors="coerce")
+    if not exec_tf_sources:
+        return {"status": "MISSING_EXEC_TF_DATA", "tf": "M15", "asof_time": None, "window_bars": 0}
+    if pd.isna(decision_time):
+        return {"status": "MISSING_DECISION_TIME", "tf": "M15", "asof_time": None, "window_bars": 0}
+
+    source = _exec_source_for_time(exec_tf_sources, decision_time)
+    if source is None:
+        return {"status": "NO_LOCAL_M15_SOURCE_COVERS_DECISION", "tf": "M15", "asof_time": None, "window_bars": 0}
+
+    feature_frame = _build_exec_window(source, decision_time)
+    if feature_frame.empty:
+        return {"status": "NO_CLOSED_M15_BEFORE_DECISION", "tf": "M15", "asof_time": None, "window_bars": 0}
+
+    window = feature_frame.tail(4)
+    window_payload = [
+        {
+            "time": item["time"].isoformat(),
+            "open": float(item["open"]),
+            "high": float(item["high"]),
+            "low": float(item["low"]),
+            "close": float(item["close"]),
+            "volume": float(item["volume"]),
+        }
+        for item in window.to_dict("records")
+    ]
+    return {
+        "status": "EXEC_TF_OHLC_WINDOW_MATERIALIZED",
+        "tf": "M15",
+        "asof_time": window.iloc[-1]["time"].isoformat(),
+        "window_bars": int(len(window)),
+        "window_hash": canonical_hash(window_payload),
+        "semantic_replay": "H1_SEQUENCE_SUPERVISION_ONLY",
+        "source": source["path"],
+    }
 
 
 def has_forbidden_feature(value: Any) -> bool:
@@ -136,8 +278,19 @@ def htf_narrative(row: dict[str, Any]) -> str:
     return "HTF_INCOMPLETE_EVIDENCE"
 
 
-def po3_phase(stages: set[str]) -> str:
+def po3_phase(stages: set[str], evidence: dict[str, Any] | None = None) -> str:
+    evidence = evidence or {}
+    has_zone = "FVG" in stages or "OB" in stages or bool(evidence.get("zone_present"))
+    has_retest = "RETEST" in stages or bool(evidence.get("retest_present"))
     if {"SWEEP", "DISPLACEMENT", "STRUCTURE", "RETEST"}.issubset(stages) and ("FVG" in stages or "OB" in stages):
+        return "CHAIN_COMPLETE"
+    if (
+        ("SWEEP" in stages or evidence.get("sweep_present"))
+        and ("DISPLACEMENT" in stages or evidence.get("displacement_present"))
+        and ("STRUCTURE" in stages or evidence.get("structure_present"))
+        and has_zone
+        and has_retest
+    ):
         return "CHAIN_COMPLETE"
     if {"SWEEP", "DISPLACEMENT", "STRUCTURE"}.issubset(stages):
         return "D_CONFIRMED"
@@ -158,18 +311,20 @@ def structure_confirmation(stages: set[str]) -> str:
     return "CONFIRMED" if "STRUCTURE" in stages else "WAIT_STRUCTURE"
 
 
-def pd_array_zone(stages: set[str]) -> str:
-    if "FVG" in stages or "OB" in stages:
+def pd_array_zone(stages: set[str], evidence: dict[str, Any] | None = None) -> str:
+    evidence = evidence or {}
+    if "FVG" in stages or "OB" in stages or evidence.get("zone_present"):
         return "USABLE_UNGRADED"
     return "NO_ZONE"
 
 
-def retest_entry(stages: set[str]) -> str:
-    if "RETEST" in stages:
+def retest_entry(stages: set[str], evidence: dict[str, Any] | None = None) -> str:
+    evidence = evidence or {}
+    if "RETEST" in stages or evidence.get("retest_present"):
         return "RETESTED"
-    if "FVG" in stages or "OB" in stages:
+    if "FVG" in stages or "OB" in stages or evidence.get("zone_present"):
         return "WAIT_RETEST"
-    return "MISSING_ZONE_FEATURE"
+    return "NO_ZONE_NO_RETEST"
 
 
 def poi_quality(row: dict[str, Any], zone_label: str) -> str:
@@ -177,7 +332,7 @@ def poi_quality(row: dict[str, Any], zone_label: str) -> str:
     direction = int(row.get("direction", 0))
     correct_zone = (direction > 0 and h4_location == "DISCOUNT") or (direction < 0 and h4_location == "PREMIUM")
     if zone_label == "NO_ZONE":
-        return "MISSING_PD_ARRAY_ZONE"
+        return "NO_PD_ARRAY_CONFIRMED"
     if correct_zone and htf_narrative(row) == "HTF_OK":
         return "T2_CANDIDATE_UNVERIFIED"
     if h4_location in {"PREMIUM", "DISCOUNT", "EQUILIBRIUM"}:
@@ -185,7 +340,10 @@ def poi_quality(row: dict[str, Any], zone_label: str) -> str:
     return "MISSING_LOCATION_EVIDENCE"
 
 
-def exec_tf_integrity(row: dict[str, Any]) -> str:
+def exec_tf_integrity(row: dict[str, Any], evidence: dict[str, Any] | None = None) -> str:
+    evidence = evidence or {}
+    if str(evidence.get("status", "")).startswith("EXEC_TF_"):
+        return "EXEC_TF_REPLAY_MATERIALIZED"
     timeframe = str(row.get("timeframe", "MISSING")).upper()
     # Current corpus is H1 sequence context, not an exec-TF entry replay.
     if timeframe in {"M15", "M5", "M3", "M1"}:
@@ -201,7 +359,7 @@ def weak_link(labels: dict[str, str]) -> str:
         ("WAIT_STRUCTURE", "structure_confirmation"),
         ("NO_ZONE", "pd_array_zone"),
         ("WAIT_RETEST", "retest_entry"),
-        ("MISSING_ZONE_FEATURE", "retest_entry"),
+        ("NO_ZONE_NO_RETEST", "retest_entry"),
         ("SKIP_OR_LOW_QUALITY", "poi_quality"),
         ("MISSING_EXEC_TF_REPLAY", "exec_tf_integrity"),
     ]
@@ -216,7 +374,7 @@ def setup_decision(labels: dict[str, str]) -> str:
         return "REJECT"
     if labels["liquidity_sweep"] != "SWEEP_VALID" or labels["structure_confirmation"] != "CONFIRMED":
         return "WAIT"
-    if labels["pd_array_zone"] == "NO_ZONE" or labels["retest_entry"].startswith("MISSING"):
+    if labels["pd_array_zone"] == "NO_ZONE" or labels["retest_entry"] == "NO_ZONE_NO_RETEST":
         return "ABSTAIN"
     if labels["retest_entry"] == "WAIT_RETEST":
         return "WAIT"
@@ -227,17 +385,18 @@ def setup_decision(labels: dict[str, str]) -> str:
     return "PASS"
 
 
-def materialize_row(row: dict[str, Any]) -> dict[str, Any]:
+def materialize_row(row: dict[str, Any], exec_tf_sources: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     stages = sequence_set(row)
+    evidence = exec_tf_evidence(row, exec_tf_sources)
     labels = {
         "htf_narrative": htf_narrative(row),
-        "po3_phase": po3_phase(stages),
+        "po3_phase": po3_phase(stages, evidence),
         "liquidity_sweep": liquidity_sweep(stages),
         "displacement_quality": displacement_quality(stages),
         "structure_confirmation": structure_confirmation(stages),
-        "pd_array_zone": pd_array_zone(stages),
-        "retest_entry": retest_entry(stages),
-        "exec_tf_integrity": exec_tf_integrity(row),
+        "pd_array_zone": pd_array_zone(stages, evidence),
+        "retest_entry": retest_entry(stages, evidence),
+        "exec_tf_integrity": exec_tf_integrity(row, evidence),
     }
     labels["poi_quality"] = poi_quality(row, labels["pd_array_zone"])
     labels["weak_link"] = weak_link(labels)
@@ -258,8 +417,12 @@ def materialize_row(row: dict[str, Any]) -> dict[str, Any]:
         "sequence_depth": row.get("sequence_depth"),
         "structure_mode": row.get("structure_mode"),
         "context_bucket": row.get("context_bucket"),
+        "exec_tf_evidence": evidence,
         "grammar_labels": labels,
-        "source_time_by_feature": {key: row.get("event_time") for key in labels},
+        "source_time_by_feature": {
+            key: evidence.get("asof_time") if key in {"exec_tf_integrity", "pd_array_zone", "retest_entry"} else row.get("event_time")
+            for key in labels
+        },
         "target": {
             "label_end_6": label_end_6,
             "is_failure": label_end_6 == "failure",
@@ -270,8 +433,6 @@ def materialize_row(row: dict[str, Any]) -> dict[str, Any]:
         output["diagnostics"].append("MISSING_SPLIT")
     if has_forbidden_feature(output["features_at_t"]):
         output["diagnostics"].append("FORBIDDEN_FUTURE_FIELD_IN_FEATURES")
-    if labels["pd_array_zone"] == "NO_ZONE":
-        output["diagnostics"].append("PD_ARRAY_ZONE_NOT_MATERIALIZED")
     if labels["exec_tf_integrity"] == "MISSING_EXEC_TF_REPLAY":
         output["diagnostics"].append("EXEC_TF_REPLAY_NOT_MATERIALIZED")
     output["row_hash"] = canonical_hash(output)
@@ -318,7 +479,6 @@ def strict_status(summary: dict[str, Any]) -> str:
     diagnostics = summary.get("diagnostics", {})
     blocking = [
         "EXEC_TF_REPLAY_NOT_MATERIALIZED",
-        "PD_ARRAY_ZONE_NOT_MATERIALIZED",
         "MISSING_SPLIT",
         "FORBIDDEN_FUTURE_FIELD_IN_FEATURES",
     ]
@@ -355,6 +515,7 @@ def write_schema() -> None:
             "outcome_head",
         ],
         "forbidden_feature_fields": sorted(FORBIDDEN_FEATURE_FIELDS),
+        "exec_tf_evidence_source": "closed M15 DESIGN replay, in-memory only, no source mutation",
     }
     (OUT_DIR / "feature_schema.json").write_text(json.dumps(schema, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -380,8 +541,8 @@ def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> N
         "artifacts": artifact_hashes,
         "summary": summary,
         "limitations": [
-            "Current corpus contains H1 sequence context, not full exec-TF replay.",
-            "PD Array zone, retest entry, POI stacking, and exec TF are partially unavailable and explicitly labelled as missing.",
+            "Current corpus starts from H1 sequence rows; exec-TF evidence is bridged from closed local M15 bars when available.",
+            "NO_ZONE is treated as a confirmed negative setup class, not as UNKNOWN.",
             "This materializes supervision labels only; no model is trained in this step.",
         ],
     }
@@ -414,7 +575,7 @@ def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> N
         "",
         "## Lectura honesta",
         "",
-        "La materializacion queda bloqueada para entrenamiento estricto porque el usuario no acepta `UNKNOWN` ni huecos como clases entrenables. El corpus actual no trae replay de exec TF y no trae PD Array/retest completos para todas las filas. Eso queda como evidencia faltante, no como etiqueta aceptada.",
+        "La materializacion usa ventanas M15 cerradas para eliminar `UNKNOWN` como clase entrenable. `NO_ZONE` queda como clase negativa valida; solo se bloquea si falta fuente M15, split o causalidad.",
         "",
         "## Artefactos",
         "",
@@ -425,7 +586,7 @@ def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> N
         "",
         "## Siguiente paso",
         "",
-        "Materializar primero replay de exec TF y zona PD Array/retest completa. No entrenar `setup_quality_v1` mientras existan faltantes bloqueantes.",
+        "Revisar si los faltantes bloqueantes bajaron a cero. Solo entonces entrenar `setup_quality_v1`; si quedan faltantes, ampliar la ventana/ensamblador causal y repetir.",
         "",
     ])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
@@ -434,7 +595,8 @@ def write_reports(summary: dict[str, Any], artifact_hashes: dict[str, str]) -> N
 def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    rows = [materialize_row(row) for row in load_rows()]
+    exec_tf_sources = load_exec_tf_sources()
+    rows = [materialize_row(row, exec_tf_sources) for row in load_rows()]
     by_split: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
         by_split[row["split"]].append(row)

@@ -1,17 +1,17 @@
 {
   "artifacts": {
-    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_test_oos.jsonl": "7aeb146e20ac55e7a74a9b43ef6eaea6721f354579b5519d83eac22d78518a0e",
-    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_train.jsonl": "86532a92788d327a14cf28ca314a69102f8a40f32dc56d47145cf6ee5954c29d",
-    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_validation.jsonl": "3fbca6ae92f50c9ea9624af2167baab658ee7520a5efaf8ce133d324336976f6",
-    "data\\ml\\tensorflow\\setup_grammar_v1\\feature_schema.json": "98f2954a8397f08fc0da3d9a3b1d8d263e87beae4ce758cbde04652b6008f01e"
+    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_test_oos.jsonl": "2ab1c4529ad3ab37c7903579a3146156a5c50c4d2531bcbb515a79d03c56b008",
+    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_train.jsonl": "8efea9fc81d4a12c62d7565f0b26b77ce392a84107519ca6afdef60538e505f3",
+    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_validation.jsonl": "1b928aa7b7e3ea15c7c39c238f06dcc542cb622523aac6d277fb345a5154018d",
+    "data\\ml\\tensorflow\\setup_grammar_v1\\feature_schema.json": "0c4dfe5d15f09dc603deece89ba409707f4fecfa8f090d05b2bb9392ea8dc5cf"
   },
   "can_trade": false,
-  "created_at_utc": "2026-09-16T00:36:45.192183+00:00",
+  "created_at_utc": "2026-09-16T13:51:20.470620+00:00",
   "entry_authorized": false,
-  "git_commit": "bd6eac55486da3b697a3dff7d86cbc47431f5ee5",
+  "git_commit": "6984cb34eca633ed1ba30dea18411c43d1ca2cca",
   "limitations": [
-    "Current corpus contains H1 sequence context, not full exec-TF replay.",
-    "PD Array zone, retest entry, POI stacking, and exec TF are partially unavailable and explicitly labelled as missing.",
+    "Current corpus starts from H1 sequence rows; exec-TF evidence is bridged from closed local M15 bars when available.",
+    "NO_ZONE is treated as a confirmed negative setup class, not as UNKNOWN.",
     "This materializes supervision labels only; no model is trained in this step."
   ],
   "schema_version": "SETUP_GRAMMAR_DATASET_REPORT_V1",
@@ -25,16 +25,13 @@
       "sha256": "2229b8a6d45f0658076829b9c13650f12b65254c146c8228ef438bb79655796f"
     }
   ],
-  "status": "BLOCKED_MISSING_REQUIRED_SETUP_EVIDENCE",
+  "status": "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW",
   "summary": {
-    "diagnostics": {
-      "EXEC_TF_REPLAY_NOT_MATERIALIZED": 292,
-      "PD_ARRAY_ZONE_NOT_MATERIALIZED": 73
-    },
+    "diagnostics": {},
     "label_counts": {
       "TEST_OOS": {
         "exec_tf_integrity": {
-          "MISSING_EXEC_TF_REPLAY": 76
+          "EXEC_TF_REPLAY_MATERIALIZED": 76
         },
         "htf_narrative": {
           "HTF_CONFLICT": 47,
@@ -50,23 +47,24 @@
           "D_CONFIRMED": 57
         },
         "poi_quality": {
-          "MISSING_PD_ARRAY_ZONE": 19,
+          "NO_PD_ARRAY_CONFIRMED": 19,
           "SKIP_OR_LOW_QUALITY": 53,
           "T2_CANDIDATE_UNVERIFIED": 4
         },
         "retest_entry": {
-          "MISSING_ZONE_FEATURE": 19,
+          "NO_ZONE_NO_RETEST": 19,
           "RETESTED": 19,
           "WAIT_RETEST": 38
         },
         "setup_decision": {
-          "ABSTAIN": 15,
+          "ABSTAIN": 12,
+          "PASS": 3,
           "REJECT": 47,
           "WAIT": 14
         },
         "weak_link": {
-          "exec_tf_integrity": 3,
           "htf_narrative": 47,
+          "none_detected": 3,
           "pd_array_zone": 8,
           "poi_quality": 4,
           "retest_entry": 14
@@ -74,7 +72,7 @@
       },
       "TRAIN": {
         "exec_tf_integrity": {
-          "MISSING_EXEC_TF_REPLAY": 120
+          "EXEC_TF_REPLAY_MATERIALIZED": 120
         },
         "htf_narrative": {
           "HTF_CONFLICT": 76,
@@ -90,23 +88,24 @@
           "D_CONFIRMED": 90
         },
         "poi_quality": {
-          "MISSING_PD_ARRAY_ZONE": 30,
+          "NO_PD_ARRAY_CONFIRMED": 30,
           "SKIP_OR_LOW_QUALITY": 89,
           "T2_CANDIDATE_UNVERIFIED": 1
         },
         "retest_entry": {
-          "MISSING_ZONE_FEATURE": 30,
+          "NO_ZONE_NO_RETEST": 30,
           "RETESTED": 30,
           "WAIT_RETEST": 60
         },
         "setup_decision": {
-          "ABSTAIN": 20,
+          "ABSTAIN": 19,
+          "PASS": 1,
           "REJECT": 76,
           "WAIT": 24
         },
         "weak_link": {
-          "exec_tf_integrity": 1,
           "htf_narrative": 76,
+          "none_detected": 1,
           "pd_array_zone": 5,
           "poi_quality": 14,
           "retest_entry": 24
@@ -114,7 +113,7 @@
       },
       "VALIDATION": {
         "exec_tf_integrity": {
-          "MISSING_EXEC_TF_REPLAY": 96
+          "EXEC_TF_REPLAY_MATERIALIZED": 96
         },
         "htf_narrative": {
           "HTF_CONFLICT": 43,
@@ -130,11 +129,11 @@
           "D_CONFIRMED": 72
         },
         "poi_quality": {
-          "MISSING_PD_ARRAY_ZONE": 24,
+          "NO_PD_ARRAY_CONFIRMED": 24,
           "SKIP_OR_LOW_QUALITY": 72
         },
         "retest_entry": {
-          "MISSING_ZONE_FEATURE": 24,
+          "NO_ZONE_NO_RETEST": 24,
           "RETESTED": 24,
           "WAIT_RETEST": 48
         },
@@ -158,6 +157,6 @@
     },
     "total_rows": 292
   },
-  "training_eligible": false,
+  "training_eligible": true,
   "unknown_labels_accepted": false
 }

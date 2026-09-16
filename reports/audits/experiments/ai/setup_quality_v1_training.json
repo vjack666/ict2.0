@@ -1,0 +1,238 @@
+{
+  "best_val_loss": 0.7437575459480286,
+  "can_trade": false,
+  "created_at_utc": "2026-09-16T14:03:31.243014+00:00",
+  "dataset_hashes": {
+    "TEST_OOS": "2ab1c4529ad3ab37c7903579a3146156a5c50c4d2531bcbb515a79d03c56b008",
+    "TRAIN": "8efea9fc81d4a12c62d7565f0b26b77ce392a84107519ca6afdef60538e505f3",
+    "VALIDATION": "1b928aa7b7e3ea15c7c39c238f06dcc542cb622523aac6d277fb345a5154018d"
+  },
+  "epochs_completed": 113,
+  "feature_config": {
+    "categorical": [
+      "symbol",
+      "timeframe",
+      "structure_mode",
+      "context_bucket",
+      "direction_hint",
+      "d1_bias",
+      "h1_alignment",
+      "h4_location",
+      "exec_tf_status",
+      "exec_tf_source_family"
+    ],
+    "categorical_vocab": {
+      "context_bucket": [
+        "AGAINST",
+        "ALIGNED",
+        "NEUTRAL"
+      ],
+      "d1_bias": [
+        "BEARISH",
+        "BULLISH",
+        "MIXED",
+        "UNKNOWN"
+      ],
+      "direction_hint": [
+        "BEARISH",
+        "BULLISH",
+        "UNKNOWN"
+      ],
+      "exec_tf_source_family": [
+        "DUKASCOPY_2006_2010_MONTHLY",
+        "DUKASCOPY_2011_2020_MONTHLY",
+        "PARQUET_DESIGN_2006_2015"
+      ],
+      "exec_tf_status": [
+        "EXEC_TF_OHLC_WINDOW_MATERIALIZED"
+      ],
+      "h1_alignment": [
+        "AGAINST",
+        "ALIGNED",
+        "NEUTRAL"
+      ],
+      "h4_location": [
+        "DISCOUNT",
+        "EQUILIBRIUM",
+        "PREMIUM"
+      ],
+      "structure_mode": [
+        "canonical_bos",
+        "lite"
+      ],
+      "symbol": [
+        "EURUSD"
+      ],
+      "timeframe": [
+        "H1"
+      ]
+    },
+    "numeric": [
+      "direction",
+      "sequence_depth",
+      "allow_long",
+      "allow_short",
+      "exec_tf_window_bars"
+    ],
+    "numeric_mean": {
+      "allow_long": 0.3,
+      "allow_short": 0.55,
+      "direction": -0.13333333333333333,
+      "exec_tf_window_bars": 4.0,
+      "sequence_depth": 5.5
+    },
+    "numeric_std": {
+      "allow_long": 0.45825756949558394,
+      "allow_short": 0.49749371855331004,
+      "direction": 0.9910712498212337,
+      "exec_tf_window_bars": 1.0,
+      "sequence_depth": 1.118033988749895
+    },
+    "sequence_flags": [
+      "LIQUIDITY_POOL",
+      "SWEEP",
+      "DISPLACEMENT",
+      "STRUCTURE",
+      "OB",
+      "FVG",
+      "RETEST"
+    ]
+  },
+  "input_dim": 36,
+  "label_vocab": {
+    "setup_decision": {
+      "ABSTAIN": 0,
+      "PASS": 1,
+      "REJECT": 2,
+      "WAIT": 3
+    },
+    "weak_link": {
+      "htf_narrative": 0,
+      "none_detected": 1,
+      "pd_array_zone": 2,
+      "poi_quality": 3,
+      "retest_entry": 4
+    }
+  },
+  "metrics": {
+    "TEST_OOS": {
+      "failure_risk": {
+        "accuracy": 0.6447368421052632,
+        "balanced_accuracy": 0.4992307692307692,
+        "log_loss": 0.725085437297821,
+        "macro_f1": 0.4247266610597141,
+        "support": {
+          "0": 50,
+          "1": 26
+        }
+      },
+      "n": 76,
+      "setup_decision": {
+        "accuracy": 0.8421052631578947,
+        "balanced_accuracy": 0.6245567375886525,
+        "log_loss": 0.4254332482814789,
+        "macro_f1": 0.6054824561403509,
+        "support": {
+          "0": 12,
+          "1": 3,
+          "2": 47,
+          "3": 14
+        }
+      },
+      "weak_link": {
+        "accuracy": 0.868421052631579,
+        "balanced_accuracy": 0.7913120567375886,
+        "log_loss": 0.3490088880062103,
+        "macro_f1": 0.787719298245614,
+        "support": {
+          "0": 47,
+          "1": 3,
+          "2": 8,
+          "3": 4,
+          "4": 14
+        }
+      }
+    },
+    "TRAIN": {
+      "failure_risk": {
+        "accuracy": 0.8916666666666667,
+        "balanced_accuracy": 0.7547368421052632,
+        "log_loss": 0.27751341462135315,
+        "macro_f1": 0.8009950248756219,
+        "support": {
+          "0": 95,
+          "1": 25
+        }
+      },
+      "n": 120,
+      "setup_decision": {
+        "accuracy": 0.9916666666666667,
+        "balanced_accuracy": 0.75,
+        "log_loss": 0.027222538366913795,
+        "macro_f1": 0.7435897435897436,
+        "support": {
+          "0": 19,
+          "1": 1,
+          "2": 76,
+          "3": 24
+        }
+      },
+      "weak_link": {
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "log_loss": 0.0206207986921072,
+        "macro_f1": 1.0,
+        "support": {
+          "0": 76,
+          "1": 1,
+          "2": 5,
+          "3": 14,
+          "4": 24
+        }
+      }
+    },
+    "VALIDATION": {
+      "failure_risk": {
+        "accuracy": 0.7708333333333334,
+        "balanced_accuracy": 0.5399863294600137,
+        "log_loss": 0.520941436290741,
+        "macro_f1": 0.5400696864111498,
+        "support": {
+          "0": 77,
+          "1": 19
+        }
+      },
+      "n": 96,
+      "setup_decision": {
+        "accuracy": 0.9166666666666666,
+        "balanced_accuracy": 0.9075730471079307,
+        "log_loss": 0.26731690764427185,
+        "macro_f1": 0.9146643742388423,
+        "support": {
+          "0": 26,
+          "2": 43,
+          "3": 27
+        }
+      },
+      "weak_link": {
+        "accuracy": 0.8854166666666666,
+        "balanced_accuracy": 0.8202685772453213,
+        "log_loss": 0.2545912563800812,
+        "macro_f1": 0.6722964129859694,
+        "support": {
+          "0": 43,
+          "2": 11,
+          "3": 15,
+          "4": 27
+        }
+      }
+    }
+  },
+  "model_sha256": "44f7f3a2288e3d2d8b7533e5131a0c9edf95e54c5ab31a6c28026bd7330b6e46",
+  "python_version": "3.11.15",
+  "run_id": "setup_quality_v1",
+  "seed": 42,
+  "shadow_mode": true,
+  "status": "REVIEW",
+  "tensorflow_version": "2.21.0"
+}

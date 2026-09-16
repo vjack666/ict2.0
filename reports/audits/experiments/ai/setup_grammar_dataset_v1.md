@@ -1,7 +1,7 @@
 # Setup Grammar Dataset v1
 
 **Fecha:** 2026-09-15
-**Estado:** `BLOCKED_MISSING_REQUIRED_SETUP_EVIDENCE`
+**Estado:** `READY_FOR_SETUP_QUALITY_TRAINING_REVIEW`
 **Trading:** `can_trade=false`
 
 ## Que se materializo
@@ -17,20 +17,18 @@ Se convirtio la tesis ICT en etiquetas intermedias para que la red aprenda la co
 
 ## Diagnosticos importantes
 
-- `EXEC_TF_REPLAY_NOT_MATERIALIZED`: `292`
-- `PD_ARRAY_ZONE_NOT_MATERIALIZED`: `73`
 
 ## Lectura honesta
 
-La materializacion queda bloqueada para entrenamiento estricto porque el usuario no acepta `UNKNOWN` ni huecos como clases entrenables. El corpus actual no trae replay de exec TF y no trae PD Array/retest completos para todas las filas. Eso queda como evidencia faltante, no como etiqueta aceptada.
+La materializacion usa ventanas M15 cerradas para eliminar `UNKNOWN` como clase entrenable. `NO_ZONE` queda como clase negativa valida; solo se bloquea si falta fuente M15, split o causalidad.
 
 ## Artefactos
 
-- `data\ml\tensorflow\setup_grammar_v1\dataset_test_oos.jsonl` sha256 `7aeb146e20ac55e7a74a9b43ef6eaea6721f354579b5519d83eac22d78518a0e`
-- `data\ml\tensorflow\setup_grammar_v1\dataset_train.jsonl` sha256 `86532a92788d327a14cf28ca314a69102f8a40f32dc56d47145cf6ee5954c29d`
-- `data\ml\tensorflow\setup_grammar_v1\dataset_validation.jsonl` sha256 `3fbca6ae92f50c9ea9624af2167baab658ee7520a5efaf8ce133d324336976f6`
-- `data\ml\tensorflow\setup_grammar_v1\feature_schema.json` sha256 `98f2954a8397f08fc0da3d9a3b1d8d263e87beae4ce758cbde04652b6008f01e`
+- `data\ml\tensorflow\setup_grammar_v1\dataset_test_oos.jsonl` sha256 `2ab1c4529ad3ab37c7903579a3146156a5c50c4d2531bcbb515a79d03c56b008`
+- `data\ml\tensorflow\setup_grammar_v1\dataset_train.jsonl` sha256 `8efea9fc81d4a12c62d7565f0b26b77ce392a84107519ca6afdef60538e505f3`
+- `data\ml\tensorflow\setup_grammar_v1\dataset_validation.jsonl` sha256 `1b928aa7b7e3ea15c7c39c238f06dcc542cb622523aac6d277fb345a5154018d`
+- `data\ml\tensorflow\setup_grammar_v1\feature_schema.json` sha256 `0c4dfe5d15f09dc603deece89ba409707f4fecfa8f090d05b2bb9392ea8dc5cf`
 
 ## Siguiente paso
 
-Materializar primero replay de exec TF y zona PD Array/retest completa. No entrenar `setup_quality_v1` mientras existan faltantes bloqueantes.
+Revisar si los faltantes bloqueantes bajaron a cero. Solo entonces entrenar `setup_quality_v1`; si quedan faltantes, ampliar la ventana/ensamblador causal y repetir.

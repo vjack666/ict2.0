@@ -12,6 +12,7 @@ build/
 
 # Virtual environments
 .venv/
+.venv-tf311/
 venv/
 ENV/
 env/

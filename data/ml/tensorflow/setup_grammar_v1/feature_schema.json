@@ -1,0 +1,48 @@
+{
+  "schema_version": "SETUP_GRAMMAR_DATASET_V1_FIXED",
+  "target": "multi_task_setup_grammar",
+  "causal_rule": "features_at_t and grammar labels must be derived only from information available at decision_time",
+  "grammar_label_fields": [
+    "htf_narrative",
+    "po3_phase",
+    "liquidity_sweep",
+    "displacement_quality",
+    "structure_confirmation",
+    "pd_array_zone",
+    "retest_entry",
+    "poi_quality",
+    "exec_tf_integrity",
+    "weak_link",
+    "setup_decision"
+  ],
+  "supervised_heads": [
+    "setup_decision_head",
+    "weak_link_head",
+    "failure_risk_head",
+    "quality_tier_head",
+    "outcome_head"
+  ],
+  "forbidden_feature_fields": [
+    "label",
+    "label_end_12",
+    "label_end_24",
+    "label_end_48",
+    "label_end_6",
+    "net_R",
+    "outcome",
+    "pnl",
+    "result"
+  ],
+  "exec_tf_evidence_source": "closed M15 DESIGN replay, in-memory only, no source mutation",
+  "materialization_correction": {
+    "description": "pd_array_zone ahora usa el detector semántico SETUP_GRAMMAR_PD_ARRAY_SEMANTIC_V1 para evaluar las tres condiciones POI",
+    "conditions": [
+      "Zona correcta del dealing range (discount para long, premium para short, equilibrium aceptado con evidencia estructural)",
+      "Alineación con sesgo HTF confirmado (h1_alignment=ALIGNED, context_bucket=ALIGNED, direction_hint compatible)",
+      "Respaldo institucional: displacement + FVG/OB presentes en M15 hasta decision_time"
+    ],
+    "original_behavior": "etiquetaba USABLE_UNGRADED si había FVG/OB en la secuencia de stages sin evaluar zona, sesgo ni respaldo",
+    "rationale": "la tesis ICT (docs/ict/20_TESIS_ICT.md §5b, docs/ict/21_POI.md §16) define estas tres condiciones como necesarias para que un PD Array sea POI válido",
+    "detector_used": "SETUP_GRAMMAR_PD_ARRAY_SEMANTIC_V1 (semantic_pd_array_eval_v1)"
+  }
+}

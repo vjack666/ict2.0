@@ -31,10 +31,14 @@ Thumbs.db
 
 # Data (archivos grandes no necesarios en repo)
 data/
+!data/ml/tensorflow/setup_grammar_v1/
+!data/ml/tensorflow/setup_grammar_v1/*.jsonl
+!data/ml/tensorflow/setup_grammar_v1/feature_schema.json
+!data/ml/tensorflow/setup_quality_v1/
+!data/ml/tensorflow/setup_quality_v1/model.keras
+!data/ml/tensorflow/setup_quality_v1/training_record.json
+!data/ml/tensorflow/setup_quality_v1/predictions.json
 !reports/audits/data/
-!reports/audits/data/**
-!scripts/data/
-!scripts/data/*.py
 scripts/audit/_diag_choch_filter.py
 graphify-out/
 graphify-tmp/

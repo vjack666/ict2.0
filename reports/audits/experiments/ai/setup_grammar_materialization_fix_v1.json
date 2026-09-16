@@ -1,0 +1,161 @@
+{
+  "schema_version": "SETUP_GRAMMAR_MATERIALIZATION_FIX_V1",
+  "correction_date": "2026-09-16",
+  "correction_description": "pd_array_zone ahora usa el detector semántico SETUP_GRAMMAR_PD_ARRAY_SEMANTIC_V1",
+  "conditions_applied": [
+    "Zona correcta del dealing range (discount para long, premium para short, equilibrium aceptado)",
+    "Alineación con sesgo HTF confirmado (h1_alignment=ALIGNED, context_bucket=ALIGNED, direction_hint compatible)",
+    "Respaldo institucional: displacement + FVG/OB presentes en M15 hasta decision_time"
+  ],
+  "original_issue": "pd_array_zone etiquetaba USABLE_UNGRADED si había FVG/OB en la secuencia de stages sin evaluar zona, sesgo ni respaldo institucional.",
+  "fix_rationale": "La tesis ICT (docs/ict/20_TESIS_ICT.md §5b, docs/ict/21_POI.md §16) define estas tres condiciones como necesarias para que un PD Array sea POI válido.",
+  "detector_used": "SETUP_GRAMMAR_PD_ARRAY_SEMANTIC_V1 (semantic_pd_array_eval_v1)",
+  "note": "Este script NO edita el dataset original ni reemplaza el materializador existente. Genera un dataset corregido en data/ml/tensorflow/setup_grammar_v1_fixed/ para comparar y, si pasa auditoría, ser usado para reentrenamiento.",
+  "dataset_hashes": {
+    "TRAIN": "62cf541d1fb8e1e2ed821663de87768b8f6b0189afe27d9dcfb2655faf39f7df",
+    "VALIDATION": "e83c6ef08bcfff71d27f90c0239934a3365c22e03a6bb4dd47ae43b377934479",
+    "TEST_OOS": "f3b982ab7a791450d8c5422fdf9f595db1b37f9752709c98ddcc75f82e876cab"
+  },
+  "schema_hash": "e5d9ca857f688a2d50d8fa8dc6a1858bf389fad58f0306c7d9fe7f5acd030352",
+  "summary": {
+    "total_rows": 292,
+    "rows_by_split": {
+      "TRAIN": 120,
+      "VALIDATION": 96,
+      "TEST_OOS": 76
+    },
+    "label_counts": {
+      "TRAIN": {
+        "htf_narrative": {
+          "HTF_CONFLICT": 76,
+          "HTF_INCOMPLETE_EVIDENCE": 41,
+          "HTF_OK": 3
+        },
+        "po3_phase": {
+          "D_CONFIRMED": 90,
+          "CHAIN_COMPLETE": 30
+        },
+        "liquidity_sweep": {
+          "SWEEP_VALID": 120
+        },
+        "displacement_quality": {
+          "PRESENT_UNGRADED": 120
+        },
+        "structure_confirmation": {
+          "CONFIRMED": 120
+        },
+        "pd_array_zone": {
+          "NO_ZONE": 118,
+          "USABLE_UNGRADED": 2
+        },
+        "retest_entry": {
+          "RETESTED": 120
+        },
+        "poi_quality": {
+          "NO_PD_ARRAY_CONFIRMED": 118,
+          "T2_CANDIDATE_UNVERIFIED": 2
+        },
+        "exec_tf_integrity": {
+          "EXEC_TF_REPLAY_MATERIALIZED": 120
+        },
+        "weak_link": {
+          "htf_narrative": 76,
+          "pd_array_zone": 42,
+          "none_detected": 2
+        },
+        "setup_decision": {
+          "REJECT": 76,
+          "ABSTAIN": 42,
+          "PASS": 2
+        }
+      },
+      "VALIDATION": {
+        "htf_narrative": {
+          "HTF_CONFLICT": 43,
+          "HTF_INCOMPLETE_EVIDENCE": 47,
+          "HTF_OK": 6
+        },
+        "po3_phase": {
+          "D_CONFIRMED": 72,
+          "CHAIN_COMPLETE": 24
+        },
+        "liquidity_sweep": {
+          "SWEEP_VALID": 96
+        },
+        "displacement_quality": {
+          "PRESENT_UNGRADED": 96
+        },
+        "structure_confirmation": {
+          "CONFIRMED": 96
+        },
+        "pd_array_zone": {
+          "NO_ZONE": 96
+        },
+        "retest_entry": {
+          "RETESTED": 96
+        },
+        "poi_quality": {
+          "NO_PD_ARRAY_CONFIRMED": 96
+        },
+        "exec_tf_integrity": {
+          "EXEC_TF_REPLAY_MATERIALIZED": 96
+        },
+        "weak_link": {
+          "htf_narrative": 43,
+          "pd_array_zone": 53
+        },
+        "setup_decision": {
+          "REJECT": 43,
+          "ABSTAIN": 53
+        }
+      },
+      "TEST_OOS": {
+        "htf_narrative": {
+          "HTF_INCOMPLETE_EVIDENCE": 25,
+          "HTF_OK": 4,
+          "HTF_CONFLICT": 47
+        },
+        "po3_phase": {
+          "D_CONFIRMED": 57,
+          "CHAIN_COMPLETE": 19
+        },
+        "liquidity_sweep": {
+          "SWEEP_VALID": 76
+        },
+        "displacement_quality": {
+          "PRESENT_UNGRADED": 76
+        },
+        "structure_confirmation": {
+          "CONFIRMED": 76
+        },
+        "pd_array_zone": {
+          "NO_ZONE": 72,
+          "USABLE_UNGRADED": 4
+        },
+        "retest_entry": {
+          "RETESTED": 76
+        },
+        "poi_quality": {
+          "NO_PD_ARRAY_CONFIRMED": 72,
+          "T2_CANDIDATE_UNVERIFIED": 4
+        },
+        "exec_tf_integrity": {
+          "EXEC_TF_REPLAY_MATERIALIZED": 76
+        },
+        "weak_link": {
+          "pd_array_zone": 25,
+          "none_detected": 4,
+          "htf_narrative": 47
+        },
+        "setup_decision": {
+          "ABSTAIN": 25,
+          "PASS": 4,
+          "REJECT": 47
+        }
+      }
+    },
+    "diagnostics": {}
+  },
+  "status": "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW",
+  "git_commit": "401cf6bd444e664065b92b8cef07149ac57c0d81"
+}

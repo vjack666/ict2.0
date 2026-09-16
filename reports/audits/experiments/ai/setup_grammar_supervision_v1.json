@@ -1,0 +1,60 @@
+{
+  "schema_version": "SETUP_GRAMMAR_SUPERVISION_V1",
+  "created_at": "2026-09-15",
+  "status": "READY_FOR_MATERIALIZATION_DESIGN",
+  "can_trade": false,
+  "entry_authorized": false,
+  "local_theory_sources": [
+    "docs/ict/20_TESIS_ICT.md",
+    "docs/ict/18_EJECUCION_OPTIMA_TF_SL_ENTRY.md",
+    "docs/ict/21_POI.md",
+    "docs/reglas/ICT_RULEBOOK.md",
+    "docs/tesis/SDD_SEQUENCE_EVENT_WAIT.md",
+    "docs/tesis/SDD_LTF_ENTRY_LAYER.md",
+    "reports/b1/OBJETIVO2_DISENIO_ENSAMBLADOR.json"
+  ],
+  "learning_nodes": [
+    "htf_narrative",
+    "po3_phase",
+    "liquidity_sweep",
+    "displacement_quality",
+    "structure_confirmation",
+    "pd_array_zone",
+    "retest_entry",
+    "poi_quality",
+    "exec_tf_integrity",
+    "setup_decision"
+  ],
+  "proposed_model": {
+    "run_id": "setup_quality_v1",
+    "architecture": "multi_task_supervised",
+    "heads": [
+      "setup_decision_head",
+      "weak_link_head",
+      "failure_risk_head",
+      "quality_tier_head",
+      "outcome_head"
+    ],
+    "mode": "shadow_diagnostic_only"
+  },
+  "research_required": [
+    {
+      "topic": "killzones_london_ny_broker_utc",
+      "reason": "Timezone and broker-session conversion must be exact before using killzone as a supervised label."
+    },
+    {
+      "topic": "m3_exec_tf_scalping",
+      "reason": "Thesis names M1/M3/M5 but code support and dataset coverage for M3 are incomplete."
+    },
+    {
+      "topic": "breaker_mitigation_bpr_pd_arrays",
+      "reason": "POI doc lists them as PD Arrays, but current training features focus mostly on FVG/OB."
+    }
+  ],
+  "not_research_required_but_implementation_required": [
+    "entry_return_to_zone",
+    "closest_opposing_liquidity_tp",
+    "poi_tier_stacking"
+  ],
+  "next_artifact": "SETUP_GRAMMAR_DATASET_V1"
+}

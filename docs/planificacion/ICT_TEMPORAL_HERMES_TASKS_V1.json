@@ -1,0 +1,104 @@
+{
+  "schema": "ICT_TEMPORAL_HERMES_TASKS_V1",
+  "board": "ict-temporal-v1",
+  "workspace": "C:/Users/v_jac/Desktop/ICT SYSTEM",
+  "plan": "docs/planificacion/PLAN_ICT_MULTIMODELO_INTRADIA_V1.md",
+  "can_trade": false,
+  "entry_authorized": false,
+  "common": "Orden expresa de Ruben: trabajar autonomamente hasta cumplir el objetivo propio o bloqueo real verificable. Lee AGENTS.md, plan completo, contratos vigentes, Engram y Graphify antes de actuar. Respeta SOUL del perfil y enmienda 2026-09-11. Datos, etiquetas, splits y manifiestos existentes inmutables: no descargas, regeneracion ni corpus nuevo persistido; solo transformaciones en memoria y artefactos permitidos nuevos. No trading, MT5 orders, demo, promocion, push ni cambios de proveedor. Cada perfil escribe reportes en reports/ict_temporal_v1/<perfil>/ con identificador de tarjeta/run; no sobrescribir. Codigo compartido solo Forge; Helix scripts/modelos nuevos propios y Probe experimentos propios sin colisiones. Cambios ajenos se preservan. Solo Forge hace commits/indice/Graphify serializados; no git add general. Entrega AGENTE DEPARTAMENTO TAREA STATUS EVIDENCIA ARCHIVOS RIESGOS SIGUIENTE ACCION con comandos y resultados reproducibles. Si necesitas modificar datos o exceder autoridad, detente en esa accion, continua frentes permitidos y notifica a Forge. Un FAIL cientifico honesto no se convierte en PASS. No declarar completado por solo redactar intenciones.",
+  "tasks": [
+    {
+      "key": "coordinate",
+      "profile": "forge",
+      "parents": [],
+      "title": "Coordinar autonomamente la mision temporal ICT",
+      "body": "BOOTSTRAP: leer plan, confirmar asignaciones y dependencias y entregar recibo de arranque. Completar esta tarjeta y liberar perfil para Forge engineering; no esperar aqui el programa completo ni declarar cierre global. Seguimiento Codex separado verifica despacho cada 15 minutos con maximo 3 workers totales. La tarjeta final de Forge integra tras Ledger. No editar codigo en bootstrap. Padres done no prueban aceptacion: verificar artefactos. Esta precision se envio como comentario a t_794063cd."
+    },
+    {
+      "key": "sources",
+      "profile": "nexus",
+      "parents": [],
+      "title": "Certificar cobertura y reloj de fuentes existentes",
+      "body": "Inventariar fuentes reales y disponibilidad por TF/simbolo/split con hashes; reconstruir cobertura sin confundir ruta de loader con ausencia fisica. Especificar apertura/cierre/confirmacion/available_at y lector continuo causal en memoria. No tocar data ni manifests. Entregar informe reproducible y contrato de entrada a Forge/Helix."
+    },
+    {
+      "key": "spec",
+      "profile": "orion",
+      "parents": [],
+      "title": "Definir estrategia episodica y protocolo preregistrado",
+      "body": "Contrastar documentos con detectores ICT base, PO3, Turtle, Silver. Especificar secuencias multi-vela, espera, invalidacion, expiracion, horarios y objetivo intradia. Resolver contradicciones justificadamente o registrarlas. Preregistrar frecuencia, costes, ablations y comparaciones antes de resultados. No inventar rentabilidad, programar ni alterar estrategia para cuota."
+    },
+    {
+      "key": "tensor_audit",
+      "profile": "helix",
+      "parents": [],
+      "title": "Verificar literalmente que aprende setup_quality_v1",
+      "body": "Trazar dataset->features->tensor->modelo->consumidor. Reproducir dimensiones, orden/duracion descartados, variacion real de TF y ventanas. Probar reversa de secuencia, timestamps y predicciones con fuentes intactas. Separar resumen estatico de memoria temporal. Entregar scripts nuevos propios e informe con limitaciones; no reentrenar todavia."
+    },
+    {
+      "key": "engineering",
+      "profile": "forge",
+      "parents": [
+        "sources",
+        "spec",
+        "tensor_audit"
+      ],
+      "title": "Implementar representacion causal de episodios y multitemporalidad",
+      "body": "Implementar contratos aceptados con patrones existentes, disponibilidad al cierre, joins as-of, persistencia de estado entre velas, identidad y deduplicacion. Tests FULL/PREFIX, DST, futura informacion, invalidacion y huecos. No tocar cambios ajenos engine/execution.py. Insuficiencia de datos no autoriza fabricarlos. Codigo de estrategia en engine segun contratos; consumidores offline aislados. Entregar rutas/tests y contrato del tensor."
+    },
+    {
+      "key": "replay",
+      "profile": "probe",
+      "parents": [
+        "engineering"
+      ],
+      "title": "Medir poblacion continua y ejecucion offline reproducible",
+      "body": "Leer especificacion Orion y Nexus; verificar entrega Forge. Ejecutar replay completo autorizado sobre fuentes existentes en memoria con esperas, rechazos, semanas cero y deduplicacion. Contar candidatos vs fills vs trades cerrados. Costes y ambiguedad intrabar conservadores, cierre intradia. No extrapolar frecuencia desde las 292 filas seleccionadas ni optimizar sobre OOS. Reportes nuevos, no corpus persistido."
+    },
+    {
+      "key": "training",
+      "profile": "helix",
+      "parents": [
+        "replay",
+        "tensor_audit"
+      ],
+      "title": "Entrenar y evaluar aprendizaje temporal genuino",
+      "body": "Solo con evidencia disponible: comparar reglas/baseline estatico/modelo temporal pequeno sobre eventos ordenados, deltas, mascaras y ventanas por TF. Mantener fuentes/splits persistidos inmutables; transformaciones en memoria TRAIN-only. Purga y grupos episodicos documentados. Ablations de orden/tiempo/HTF/historia, FULL/PREFIX, varias semillas, calibracion e incertidumbre. Preregistrar, no usar holdout inspeccionado como nuevo. Si faltan episodios suficientes, demostrar insuficiencia sin fabricar entrenamiento exitoso."
+    },
+    {
+      "key": "audit",
+      "profile": "vigil",
+      "parents": [
+        "training",
+        "replay"
+      ],
+      "title": "Auditar independientemente causalidad y resultados",
+      "body": "Reproducir hallazgos y evidencia de todos los padres, hashes, splits, causalidad, frecuencia calendario, fills/costes, ablations y consumo real del modelo. No fiarse de afirmaciones de otros bots. No modificar implementacion auditada. Emitir hallazgos con archivos/lineas, PASS/REVIEW/FAIL y condiciones de cierre. Pedir correcciones a Forge mediante comentarios del tablero."
+    },
+    {
+      "key": "gates",
+      "profile": "sentinel",
+      "parents": [
+        "audit"
+      ],
+      "title": "Revisar suficiencia y limites de promocion",
+      "body": "Revisar dictamen Vigil y objetivo 2-3 trades/semana sin forzar cuota. Separar exito tecnico, evidencia cientifica, shadow y autorizacion. No permitir produccion/demo ni cambios de flags. Emitir ruta siguiente con bloqueos de alcance verdaderos; no exigir licencia Dukascopy como bloqueo interno."
+    },
+    {
+      "key": "trace",
+      "profile": "ledger",
+      "parents": [
+        "gates"
+      ],
+      "title": "Consolidar entrega y trazabilidad verificable",
+      "body": "Relacionar requisito->implementacion->test->run->artefacto->hash/commit; corregir narrativas de frecuencia sparse y conteo TRAIN solo con evidencia. Entregar propuesta de indice/worklog/cierre en carpeta propia, sin editar archivos compartidos. Separar delegacion/arranque/completado, limite tecnico/cientifico y autoridad. Forge integra al final."
+    }
+    ,{
+      "key": "final",
+      "profile": "forge",
+      "parents": ["trace"],
+      "title": "Integrar dictamen final de mision temporal",
+      "body": "Integrar evidencia Ledger/Vigil/Sentinel. Corregir con propietarios y nueva auditoria independiente. Cerrar con entregables verificados o dictamen negativo reproducible. Actualizar indice/worklog/Graphify y commit selectivo propio; no push, datos, cambios ajenos ni demo/real. can_trade=false. Un done no certifica aprendizaje temporal ni edge."
+    }
+  ]
+}

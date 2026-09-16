@@ -1,0 +1,369 @@
+{
+  "artifacts": {
+    "backtest_png": "reports\\audits\\experiments\\ai\\m15_ai_shadow_backtest_v1.png",
+    "confusion_png": "reports\\audits\\experiments\\ai\\m15_ai_shadow_confusion_v1.png",
+    "funnel_png": "reports\\audits\\experiments\\ai\\m15_ai_shadow_funnel_v1.png",
+    "report": "reports\\audits\\experiments\\ai\\m15_ai_shadow_funnel_backtest_v1.md"
+  },
+  "can_trade": false,
+  "candidate": {
+    "alpha": 0.15,
+    "design": "failure_boost",
+    "loop_iteration": 1,
+    "multiplier": 1.0,
+    "risk_source": "raw",
+    "threshold": 0.3
+  },
+  "created_at_utc": "2026-09-16T00:15:53.682725+00:00",
+  "deltas": {
+    "coverage": -0.05263157894736836,
+    "failure_avoidance_recall": 0.038461538461538436,
+    "failure_f1_multiclass": 0.01913043478260873,
+    "failure_rate_selected": 0.008241758241758212,
+    "failure_recall_multiclass": 0.038461538461538436
+  },
+  "diagnostic_only": true,
+  "economic_backtest": false,
+  "entry_authorized": false,
+  "funnel_counts_test_oos": {
+    "ai_shadow_selected": 52,
+    "ai_shadow_selected_london_ny": 31,
+    "ai_shadow_selected_non_failure": 33,
+    "london_ny_window_proxy": 44,
+    "motor_base_selected": 56,
+    "source_rows": 76
+  },
+  "limitations": [
+    "Diagnostic class/outcome backtest only; no spread, slippage, commission, fill, SL/TP, or PnL.",
+    "London-NY is a UTC-hour proxy, not a live broker session certification.",
+    "AI remains shadow-only and does not modify the engine."
+  ],
+  "london_ny_proxy": {
+    "end_hour": 16,
+    "note": "Proxy window for diagnostic filtering; not broker-session certification.",
+    "start_hour": 7,
+    "timezone": "UTC"
+  },
+  "row_counts": {
+    "TEST_OOS": 76,
+    "TRAIN": 120,
+    "VALIDATION": 96
+  },
+  "schema_version": "M15_AI_SHADOW_FUNNEL_BACKTEST_V1",
+  "selection_rule": "selected when predicted class is not failure",
+  "source_artifacts": {
+    "failure_risk_predictions": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\ml\\tensorflow\\failure_risk_v1\\predictions.json",
+    "shadow_fusion": "data\\ml\\tensorflow\\failure_risk_v1\\shadow_fusion_v1.json",
+    "shadow_fusion_sha256": "97fd8bda6b8f773d10d6fd6e8051c51bdb94f33f99a484640e3f0ace2703668f",
+    "tf_outcome_model": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\ml\\tensorflow\\tf_outcome_v1_003\\model.keras"
+  },
+  "status": "REVIEW_DIAGNOSTIC_BACKTEST",
+  "test_oos": {
+    "ai_shadow_multiclass": {
+      "accuracy": 0.5131578947368421,
+      "brier_score": 0.5902278676160686,
+      "confusion_matrix": [
+        [
+          20,
+          1,
+          9
+        ],
+        [
+          0,
+          12,
+          8
+        ],
+        [
+          9,
+          10,
+          7
+        ]
+      ],
+      "failure_f1": 0.28,
+      "failure_precision": 0.2916666666666667,
+      "failure_recall": 0.2692307692307692,
+      "log_loss": 1.0052257629988621,
+      "macro_f1": 0.5053685455262121,
+      "macro_recall": 0.5119658119658119,
+      "per_class": {
+        "continuation": {
+          "f1": 0.6779661016949152,
+          "precision": 0.6896551724137931,
+          "recall": 0.6666666666666666,
+          "support": 30
+        },
+        "failure": {
+          "f1": 0.28,
+          "precision": 0.2916666666666667,
+          "recall": 0.2692307692307692,
+          "support": 26
+        },
+        "reversal": {
+          "f1": 0.5581395348837209,
+          "precision": 0.5217391304347826,
+          "recall": 0.6,
+          "support": 20
+        }
+      }
+    },
+    "ai_shadow_selection": {
+      "avoided": 24,
+      "avoided_failures": 7,
+      "coverage": 0.6842105263157895,
+      "failure_avoidance_recall": 0.2692307692307692,
+      "failure_rate_selected": 0.36538461538461536,
+      "non_failure_capture": 0.66,
+      "selected": 52,
+      "selected_failures": 19,
+      "selected_non_failures": 33,
+      "total": 76
+    },
+    "base_multiclass": {
+      "accuracy": 0.5131578947368421,
+      "brier_score": 0.5964474714195753,
+      "confusion_matrix": [
+        [
+          20,
+          2,
+          8
+        ],
+        [
+          1,
+          13,
+          6
+        ],
+        [
+          10,
+          10,
+          6
+        ]
+      ],
+      "failure_f1": 0.2608695652173913,
+      "failure_precision": 0.3,
+      "failure_recall": 0.23076923076923078,
+      "log_loss": 1.0198611634301098,
+      "macro_f1": 0.49812834930440064,
+      "macro_recall": 0.5158119658119659,
+      "per_class": {
+        "continuation": {
+          "f1": 0.6557377049180327,
+          "precision": 0.6451612903225806,
+          "recall": 0.6666666666666666,
+          "support": 30
+        },
+        "failure": {
+          "f1": 0.2608695652173913,
+          "precision": 0.3,
+          "recall": 0.23076923076923078,
+          "support": 26
+        },
+        "reversal": {
+          "f1": 0.5777777777777777,
+          "precision": 0.52,
+          "recall": 0.65,
+          "support": 20
+        }
+      }
+    },
+    "base_selection": {
+      "avoided": 20,
+      "avoided_failures": 6,
+      "coverage": 0.7368421052631579,
+      "failure_avoidance_recall": 0.23076923076923078,
+      "failure_rate_selected": 0.35714285714285715,
+      "non_failure_capture": 0.72,
+      "selected": 56,
+      "selected_failures": 20,
+      "selected_non_failures": 36,
+      "total": 76
+    },
+    "confusion_ai_shadow": {
+      "continuation": {
+        "continuation": 20,
+        "failure": 9,
+        "reversal": 1
+      },
+      "failure": {
+        "continuation": 9,
+        "failure": 7,
+        "reversal": 10
+      },
+      "reversal": {
+        "continuation": 0,
+        "failure": 8,
+        "reversal": 12
+      }
+    },
+    "confusion_base": {
+      "continuation": {
+        "continuation": 20,
+        "failure": 8,
+        "reversal": 2
+      },
+      "failure": {
+        "continuation": 10,
+        "failure": 6,
+        "reversal": 10
+      },
+      "reversal": {
+        "continuation": 1,
+        "failure": 6,
+        "reversal": 13
+      }
+    }
+  },
+  "test_oos_london_ny_proxy": {
+    "ai_shadow_multiclass": {
+      "accuracy": 0.4772727272727273,
+      "brier_score": 0.6480509827794521,
+      "confusion_matrix": [
+        [
+          10,
+          1,
+          6
+        ],
+        [
+          0,
+          8,
+          4
+        ],
+        [
+          6,
+          6,
+          3
+        ]
+      ],
+      "failure_f1": 0.21428571428571427,
+      "failure_precision": 0.23076923076923078,
+      "failure_recall": 0.2,
+      "log_loss": 1.0920146662629309,
+      "macro_f1": 0.47097963764630424,
+      "macro_recall": 0.4849673202614379,
+      "per_class": {
+        "continuation": {
+          "f1": 0.6060606060606061,
+          "precision": 0.625,
+          "recall": 0.5882352941176471,
+          "support": 17
+        },
+        "failure": {
+          "f1": 0.21428571428571427,
+          "precision": 0.23076923076923078,
+          "recall": 0.2,
+          "support": 15
+        },
+        "reversal": {
+          "f1": 0.5925925925925926,
+          "precision": 0.5333333333333333,
+          "recall": 0.6666666666666666,
+          "support": 12
+        }
+      }
+    },
+    "ai_shadow_selection": {
+      "avoided": 13,
+      "avoided_failures": 3,
+      "coverage": 0.7045454545454546,
+      "failure_avoidance_recall": 0.2,
+      "failure_rate_selected": 0.3870967741935484,
+      "non_failure_capture": 0.6551724137931034,
+      "selected": 31,
+      "selected_failures": 12,
+      "selected_non_failures": 19,
+      "total": 44
+    },
+    "base_multiclass": {
+      "accuracy": 0.4772727272727273,
+      "brier_score": 0.6333518150128747,
+      "confusion_matrix": [
+        [
+          10,
+          1,
+          6
+        ],
+        [
+          0,
+          8,
+          4
+        ],
+        [
+          6,
+          6,
+          3
+        ]
+      ],
+      "failure_f1": 0.21428571428571427,
+      "failure_precision": 0.23076923076923078,
+      "failure_recall": 0.2,
+      "log_loss": 1.076940393829039,
+      "macro_f1": 0.47097963764630424,
+      "macro_recall": 0.4849673202614379,
+      "per_class": {
+        "continuation": {
+          "f1": 0.6060606060606061,
+          "precision": 0.625,
+          "recall": 0.5882352941176471,
+          "support": 17
+        },
+        "failure": {
+          "f1": 0.21428571428571427,
+          "precision": 0.23076923076923078,
+          "recall": 0.2,
+          "support": 15
+        },
+        "reversal": {
+          "f1": 0.5925925925925926,
+          "precision": 0.5333333333333333,
+          "recall": 0.6666666666666666,
+          "support": 12
+        }
+      }
+    },
+    "base_selection": {
+      "avoided": 13,
+      "avoided_failures": 3,
+      "coverage": 0.7045454545454546,
+      "failure_avoidance_recall": 0.2,
+      "failure_rate_selected": 0.3870967741935484,
+      "non_failure_capture": 0.6551724137931034,
+      "selected": 31,
+      "selected_failures": 12,
+      "selected_non_failures": 19,
+      "total": 44
+    },
+    "confusion_ai_shadow": {
+      "continuation": {
+        "continuation": 10,
+        "failure": 6,
+        "reversal": 1
+      },
+      "failure": {
+        "continuation": 6,
+        "failure": 3,
+        "reversal": 6
+      },
+      "reversal": {
+        "continuation": 0,
+        "failure": 4,
+        "reversal": 8
+      }
+    },
+    "confusion_base": {
+      "continuation": {
+        "continuation": 10,
+        "failure": 6,
+        "reversal": 1
+      },
+      "failure": {
+        "continuation": 6,
+        "failure": 3,
+        "reversal": 6
+      },
+      "reversal": {
+        "continuation": 0,
+        "failure": 4,
+        "reversal": 8
+      }
+    }
+  }
+}

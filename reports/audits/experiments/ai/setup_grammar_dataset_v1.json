@@ -1,0 +1,161 @@
+{
+  "artifacts": {
+    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_test_oos.jsonl": "80f6cfb443ead77d20e224a8185c3bb9ca83c5679d1af423bc47a20ed2cdd0a9",
+    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_train.jsonl": "8836411f2ac52b4702186c68b607fbc4adcac6d9b01668fdfea6cee6e51cf727",
+    "data\\ml\\tensorflow\\setup_grammar_v1\\dataset_validation.jsonl": "71b330b8ae15f62ca39659696a9dfd055fb8db17e937288f91eebf06e6f9f9c9",
+    "data\\ml\\tensorflow\\setup_grammar_v1\\feature_schema.json": "98f2954a8397f08fc0da3d9a3b1d8d263e87beae4ce758cbde04652b6008f01e"
+  },
+  "can_trade": false,
+  "created_at_utc": "2026-09-16T00:29:10.052962+00:00",
+  "entry_authorized": false,
+  "git_commit": "4b1ccc4f840068c2ef87dd627fe2c3aa2eeb88e6",
+  "limitations": [
+    "Current corpus contains H1 sequence context, not full exec-TF replay.",
+    "PD Array zone, retest entry, POI stacking, and exec TF are partially unavailable and explicitly labelled as missing.",
+    "This materializes supervision labels only; no model is trained in this step."
+  ],
+  "schema_version": "SETUP_GRAMMAR_DATASET_REPORT_V1",
+  "source_files": [
+    {
+      "path": "data\\learning\\seq_ctx_01\\SEQ_CTX_01_CANONICAL_BOS.jsonl",
+      "sha256": "7a1d2f15c1a6d23f8175ab76026845171d9735a29ade477670091ef9eb311ad7"
+    },
+    {
+      "path": "data\\learning\\seq_ctx_01\\SEQ_CTX_01_LITE.jsonl",
+      "sha256": "2229b8a6d45f0658076829b9c13650f12b65254c146c8228ef438bb79655796f"
+    }
+  ],
+  "status": "READY_FOR_SETUP_QUALITY_TRAINING_REVIEW",
+  "summary": {
+    "diagnostics": {
+      "EXEC_TF_REPLAY_NOT_MATERIALIZED": 292,
+      "PD_ARRAY_ZONE_NOT_MATERIALIZED": 73
+    },
+    "label_counts": {
+      "TEST_OOS": {
+        "exec_tf_integrity": {
+          "UNKNOWN_NO_EXEC_TF_REPLAY": 76
+        },
+        "htf_narrative": {
+          "HTF_CONFLICT": 44,
+          "HTF_OK": 4,
+          "HTF_UNKNOWN": 28
+        },
+        "pd_array_zone": {
+          "NO_ZONE": 19,
+          "USABLE_UNGRADED": 57
+        },
+        "po3_phase": {
+          "CHAIN_COMPLETE": 19,
+          "D_CONFIRMED": 57
+        },
+        "poi_quality": {
+          "SKIP_OR_LOW_QUALITY": 53,
+          "T2_CANDIDATE_UNVERIFIED": 4,
+          "UNKNOWN_NO_PD_ARRAY": 19
+        },
+        "retest_entry": {
+          "IMPLEMENTATION_REQUIRED_NO_ZONE_FEATURE": 19,
+          "RETESTED": 19,
+          "WAIT_RETEST": 38
+        },
+        "setup_decision": {
+          "ABSTAIN": 16,
+          "REJECT": 44,
+          "WAIT": 16
+        },
+        "weak_link": {
+          "exec_tf_integrity": 3,
+          "htf_narrative": 44,
+          "pd_array_zone": 8,
+          "poi_quality": 5,
+          "retest_entry": 16
+        }
+      },
+      "TRAIN": {
+        "exec_tf_integrity": {
+          "UNKNOWN_NO_EXEC_TF_REPLAY": 120
+        },
+        "htf_narrative": {
+          "HTF_CONFLICT": 64,
+          "HTF_OK": 3,
+          "HTF_UNKNOWN": 53
+        },
+        "pd_array_zone": {
+          "NO_ZONE": 30,
+          "USABLE_UNGRADED": 90
+        },
+        "po3_phase": {
+          "CHAIN_COMPLETE": 30,
+          "D_CONFIRMED": 90
+        },
+        "poi_quality": {
+          "SKIP_OR_LOW_QUALITY": 89,
+          "T2_CANDIDATE_UNVERIFIED": 1,
+          "UNKNOWN_NO_PD_ARRAY": 30
+        },
+        "retest_entry": {
+          "IMPLEMENTATION_REQUIRED_NO_ZONE_FEATURE": 30,
+          "RETESTED": 30,
+          "WAIT_RETEST": 60
+        },
+        "setup_decision": {
+          "ABSTAIN": 26,
+          "REJECT": 64,
+          "WAIT": 30
+        },
+        "weak_link": {
+          "exec_tf_integrity": 1,
+          "htf_narrative": 64,
+          "pd_array_zone": 8,
+          "poi_quality": 17,
+          "retest_entry": 30
+        }
+      },
+      "VALIDATION": {
+        "exec_tf_integrity": {
+          "UNKNOWN_NO_EXEC_TF_REPLAY": 96
+        },
+        "htf_narrative": {
+          "HTF_CONFLICT": 35,
+          "HTF_OK": 6,
+          "HTF_UNKNOWN": 55
+        },
+        "pd_array_zone": {
+          "NO_ZONE": 24,
+          "USABLE_UNGRADED": 72
+        },
+        "po3_phase": {
+          "CHAIN_COMPLETE": 24,
+          "D_CONFIRMED": 72
+        },
+        "poi_quality": {
+          "SKIP_OR_LOW_QUALITY": 72,
+          "UNKNOWN_NO_PD_ARRAY": 24
+        },
+        "retest_entry": {
+          "IMPLEMENTATION_REQUIRED_NO_ZONE_FEATURE": 24,
+          "RETESTED": 24,
+          "WAIT_RETEST": 48
+        },
+        "setup_decision": {
+          "ABSTAIN": 30,
+          "REJECT": 35,
+          "WAIT": 31
+        },
+        "weak_link": {
+          "htf_narrative": 35,
+          "pd_array_zone": 13,
+          "poi_quality": 17,
+          "retest_entry": 31
+        }
+      }
+    },
+    "rows_by_split": {
+      "TEST_OOS": 76,
+      "TRAIN": 120,
+      "VALIDATION": 96
+    },
+    "total_rows": 292
+  }
+}

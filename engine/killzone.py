@@ -20,8 +20,8 @@ from typing import Optional
 from zoneinfo import ZoneInfo
 
 
-# Bandas killzone en UTC canonico (convencion del proyecto / docs ict/01_KILLZONES).
-# Clave -> (hora_ini, hora_fin) en horas decimales UTC.
+# Legacy display bands. They are not an execution-time authority because a
+# fixed UTC band changes its ET meaning when DST changes.
 KILLZONES_UTC: dict[str, tuple[float, float]] = {
     "Asia": (0.0, 3.0),
     "London Open": (7.0, 10.0),
@@ -73,11 +73,17 @@ def _et_band_to_utc(et_h: int, et_m: int, day_utc: datetime) -> datetime:
     return et_local.astimezone(timezone.utc)
 
 
-def _killzone_en_utc(utc_ts: datetime) -> str:
-    """Evalua las bandas KILLZONES_UTC (camino legacy, broker_tz=None)."""
-    h = utc_ts.hour + utc_ts.minute / 60.0
-    for nombre, (ini, fin) in KILLZONES_UTC.items():
-        if ini <= h < fin:
+def _killzone_en_canonical_utc(utc_ts: datetime) -> str:
+    """Evaluate ET-defined bands after normalizing the input to UTC.
+
+    UTC is the only input representation. The economic bands remain defined
+    in America/New_York and are converted for the date being evaluated, which
+    preserves their local meaning across DST transitions.
+    """
+    for nombre, ((h0, m0), (h1, m1)) in KILLZONES_ET.items():
+        ini = _et_band_to_utc(h0, m0, utc_ts)
+        fin = _et_band_to_utc(h1, m1, utc_ts)
+        if ini <= utc_ts < fin:
             return nombre
     return ""
 
@@ -87,24 +93,18 @@ def killzone_en(ts: datetime, broker_tz: Optional[ZoneInfo | str] = None) -> str
 
     REGLA DE ZONA HORARIA (MDS_KILLZONES / DEC-009i):
     - Si `broker_tz` se pasa: PRIMERO server_to_utc (nunca evaluar sobre hora
-      broker cruda). Luego se evalúan las bandas ICT definidas en ET fijo,
-      convirtiendo ese ET a UTC POR DIA via ZoneInfo (DST automatico).
-    - Si `broker_tz` es None: se asume que `ts` YA viene en UTC canonico (ruta
-      legacy de canonical.py) y se evalúa contra KILLZONES_UTC.
+      broker cruda).
+    - Si `broker_tz` es None: se asume que `ts` YA viene en UTC canonico.
+    - En ambos casos se evalúan las mismas bandas ET por fecha mediante
+      ZoneInfo. No hay ruta alternativa con bandas UTC fijas.
 
     Devuelve 'London Open' | 'New York AM' | 'New York PM' | '' segun corresponda.
     """
     if broker_tz is not None:
         utc_ts = server_to_utc(ts, broker_tz)
-        for nombre, ((h0, m0), (h1, m1)) in KILLZONES_ET.items():
-            ini = _et_band_to_utc(h0, m0, utc_ts)
-            fin = _et_band_to_utc(h1, m1, utc_ts)
-            if ini <= utc_ts < fin:
-                return nombre
-        return ""
-    if ts.tzinfo is None:
-        ts = ts.replace(tzinfo=timezone.utc)
-    return _killzone_en_utc(ts)
+    else:
+        utc_ts = ts.replace(tzinfo=timezone.utc) if ts.tzinfo is None else ts.astimezone(timezone.utc)
+    return _killzone_en_canonical_utc(utc_ts)
 
 
 def short_label(kz: str) -> str:

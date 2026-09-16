@@ -6,10 +6,10 @@
 | **Versión** | 2.0 (10/10) |
 | **Fecha** | 2026-07-12 |
 | **Estándar** | ADR-021 / RFC-001 |
-| **Estado** | Stable (docs) · **TZ unificada en UTC (R2 2026-07-13)** |
+| **Estado** | Stable (docs) · UTC canonico + conversion ET/DST en `engine/killzone.py` |
 | **Métricas** | [METRICS_CANON](../METRICS_CANON.md) |
 
-> **Fuente de verdad:** código (`detectors/killzones.py`, `ict_backtest/rules.py`) + este contrato.  
+> **Fuente de verdad:** codigo (`engine/killzone.py`, `detectors/killzones.py`) + este contrato.
 > Fuentes externas: innercircletrader.net, litefinance.org (respaldo, no verdad).
 
 ---
@@ -81,18 +81,21 @@ kz = etiqueta si h ∈ [ini, fin) de alguna banda
 | Pieza | Ruta | Rol |
 | ------- | ------ | ----- |
 | Detector | `detectors/killzones.py` | Columna `kz` / bandas para mapa |
-| Backtest | `ict_backtest/rules.py` → `killzone_en(ts)`, `KILLZONES_UTC` | KZ histórica |
+| Motor | `engine/killzone.py` → `killzone_en(ts)` | UTC de entrada, bandas ET convertidas por dia con DST |
 | UI | `resumen_widget.py` → `killzone_activa_ahora()` | KZ reloj vivo |
 | Mapa | `scripts/mapa_precio.py` | Pintar bandas |
 
-**Estado actual (hueco TZ):**  
+**Estado actual (reconciliacion temporal):**
 
-- Mentorship: horas **ET**.  
-- `killzones.py`: horas **locales del chart/broker**.  
-- `rules.py`: bandas **UTC** aproximadas.  
+- La entrada del motor se normaliza a UTC.
+- Las bandas economicas siguen definidas en ET y se convierten por fecha con
+  `ZoneInfo("America/New_York")`; DST no crea una segunda ruta de evaluacion.
+- `detectors/killzones.py` usa la misma conversion ET a UTC para el mapa.
 
-Tres relojes → riesgo de desalineación UI ↔ backtest.  
-**Aplicación:** Roadmap R2 (`docs/plan/ROADMAP_BIBLIOTECA_Y_APLICACION.md`).
+El riesgo de triple reloj queda cerrado tecnicamente. Permanece una
+`REVIEW_SCHEDULE_CONTRACT`: los documentos locales no coinciden aun sobre las
+horas exactas de NY AM/PM y London para cada modelo. No se certifica frecuencia
+de Silver Bullet hasta reconciliar esa definicion de producto.
 
 ---
 
@@ -100,7 +103,8 @@ Tres relojes → riesgo de desalineación UI ↔ backtest.
 
 | ID | Hallazgo | Estado |
 | ---- | ---------- | -------- |
-| KZ-1 | Triple definición de zona (ET / broker / UTC) | ✅ R2 (UTC canónico + display operador vía `app_observador/core/timezone.py`, env SMC_TZ) |
+| KZ-1 | Triple definicion de zona (ET / broker / UTC) | ✅ Motor unificado: UTC de entrada + ET/DST por fecha |
+| KZ-2 | Horarios exactos de modelo difieren entre documentos locales | ⚠️ REVIEW_SCHEDULE_CONTRACT |
 | #1 Look-ahead | No aplica a KZ puras | ✅ N/A |
 | Silver Bullet | Depende de KZ correcta | ⚠️ Acoplado a KZ-1 |
 
@@ -117,9 +121,9 @@ Métricas de cadena: [METRICS_CANON §3](../METRICS_CANON.md#3-ict_backtest-post
 
 - [x] Helper único de zona horaria `app_observador/core/timezone.py` (UTC canónico + display operador)
 - [x] UI y backtest importan el mismo helper (`killzone_activa_ahora` en UTC)
-- [x] Tests de bandas London/NY (`tests/test_timezone.py`)
+- [x] Tests DST para London, NY AM y NY PM (`tests/test_killzone_canonical_time.py`)
 - [x] UI muestra "KZ: London Open (UTC 7.0-10.0; operador 2.0-5.0)" explícito
-- [ ] `detectors/killzones.py` (mapa de velas) unificar visualmente con UTC — KZ-2 (fuera de R2)
+- [ ] Reconciliar por contrato las horas exactas de Silver Bullet antes de contar frecuencia certificada.
 
 ---
 

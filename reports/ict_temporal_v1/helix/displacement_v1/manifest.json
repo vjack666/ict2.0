@@ -1,0 +1,30 @@
+{
+  "manifest": "DISPLACEMENT_PHASE1_V1",
+  "generator": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\scripts\\lab\\experiments\\displacement_phase1.py",
+  "git_commit": "07e8a29d7a0c1aaffaba2a1d9942f1bbc892c5ab",
+  "python": "3.11.15",
+  "inputs": [
+    {
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M15.parquet",
+      "sha256": "94d37eb1e4dc1683d737f9b1bbec29683208e037515c7d1f0d04635bc9da86bd",
+      "rows": 117134
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\ict_temporal_v1\\helix\\displacement_v1\\displacement_phase1_row_evidence.parquet",
+      "sha256": "1bc3d8f6060ee6fdc0ff3fa572754e2f87eca2d65ebbc8abb75a90fe221895d0",
+      "rows": 117134
+    },
+    {
+      "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\reports\\ict_temporal_v1\\helix\\displacement_v1\\coverage_report.json",
+      "sha256": "0bbb4096c9a6b5bd58fa0900c9333935ec69d8a7330dcf572ab8417f4ee30b10"
+    }
+  ],
+  "contract": {
+    "m15_closed_only": true,
+    "full_prefix": true,
+    "can_trade": false,
+    "training": false
+  }
+}

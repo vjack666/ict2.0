@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "phase": "1",
+  "training": false,
+  "can_trade": false,
+  "source": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD\\EURUSD_M15.parquet",
+  "source_sha256": "94d37eb1e4dc1683d737f9b1bbec29683208e037515c7d1f0d04635bc9da86bd",
+  "source_rows": 117134,
+  "panel_rows": 117134,
+  "time_min": "2022-01-02 17:00:00+00:00",
+  "time_max": "2026-09-17 18:15:00+00:00",
+  "geometry_positive": 38225,
+  "episode_positive": 23655,
+  "outcome_observable_rows": 117130,
+  "reconciliation_counts": {
+    "NEITHER": 87757,
+    "ENGINE_ONLY": 25172,
+    "AGREE": 3768,
+    "RANGE_ONLY": 437
+  },
+  "limitations": [
+    "outcome is audit-only and future-derived",
+    "detectors are distinct proxies",
+    "no source data altered"
+  ]
+}

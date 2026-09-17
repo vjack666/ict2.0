@@ -3,9 +3,11 @@ ACTUALIZADOR MT5 -> ICT SYSTEM (reusa el terminal MT5 de SMC-SYSTEMS).
 
 Estrategia (verificada contra SMC-SYSTEMS/scripts/update_mt5_append.py):
   - Usa el MISMO terminal MT5 ya logueado en la maquina (FundedNext), sin credenciales.
-  - Baja la punta reciente por copy_rates_range (agosto->now) y la APPENDE al
-    parquet local de ICT SYSTEM/ data/raw/<SYM>_<TF>.parquet (merge por 'time',
-    keep=last) para NO pisar el historico existente.
+  - Lee la ultima fecha del parquet existente y baja SOLO desde ahi hasta hoy
+    (copy_rates_range desde last_date -> now). Si no hay parquet, baja desde
+    inicio de mes actual como fallback.
+  - APPENDE al parquet local (merge por 'time', keep=last) para NO pisar el
+    historico existente.
   - Misma nomenclatura de archivo que ya consume el motor (build_features).
 
 Este script debe correr con el Python del SISTEMA (donde MetaTrader5 esta
@@ -22,7 +24,7 @@ import argparse
 import os
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(r"C:\Users\v_jac\Desktop\ICT SYSTEM")
@@ -36,15 +38,32 @@ TF_MAP = {
 SYMS_DEFAULT = ["EURUSD", "GBPUSD", "XAUUSD", "USDJPY"]
 
 
-def download_tip(symbol: str, tf: str):
+def last_date_from_parquet(path: Path):
+    """Return the last timestamp in an existing parquet, or None."""
+    import pandas as pd
+    if not path.exists() or path.stat().st_size <= 100:
+        return None
+    try:
+        df = pd.read_parquet(path, columns=["time"])
+        if df.empty:
+            return None
+        last = pd.to_datetime(df["time"], utc=True).max()
+        return last.to_pydatetime()
+    except Exception:
+        return None
+
+
+def download_tip(symbol: str, tf: str, since: datetime | None = None):
     import MetaTrader5 as mt5
     import pandas as pd
 
     code = TF_MAP[tf]
     now = datetime.now()
-    # Baja desde inicio de mes actual -> now (cubre el agujero reciente).
-    rates = mt5.copy_rates_range(symbol, code, datetime(now.year, now.month, 1), now)
+    # Si hay parquet existente, baja desde su ultima fecha; si no, inicio de mes.
+    start = since or datetime(now.year, now.month, 1)
+    rates = mt5.copy_rates_range(symbol, code, start, now)
     if rates is None or len(rates) == 0:
+        # Fallback: bajar 50k velas mas recientes
         rates = mt5.copy_rates_from_pos(symbol, code, 0, 50_000)
     if rates is None or len(rates) == 0:
         raise RuntimeError(f"MT5 sin datos para {symbol} {tf}: {mt5.last_error()}")
@@ -143,8 +162,16 @@ def main() -> int:
         sym_dir.mkdir(parents=True, exist_ok=True)
         for tf in tfs:
             try:
-                tip = download_tip(sym, tf)
                 path = sym_dir / f"{sym}_{tf}.parquet"
+                last = last_date_from_parquet(path)
+                if last:
+                    # Agregar 1 segundo para evitar re-descargar la ultima vela
+                    since = last + timedelta(seconds=1)
+                    print(f"  {sym} {tf}: parquet existe, ultima fecha {last} -> descargando desde {since}")
+                else:
+                    since = None
+                    print(f"  {sym} {tf}: sin parquet previo, descargando desde inicio de mes")
+                tip = download_tip(sym, tf, since=since)
                 merged = merge_tip(path, tip)
                 write_parquet_atomic(path, merged)
                 print(f"[OK] {sym} {tf}: {len(merged)} velas, ultima {merged['time'].iloc[-1]}")

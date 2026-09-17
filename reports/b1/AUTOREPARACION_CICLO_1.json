@@ -1,0 +1,46 @@
+{
+  "ciclo": 1,
+  "timestamp": "2026-09-11T15:30:00+00:00",
+  "ERROR_INICIAL": "El script fabrica m15_evidence desde m15_last.get(...) (feature columns de vela), pero el evaluador canónico rechaza esto como evidencia causal válida. No existe productor canónico de evidencia M15 histórica.",
+  "CAUSA_RAIZ": "En engine/ no hay un ensamblador canónico, causal y cerrado que emita m15_evidence.sweep, m15_evidence.displacement, m15_evidence.bos_or_choch, m15_evidence.fvg_or_ob, m15_evidence.retest por decision_time con source_time <= decision_time. El evaluador canónico (mechanical_signal_assessment.py:49-52) confirma explícitamente: 'm15_evidence.sweep deliberately has no candle-derived fallback. The current canonical assembler does not emit a causal sweep artifact, so an absent artifact abstains instead of turning a liquidity-zone heuristic into a claimed sweep.'",
+  "TEST_AGREGADO": "N/A — se detuvo en paso 4 del protocolo (búsqueda de productor canónico) antes de llegar a los tests.",
+  "ARCHIVOS_CAMBIADOS": [
+    "scripts/b1_extract_corpus_v2.py: corregido ast.parse (indentación get_time_col), reemplazado code_commit=PENDING por git rev-parse HEAD, corregido contrato B1 (M15 operativo + H1 + H4 + D1, rango 2022-2025)"
+  ],
+  "SMOKE_TEST": "N/A — no ejecutado, se detuvo en búsqueda de productor canónico.",
+  "FULL_PREFIX": "N/A",
+  "HOLDOUT_TOUCHED": false,
+  "CORPUS_HASH": null,
+  "REPRODUCIBILITY": "N/A",
+  "RESULTADO": "BLOCKED_TECHNICAL",
+  "SIGUIENTE_ACCION": "Proponer diseño mínimo en engine/ o diseñar ensamblador de evidencia M15 histórico con timestamps causales",
+  "API_FALTANTE": {
+    "descripcion": "Ensamblador canónico de evidencia M15 histórica para decision_time",
+    "funcion": "build_m15_evidence_for_decision_time",
+    "input": "Velas cerradas M15 con time <= decision_time, MarketObject references, detectores canónicos (displacement, fvg, ob, liquidity, structure)",
+    "output": {
+      "sweep": {"present": "bool", "direction": "str | None", "time": "str | None", "source": "str"},
+      "displacement": {"present": "bool", "direction": "str | None", "magnitude": "float | None", "time": "str | None", "source": "str"},
+      "bos_or_choch": {"present": "bool", "type": "str | None", "time": "str | None", "source": "str"},
+      "fvg_or_ob": {"present": "bool", "type": "str | None", "time": "str | None", "source": "str"},
+      "retest": {"present": "bool", "time": "str | None", "depth": "float | None", "source": "str"}
+    },
+    "restricciones": [
+      "source_time <= decision_time para cada evidencia",
+      "No fabricar desde la última fila del dataframe",
+      "No usar feature columns como evidencia causal directa",
+      "Cada evidencia debe tener timestamp propio y reference a MarketObject"
+    ]
+  },
+  "EVIDENCIA_EVALUADOR_CANONICO": {
+    "archivo": "engine/mechanical_signal_assessment.py",
+    "lineas": "49-52, 80-85, 86-88, 89-91, 92-95, 96-98",
+    "texto_clave": "m15_evidence.sweep deliberately has no candle-derived fallback. The current canonical assembler does not emit a causal sweep artifact.",
+    "campos_requeridos": ["sweep", "displacement", "bos_or_choch", "fvg_or_ob", "retest"],
+    "valores_requeridos": "True (no None, no False, no strings inventados)"
+  },
+  "PROBLEMA_ACTUAL_SCRIPT": {
+    "descripcion": "El script actual usa m15_last.get('liquidity_sweep_up', False) y similares desde build_features() para construir m15_evidence, pero estas son feature columns de vela, no artefactos de evidencia causal con timestamp propio.",
+    "lineas_afectadas": "199-249 (construcción de m15_evidence desde m15_last)"
+  }
+}

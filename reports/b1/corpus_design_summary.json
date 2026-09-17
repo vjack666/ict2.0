@@ -1,0 +1,14 @@
+{
+  "valid_range": {
+    "start": "2020-01-02 04:00:00+00:00",
+    "end": "1970-01-01 00:24:11.598300+00:00"
+  },
+  "total_decision_times": 0,
+  "candidates": 0,
+  "rejections": 0,
+  "rejection_codes": {},
+  "duplicates": 0,
+  "holdout_touched": false,
+  "generator": "engine.mechanical_signal_assessment.assess_mechanical_signal",
+  "generated_at": "2026-09-11T19:50:02.803512+00:00"
+}

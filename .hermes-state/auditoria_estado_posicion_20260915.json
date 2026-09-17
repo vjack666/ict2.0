@@ -1,0 +1,19 @@
+{
+  "AGENTE": "Hermes (auditor de sistema)",
+  "DEPARTAMENTO": "CTO / ingeniería diaria — mechanical_bot",
+  "TAREA": "Auditar estado del sistema y reconciliar posición EURUSD BUY 0.44 magic 2022052714",
+  "STATUS": "COMPLETED",
+  "EVIDENCIA": "1) Estado persistido: .hermes-state/mechanical_bot_state.json indica ERROR con cycle=null. La transición a ERROR fue por RUNNER_ERROR el 2026-09-14T19:56:46Z (ver mechanical_bot_events.jsonl). /api/state no está alcanzable (curl falla), pero el archivo de estado es la fuente persisted; el loop del runner murió y marcó ERROR. 2) service.py confirma: OFF→stop_runner() espera tick activo (join timeout 8s), luego bot.stop()→OFF y _persist_state(). Apagar limpia ERROR siempre que el runner esté vivo; si el proceso se cayó, el estado persisted queda ERROR hasta que un nuevo proceso haga _restore_state() que fuerza OFF. 3) magic_number del bot: 26090615 (core.py:31). La posición visible tiene magic 2022052714. No hay correlación DECISION→ORDER_REQUEST→ORDER_RESULT para magic 2022052714 en el blackbox. La única orden registrada en el blackbox usa magic 26090615 y falló (ORDER_RESULT outcome=NONE, last_error=[-2,'Unnamed arguments not allowed']). No hay ORDER_REQUEST/ORDER_RESULT entries en el blackbox desde 2026-09-10. 4) latest_snapshot.json usa schema POI_STOCH_M15_OBSERVATION_SNAPSHOT_V1 con can_trade=false, entry_authorized=false, 350 POIs (FVG D1 BULL entre 1.042-1.060). Es contrato de OBSERVACIÓN, no operativo: no tiene direction/probability/confirmed del contrato mecánico; el bot lo ignora en modo automático (WAIT_SIGNAL) porque no cumple el contrato estricto. 5) No hay runner vivo: ps devolvió NO_PS_FOUND. El dashboard no está ejecutando el loop.",
+  "ARCHIVOS": [
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/.hermes-state/mechanical_bot_state.json",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/.hermes-state/mechanical_bot_events.jsonl",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/.hermes-state/mechanical_bot_blackbox.jsonl",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot/service.py",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot/core.py",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot/mt5_adapter.py",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/runtime/mechanical_bot/latest_snapshot.json",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/docs/tesis/SDD_MECHANICAL_MT5_BOT.md"
+  ],
+  "RIESGOS": "La posición EURUSD BUY 0.44 magic 2022052714 es NOT_BOT_OWNED: el magic no coincide con el bot (26090615 vs 2022052714) y no hay correlación en el blackbox. Correr con execution_enabled=false hace que el bot genere DECISION+action pero nunca llega a ORDER_REQUEST (el _execute lanza antes de alcanzar el adapter). Esto crea un log de 'órdenes pretendidas' que no se envían. El runner vive solo mientras el proceso del dashboard esté ejecutándose; al matar el proceso, el estado persisted queda ERROR hasta el próximo inicio.",
+  "SIGUIENTE_ACCIÓN": "1) Si el dashboard se reinicia, el estado pasará a OFF automáticamente (_restore_state). 2) NOTA: la posición magic 2022052714 requiere reconciliación externa — no es del bot. 3) El contrato latest_snapshot.json es solo observación; si se quiere modo automático operativo, el productor debe publicar el contrato estricto con symbol/direction/probability/confirmed/asof_time. 4) Ejecutar Apagar en el dashboard limpiará ERROR→OFF si el runner responde; si no, matar y reiniciar el proceso fuerza OFF por _restore_state."
+}

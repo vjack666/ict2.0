@@ -86,7 +86,7 @@ def fine_execution(
     if len(closed) < 5:
         return {"ok": False, "exec_tf": exec_tf, "reason": "not_enough_bars"}
 
-    sh, sl = _swing_points(closed, lookback=2)
+    sh, sl = _swing_points(closed, _lookback=2)
     sh_v = sh.dropna()
     sl_v = sl.dropna()
 

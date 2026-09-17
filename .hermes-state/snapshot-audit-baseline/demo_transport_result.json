@@ -1,0 +1,65 @@
+{
+  "scope": "DEMO_TRANSPORT_ONLY_NOT_STRATEGY",
+  "started_at": "2026-09-11T00:06:45.983856+00:00",
+  "magic": 26091099,
+  "volume": 0.01,
+  "orders": [
+    {
+      "kind": "OPEN",
+      "retcode": 10009,
+      "order": 152614915488,
+      "deal": 152466467184
+    },
+    {
+      "kind": "CLOSE",
+      "ticket": 152614915488,
+      "retcode": 10009,
+      "deal": 152466467189
+    }
+  ],
+  "status": "PASS_OPEN_CLOSE_RECONCILED",
+  "unrelated_before": [
+    {
+      "ticket": 152613134698,
+      "volume": 0.58,
+      "type": 1
+    }
+  ],
+  "opened_ticket": 152614915488,
+  "test_positions_remaining": 0,
+  "unrelated_after": [
+    {
+      "ticket": 152613134698,
+      "volume": 0.58,
+      "type": 1
+    }
+  ],
+  "finished_at": "2026-09-11T00:06:46.609036+00:00",
+  "deals": [
+    {
+      "deal": 152466467184,
+      "position": 152614915488,
+      "entry": 0,
+      "volume": 0.01,
+      "price": 1.16135,
+      "profit": 0.0,
+      "commission": 0.0,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "deal": 152466467189,
+      "position": 152614915488,
+      "entry": 1,
+      "volume": 0.01,
+      "price": 1.16135,
+      "profit": 0.0,
+      "commission": 0.0,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "net_demo_result": 0.0,
+  "account_environment": "DEMO",
+  "account_server": "MetaQuotes-Demo"
+}

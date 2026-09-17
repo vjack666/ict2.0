@@ -1,0 +1,104 @@
+{
+  "nombre_modulo": "engine.m15_evidence_assembler",
+  "funcion_principal": "build_m15_evidence_for_decision_time",
+  "descripcion": "Ensamblador canónico de evidencia M15 para cada decision_time. Combina el productor histórico existente (historical_event_objects) con el detector de sweep canónico (canonical_sweep) y una función de detección de retest.",
+  "firma": {
+    "parametros": [
+      [
+        "m15_frame",
+        "pd.DataFrame",
+        "Velas M15 cerradas con time <= decision_time"
+      ],
+      [
+        "h1_frame",
+        "pd.DataFrame",
+        "Vela H1 más reciente cerrada con time <= decision_time"
+      ],
+      [
+        "h4_frame",
+        "pd.DataFrame",
+        "Vela H4 más reciente cerrada con time <= decision_time"
+      ],
+      [
+        "decision_time",
+        "pd.Timestamp",
+        "Momento de decisión (timezone UTC)"
+      ],
+      [
+        "symbol",
+        "str",
+        "Instrumento (default EURUSD)"
+      ]
+    ],
+    "retorno": "dict con m15_evidence"
+  },
+  "m15_evidence": {
+    "sweep": {
+      "present": "bool",
+      "time": "str | None",
+      "source": "str"
+    },
+    "displacement": {
+      "present": "bool",
+      "time": "str | None",
+      "source": "str"
+    },
+    "bos_or_choch": {
+      "present": "bool",
+      "time": "str | None",
+      "source": "str"
+    },
+    "fvg_or_ob": {
+      "present": "bool",
+      "time": "str | None",
+      "source": "str"
+    },
+    "retest": {
+      "present": "bool",
+      "time": "str | None",
+      "source": "str"
+    }
+  },
+  "algoritmo_paso_a_paso": [
+    "1. Normalizar columnas de tiempo (timestamp o time) a datetime64[ms, UTC]",
+    "2. Recuperar el último MarketObject para cada tipo (BOS, DISPLACEMENT, FVG, OB) con time <= decision_time",
+    "3. Ejecutar canonical_sweep sobre m15_frame recortado (time <= decision_time) para obtener sweep",
+    "4. Para cada evidencia, establecer present=True si existe objeto/feature, False si no existe, y registrar time + source",
+    "5. Detectar retest: verificar si el precio (última vela M15) tocó la zona FVG/OB previamente detectada",
+    "6. Retornar dict con los 5 campos de evidencia"
+  ],
+  "detalle_implementacion": {
+    "sweep": {
+      "como_se_obtiene": "Ejecutar canonical_sweep(m15_frame_recortado, lookback=20). Si liquidity_sweep_up o liquidity_sweep_down es True en la última vela → present=True, time=última vela time, source='canonical_sweep'",
+      "rechazo_si_falta": "present=False → evaluador devuelve NO_SWEEP. Si m15_frame vacío → SWEEP_EVIDENCE_UNAVAILABLE"
+    },
+    "displacement": {
+      "como_se_obtiene": "Buscar en historical_event_objects los objetos DISPLACEMENT M15 con creation_time <= decision_time. Si existe al menos uno → present=True, time=creation_time del más reciente, source='historical_event_objects'",
+      "rechazo_si_falta": "present=False → evaluador devuelve NO_DISPLACEMENT"
+    },
+    "bos_or_choch": {
+      "como_se_obtiene": "Buscar en historical_event_objects los objetos BOS M15 con creation_time <= decision_time. Si existe al menos uno → present=True, time=creation_time del más reciente, source='historical_event_objects'",
+      "rechazo_si_falta": "present=False → evaluador devuelve NO_BOS"
+    },
+    "fvg_or_ob": {
+      "como_se_obtiene": "Buscar en historical_event_objects los objetos FVG M15 vinculados o OB H4 POI con creation_time <= decision_time. Si existe al menos uno → present=True, time=creation_time del más reciente, source='historical_event_objects'",
+      "rechazo_si_falta": "present=False → evaluador devuelve NO_FVG_OR_OB"
+    },
+    "retest": {
+      "como_se_obtiene": "Si existe FVG/OB (fvg_or_ob=True), verificar si la última vela M15 (time <= decision_time) tocó la zona del objeto (low <= zone_high and high >= zone_low). Si sí → present=True, time=última vela time, source='m15_candle_retest_check'",
+      "rechazo_si_falta": "present=False → evaluador devuelve WAIT_RETEST. Si no hay FVG/OB → no se evalúa (se mantiene como False)"
+    }
+  },
+  "restricciones_causal": [
+    "source_time <= decision_time para cada evidencia",
+    "No usar información de velas con time > decision_time",
+    "No inventar valores (True cuando no hay evidencia, ni strings inventados)",
+    "Cada evidencia tiene timestamp propio y source documentado"
+  ],
+  "integracion_con_script": {
+    "modifica_a": "scripts/b1_extract_corpus_v2.py",
+    "reemplaza": "líneas ~199-249 (construcción de m15_evidence desde m15_last.get(...))",
+    "nueva_llamada": "from engine.m15_evidence_assembler import build_m15_evidence_for_decision_time",
+    "uso": "m15_evidence = build_m15_evidence_for_decision_time(m15_ctx, h1_ctx, h4_ctx, decision_time, symbol)"
+  }
+}

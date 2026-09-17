@@ -2,7 +2,7 @@
   "schema_version": "EXECUTION_CALIBRATION_PREFLIGHT_V2",
   "status": "REVIEW",
   "mode": "AUDIT_ONLY",
-  "as_of_utc": "2026-09-16T23:37:31.337099+00:00",
+  "as_of_utc": "2026-09-17T00:15:19.694607+00:00",
   "invariants": {
     "can_trade": false,
     "entry_authorized": false,
@@ -1663,7 +1663,7 @@
   ],
   "generator": {
     "script": "scripts/lab/experiments/execution_calibration_preflight_v2.py",
-    "commit": "0bff1701b673a34dd46987e9ab94a1594a6bc0ea",
+    "commit": "49e89978f647610f4ec610589129f74d41ad1948",
     "branch": "codex/audit-hermes-cert-20260826",
     "worktree_state": "DIRTY"
   },

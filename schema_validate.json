@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "AGENTE": {
+      "type": "string",
+      "const": "Hermes (subagent audit)"
+    },
+    "DEPARTAMENTO": {
+      "type": "string",
+      "const": "Vigilancia - Seguridad y Auditoría de Ejecución"
+    },
+    "TAREA": {
+      "type": "string",
+      "const": "Validar caja negra y ejecución DEMO del mechanical_bot"
+    },
+    "STATUS": {
+      "type": "string",
+      "enum": [
+        "READY",
+        "WORKING",
+        "WAITING",
+        "BLOCKED",
+        "COMPLETED",
+        "ESCALATED"
+      ],
+      "const": "COMPLETED"
+    },
+    "EVIDENCIA": {
+      "type": "string"
+    },
+    "ARCHIVOS": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "RIESGOS": {
+      "type": "string"
+    },
+    "SIGUIENTE_ACCIÓN": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "AGENTE",
+    "DEPARTAMENTO",
+    "TAREA",
+    "STATUS",
+    "EVIDENCIA",
+    "ARCHIVOS",
+    "RIESGOS",
+    "SIGUIENTE_ACCIÓN"
+  ]
+}

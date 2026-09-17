@@ -1,0 +1,96 @@
+{
+  "objetivo_1": "Mapeo de detectores existentes completado",
+  "fecha": "2026-09-11",
+  "total_detectores_mapeados": 7,
+  "detectores": {
+    "engine.detectors.fvg.detect_fvg": {
+      "input": "rows (Iterable[Mapping]), timeframe, symbol",
+      "output": "list[MarketObject] con ObjectType.FVG",
+      "timestamp": "creation_time = third.time (vela de confirmación, índice i)",
+      "causal": true,
+      "source_time_ok": true,
+      "market_object": true,
+      "notes": "Detecta 3-candle FVG. Usa third.time como creation_time. No requiere OB previo."
+    },
+    "engine.detectors.ob.detect_order_blocks": {
+      "input": "rows (Iterable[Mapping]), timeframe, symbol, min_body_ratio",
+      "output": "list[MarketObject] con ObjectType.ORDER_BLOCK",
+      "timestamp": "creation_time = fp.time (vela footprint), bar_time = ft.time (vela follow-through)",
+      "causal": true,
+      "source_time_ok": true,
+      "market_object": true,
+      "notes": "Detecta OB solo después de follow-through cerrado. Requiere vela footprint + vela follow-through."
+    },
+    "detectors.displacement.detect_displacement": {
+      "input": "frame (pd.DataFrame), config (DisplacementConfig)",
+      "output": "pd.DataFrame con columnas displacement_bullish, displacement_bearish, displacement_magnitude",
+      "timestamp": "NO tiene timestamp propio (columnas booleanas en el dataframe)",
+      "causal": true,
+      "source_time_ok": true,
+      "market_object": false,
+      "notes": "Devuelve features, no objetos. Necesita ser envuelto en un MarketObject para el formato canónico."
+    },
+    "detectors.liquidity_context.canonical_sweep": {
+      "input": "df (pd.DataFrame), lookback, min_periods",
+      "output": "pd.DataFrame con columnas liquidity_sweep_down, liquidity_sweep_up",
+      "timestamp": "NO tiene timestamp propio (columnas booleanas en el dataframe)",
+      "causal": true,
+      "source_time_ok": true,
+      "market_object": false,
+      "notes": "Definición única de sweep (rompe liquidez + cierra adentro). No produce objeto, produce feature column."
+    },
+    "detectors.bos.detect_bos": {
+      "input": "frame (pd.DataFrame), config (BosConfig)",
+      "output": "pd.DataFrame con columnas bos_dir, bos_level, bos_quality_score, swing_high, swing_low",
+      "timestamp": "NO tiene timestamp propio (columnas en el dataframe)",
+      "causal": true,
+      "source_time_ok": true,
+      "market_object": false,
+      "notes": "Detecta estructura de mercado con swing points causales (lookback causales)."
+    },
+    "engine.bos.structure.detect_market_structure": {
+      "input": "frame (pd.DataFrame), config (StructureConfig)",
+      "output": "DataFrame con columnas bos_dir, bos_level, bos_quality_score, etc.",
+      "timestamp": "Usa time del dataframe",
+      "causal": true,
+      "source_time_ok": true,
+      "market_object": false,
+      "notes": "Detecta BOS/CHOCH. Se usa en historical_event_objects para crear BOS MarketObject."
+    },
+    "engine.historical_event_objects.build_historical_event_objects": {
+      "input": "frames (Mapping[str, pd.DataFrame]) con H4 y M15, symbol, config",
+      "output": "dict con objects (list[MarketObject]), counts, config",
+      "timestamp": "Cada objeto tiene creation_time, bar_time, confirmation_time, tradable_time",
+      "causal": true,
+      "source_time_ok": true,
+      "market_object": true,
+      "notes": "Compone OB H4 + BOS M15 + DISPLACEMENT M15 + FVG M15 vinculados. Producido por confirmation candle close.",
+      "gaps": [
+        "No detecta SWEEP",
+        "No detecta RETEST",
+        "No produce m15_evidence dict"
+      ]
+    }
+  },
+  "hallazgos_clave": {
+    "productor_existente": "engine.historical_event_objects.build_historical_event_objects",
+    "produce_bos": true,
+    "produce_displacement": true,
+    "produce_fvg_vinculado": true,
+    "produce_ob_h4_poi": true,
+    "produce_sweep": false,
+    "produce_retest": false,
+    "produce_m15_evidence": false,
+    "sweep_disponible_en": "detectors.liquidity_context.canonical_sweep (feature column)",
+    "retest_no_disponible_en_ningun_lado": true
+  },
+  "solucion_propuesta": {
+    "crear_ensamblador": "engine.m15_evidence_assembler.build_m15_evidence_for_decision_time",
+    "combinara": [
+      "engine.historical_event_objects.build_historical_event_objects (para BOS, DISPLACEMENT, FVG/OB)",
+      "detectors.liquidity_context.canonical_sweep (para SWEEP)",
+      "nueva funcion de deteccion de retest (verificar si precio toca zona FVG/OB)"
+    ],
+    "output_desarrollara": "dict con m15_evidence (sweep, displacement, bos_or_choch, fvg_or_ob, retest) cada uno con present, time, source"
+  }
+}

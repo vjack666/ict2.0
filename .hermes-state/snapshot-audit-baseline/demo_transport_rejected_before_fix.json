@@ -1,0 +1,25 @@
+{
+  "scope": "DEMO_TRANSPORT_ONLY_NOT_STRATEGY",
+  "started_at": "2026-09-11T00:05:23.938264+00:00",
+  "magic": 26091099,
+  "volume": 0.01,
+  "orders": [],
+  "status": "BLOCKED",
+  "unrelated_before": [
+    {
+      "ticket": 152613134698,
+      "volume": 0.58,
+      "type": 1
+    }
+  ],
+  "error": "MT5 open rejected with retcode=10013",
+  "test_positions_remaining": 0,
+  "unrelated_after": [
+    {
+      "ticket": 152613134698,
+      "volume": 0.58,
+      "type": 1
+    }
+  ],
+  "finished_at": "2026-09-11T00:05:24.084285+00:00"
+}

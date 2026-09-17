@@ -1,0 +1,129 @@
+{
+  "branch": "codex/publish-snapshot-mt5-fix-20260910",
+  "commit": "4e70f0d8ec6d98f2f26f96a983b6e3d7e9829d3f",
+  "tree": "434aa8b512c8f680f0179188ed86d1bb0c5f4ea2",
+  "source": "0cb7af577dc1f430b6ba67ffae406f984ea7d127",
+  "base": "b7eabad6a4805ab114faf58b84f0526f85cda608",
+  "exclusions": [
+    {
+      "path": ".hermes-state/current_blockers.md",
+      "bytes": 2545,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/gate_evidence.json",
+      "bytes": 913,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/last_execution.json",
+      "bytes": 737,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/mechanical_bot_blackbox.jsonl",
+      "bytes": 4015571,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/mechanical_bot_events.jsonl",
+      "bytes": 180301,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/mechanical_bot_state.json",
+      "bytes": 123,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/missions/MC-20260822-164150-f48c89.events.jsonl",
+      "bytes": 2649,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/missions/MC-20260822-164150-f48c89.json",
+      "bytes": 4417,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/snapshot-audit-baseline/App.jsx",
+      "bytes": 34373,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/snapshot-audit-baseline/README.md",
+      "bytes": 3557,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/snapshot-audit-baseline/backend.py",
+      "bytes": 15088,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/snapshot-audit-baseline/before.json",
+      "bytes": 1326,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/terminal_restart.err",
+      "bytes": 0,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": ".hermes-state/terminal_start_audit.log.err",
+      "bytes": 0,
+      "reason": "local operational state or audit scratch data"
+    },
+    {
+      "path": "reports/audits/experiments/ai/visual_backtest_2006_2025_fast.json",
+      "bytes": 73849770,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/audits/experiments/ai/visual_backtest_2006_2025_fast_h200.json",
+      "bytes": 73849864,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/audits/experiments/ai/visual_backtest_2006_2025_fast_h200_prefix.json",
+      "bytes": 73850946,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/audits/mtf_replay/t7f_2006_2020/2006/mtf_replay_t7f_2006.json",
+      "bytes": 78198234,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/audits/mtf_replay/t7f_2006_2020/2007/mtf_replay_t7f_2007.json",
+      "bytes": 57689582,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/audits/mtf_replay/t7f_2006_2020/2008/mtf_replay_t7f_2008.json",
+      "bytes": 100288666,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/audits/mtf_replay/t7f_2006_2020/2009/mtf_replay_t7f_2009.json",
+      "bytes": 115240793,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/audits/mtf_replay/t7f_2006_2020/2010/mtf_replay_t7f_2010.json",
+      "bytes": 105259045,
+      "reason": "generated report above 50 MiB"
+    },
+    {
+      "path": "reports/mechanical_bot/dashboard.pid",
+      "bytes": 5,
+      "reason": "machine-specific process identifier"
+    },
+    {
+      "path": "runtime/mechanical_bot/latest_snapshot.json",
+      "bytes": 439,
+      "reason": "runtime signal is not distributable source code"
+    }
+  ]
+}

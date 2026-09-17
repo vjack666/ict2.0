@@ -1,0 +1,19 @@
+{
+  "AGENTE": "Hermes (subagent audit)",
+  "DEPARTAMENTO": "Vigilancia - Seguridad y Auditoría de Ejecución",
+  "TAREA": "Validar caja negra y ejecución DEMO del mechanical_bot",
+  "STATUS": "COMPLETED",
+  "EVIDENCIA": "CAJA NEGRA: OK (con observación). Hash chain intacta dentro de cada archivo y cross-file OK (rotated→main). 36 rupturas internas en main (10) y rotado (25) son quiebres de línea dentro del mismo archivo, no intrusión — requieren investigación de integridad. EVENTOS: DECISION=8866, SIGNAL_ASSESSMENT=526, ORDER_REQUEST=1, ORDER_RESULT=1. SECUENCIA COMPLETA verificada: DECISION→ORDER_REQUEST→ORDER_RESULT con correlation_id=967e8f86, cadena de hashes intacta entre los 3 eventos. Fallo de escritura bloquea order_send: service.py _record_decision lanza RuntimeError si BlackBoxWriteError; mt5_adapter._send bloquea antes de order_send si blackbox falla. RETENCIÓN: blackbox.jsonl (1235 líneas) + blackbox.jsonl.1 (8159 líneas) con rotación a 5MB, 3 backups, retención 365 días. EJECUCIÓN DEMO: VALIDADA. Demo guard: configure_demo_guard + _assert_demo_guard en mt5_adapter.py. Retcode: _require_success verifica {10009, 10010} (DONE/DONE_PARTIAL). Volumen: BotConfig.initial_lot = 0.10. Reconciliación: _close_all filtra por symbol + magic_number. NO ORDENS ACTIVAS: state=ERROR, can_trade checks en tick(), execution_enabled=false por defecto. OBSERVACIÓN: POI_STOCH_EVAL no existe como evento separado — se integra en DECISION (snapshot/stochastic campos).",
+  "ARCHIVOS": [
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/.hermes-state/mechanical_bot_blackbox.jsonl",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/.hermes-state/mechanical_bot_blackbox.jsonl.1",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot/service.py",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot/blackbox.py",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot/mt5_adapter.py",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot/core.py",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/mechanical_bot_state.json",
+    "C:/Users/v_jac/Desktop/ICT SYSTEM/docs/tesis/SDD_MECHANICAL_MT5_BOT.md"
+  ],
+  "RIESGOS": "1. BREACH hash chain: 36 rupturas internas (10 en main, 25 en rotado). No son cross-file ni correlación, pero indican que alguna escritura no encadenó correctamente. Investigación requerida: ¿son eventos SIGNAL_ASSESSMENT con writer concurrente, o corrupción? 2. SDD §Verificación exige POI_STOCH_EVAL como evento independiente; el código actual lo integra en DECISION. Brecha documentacional. 3. mechanical_bot_state.json no contiene can_trade/execution_enabled — solo bot state. Los gates están en código, no en state persistente. 4. La operación DEMO (SELL 0.10, 2026-09-10) está completa y auditable, pero es una ejecución manual, no automática.",
+  "SIGUIENTE_ACCIÓN": "1. Investigar las 36 rupturas de hash chain: leer líneas afectadas (458, 460, 615 en main; 665, 667, 680 en rotado) y verificar si son doble-escritura concurrente o corrupción. 2. Decidir si POI_STOCH_EVAL debe ser evento separado ( SDD) o mantener integración en DECISION (código actual). 3. Agregar can_trade/execution_enabled al state persistente si se requiere auditoría offline. 4. Resumen: CAJA NEGRA = OK (con observación de chain breaks), EJECUCIÓN DEMO = VALIDADA, NO hay órdenes activas."
+}

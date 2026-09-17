@@ -1,0 +1,108 @@
+{
+  "authority": {
+    "autonomy_policy": "technical_subordinate_decisions",
+    "ceo": "codex",
+    "escalation_boundaries": [
+      "OBJECTIVE",
+      "SCOPE",
+      "AUTHORITY",
+      "SECURITY",
+      "BUDGET",
+      "IRREVERSIBLE_DATA"
+    ],
+    "owner": "user"
+  },
+  "blockers": [],
+  "completion_state": {
+    "artifacts_consistent": false,
+    "evidence_recorded": false,
+    "mission_complete": false,
+    "no_unresolved_blockers": false,
+    "objective_satisfied": false,
+    "required_tests_pass": false
+  },
+  "controller_version": "MC-0/MC-3-local-1.1",
+  "created_at": "2026-09-11T15:35:09.428199+00:00",
+  "decisions": [],
+  "delegation": {
+    "agent_key": "discoverer",
+    "provider": "opencode",
+    "session_id": null,
+    "status": "PLANNED"
+  },
+  "evidence": [],
+  "git_head": "bbee8963115ff32399b08db22930852a5c1e8b4b",
+  "mission_id": "MC-20260911-153509-dfab2f",
+  "objective": "Misión científica de desbloqueo Fase 2B para EURUSD: completar de forma preregistrada y LOCAL_ONLY los gates de procedencia, identidad de setup, fill/costes/horizonte, causalidad FULL/PREFIX, calibración TRAIN/VALIDATION/HOLDOUT con abstención, y edge net_R/potencia/estabilidad. No publicar señal, no escribir latest_snapshot.json, no operar MT5 ni cambiar can_trade=false. Seguir docs/tesis/SDD_MECHANICAL_SIGNAL_PRODUCER_V1.md, docs/experimentos/EXP_PASS_EDGE_INTRADIA_01_PREREGISTRATION.md y docs/contratos/CONTRATO_PASS_EDGE_INTRADIA_V1.md.",
+  "phase": "PLAN",
+  "plan": [
+    {
+      "department": "D4",
+      "status": "COMPLETED",
+      "step": "route"
+    }
+  ],
+  "resume": {
+    "active_task_id": null,
+    "attempts": 0,
+    "last_checkpoint": null,
+    "opencode_session_ids": []
+  },
+  "route": {
+    "agent_key": "discoverer",
+    "assigned_role": "Data Engineer",
+    "department_id": "D4",
+    "department_name": "data_lineage",
+    "reason": "la solicitud afecta datos, procedencia o lineage",
+    "required_controls": [
+      "context_discovery",
+      "independent_verification",
+      "no_unapproved_promotion",
+      "protected_data_check",
+      "single_owner"
+    ],
+    "required_reviews": [
+      "CRO",
+      "Compliance"
+    ],
+    "task_kind": "INVESTIGATE"
+  },
+  "schema_version": "1.0",
+  "scope": {
+    "allowed_roots": [
+      "D1",
+      "D3",
+      "D4",
+      "D5",
+      "D6"
+    ],
+    "excluded_roots": [
+      "secrets/"
+    ],
+    "workspace": ""
+  },
+  "status": "PLAN",
+  "tasks": [
+    {
+      "agent_key": "discoverer",
+      "assigned_agent": "Data Engineer",
+      "attempt": 0,
+      "blocker_refs": [],
+      "completed_at": null,
+      "department_id": "D4",
+      "depends_on": [],
+      "evidence_refs": [],
+      "inputs": [],
+      "kind": "INVESTIGATE",
+      "mission_id": "MC-20260911-153509-dfab2f",
+      "next_action": "discover_context",
+      "opencode_session_id": null,
+      "outputs": [],
+      "started_at": null,
+      "status": "PENDING",
+      "task_id": "MC-20260911-153509-dfab2f-T01",
+      "title": "Misión científica de desbloqueo Fase 2B para EURUSD: completar de forma preregistrada y LOCAL_ONLY los gates de procedencia, identidad de setup, fill/costes/horizonte, causalidad FULL/PREFIX, calibración TRAIN/VALIDATION/HOLDOUT con abstención, y edge net_R/potencia/estabilidad. No publicar señal, no escribir latest_snapshot.json, no operar MT5 ni cambiar can_trade=false. Seguir docs/tesis/SDD_MECHANICAL_SIGNAL_PRODUCER_V1.md, docs/experimentos/EXP_PASS_EDGE_INTRADIA_01_PREREGISTRATION.md y docs/contratos/CONTRATO_PASS_EDGE_INTRADIA_V1.md."
+    }
+  ],
+  "updated_at": "2026-09-11T15:35:09.548477+00:00"
+}

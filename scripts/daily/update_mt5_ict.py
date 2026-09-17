@@ -3,9 +3,9 @@ ACTUALIZADOR MT5 -> ICT SYSTEM (reusa el terminal MT5 de SMC-SYSTEMS).
 
 Estrategia (verificada contra SMC-SYSTEMS/scripts/update_mt5_append.py):
   - Usa el MISMO terminal MT5 ya logueado en la maquina (FundedNext), sin credenciales.
-  - Lee la ultima fecha del parquet existente y baja SOLO desde ahi hasta hoy
-    (copy_rates_range desde last_date -> now). Si no hay parquet, baja desde
-    inicio de mes actual como fallback.
+  - Baja las ultimas 50k velas por copy_rates_from_pos (nunca pide rangos
+    puntuales al servidor: copy_rates_range puede colgarse cuando la terminal
+    no tiene el rango en cache) y filtra desde la ultima fecha del parquet.
   - APPENDE al parquet local (merge por 'time', keep=last) para NO pisar el
     historico existente.
   - Misma nomenclatura de archivo que ya consume el motor (build_features).
@@ -24,7 +24,7 @@ import argparse
 import os
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(r"C:\Users\v_jac\Desktop\ICT SYSTEM")
@@ -35,6 +35,9 @@ TF_MAP = {
     "M1": 1, "M3": 3, "M5": 5, "M15": 15, "M30": 30,
     "H1": 16385, "H4": 16388, "D1": 16408,
 }
+# Velas por dia por timeframe, para pedir solo lo necesario a MT5.
+BARS_PER_DAY = {"M1": 1440, "M3": 480, "M5": 288, "M15": 96, "M30": 48,
+                "H1": 24, "H4": 6, "D1": 1}
 SYMS_DEFAULT = ["EURUSD", "GBPUSD", "XAUUSD", "USDJPY"]
 
 
@@ -53,24 +56,24 @@ def last_date_from_parquet(path: Path):
         return None
 
 
-def download_tip(symbol: str, tf: str, since: datetime | None = None):
+def download_tip(symbol: str, tf: str, since: datetime | None = None, count: int = 5_000):
     import MetaTrader5 as mt5
     import pandas as pd
 
     code = TF_MAP[tf]
-    now = datetime.now()
-    # Si hay parquet existente, baja desde su ultima fecha; si no, inicio de mes.
-    start = since or datetime(now.year, now.month, 1)
-    rates = mt5.copy_rates_range(symbol, code, start, now)
-    if rates is None or len(rates) == 0:
-        # Fallback: bajar 50k velas mas recientes
-        rates = mt5.copy_rates_from_pos(symbol, code, 0, 50_000)
+    # copy_rates_from_pos baja las ultimas `count` velas sin pedir historia
+    # puntual al servidor (copy_rates_range puede colgarse cuando la terminal
+    # no tiene el rango en cache). Luego se filtra por `since`.
+    rates = mt5.copy_rates_from_pos(symbol, code, 0, count)
     if rates is None or len(rates) == 0:
         raise RuntimeError(f"MT5 sin datos para {symbol} {tf}: {mt5.last_error()}")
     df = pd.DataFrame(rates)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
     df = df[["time", "open", "high", "low", "close", "tick_volume", "spread"]]
-    return df.sort_values("time").reset_index(drop=True)
+    df = df.sort_values("time").reset_index(drop=True)
+    if since is not None:
+        df = df[df["time"] > pd.Timestamp(since)].reset_index(drop=True)
+    return df
 
 
 def merge_tip(local_path: Path, tip):
@@ -136,6 +139,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Append punta MT5 al data/raw de ICT SYSTEM")
     ap.add_argument("--symbols", default=",".join(SYMS_DEFAULT))
     ap.add_argument("--tfs", default="M1 M5 M15 H1 H4 D1")
+    ap.add_argument("--max-gap-days", type=int, default=7,
+                    help="Saltar parquet si su ultima fecha tiene mas de N dias de gap (evita colgarse en histories limitadas)")
     args = ap.parse_args()
     symbols = [s.strip().upper() for s in args.symbols.replace(",", " ").split() if s.strip()]
     tfs = [t.strip().upper() for t in args.tfs.replace(",", " ").split() if t.strip()]
@@ -165,13 +170,20 @@ def main() -> int:
                 path = sym_dir / f"{sym}_{tf}.parquet"
                 last = last_date_from_parquet(path)
                 if last:
+                    gap_days = (datetime.now(timezone.utc) - last).days
+                    if gap_days > args.max_gap_days:
+                        print(f"[SKIP] {sym} {tf}: ultima fecha {last} tiene {gap_days} dias de gap (> {args.max_gap_days}); MT5 no tiene esa historia. Usa --max-gap-days mayor si queres intentar.")
+                        continue
                     # Agregar 1 segundo para evitar re-descargar la ultima vela
                     since = last + timedelta(seconds=1)
-                    print(f"  {sym} {tf}: parquet existe, ultima fecha {last} -> descargando desde {since}")
+                    # Pedir solo lo necesario para cubrir el gap (+2 dias de margen)
+                    count = max(1_000, BARS_PER_DAY.get(tf, 96) * (gap_days + 2))
+                    print(f"  {sym} {tf}: parquet existe, ultima fecha {last} -> bajando {count} velas desde {since}")
                 else:
                     since = None
-                    print(f"  {sym} {tf}: sin parquet previo, descargando desde inicio de mes")
-                tip = download_tip(sym, tf, since=since)
+                    count = 5_000
+                    print(f"  {sym} {tf}: sin parquet previo, bajando ultimas {count} velas")
+                tip = download_tip(sym, tf, since=since, count=count)
                 merged = merge_tip(path, tip)
                 write_parquet_atomic(path, merged)
                 print(f"[OK] {sym} {tf}: {len(merged)} velas, ultima {merged['time'].iloc[-1]}")

@@ -17,8 +17,8 @@ print('='*70)
 print('CALIBRACIÓN H4/D1 v3 — numpy corregido')
 print('='*70)
 
-BASE = Path('C:/Users/v_jac/Desktop/ICT SYSTEM/data/raw/EURUSD')
-OUT = Path('displacement_results_extend')
+BASE = Path(__file__).resolve().parent.parent / 'data' / 'raw' / 'EURUSD'  # data no copiado a CLEAN; requiere fuente externa
+OUT = Path('reports/audits/experiments/displacement')
 OUT.mkdir(parents=True, exist_ok=True)
 
 for name, fn in [('H4','EURUSD_H4.parquet'), ('D1','EURUSD_D1.parquet')]:

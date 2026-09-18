@@ -21,8 +21,8 @@ print('AUDITORÍA EXTENDIDA: Displacement multi-candle (M1, H1, H4, D1)')
 print('='*70)
 print(f'TF={tf.__version__}')
 
-BASE = Path('C:/Users/v_jac/Desktop/ICT SYSTEM/data/raw/EURUSD')
-OUT = Path('displacement_results_extend')
+BASE = Path(__file__).resolve().parent.parent / 'data' / 'raw' / 'EURUSD'  # data no copiado a CLEAN; requiere fuente externa
+OUT = Path('reports/audits/experiments/displacement')
 OUT.mkdir(parents=True, exist_ok=True)
 
 W=15; HALF=W//2

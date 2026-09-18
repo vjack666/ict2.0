@@ -201,7 +201,7 @@ results = {
     'f1s': [float(f) for f in f1],
 }
 
-out_dir = Path('displacement_results')
+out_dir = Path('reports/audits/experiments/displacement')
 out_dir.mkdir(parents=True, exist_ok=True)
 with open(out_dir / 'smoke_results.json', 'w') as f:
     json.dump(results, f, indent=2)

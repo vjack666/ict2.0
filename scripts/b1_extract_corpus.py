@@ -41,7 +41,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("b1_extract")
 
-ROOT = Path("C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
 DATA_DIR = ROOT / "data" / "raw" / "EURUSD"
 B1_DATA_DIR = ROOT / "data" / "b1"
 REPORTS_DIR = ROOT / "reports" / "b1"

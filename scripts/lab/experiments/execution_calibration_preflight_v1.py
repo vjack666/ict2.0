@@ -22,7 +22,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
 DATASET_DIR = ROOT / "data/ml/tensorflow/setup_grammar_v1"
 
 try:

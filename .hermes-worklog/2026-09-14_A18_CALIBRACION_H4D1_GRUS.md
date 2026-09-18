@@ -174,13 +174,13 @@ Se formularon 5 preguntas técnicas basadas en la investigación:
 | `audit_calib_h4d1_v2.py` (11,627 bytes) | V2 con FVG corregido — todavía bug en ventana |
 | `audit_calib_h4d1_v3.py` (11,325 bytes) | **V3 final — numpy corregido, FVG corregido** |
 | `audit_train_h4d1.py` (18,636 bytes) | **Entrenamiento GRU H4/D1 con calibración correcta** |
-| `displacement_results_extend/seqs_h4_calib3.npz` | Secuencias H4: A=23, B=634, C=776 |
-| `displacement_results_extend/seqs_d1_calib3.npz` | Secuencias D1: A=0, B=205, C=246 |
-| `displacement_results_extend/results_h4.json` | Resultados entrenamiento H4 |
-| `displacement_results_extend/results_d1.json` | Resultados entrenamiento D1 |
-| `displacement_results_extend/model_gru_h4.keras` | Modelo GRU entrenado H4 |
-| `displacement_results_extend/model_gru_d1.keras` | Modelo GRU entrenado D1 |
-| `displacement_results_extend/consolidado_h4d1.json` | Resultados consolidados con comparativa M5/M15/H4/D1 |
+| `reports/audits/experiments/displacement/seqs_h4_calib3.npz` | Secuencias H4: A=23, B=634, C=776 |
+| `reports/audits/experiments/displacement/seqs_d1_calib3.npz` | Secuencias D1: A=0, B=205, C=246 |
+| `reports/audits/experiments/displacement/results_h4.json` | Resultados entrenamiento H4 |
+| `reports/audits/experiments/displacement/results_d1.json` | Resultados entrenamiento D1 |
+| `reports/audits/experiments/displacement/model_gru_h4.keras` | Modelo GRU entrenado H4 |
+| `reports/audits/experiments/displacement/model_gru_d1.keras` | Modelo GRU entrenado D1 |
+| `reports/audits/experiments/displacement/consolidado_h4d1.json` | Resultados consolidados con comparativa M5/M15/H4/D1 |
 
 ---
 

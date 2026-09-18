@@ -20,7 +20,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path("C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
 DATA_DIR = ROOT / "data" / "raw" / "EURUSD"
 
 # Frames que el motor usa para B1 (M15 es el nivel de decisión; H4/H1/D1 son contexto HTF).

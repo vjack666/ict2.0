@@ -306,7 +306,7 @@ for target_name in ['geo', 'dir', 'ict', 'usable']:
     print(f'  {target_name}: {best["config"]} -> acc={best["acc_test"]:.4f}')
 
 # Guardar
-out_dir = Path('displacement_results')
+out_dir = Path('reports/audits/experiments/displacement')
 out_dir.mkdir(parents=True, exist_ok=True)
 
 summary = {

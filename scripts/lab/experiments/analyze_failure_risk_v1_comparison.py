@@ -13,7 +13,7 @@ from typing import Any
 
 import numpy as np
 
-ROOT = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
 DATASET_DIR = ROOT / "data/ml/tensorflow/failure_anatomy_v1"
 MODEL_DIR = ROOT / "data/ml/tensorflow/failure_risk_v1"
 

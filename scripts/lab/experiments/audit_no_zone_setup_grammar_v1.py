@@ -17,7 +17,7 @@ from typing import Any
 import pandas as pd
 
 
-ROOT = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

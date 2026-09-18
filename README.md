@@ -1,5 +1,17 @@
 # ICT SYSTEM — Versión ordenada (andamiaje de subagentes)
 
+## Estado del repositorio — 2026-09-18
+
+La línea de trabajo más reciente vive en `entrenamiento-ia`. La rama
+`main` conserva una historia estable anterior y GitHub no encuentra ancestro
+común entre ambas; por eso **no se deben fusionar a ciegas**. La política de
+reconciliación y la autoridad por capa están en
+[`docs/REPOSITORY_CANONICAL_STATE.md`](docs/REPOSITORY_CANONICAL_STATE.md).
+
+Para investigación IA usa `requirements-ai.txt` sobre Python 3.11.15.
+`requirements.txt` permanece deliberadamente mínimo para CI/tests.
+
+
 ## Modelo operativo por departamentos
 
 El repositorio se opera como una empresa-laboratorio: el usuario es el cliente,
@@ -122,14 +134,19 @@ ICT SYSTEM/
 
 ## Estado y siguientes pasos
 
-El motor (`engine/`) ya es capa permanente y está cableado a los agentes. El
-trabajo en curso (ver `.hermes-index.md` y `docs/`) se centra en:
+El motor (`engine/`) permanece como capa canónica y la línea reciente de IA
+está en modo investigación/shadow. El trabajo vigente se resume así:
 
-1. **Auditoría temporal AHF/MTF (TNA)** sobre EURUSD 20Y — navegación, rollback,
-   duración por estado, tamaño FVG/OB en pips. **No es backtest.**
-2. **SEQUENCE × CONTEXT STATE** — tras TNA, medir si la secuencia bajo contexto
-   HTF cambia la distribución del outcome (con stop fijo).
-3. **Backtest / Entry** — solo después de cerrar A0-A9 + Funnel + TNA.
+1. **Reconciliación Git:** mantener separadas las historias `main` y
+   `entrenamiento-ia` hasta integrar unidades verificadas.
+2. **Representación temporal:** sustituir la representación de presencia de
+   eventos por episodios ordenados con tiempos, duración, lineage y máscaras.
+3. **Modelo temporal:** comparar un baseline temporal pequeño/GRU contra el
+   baseline tabular solo después de pasar causalidad y soporte de clases.
+4. **Backtest económico:** sigue separado del backtest diagnóstico y requiere
+   fill, costes, SL/TP, PnL y protocolo OOS congelado.
 
-El README no define el plan de trabajo; para eso ver
-`docs/00_HERMES_START_HERE.md` y `docs/PLAN_HERMES_FVG_OB.md`.
+El README no es autoridad normativa. Para gobierno y trabajo vigente consultar
+`AGENTS.md`, `.hermes-index.md`,
+`docs/REPOSITORY_CANONICAL_STATE.md` y los contratos citados por
+`docs/INDICE_AUTORIDAD.md`.

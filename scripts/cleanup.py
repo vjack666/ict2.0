@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cleanup consolidado: __pycache__, .pytest_cache, mapeo de bloqueos residuales de path bugs."""
+"""Cleanup consolidado de caches locales sin efectos secundarios al importar."""
 
 from __future__ import annotations
 
@@ -14,9 +14,15 @@ CACHES = [
     ROOT / "scripts" / ".pytest_cache",
 ]
 
-for c in CACHES:
-    if c.exists():
-        shutil.rmtree(c, ignore_errors=True)
-        print(f"removed: {c}")
 
-print("cleanup_done")
+def main() -> int:
+    for cache in CACHES:
+        if cache.exists():
+            shutil.rmtree(cache, ignore_errors=True)
+            print(f"removed: {cache}")
+    print("cleanup_done")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

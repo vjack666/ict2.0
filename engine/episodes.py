@@ -202,8 +202,23 @@ def _related(a: MarketObject, b: MarketObject) -> bool:
     return False
 
 
-def _available_time(mo: MarketObject) -> Any:
+def available_time(mo: MarketObject) -> Any:
+    """Canonical point-in-time availability for an Episode component.
+
+    Contract §6 defines availability as candidate_time: the first instant at
+    which the object is detectable. Legacy/sequence objects that predate the
+    candidate/confirmation/tradable split may omit candidate_time; only in
+    that case creation_time is the explicit compatibility fallback.
+
+    This is deliberately different from setup_builder._obj_time(), which is a
+    reference used to order already-composed setup components. Consumers that
+    materialize AI episodes must use this function for available_at.
+    """
     return mo.candidate_time if mo.candidate_time is not None else mo.creation_time
+
+
+# Backward-compatible private alias for older audits that imported it directly.
+_available_time = available_time
 
 
 def _canonical_key(setup: Setup, decision_time: Any) -> str:
@@ -245,7 +260,7 @@ def _check_temporal(setup: Setup, decision_time: Any) -> Optional[str]:
     for mo in _components(setup).values():
         if not isinstance(mo, MarketObject):
             continue
-        avail = _available_time(mo)
+        avail = available_time(mo)
         if avail is not None and decision_time is not None:
             if not _le(avail, decision_time):
                 return "FUTURE_DATA"
@@ -672,4 +687,5 @@ __all__ = [
     "build_episodes",
     "STAGES",
     "REASONS",
+    "available_time",
 ]

@@ -261,3 +261,42 @@ def test_canonical_ob_detector_waits_for_followthrough_before_availability():
     assert ob.candidate_time == T0
     assert ob.confirmation_time == T0 + timedelta(minutes=15)
     assert available_time(ob) == ob.tradable_time == ob.confirmation_time
+
+
+def test_setup_builder_uses_tradable_time_for_operational_order():
+    from engine.setup_builder import Setup, SetupEligibility, classify_eligibility
+
+    poi = _obj(
+        "POI_H4",
+        ObjectType.ORDER_BLOCK,
+        T0,
+        candidate=T0,
+        confirmed=T0 + timedelta(minutes=5),
+        tradable=T0 + timedelta(minutes=30),
+        role=Role.POI,
+        tf="H4",
+    )
+    refinement = _obj(
+        "FVG_M15",
+        ObjectType.FVG,
+        T0 + timedelta(minutes=15),
+        candidate=T0 + timedelta(minutes=10),
+        confirmed=T0 + timedelta(minutes=15),
+        tradable=T0 + timedelta(minutes=15),
+        role=Role.REFINEMENT,
+        tf="M15",
+    )
+    setup = Setup(
+        symbol="EURUSD",
+        direction=1,
+        context_htf=None,
+        poi=poi,
+        refinement=refinement,
+    )
+    result = classify_eligibility(
+        setup,
+        {"direction": 1, "aligned": True},
+        require_complete=False,
+    )
+    assert result is SetupEligibility.BLOCKED
+    assert "orden causal violado" in setup.reason

@@ -94,7 +94,7 @@ def _chain():
     return liquidity, sweep, displacement
 
 
-def test_available_at_is_candidate_time_not_confirmation_or_tradable():
+def test_available_at_uses_consumer_safe_time_not_pattern_anchor():
     candidate = T0
     confirmation = T0 + timedelta(minutes=15)
     obj = _obj(
@@ -106,7 +106,7 @@ def test_available_at_is_candidate_time_not_confirmation_or_tradable():
         tradable=confirmation,
         role=Role.REFINEMENT,
     )
-    assert available_time(obj) == candidate
+    assert available_time(obj) == confirmation
 
 
 def test_available_at_falls_back_to_creation_for_legacy_sequence_object():
@@ -218,3 +218,46 @@ def test_wyckoff_context_is_preserved_without_invention():
     assert wyckoff["status"] == "AVAILABLE"
     assert wyckoff["phase"] == "ACCUMULATION"
     assert wyckoff["source"] == "engine/Wyckoff"
+
+
+def test_canonical_fvg_detector_is_not_available_on_first_anchor_candle():
+    from engine.detectors.fvg import detect_fvg
+
+    rows = [
+        {"time": T0, "high": 1.1000, "low": 1.0990},
+        {"time": T0 + timedelta(minutes=15), "high": 1.1010, "low": 1.1000},
+        {"time": T0 + timedelta(minutes=30), "high": 1.1030, "low": 1.1020},
+    ]
+    fvgs = detect_fvg(rows, timeframe="M15", symbol="EURUSD")
+    assert fvgs
+    fvg = fvgs[0]
+    assert fvg.candidate_time == T0
+    assert fvg.confirmation_time == T0 + timedelta(minutes=30)
+    assert available_time(fvg) == fvg.tradable_time == fvg.confirmation_time
+
+
+def test_canonical_ob_detector_waits_for_followthrough_before_availability():
+    from engine.detectors.ob import detect_order_blocks
+
+    rows = [
+        {
+            "time": T0,
+            "open": 1.1010,
+            "high": 1.1015,
+            "low": 1.0990,
+            "close": 1.0992,
+        },
+        {
+            "time": T0 + timedelta(minutes=15),
+            "open": 1.0995,
+            "high": 1.1020,
+            "low": 1.0994,
+            "close": 1.1018,
+        },
+    ]
+    obs = detect_order_blocks(rows, timeframe="H4", symbol="EURUSD", min_body_ratio=0.60)
+    assert obs
+    ob = obs[0]
+    assert ob.candidate_time == T0
+    assert ob.confirmation_time == T0 + timedelta(minutes=15)
+    assert available_time(ob) == ob.tradable_time == ob.confirmation_time

@@ -25,4 +25,25 @@ la autoridad está en `engine/` y sus contratos.
 - Las rutas antiguas de Python se mantienen como wrappers de compatibilidad y
   delegan a la ruta canónica. El código nuevo debe importarse o ejecutarse
   desde la ruta clasificada, no desde el wrapper.
-- Todos los scripts se ejecutan desde `C:\Users\v_jac\Desktop\ICT SYSTEM`. No existe un destino remoto de ejecución.
+- Los scripts no deben depender de una ruta absoluta de una máquina. Deben resolver el root desde `__file__`, configuración explícita o una variable de entorno documentada.
+- No crear nuevos scripts de auditoría, smoke, entrenamiento o replay en la raíz del repositorio.
+- Las rutas de raíz existentes son deuda de compatibilidad y se migran una por una según `docs/REPOSITORY_ORDER.md`.
+
+
+## Taxonomía física objetivo
+
+```text
+scripts/
+├── daily/          # operación diaria
+├── audit/          # auditorías y diagnósticos
+├── data/           # adquisición/materialización
+├── smoke/          # comprobaciones rápidas
+├── presentation/   # gráficos y exportación
+└── lab/
+    ├── experiments/
+    ├── learning/
+    └── displacement/
+```
+
+Un script puede ser wrapper de compatibilidad en una ruta anterior, pero su
+implementación nueva debe vivir en la categoría correspondiente.

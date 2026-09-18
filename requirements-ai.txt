@@ -1,0 +1,9 @@
+# Dependencies for AI/training workflows in ICT 2.0.
+# These are used by scripts/lab/experiments/*.py and runtime/ai_learning/.
+# The runtime/test suite (requirements.txt) stays minimal on purpose.
+
+tensorflow==2.21.0
+numpy<2.0
+pandas>=2.0
+scikit-learn
+matplotlib

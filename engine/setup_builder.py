@@ -551,7 +551,7 @@ def _obj_time(mo) -> Optional[Any]:
     """
     if mo is None:
         return None
-    for attr in ("confirmation_time", "tradable_time", "candidate_time", "creation_time"):
+    for attr in ("tradable_time", "confirmation_time", "creation_time", "candidate_time"):
         t = getattr(mo, attr, None)
         if t is not None:
             return t

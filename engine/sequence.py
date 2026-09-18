@@ -1,4 +1,4 @@
-"""ict_backtest/sequence.py - Capa 2: motor EVENT-SEQUENCE (memoria de eventos).
+"""engine/sequence.py - Capa 2: motor EVENT-SEQUENCE (memoria de eventos).
 
 Arregla la raiz del problema que viste: el mini-check del dashboard evaluaba
 sweep + BOS + displacement en la MISMA vela ("todo de golpe"). En ICT real los
@@ -123,7 +123,6 @@ class SequenceState:
     sweep_id: str = ""
     displace_id: str = ""
     bos_id: str = ""
-    entry_id: str = ""
     # Fase 6: cierre de la formacion. LIQUIDITY (raiz) y POI/REFINEMENT.
     liquidity_id: str = ""
     poi_id: str = ""
@@ -152,7 +151,6 @@ class SequenceState:
         self.sweep_id = ""
         self.displace_id = ""
         self.bos_id = ""
-        self.entry_id = ""
         self.liquidity_id = ""
         self.poi_id = ""
         self.refinement_id = ""

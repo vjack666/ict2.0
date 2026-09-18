@@ -18,3 +18,14 @@ MT5 → engine → snapshot canónico → agents → orchestration → brief
 
 No se entrena, no se generan órdenes y no se modifica la autoridad del motor
 durante una lectura diaria.
+
+
+## Infraestructura IA
+
+`runtime/ai_learning/` contiene infraestructura reusable (registry, snapshots,
+checkpoints, calibración, abstención y drift). Los scripts que entrenan,
+materializan o comparan modelos permanecen en `scripts/lab/`.
+
+Regla: `runtime/` puede cargar artefactos aprobados en shadow/observación,
+pero no debe iniciar entrenamientos ni reescribir datasets durante la lectura
+diaria.

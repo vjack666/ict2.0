@@ -50,19 +50,19 @@ function Invoke-Python {
 }
 
 Write-Host "=== Temporal Episode v1 / Windows CPU gate ==="
-Invoke-Python -c "import sys,platform; print('python=',sys.version); print('platform=',platform.platform()); assert sys.version_info[:2] == (3,11), 'Se requiere Python 3.11 para la certificación'"
+Invoke-Python "-c" "import sys,platform; print('python=',sys.version); print('platform=',platform.platform()); assert sys.version_info[:2] == (3,11), 'Se requiere Python 3.11 para la certificación'"
 
 if ($InstallTestDeps) {
-    Invoke-Python -m pip install -r requirements.txt
+    Invoke-Python "-m" pip install -r requirements.txt
 }
 
 # This path must not require the AI/GPU requirements file.
-Invoke-Python -c "from pathlib import Path; s=Path(r'scripts/lab/experiments/mt_temporal_episode_materializer.py').read_text(encoding='utf-8').lower(); assert 'tensorflow' not in s and 'torch' not in s and 'cuda' not in s; print('GPU_DEPENDENCY_CHECK=PASS')"
+Invoke-Python "-c" "from pathlib import Path; s=Path(r'scripts/lab/experiments/mt_temporal_episode_materializer.py').read_text(encoding='utf-8').lower(); assert 'tensorflow' not in s and 'torch' not in s and 'cuda' not in s; print('GPU_DEPENDENCY_CHECK=PASS')"
 
-Invoke-Python -m compileall -q engine scripts/lab/experiments/mt_temporal_episode_materializer.py tests/test_temporal_episode_materializer.py
+Invoke-Python "-m" compileall -q engine scripts/lab/experiments/mt_temporal_episode_materializer.py tests/test_temporal_episode_materializer.py
 Write-Host "COMPILE_WINDOWS_CPU=PASS"
 
-Invoke-Python -m pytest tests/test_temporal_episode_materializer.py tests/test_episodes.py -q
+Invoke-Python "-m" pytest tests/test_temporal_episode_materializer.py tests/test_episodes.py -q
 Write-Host "TEMPORAL_TESTS_WINDOWS_CPU=PASS"
 
 Write-Host "can_trade=false"

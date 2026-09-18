@@ -125,3 +125,82 @@ Ningún agente crea otra versión de `Episode`, otro Funnel o una copia de
 Resultado de trading, rentabilidad, optimización, entrenamiento, broker,
 producción, CME/OI, descarga externa, cambio de dataset, Wyckoff-7 estadístico,
 OTE y cualquier promoción.
+
+
+## 9. Extensión autorizada — Temporal Episode para IA
+
+Esta sección adapta el SDD existente al objetivo de representación temporal para
+IA. No crea otro motor, otro `Episode`, otro `MarketState` ni otro funnel.
+
+### 9.1 Autoridad temporal
+
+El contrato `CONTRATO_EPISODES_FUNNEL_V1.md §6` sigue siendo la autoridad:
+
+```text
+available_at = candidate_time
+fallback     = creation_time únicamente cuando candidate_time no existe
+confirmed_at = confirmation_time
+tradable_at  = tradable_time
+```
+
+No se redefine `available_at` por ObjectType.
+
+Cuando existan las marcas:
+
+```text
+candidate_time <= confirmation_time <= tradable_time <= decision_time
+```
+
+`engine.episodes.available_time()` es la función canónica que deben consumir
+los materializadores de IA.
+
+`engine.setup_builder._obj_time()` NO define `available_at`. Es una referencia
+de orden para componentes ya compuestos y se mantiene separada hasta que una
+auditoría específica demuestre que su semántica deba cambiar.
+
+### 9.2 Auditoría de productores reales
+
+| ObjectType | Productor real localizado | Contrato temporal observado | Estado |
+|---|---|---|---|
+| ORDER_BLOCK | `engine/detectors/ob.py::detect_order_blocks` | candidate + confirmation + tradable | IMPLEMENTED_AND_CAUSAL |
+| FVG | `engine/detectors/fvg.py::detect_fvg` | candidate + confirmation + tradable | IMPLEMENTED_AND_CAUSAL |
+| BOS | `engine/historical_event_objects.py::build_historical_event_objects`; también `engine/sequence.py::_make_event_object` | histórico: candidate + confirmation + tradable; sequence legacy: creation fallback | IMPLEMENTED_AND_CAUSAL |
+| DISPLACEMENT | `engine/historical_event_objects.py::build_historical_event_objects`; también `engine/sequence.py::_make_event_object` | histórico: candidate + confirmation + tradable; sequence legacy: creation fallback | IMPLEMENTED_AND_CAUSAL |
+| LIQUIDITY | `engine/sequence.py::_make_event_object` | creation fallback | IMPLEMENTED_LEGACY_TIME |
+| SWEEP | `engine/sequence.py::_build_expediente` / `_make_event_object` | creation fallback | IMPLEMENTED_LEGACY_TIME |
+| RETURN | `engine/sequence.py::_make_event_object` | creation fallback | IMPLEMENTED_LEGACY_TIME |
+| CONTRACT | `engine/sequence.py::_make_event_object` | creation fallback | IMPLEMENTED_LEGACY_TIME |
+| CHOCH | se observa como señal/flag del motor, pero no se localizó productor canónico dedicado de `MarketObject(type=CHOCH)` | no certificado como objeto independiente | RESEARCH_REQUIRED |
+| BREAKER | enum/ontología presentes; no se localizó productor canónico dedicado en la ruta auditada | no certificado | RESEARCH_REQUIRED |
+| BPR | enum/ontología presentes; no se localizó productor canónico dedicado ni definición autoritativa en la ruta auditada | no certificado | RESEARCH_REQUIRED |
+
+Los estados `RESEARCH_REQUIRED` no se rellenan con datos inventados. Si aparecen
+en una entrada externa, el materializador conserva el objeto y su contrato
+temporal existente, pero no atribuye semántica adicional.
+
+### 9.3 Materializador autorizado
+
+La implementación vive en:
+
+`scripts/lab/experiments/mt_temporal_episode_materializer.py`
+
+Responsabilidades:
+
+1. consumir `build_episodes()` y `MarketState.projection_at(T)`;
+2. incluir solo objetos conocidos en T y ancestros de lineage presentes en T;
+3. ordenar `events[]` por `available_at`; en empates, el padre precede al hijo;
+4. conservar candidate / confirmation / tradable por separado;
+5. fallar cerrado ante futuro, temporalidad incomparable o parent fuera del snapshot;
+6. registrar Wyckoff únicamente cuando un productor/contexto causal lo entregue;
+7. no recalcular detectores, lifecycle, setups, labels ni outcomes.
+
+### 9.4 Gates de la extensión
+
+Antes de baseline temporal:
+
+- order reversal sensible al orden;
+- FULL/PREFIX literal sobre el episodio temporal;
+- invariancia ante inyección de información posterior a T;
+- campos Wyckoff ausentes marcados como MISSING/RESEARCH_REQUIRED, nunca inventados;
+- `training_eligible=false`, `can_trade=false`, `entry_authorized=false`.
+

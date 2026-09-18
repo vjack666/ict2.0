@@ -9,8 +9,8 @@ la autoridad existente:
         -> Temporal Episode v1
 
 El contrato temporal canónico viene de CONTRATO_EPISODES_FUNNEL_V1 §6:
-available_at = candidate_time, con fallback explícito a creation_time solo
-para objetos legacy que no tienen candidate_time.
+available_at = tradable_time -> confirmation_time -> creation_time -> candidate_time.
+Esto distingue el ancla inicial del patrón del instante realmente utilizable.
 
 Wyckoff se conserva únicamente si un contexto causal lo provee. Si no existe,
 se marca MISSING en vez de inventar una fase/evento.
@@ -326,7 +326,7 @@ def _materialize_episode(
         "lineage": _json_safe(episode.get("lineage", {})),
         "provenance": {
             "source": "engine.episodes+MarketState.projection_at",
-            "available_at_policy": "candidate_time_else_creation_time",
+            "available_at_policy": "tradable_confirmation_creation_candidate",
             "labels_used": False,
             "outcomes_used": False,
         },
@@ -513,7 +513,7 @@ def write_outputs(
             )
             for tf in TIMEFRAME_AUTHORITY
         },
-        "available_at_policy": "candidate_time_else_creation_time",
+        "available_at_policy": "tradable_confirmation_creation_candidate",
         "order_reversal": _json_safe(artifact.get("order_reversal", {})),
         "artifact_checksum": artifact.get("checksum"),
         "created_at": datetime.now(timezone.utc).isoformat(),

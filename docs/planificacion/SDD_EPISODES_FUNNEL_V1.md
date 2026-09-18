@@ -137,8 +137,8 @@ IA. No crea otro motor, otro `Episode`, otro `MarketState` ni otro funnel.
 El contrato `CONTRATO_EPISODES_FUNNEL_V1.md §6` sigue siendo la autoridad:
 
 ```text
-available_at = candidate_time
-fallback     = creation_time únicamente cuando candidate_time no existe
+available_at = tradable_time -> confirmation_time -> creation_time -> candidate_time
+candidate_at = candidate_time (ancla inicial; no implica disponibilidad)
 confirmed_at = confirmation_time
 tradable_at  = tradable_time
 ```

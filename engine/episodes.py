@@ -202,8 +202,22 @@ def _related(a: MarketObject, b: MarketObject) -> bool:
     return False
 
 
-def _available_time(mo: MarketObject) -> Any:
-    return mo.candidate_time if mo.candidate_time is not None else mo.creation_time
+def available_time(mo: MarketObject) -> Any:
+    """Canonical consumer-usable time for an Episode component.
+
+    candidate_time is an anchor/candidate marker and may precede the instant
+    when the pattern is actually knowable (for example FVG/OB producers).
+    Therefore availability is the earliest consumer-safe timestamp:
+    tradable_time -> confirmation_time -> creation_time -> candidate_time.
+    """
+    for attr in ("tradable_time", "confirmation_time", "creation_time", "candidate_time"):
+        value = getattr(mo, attr, None)
+        if value is not None:
+            return value
+    return None
+
+# Backward-compatible private alias for older audits that imported it directly.
+_available_time = available_time
 
 
 def _canonical_key(setup: Setup, decision_time: Any) -> str:
@@ -245,7 +259,7 @@ def _check_temporal(setup: Setup, decision_time: Any) -> Optional[str]:
     for mo in _components(setup).values():
         if not isinstance(mo, MarketObject):
             continue
-        avail = _available_time(mo)
+        avail = available_time(mo)
         if avail is not None and decision_time is not None:
             if not _le(avail, decision_time):
                 return "FUTURE_DATA"
@@ -672,4 +686,5 @@ __all__ = [
     "build_episodes",
     "STAGES",
     "REASONS",
+    "available_time",
 ]

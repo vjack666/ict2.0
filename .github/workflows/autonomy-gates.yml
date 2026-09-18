@@ -6,6 +6,7 @@ on:
     branches:
       - clean-layout-v1
       - codex/autonomy-audit-20260918
+      - codex/temporal-episodes-v1-20260918
 
 jobs:
   syntax-and-controller:
@@ -25,3 +26,31 @@ jobs:
           -k "not all_route_agent_keys_are_registered_in_opencode
           and not opencode_adapter
           and not http_adapter"
+
+      - name: Temporal episode causal tests
+        run: python -m pytest tests/test_temporal_episode_materializer.py tests/test_episodes.py -q
+
+
+  temporal-windows-cpu:
+    runs-on: windows-latest
+    env:
+      CUDA_VISIBLE_DEVICES: "-1"
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install CPU-only focal test dependencies
+        shell: pwsh
+        run: python -m pip install -r requirements.txt
+      - name: Compile temporal path on Windows
+        shell: pwsh
+        run: python -m compileall -q engine scripts/lab/experiments/mt_temporal_episode_materializer.py tests/test_temporal_episode_materializer.py
+      - name: Verify no TensorFlow or GPU dependency in temporal materializer
+        shell: pwsh
+        run: |
+          python -c "from pathlib import Path; s=Path('scripts/lab/experiments/mt_temporal_episode_materializer.py').read_text(encoding='utf-8').lower(); assert 'tensorflow' not in s and 'torch' not in s and 'cuda' not in s"
+      - name: Run temporal causal tests on Windows CPU
+        shell: pwsh
+        run: python -m pytest tests/test_temporal_episode_materializer.py tests/test_episodes.py -q

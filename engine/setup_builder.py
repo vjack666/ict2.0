@@ -545,13 +545,14 @@ def _is_active(mo) -> bool:
 def _obj_time(mo) -> Optional[Any]:
     """OE-02 / H6: tiempo de referencia de un objeto para orden causal.
 
-    Usa confirmation_time (o tradable_time, o candidate_time, o creation_time)
-    como marca del instante en que el objeto es operativo. Comparable entre
+    Usa tradable_time (o confirmation_time, o creation_time, o candidate_time)
+    como marca del instante en que el objeto es operativo para un consumidor.
+    Comparable entre
     distintas TF porque son datos temporales reales.
     """
     if mo is None:
         return None
-    for attr in ("confirmation_time", "tradable_time", "candidate_time", "creation_time"):
+    for attr in ("tradable_time", "confirmation_time", "creation_time", "candidate_time"):
         t = getattr(mo, attr, None)
         if t is not None:
             return t

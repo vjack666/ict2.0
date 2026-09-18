@@ -152,11 +152,15 @@ debe incluir `reason`, `stage`, `object_refs` y `decision_time`.
 1. `decision_time` (el `T` de entrada) es el instante al que se evalúa el
    snapshot; todas las proyecciones vienen de `projection_at(T)`, por lo que
    ningún objeto con `creation_time > T` puede aparecer.
-2. `available_time` de un componente se define como su `candidate_time`
-   (tiempo en que el objeto es detectable). Se exige `available_time <=
-   decision_time` para todo componente aceptado.
-3. `confirmation_time <= tradable_time <= decision_time` cuando esos campos
-   existan en el `MarketObject` componente.
+2. `available_time` de un componente es el primer instante en que un consumidor
+   puede usarlo sin look-ahead. La prioridad canónica es `tradable_time`, luego
+   `confirmation_time`, luego `creation_time`, y únicamente como último fallback
+   `candidate_time`. Esto evita confundir el ancla inicial de un patrón con su
+   disponibilidad real (p. ej. FVG/OB). Se exige `available_time <= decision_time`
+   para todo componente aceptado.
+3. Cuando existan, debe cumplirse `candidate_time <= confirmation_time <=
+   tradable_time <= decision_time`. `candidate_time` conserva el ancla inicial
+   del patrón y NO implica por sí sola disponibilidad para consumidores.
 4. Un objeto H4 conserva `authority_tf=H4`; una observación M15 no puede
    cambiar su estado oficial.
 5. `outcome`, `label_available_time` y métricas posteriores son campos de

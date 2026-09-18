@@ -203,19 +203,18 @@ def _related(a: MarketObject, b: MarketObject) -> bool:
 
 
 def available_time(mo: MarketObject) -> Any:
-    """Canonical point-in-time availability for an Episode component.
+    """Canonical consumer-usable time for an Episode component.
 
-    Contract §6 defines availability as candidate_time: the first instant at
-    which the object is detectable. Legacy/sequence objects that predate the
-    candidate/confirmation/tradable split may omit candidate_time; only in
-    that case creation_time is the explicit compatibility fallback.
-
-    This is deliberately different from setup_builder._obj_time(), which is a
-    reference used to order already-composed setup components. Consumers that
-    materialize AI episodes must use this function for available_at.
+    candidate_time is an anchor/candidate marker and may precede the instant
+    when the pattern is actually knowable (for example FVG/OB producers).
+    Therefore availability is the earliest consumer-safe timestamp:
+    tradable_time -> confirmation_time -> creation_time -> candidate_time.
     """
-    return mo.candidate_time if mo.candidate_time is not None else mo.creation_time
-
+    for attr in ("tradable_time", "confirmation_time", "creation_time", "candidate_time"):
+        value = getattr(mo, attr, None)
+        if value is not None:
+            return value
+    return None
 
 # Backward-compatible private alias for older audits that imported it directly.
 _available_time = available_time

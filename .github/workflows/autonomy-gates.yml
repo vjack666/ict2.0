@@ -1,0 +1,27 @@
+name: autonomy-gates
+
+on:
+  pull_request:
+  push:
+    branches:
+      - clean-layout-v1
+      - codex/autonomy-audit-20260918
+
+jobs:
+  syntax-and-controller:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile critical Python packages
+        run: python -m compileall -q engine orchestration runtime scripts tests
+      - name: Install test dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Mission controller core tests
+        run: >
+          python -m pytest tests/test_mission_controller.py -q
+          -k "not all_route_agent_keys_are_registered_in_opencode
+          and not opencode_adapter
+          and not http_adapter"

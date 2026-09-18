@@ -1,3 +1,20 @@
+# Auditoría Codex — 2026-09-18
+
+> **ESTADO DE AUTONOMÍA: REVIEW_REQUIRED.**  
+> Esta auditoría prevalece sobre cualquier bloque inferior que declare la base
+> completamente certificada. El commit `26a820d` se encontró con un error de
+> sintaxis en `orchestration/mission_controller/router.py`, sin CI asociado y
+> con `.hermes-state/gate_evidence.json` afirmando disponibilidad de un
+> manifest que no existe en el árbol versionado. La limpieza física puede
+> considerarse avanzada, pero el sistema NO está certificado como autónomo ni
+> como base de entrenamiento temporal.
+>
+> Correcciones mínimas se realizan en
+> `codex/autonomy-audit-20260918`. `can_trade=false` y
+> `training_eligible=false` permanecen obligatorios.
+
+---
+
 # Estado canónico del repositorio — 2026-09-18
 
 **Proyecto:** `vjack666/ict2.0`  

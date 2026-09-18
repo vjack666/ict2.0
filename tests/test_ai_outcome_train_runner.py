@@ -7,7 +7,7 @@ import pytest
 from scripts.lab.experiments.ai_outcome_train import TrainingRunnerBlocked, run_training
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 SNAPSHOT = (
     ROOT
     / "runtime"

@@ -20,7 +20,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parent.parents[1]s[1]
 sys.path.insert(0, str(ROOT))
 
 from engine.ahf import AdaptiveHierarchicalFunnel, AHFConfig, AHFState

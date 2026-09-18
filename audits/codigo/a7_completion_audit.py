@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 REPORT_DIR = ROOT / "reports" / "audits" / "experiments" / "fvg_ob"
 METADATA = ROOT / "datasets" / "eurusd_dukascopy_20y" / "metadata.json"
 WORKLOG = ROOT / ".hermes-worklog" / "2026-08-28_FUNNEL_A7_AUDIT.md"

@@ -13,7 +13,7 @@ Verifica:
 import json, hashlib, os
 from pathlib import Path
 
-ROOT = Path("C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
 DATA_DIR = ROOT / "data" / "raw" / "EURUSD"
 MANIFEST = json.loads(ROOT.joinpath("B1_DATA_MANIFEST_V1.json").read_text())
 

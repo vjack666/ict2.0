@@ -16,7 +16,7 @@ import sys, json
 from pathlib import Path
 from datetime import datetime, timezone
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 MANIFEST = ROOT / "data" / "learning" / "seq_ctx_01" / "OOS_EXPANSION" / "manifest.json"
 PREREG = ROOT / "docs" / "planificacion" / "OOS_EXPANSION_PREREGISTRATION.md"
 UNIVERSE_SYMS = ["EURUSD", "GBPUSD", "AUDUSD", "NZDUSD", "USDCAD", "USDCHF", "USDJPY", "XAUUSD"]

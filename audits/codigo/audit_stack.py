@@ -17,7 +17,7 @@ from .data_integrity import audit_ohlc
 from .temporal import audit_events
 from .funnel import FunnelAudit
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 
 
 def _result(audit_id: str, findings: list[Finding], n: int = 1, metrics: dict[str, float] | None = None) -> AuditResult:

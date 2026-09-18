@@ -7,7 +7,7 @@ import json
 import hashlib
 from pathlib import Path
 
-ROOT = Path("C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parents[3]  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)
 DATASET_DIR = ROOT / "data/ml/tensorflow/setup_grammar_v1"
 MODEL_DIR = ROOT / "data/ml/tensorflow/setup_quality_v1"
 

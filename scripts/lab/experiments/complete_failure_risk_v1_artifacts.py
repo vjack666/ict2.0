@@ -32,7 +32,7 @@ from sklearn.metrics import (
     recall_score,
 )
 
-ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
+ROOT = Path(__file__).resolve().parent.parent.parent.parent  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)
 RUN_ID = "failure_risk_v1"
 OUT_DIR = ROOT / "data/ml/tensorflow" / RUN_ID
 DATASET_DIR = ROOT / "data/ml/tensorflow/failure_anatomy_v1"

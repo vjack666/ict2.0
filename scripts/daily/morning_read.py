@@ -16,7 +16,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]  # scripts/daily -> raiz repo
+ROOT = Path(__file__).resolve().parent.parent.parents[2]  # scripts/daily -> raiz repos[2]  # scripts/daily -> raiz repo
 SYSTEM_PY = r"C:\Python314\python.exe"
 MT5_UPDATER = ROOT / "scripts" / "daily" / "update_mt5_ict.py"
 CHART_GEN = ROOT / "scripts" / "presentation" / "plot_tradingview_zones.py"

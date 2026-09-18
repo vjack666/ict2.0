@@ -14,7 +14,7 @@ from typing import Any, Callable, Protocol
 from urllib.parse import urlparse
 
 CANONICAL_AUTHORITY = False
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 CHARTS = {
     "D1": ROOT / "reports" / "charts" / "EURUSD_D1_tradingview.png",
     "H4": ROOT / "reports" / "charts" / "EURUSD_H4_tradingview.png",

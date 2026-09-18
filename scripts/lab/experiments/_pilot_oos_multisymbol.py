@@ -12,7 +12,7 @@ import sys, time
 from pathlib import Path
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 sys.path.insert(0, str(ROOT))
 
 from engine.sequential_events import run_sequential, SeqConfig

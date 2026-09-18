@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 sys.path.insert(0, str(ROOT))
 
 from scripts.lab.experiments.exp_seq_ctx_01_dataset import (

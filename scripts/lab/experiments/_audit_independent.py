@@ -5,7 +5,7 @@ cualquier inconsistencia."""
 import json, hashlib, sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 OUT = ROOT / "data/learning/seq_ctx_01"
 
 def bias_name(v):

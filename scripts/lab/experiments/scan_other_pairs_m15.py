@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 from collections import Counter
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 sys.path.insert(0, str(ROOT))
 
 import pandas as pd

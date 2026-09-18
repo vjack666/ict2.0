@@ -13,7 +13,7 @@ from .data_integrity import audit_ohlc
 from .temporal import audit_events
 from .funnel import FunnelAudit
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 STATE = ROOT / ".hermes" / "audit_state.json"
 
 

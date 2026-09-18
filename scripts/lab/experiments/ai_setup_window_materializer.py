@@ -34,7 +34,7 @@ import sys
 from typing import Any, Iterable, Iterator, Mapping, Sequence
 
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 CONTRACT_VERSION = "AI_SETUP_WINDOW_DATASET_V1"
 FUNNEL_CONTRACT_VERSION = "EPISODES_FUNNEL_V1"
 BACKTEST_SCHEMA_VERSION = "1.0"

@@ -50,7 +50,7 @@ def _run_funnel(audit_id: str, records: list[dict]) -> dict:
         "findings": [getattr(f, "code", str(f)) for f in result.findings] if result.findings else [],
     }
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 OUT = ROOT / "reports" / "audits" / "experiments" / "fvg_ob" / "mtf_seq_funnel.json"
 DATA = ROOT / "data" / "raw" / "EURUSD"
 # fallback datasets path

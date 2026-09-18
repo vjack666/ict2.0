@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 SCRIPT = ROOT / "scripts" / "b1_extract_corpus_v2.py"
 SPEC = importlib.util.spec_from_file_location("b1_extract_corpus_v2", SCRIPT)
 assert SPEC and SPEC.loader

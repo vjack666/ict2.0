@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 sys.path.insert(0, str(ROOT))
 from mechanical_bot.mt5_adapter import MT5Adapter
 from mechanical_bot.core import BotAction

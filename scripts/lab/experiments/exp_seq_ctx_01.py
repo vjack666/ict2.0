@@ -38,7 +38,7 @@ import numpy as np
 import pandas as pd
 import sys
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -48,7 +48,7 @@ from audits.codigo.mtf_seq_funnel import _load_tf
 
 HORIZON = 20          # barras H1 hacia adelante (robustez posterior con 10/40)
 N_MIN = 30            # minimo por celda
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[2]
 OUT_DIR = ROOT / "reports" / "audits" / "experiments" / "seq_ctx_01"
 OUT_JSON = OUT_DIR / "matrix.json"
 OUT_MD = OUT_DIR / "report.md"

@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 OUT = ROOT / "data" / "learning" / "seq_ctx_01"
 
 def cell(map_before, did, bucket, split="HOLDOUT"):

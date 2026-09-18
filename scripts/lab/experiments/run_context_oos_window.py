@@ -13,7 +13,7 @@ import subprocess
 import sys
 
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 
 
 def _write(path: Path, body: dict) -> None:

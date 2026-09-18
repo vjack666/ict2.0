@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 # Configurar path para importar desde la raíz del proyecto
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parents[1]
 _detectors = ROOT / "detectors"
 if str(_detectors) not in sys.path:
     sys.path.insert(0, str(_detectors))
@@ -41,7 +41,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("b1_extract")
 
-ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
+ROOT = Path(__file__).resolve().parents[1]  # raíz del repo
 DATA_DIR = ROOT / "data" / "raw" / "EURUSD"
 B1_DATA_DIR = ROOT / "data" / "b1"
 REPORTS_DIR = ROOT / "reports" / "b1"

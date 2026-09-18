@@ -19,7 +19,7 @@ import engine.mtf_navigation as M
 from audits.codigo.mtf_seq_funnel import _load_tf
 
 N_SAMPLES = 15
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 
 
 def dict_diff(a, b, path=""):

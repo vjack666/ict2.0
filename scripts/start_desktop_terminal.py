@@ -11,7 +11,7 @@ import sys
 import webbrowser
 from urllib.request import urlopen
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 sys.path.insert(0, str(ROOT))
 
 

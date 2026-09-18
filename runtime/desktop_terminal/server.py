@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.parse import urlparse, unquote, parse_qs
 
 UI_DIST = Path(__file__).parent / "ui" / "dist" / "client"
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 
 
 def document_paths():

@@ -12,7 +12,7 @@ from pathlib import Path
 
 from .audit_stack import run_stack
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 OUT = ROOT / "reports" / "audits"
 
 

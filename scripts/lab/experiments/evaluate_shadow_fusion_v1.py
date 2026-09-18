@@ -38,7 +38,7 @@ from sklearn.metrics import (
 )
 
 
-ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
+ROOT = Path(__file__).resolve().parent.parent.parent.parent  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)
 TF_RUN = ROOT / "data/ml/tensorflow/tf_outcome_v1_003"
 RISK_RUN = ROOT / "data/ml/tensorflow/failure_risk_v1"
 REPORT_DIR = ROOT / "reports/audits/experiments/ai"

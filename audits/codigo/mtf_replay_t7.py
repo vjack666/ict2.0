@@ -24,7 +24,7 @@ from engine.ltf_canonical_feed import build_canonical_objects
 from engine.market_state import MarketState
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 DATA_ROOT = ROOT / "datasets" / "eurusd_dukascopy_intraday_2021_2025" / "raw_monthly"
 SOURCES = (
     DATA_ROOT / "2024" / "eurusd-m15-bid-2024-12-01-2025-01-01.csv",

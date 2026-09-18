@@ -13,7 +13,7 @@ from pathlib import Path
 from .models import RouteDecision
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 REGISTRY_PATH = ROOT / "governance" / "DEPARTMENT_REGISTRY.json"
 
 

@@ -20,7 +20,7 @@ from typing import Any
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
+ROOT = Path(__file__).resolve().parents[3]  # raíz del repo (3 niveles desde scripts/lab/experiments/)  # raíz del repo (3 niveles desde scripts/lab/experiments/)
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

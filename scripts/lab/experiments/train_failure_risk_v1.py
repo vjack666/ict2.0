@@ -49,7 +49,7 @@ from sklearn.metrics import (
     recall_score,
 )
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 RUN_ID = "failure_risk_v1"
 OUT_DIR = ROOT / "data/ml/tensorflow" / RUN_ID
 DATASET_DIR = ROOT / "data/ml/tensorflow/failure_anatomy_v1"

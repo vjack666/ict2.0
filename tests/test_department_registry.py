@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 
 
 def test_department_registry_is_complete_and_points_to_existing_paths():

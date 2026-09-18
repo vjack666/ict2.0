@@ -20,7 +20,7 @@ from backtest.schema import validate_visual_backtest
 
 
 CONTRACT_VERSION = "EPISODES_FUNNEL_V1"
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 _HEX_COMMIT = re.compile(r"^[0-9a-fA-F]{7,64}$")
 _NAMESPACE = re.compile(r"^[A-Za-z0-9_-]{1,48}$")
 

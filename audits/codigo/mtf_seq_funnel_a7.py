@@ -31,7 +31,7 @@ from engine.sequential_events import SeqConfig, run_sequential, summarize_chains
 from engine.mtf_navigation import MTFNavigator, NavigatorConfig
 from .funnel import FunnelAudit, STAGES
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 CANON = ROOT / "datasets" / "eurusd_dukascopy_20y"
 OUT_DIR = ROOT / "reports" / "audits" / "experiments" / "fvg_ob"
 CONTRACT_VERSION = "CONTRATO_FUNNEL_AUDIT.md#A7"

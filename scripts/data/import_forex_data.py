@@ -16,7 +16,7 @@ Conflicto mismo (symbol,tf) en raw: se queda el de mas filas.
 import os, glob, shutil
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
+ROOT = Path(__file__).resolve().parents[2]  # raíz del repo  # raíz del repo
 DEST = os.path.join(ROOT, "data")
 
 RAW_SOURCES = [

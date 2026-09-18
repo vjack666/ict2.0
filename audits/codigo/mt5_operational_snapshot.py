@@ -21,7 +21,7 @@ import pandas as pd
 from engine.mt5_operational_snapshot import build_mt5_operational_snapshot
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 REQUIRED_TFS = ("D1", "H4", "H1", "M15", "M5", "M1")
 
 

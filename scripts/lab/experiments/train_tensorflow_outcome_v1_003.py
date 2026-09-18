@@ -27,7 +27,7 @@ import numpy as np
 import tensorflow as tf
 
 
-ROOT = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parents[3]  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)
 RUN_ID = "tf_outcome_v1_003"
 OUT_DIR = ROOT / "data/ml/tensorflow" / RUN_ID
 CORPUS_FILES = [

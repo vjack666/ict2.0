@@ -26,7 +26,7 @@ from mechanical_bot.mt5_adapter import MT5Adapter
 from engine.poi_stoch_evaluator import evaluate_poi_stoch_m15
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 DEFAULT_SNAPSHOT = ROOT / "runtime" / "mechanical_bot" / "latest_snapshot.json"
 DEFAULT_STATE = ROOT / ".hermes-state" / "mechanical_bot_state.json"
 DEFAULT_LOG = ROOT / ".hermes-state" / "mechanical_bot_events.jsonl"

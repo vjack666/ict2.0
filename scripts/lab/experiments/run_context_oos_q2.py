@@ -12,7 +12,7 @@ import subprocess
 import sys
 
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 OOS_END = "2022-06-30T23:45:00+00:00"
 # Cola exclusiva de resolución: las señales posteriores a OOS_END se excluyen.
 DATA_END_WITH_RESOLUTION_BUFFER = "2022-07-08"

@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 REPORT = ROOT / "reports/audits/data/wyckoff_cme6e_availability_preflight.json"
 ALLOWLIST = {
     "scripts/audit/wyckoff_cme6e_availability_preflight.py",

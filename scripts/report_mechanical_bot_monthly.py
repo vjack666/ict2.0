@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 CAN_TRADE = False
 STATUS = "DIAGNOSTIC_ONLY"
 PLOT_NAMES = ("balance.png", "drawdown.png", "pnl_acumulado.png", "distribucion_pnl.png")

@@ -30,7 +30,7 @@ from audits.codigo.mtf_seq_funnel import _load_tf
 
 HORIZON = 20          # barras H1 hacia adelante
 N_MIN = 30            # minimo por celda
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 OUT_JSON = ROOT / "reports" / "audits" / "exp_seq_x_context_state.json"
 OUT_MD = ROOT / "reports" / "audits" / "exp_seq_x_context_state.md"
 

@@ -21,7 +21,7 @@ tf.random.set_seed(SEED)
 np.random.seed(SEED)
 
 # Paths
-BASE = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parents[3]  # raíz del repo (3 niveles desde scripts/lab/experiments/)  # raíz del repo (3 niveles desde scripts/lab/experiments/)
 CORPUS_F = BASE / "data/learning/seq_ctx_01/SEQ_CTX_01_CANONICAL_BOS.jsonl"
 OUT_F = BASE / "data/ml/tensorflow/tf_outcome_v1_001"
 OUT_F.mkdir(parents=True, exist_ok=True)

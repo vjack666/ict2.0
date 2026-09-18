@@ -27,7 +27,7 @@ from typing import Any, Mapping
 import pandas as pd
 
 # Permitir ejecución como script suelto y como módulo del repo.
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parent.parents[1]s[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

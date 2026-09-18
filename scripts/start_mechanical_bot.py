@@ -12,7 +12,7 @@ import webbrowser
 from pathlib import Path
 
 CANONICAL_AUTHORITY = False
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parents[1]s[1]
 DEFAULT_PID_FILE = ROOT / "reports" / "mechanical_bot" / "dashboard.pid"
 # The same explicitly selected terminal that supplies the daily EURUSD feed.
 # Passing it to the adapter prevents MetaTrader5 from silently attaching to a

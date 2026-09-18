@@ -17,7 +17,7 @@ print('='*70)
 print('CALIBRACIÓN H4/D1 v3 — numpy corregido')
 print('='*70)
 
-BASE = Path(__file__).resolve().parent.parent / 'data' / 'raw' / 'EURUSD'  # data no copiado a CLEAN; requiere fuente externa
+BASE = Path(__file__).resolve().parents[2]  # data no copiado a CLEAN; requiere fuente externa / 'data' / 'raw' / 'EURUSD'  # data no copiado a CLEAN; requiere fuente externa
 OUT = Path('reports/audits/experiments/displacement')
 OUT.mkdir(parents=True, exist_ok=True)
 

@@ -8,7 +8,7 @@ from __future__ import annotations
 import subprocess, hashlib, json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 
 
 def _git_commit() -> str:

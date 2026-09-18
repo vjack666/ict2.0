@@ -22,7 +22,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 OUT_DIR = ROOT / "reports" / "audits" / "experiments" / "wyckoff_ict_01"
 COUNTS_JSON = OUT_DIR / "feasibility_counts_v2.json"
 REPORT_JSON = OUT_DIR / "exp_wyckoff_ict_01_report.json"

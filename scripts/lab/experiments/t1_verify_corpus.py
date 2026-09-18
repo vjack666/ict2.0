@@ -12,7 +12,7 @@ from pathlib import Path
 from collections import defaultdict
 from datetime import datetime, timezone
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 REPORT_PATH = ROOT / "reports" / "audits" / "experiments" / "ai" / "tensorflow_v1_t1_corpus_verification.md"
 
 def hash_file(path: Path) -> str:

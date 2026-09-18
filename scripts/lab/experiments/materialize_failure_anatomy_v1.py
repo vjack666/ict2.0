@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 RUN_ID = "failure_anatomy_v1"
 OUT_DIR = ROOT / "data/ml/tensorflow" / RUN_ID
 CORPUS_FILES = [

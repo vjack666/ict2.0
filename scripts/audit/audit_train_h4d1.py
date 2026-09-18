@@ -20,7 +20,7 @@ print('ENTRENAMIENTO H4/D1 — GRU 15 timesteps (calibración ICT)')
 print('='*70)
 print(f'TF={tf.__version__} | GPUs={len(tf.config.list_physical_devices("GPU"))}')
 
-BASE = Path(__file__).resolve().parent.parent / 'data' / 'raw' / 'EURUSD'  # data no copiado a CLEAN; requiere fuente externa
+BASE = Path(__file__).resolve().parents[2]  # data no copiado a CLEAN; requiere fuente externa / 'data' / 'raw' / 'EURUSD'  # data no copiado a CLEAN; requiere fuente externa
 OUT = Path('reports/audits/experiments/displacement')
 OUT.mkdir(parents=True, exist_ok=True)
 

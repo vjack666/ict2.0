@@ -28,7 +28,7 @@ import numpy as np
 import tensorflow as tf
 
 
-ROOT = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parents[3]  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)
 CORPUS_FILES = [
     ROOT / "data/learning/seq_ctx_01/SEQ_CTX_01_CANONICAL_BOS.jsonl",
     ROOT / "data/learning/seq_ctx_01/SEQ_CTX_01_LITE.jsonl",

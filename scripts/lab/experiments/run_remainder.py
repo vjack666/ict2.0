@@ -20,7 +20,7 @@ import sys, subprocess, json
 from pathlib import Path
 from datetime import datetime, timezone
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parent.parent.parent.parents[3]s[3]
 LAB = ROOT / "scripts" / "lab" / "experiments"
 OOS = ROOT / "data" / "learning" / "seq_ctx_01" / "OOS_EXPANSION"
 PY = "C:/Python314/python.exe"

@@ -13,7 +13,7 @@ from typing import Any
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent.parent  # raíz del repo
+ROOT = Path(__file__).resolve().parent.parent.parent.parent  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)  # raíz del repo (3 niveles desde scripts/lab/experiments/).parent  # raíz del repo (scripts/lab/experiments/ → 3 niveles arriba)
 DATASET_DIR = ROOT / "data/ml/tensorflow/failure_anatomy_v1"
 MODEL_DIR = ROOT / "data/ml/tensorflow/failure_risk_v1"
 

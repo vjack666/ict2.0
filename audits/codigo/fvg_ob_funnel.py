@@ -16,7 +16,7 @@ from engine.detectors.ob import detect_order_blocks
 from engine.relations import relate_fvg_ob, relation_links
 from .funnel import FunnelAudit
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 OUT = ROOT / "reports" / "audits" / "experiments" / "fvg_ob" / "fvg_ob_funnel.json"
 BASE = "https://raw.githubusercontent.com/ejtraderLabs/historical-data/main/EURUSD/"
 SOURCES = {

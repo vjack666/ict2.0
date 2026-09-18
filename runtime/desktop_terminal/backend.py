@@ -16,7 +16,7 @@ from runtime.desktop_terminal.snapshot_health import canonical_health
 from mechanical_bot.blackbox import BlackBoxWriteError
 from concurrent.futures.process import BrokenProcessPool
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
 TF_SECONDS = {"D1": 86400, "H4": 14400, "H1": 3600, "M15": 900, "M5": 300, "M1": 60}
 
 

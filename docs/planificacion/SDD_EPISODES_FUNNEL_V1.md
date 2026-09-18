@@ -143,7 +143,7 @@ confirmed_at = confirmation_time
 tradable_at  = tradable_time
 ```
 
-No se redefine `available_at` por ObjectType.
+No se redefine `available_at` por ObjectType. La prioridad anterior es global y evita look-ahead en patrones cuyo candidate_time es un ancla anterior a su confirmación (FVG/OB).
 
 Cuando existan las marcas:
 
@@ -152,7 +152,7 @@ candidate_time <= confirmation_time <= tradable_time <= decision_time
 ```
 
 `engine.episodes.available_time()` es la función canónica que deben consumir
-los materializadores de IA.
+los materializadores de IA para disponibilidad real del consumidor.
 
 `engine.setup_builder._obj_time()` NO define `available_at`. Es una referencia
 de orden para componentes ya compuestos y se mantiene separada hasta que una

@@ -154,9 +154,7 @@ candidate_time <= confirmation_time <= tradable_time <= decision_time
 `engine.episodes.available_time()` es la función canónica que deben consumir
 los materializadores de IA para disponibilidad real del consumidor.
 
-`engine.setup_builder._obj_time()` NO define `available_at`. Es una referencia
-de orden para componentes ya compuestos y se mantiene separada hasta que una
-auditoría específica demuestre que su semántica deba cambiar.
+`engine.setup_builder._obj_time()` NO define `available_at`; ordena componentes ya compuestos por tiempo operativo. La auditoría 2026-09-18 lo alineó con la misma noción de uso seguro: tradable_time -> confirmation_time -> creation_time -> candidate_time.
 
 ### 9.2 Auditoría de productores reales
 

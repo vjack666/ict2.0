@@ -43,6 +43,30 @@ posterior que los sustituye y el cambio está documentado.
 | 18 | `lab/` | Entrada lógica para experimentos | Activo | Contratos de laboratorio |
 | 19 | `runtime/` | Uso diario + infraestructura IA (`runtime/ai_learning/`) | Activo | Contratos runtime/INF |
 
+## Deuda física visible en la raíz
+
+La raíz todavía contiene artefactos operativos/experimentales que no pertenecen
+a ella. Se conservan temporalmente para no romper consumidores invisibles hasta
+hacer la migración física local con búsqueda de referencias y tests.
+
+Grupos principales:
+
+- auditoría: `audit_*.py`, `validate_blackbox_demo.py`,
+  `mc20260914_mt5_clock_verification.py`;
+- entrenamiento/experimentos: `pipeline_full_cpu.py`,
+  `run_ict_2006_*.py`, `smoke_displacement_cpu.py`, `smoke_single.py`;
+- notebook: `kaggle_notebook_displacement.ipynb`;
+- evidencias/outputs: `blackbox_demo_validation_evidence.json`,
+  `displacement_results*/`;
+- contratos auxiliares pendientes de consumo: `B1_DATA_MANIFEST_V1.json`,
+  `schema_validate.json`.
+
+El archivo vacío accidental `Executable` fue retirado en la segunda pasada
+de ordenamiento del 2026-09-18.
+
+Los destinos y el protocolo de migración están en
+[`REPOSITORY_ORDER.md`](REPOSITORY_ORDER.md#fase-3a--higiene-física-de-la-raíz).
+
 ## Capas activas de agentes
 
 ```text

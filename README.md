@@ -46,6 +46,16 @@ ordenada y autónoma**, siguiendo el ciclo de migración controlada
 > índice lista (contratos/SDDs de FVG/OB, MTF, auditoría). Si este README
 > contradice un documento de `docs/`, manda el documento de `docs/`.
 
+## Higiene física
+
+La raíz conserva algunos scripts y outputs antiguos por compatibilidad, pero ya
+no es un lugar válido para crear trabajo nuevo. La estructura física objetivo y
+la lista de candidatos a migración están en
+[`docs/REPOSITORY_ORDER.md`](docs/REPOSITORY_ORDER.md#fase-3a--higiene-física-de-la-raíz).
+
+La próxima migración física debe hacerse localmente, elemento por elemento,
+buscando consumidores y ejecutando tests antes de retirar rutas anteriores.
+
 ## Estructura
 
 El mapa completo de carpetas, autoridad y separación entre motor, agentes,

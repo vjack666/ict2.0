@@ -52,6 +52,7 @@ La organización vigente es lógica sobre las carpetas canónicas existentes. No
 ## Límites no negociables
 
 - El motor diario es para lectura/uso diario; la investigación y el laboratorio permanecen separados.
+- La raíz del repositorio no es un workspace: nuevos scripts deben ir a `scripts/daily`, `scripts/audit`, `scripts/data`, `scripts/smoke`, `scripts/presentation` o `scripts/lab` según función. Outputs van a `reports/` o `data/`.
 - backtest/ es un consumidor nuevo y aislado del motor; no reutiliza ni importa el backtest histórico.
 - `Research propone → Lab evalúa → Auditoría verifica → Cliente/autoridad decide`.
 - `engine/` no importa `backtest/`; no reintroducir OTE ni reglas históricas retiradas.

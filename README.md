@@ -38,13 +38,23 @@ ordenada y autónoma**, siguiendo el ciclo de migración controlada
 > (`AgentOrchestrator`) resuelve imports y produce columnas `agent_*`.
 > Fase D (FVG/OB canónicos + lineage causal) = PASS; AHF (navegación MTF) =
 > implementado. El motor **NO emite órdenes**: AHF llega a `SETUP_READY` y se
-> detiene (`AHF_STATE_NOT_ENTRY`). Puedes verificar con `pytest tests/` (52 PASS)
-> y `python -c "import engine.ahf, engine.sequence, agents.orchestrator"`.
+> detiene (`AHF_STATE_NOT_ENTRY`). La suite vigente se verifica con `pytest tests/`
+> y los imports base con `python -c "import engine.ahf, engine.sequence, agents.orchestrator"`.
 >
 > 📌 Este README es contexto de arranque, **no autoridad normativa**. La
 > autoridad vigente está en `docs/INDICE_AUTORIDAD.md` y los documentos que ese
 > índice lista (contratos/SDDs de FVG/OB, MTF, auditoría). Si este README
 > contradice un documento de `docs/`, manda el documento de `docs/`.
+
+## Higiene física
+
+La raíz conserva algunos scripts y outputs antiguos por compatibilidad, pero ya
+no es un lugar válido para crear trabajo nuevo. La estructura física objetivo y
+la lista de candidatos a migración están en
+[`docs/REPOSITORY_ORDER.md`](docs/REPOSITORY_ORDER.md#fase-3a--higiene-física-de-la-raíz).
+
+La próxima migración física debe hacerse localmente, elemento por elemento,
+buscando consumidores y ejecutando tests antes de retirar rutas anteriores.
 
 ## Estructura
 

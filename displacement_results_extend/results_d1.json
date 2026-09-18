@@ -1,0 +1,31 @@
+{
+  "timeframe": "D1",
+  "n_sequences": 205,
+  "n_train": 164,
+  "n_test": 41,
+  "has_displacement_accuracy": 1.0,
+  "has_displacement_precision": 1.0,
+  "has_displacement_recall": 1.0,
+  "has_displacement_f1": 1.0,
+  "r1_accuracy": 0.9024390243902439,
+  "r1_precision": 0.0,
+  "r1_recall": 0.0,
+  "r1_f1": 0.0,
+  "confusion_r1": [
+    [
+      37,
+      0
+    ],
+    [
+      4,
+      0
+    ]
+  ],
+  "magnitude_corr": 0.0523927287187154,
+  "efficiency_corr": 0.18005004290402762,
+  "duration_corr": null,
+  "mfe_corr": 0.052392729097065445,
+  "mae_corr": 0.05239272871871535,
+  "calibration": "B (body_ratio>0.60, wick<0.20, FVG, sweep10, BOS14)",
+  "timestamp": "2026-09-18T11:19:55.180270"
+}

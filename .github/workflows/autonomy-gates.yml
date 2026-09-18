@@ -6,6 +6,7 @@ on:
     branches:
       - clean-layout-v1
       - codex/autonomy-audit-20260918
+      - codex/temporal-episodes-v1-20260918
 
 jobs:
   syntax-and-controller:
@@ -25,3 +26,6 @@ jobs:
           -k "not all_route_agent_keys_are_registered_in_opencode
           and not opencode_adapter
           and not http_adapter"
+
+      - name: Temporal episode causal tests
+        run: python -m pytest tests/test_temporal_episode_materializer.py tests/test_episodes.py -q

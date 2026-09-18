@@ -1,10 +1,16 @@
 # Mapa profesional del repositorio
 
 **Proyecto:** `vjack666/ict2.0`
-**Rama de referencia:** `main`
-**Actualizado:** 2026-08-20
+**Rama de referencia operativa:** `entrenamiento-ia` (reconciliación en `codex/repository-order-20260918`)
+**Actualizado:** 2026-09-18
 **Propósito:** indicar qué contiene cada carpeta, quién tiene autoridad y qué
 capas deben evolucionar juntas.
+
+## Estado de ramas
+
+La topología Git y la política para historias sin ancestro común se definen en
+[`REPOSITORY_CANONICAL_STATE.md`](REPOSITORY_CANONICAL_STATE.md). Este mapa
+describe capas del árbol activo; no autoriza merges entre historias.
 
 ## Regla de lectura
 
@@ -27,14 +33,15 @@ posterior que los sustituye y el cambio está documentado.
 | 08 | `orchestration/` | Coordinación de agentes | Activo | Contrato de orquestación |
 | 09 | `detectors/` | Features por DataFrame | Activo | Contrato de features |
 | 10 | `tools/` | Herramientas aisladas y aprendizaje base | Activo | Contratos de tools |
-| 11 | `audits/` | Código ejecutable de auditorías | Activo | Gates A0–A9/Funnel/TNA |
-| 12 | `scripts/` | Entrypoints clasificados y wrappers de compatibilidad | Activo, clasificado | Cada script declara su función |
-| 12 | `tests/` | Tests automatizados | Activo | Pytest local |
-| 13 | `reports/` | Evidencia generada legible | Activo | Reportes publicados |
-| 14 | `datasets/` | Fixtures o datasets pequeños versionados | Activo | Metadata del dataset |
-| 15 | `data/` | Datos locales grandes, ignorados por Git | Local | Inventario en [`DATA_INVENTARIO.md`](DATA_INVENTARIO.md) |
-| 16 | `lab/` | Entrada ordenada para experimentos y aprendizaje | Activo | README del laboratorio; no autoriza runtime |
-| 17 | `runtime/` | Punto de entrada del uso diario de lectura | Activo | README de runtime; solo observación |
+| 11 | `audits/` | Código ejecutable de auditorías | Activo | Gates científicos |
+| 12 | `scripts/` | Entrypoints, laboratorio y wrappers | Activo, clasificado | Cada script declara su función |
+| 13 | `backtest/` | Replay/consumidor causal aislado | Activo | Contratos de replay |
+| 14 | `tests/` | Tests automatizados | Activo | Pytest local |
+| 15 | `reports/` | Evidencia generada legible | Activo | Reportes publicados |
+| 16 | `datasets/` | Fixtures o datasets pequeños versionados | Activo | Metadata del dataset |
+| 17 | `data/` | Datos/modelos locales y artefactos pesados | Mixto/local | Inventario y manifests |
+| 18 | `lab/` | Entrada lógica para experimentos | Activo | Contratos de laboratorio |
+| 19 | `runtime/` | Uso diario + infraestructura IA (`runtime/ai_learning/`) | Activo | Contratos runtime/INF |
 
 ## Capas activas de agentes
 

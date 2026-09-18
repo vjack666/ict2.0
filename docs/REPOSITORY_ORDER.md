@@ -3,6 +3,20 @@
 Este documento define el orden de trabajo para mantener `ict2.0` profesional
 sin romper las APIs activas de `engine/`, `agents/` u `orchestration/`.
 
+## Fase 0 — Topología Git
+
+Antes de mover archivos o promover una rama:
+
+1. comprobar si las ramas comparten ancestro;
+2. si no lo comparten, prohibir el merge automático de historias;
+3. seleccionar una rama de integración desde la línea operativa vigente;
+4. importar trabajo por unidades verificables con procedencia documentada;
+5. conservar las ramas históricas hasta cerrar la reconciliación;
+6. no cambiar la rama por defecto hasta pasar los gates afectados.
+
+La política vigente está en
+[`REPOSITORY_CANONICAL_STATE.md`](REPOSITORY_CANONICAL_STATE.md).
+
 ## Fase 1 — Autoridad y nombres
 
 1. Un solo contrato normativo por concepto.

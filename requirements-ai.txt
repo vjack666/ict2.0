@@ -1,0 +1,17 @@
+# ICT 2.0 — dependencias directas para investigación IA
+#
+# Python objetivo verificado en training_record:
+#   Python 3.11.15
+# TensorFlow verificado:
+#   TensorFlow 2.21.0
+#
+# requirements.txt sigue siendo el conjunto mínimo de CI/tests.
+# Este archivo declara la superficie directa usada por los scripts de IA.
+# Antes de una certificación reproducible en otra máquina, generar y versionar
+# un lock desde un entorno limpio validado; no confundir este archivo con lock.
+
+-r requirements.txt
+tensorflow==2.21.0
+numpy
+pandas
+scikit-learn

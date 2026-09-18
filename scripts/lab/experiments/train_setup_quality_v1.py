@@ -28,7 +28,7 @@ np.random.seed(SEED)
 tf.random.set_seed(SEED)
 os.environ["PYTHONHASHSEED"] = str(SEED)
 
-ROOT = Path(r"C:/Users/v_jac/Desktop/ICT SYSTEM")
+ROOT = Path(__file__).resolve().parents[3]
 RUN_ID = "setup_quality_v1"
 DATASET_DIR = ROOT / "data/ml/tensorflow/setup_grammar_v1"
 OUT_DIR = ROOT / "data/ml/tensorflow" / RUN_ID

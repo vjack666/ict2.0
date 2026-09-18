@@ -13,7 +13,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent.parents[2]s[2]
+ROOT = Path(__file__).resolve().parent.parents[2]
 TF_SECONDS = {"D1": 86400, "H4": 14400, "H1": 3600, "M15": 900, "M5": 300, "M1": 60}
 
 

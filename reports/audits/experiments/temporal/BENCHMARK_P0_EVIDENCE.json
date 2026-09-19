@@ -1,0 +1,172 @@
+{
+  "phase": "P0",
+  "generated_at": "2026-09-19T13:49:53.615785+00:00",
+  "manifest": {
+    "path": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM CLEAN\\benchmark\\eurusd_multitf\\BENCHMARK_DATA_MANIFEST.json",
+    "sha256": "d144158eb7e626ad68c0ca06adf33afa991f6b5a3a645ef0a00a530cccb82bbd"
+  },
+  "time_semantics_policy": "CSV time = APERTURA de vela (convencion MT5). Evidencia: vela M5 2026-09-17T18:15Z abre y cierra en 1.14847 = 'M5 close ~1.14847' del control GPT a las 18:20Z. bar_close_time = open de la vela siguiente (interior) u open + duracion TF (ultima vela). El motor opera con velas cerradas cuyo time es el instante de cierre (plan 10.6.2).",
+  "source_profile": "RECENT",
+  "source_selection": {
+    "D1": "EURUSD_D1.csv",
+    "H4": "EURUSD_H4.csv",
+    "H1": "EURUSD_H1.csv",
+    "M15": "EURUSD_M15.csv",
+    "M5": "EURUSD_M5_3m.csv",
+    "M1": "EURUSD_M1.csv"
+  },
+  "file_hashes": {
+    "EURUSD_D1.csv": {
+      "bytes": 944095,
+      "sha256": "518f5023ebe365f5dda5d4d1b6c72b375843ec810f578154e58473c9210bb54a"
+    },
+    "EURUSD_H1.csv": {
+      "bytes": 9592633,
+      "sha256": "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66"
+    },
+    "EURUSD_H1_20y.csv": {
+      "bytes": 9592633,
+      "sha256": "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66"
+    },
+    "EURUSD_H4.csv": {
+      "bytes": 3362626,
+      "sha256": "eb0608477c6da54773ef89a6edabc2217873694e76d17418ab8cc4dc617c7b73"
+    },
+    "EURUSD_M1.csv": {
+      "bytes": 380287250,
+      "sha256": "dace9a21bf98193198d50beed35a7bba683b81c7918bcdcfa1b66974b2379b9a"
+    },
+    "EURUSD_M15.csv": {
+      "bytes": 7833909,
+      "sha256": "3a3c23828b4385a93f4c5ce550336b50360c9585f245f00fa364693ecf37598a"
+    },
+    "EURUSD_M3.csv": {
+      "bytes": 7412912,
+      "sha256": "a92cb2544c3e1b9b9f2f9ad498999f2a0d18a7a9d86e9e77fbb5558db97bfe2b"
+    },
+    "EURUSD_M5.csv": {
+      "bytes": 21422884,
+      "sha256": "caa974d49f9294a311b68766a48a2e5fd71e1c458e85b9b1de078954b713805d"
+    },
+    "EURUSD_M5_20y.csv": {
+      "bytes": 99621701,
+      "sha256": "704dd2d903b705b7238c862cf1008f057b0fc3c6e33e8ade27f7b13845904714"
+    },
+    "EURUSD_M5_3m.csv": {
+      "bytes": 1268601,
+      "sha256": "84a4acddfdc3574e8af65c9e6c6242939cc6491dc2577331215dc6944083a3ea"
+    }
+  },
+  "controls": {
+    "CONTROL_A": {
+      "control": "CONTROL_A",
+      "tfs": {
+        "D1": {
+          "source": "EURUSD_D1.csv",
+          "coverage": "IN_RANGE",
+          "rows": 65,
+          "last_close": "2026-09-17 00:00:00+00:00",
+          "last_open": "2026-09-16 00:00:00+00:00",
+          "last_close_price": 1.14639
+        },
+        "H4": {
+          "source": "EURUSD_H4.csv",
+          "coverage": "IN_RANGE",
+          "rows": 394,
+          "last_close": "2026-09-17 16:00:00+00:00",
+          "last_open": "2026-09-17 12:00:00+00:00",
+          "last_close_price": 1.14914
+        },
+        "H1": {
+          "source": "EURUSD_H1.csv",
+          "coverage": "IN_RANGE",
+          "rows": 1593,
+          "last_close": "2026-09-17 18:00:00+00:00",
+          "last_open": "2026-09-17 17:00:00+00:00",
+          "last_close_price": 1.14861
+        },
+        "M15": {
+          "source": "EURUSD_M15.csv",
+          "coverage": "IN_RANGE",
+          "rows": 6341,
+          "last_close": "2026-09-17 18:15:00+00:00",
+          "last_open": "2026-09-17 18:00:00+00:00",
+          "last_close_price": 1.14847
+        },
+        "M5": {
+          "source": "EURUSD_M5_3m.csv",
+          "coverage": "IN_RANGE",
+          "rows": 18809,
+          "last_close": "2026-09-17 18:20:00+00:00",
+          "last_open": "2026-09-17 18:15:00+00:00",
+          "last_close_price": 1.14847
+        },
+        "M1": {
+          "source": "EURUSD_M1.csv",
+          "coverage": "OUT_OF_RANGE",
+          "rows": 0
+        }
+      }
+    },
+    "CONTROL_B": {
+      "control": "CONTROL_B",
+      "tfs": {
+        "D1": {
+          "source": "EURUSD_D1.csv",
+          "coverage": "IN_RANGE",
+          "rows": 47,
+          "last_close": "2026-08-24 00:00:00+00:00",
+          "last_open": "2026-08-21 00:00:00+00:00",
+          "last_close_price": 1.1675
+        },
+        "H4": {
+          "source": "EURUSD_H4.csv",
+          "coverage": "IN_RANGE",
+          "rows": 287,
+          "last_close": "2026-08-24 20:00:00+00:00",
+          "last_open": "2026-08-24 16:00:00+00:00",
+          "last_close_price": 1.16648
+        },
+        "H1": {
+          "source": "EURUSD_H1.csv",
+          "coverage": "IN_RANGE",
+          "rows": 1163,
+          "last_close": "2026-08-24 20:00:00+00:00",
+          "last_open": "2026-08-24 19:00:00+00:00",
+          "last_close_price": 1.16648
+        },
+        "M15": {
+          "source": "EURUSD_M15.csv",
+          "coverage": "IN_RANGE",
+          "rows": 4622,
+          "last_close": "2026-08-24 20:30:00+00:00",
+          "last_open": "2026-08-24 20:15:00+00:00",
+          "last_close_price": 1.16585
+        },
+        "M5": {
+          "source": "EURUSD_M5_3m.csv",
+          "coverage": "IN_RANGE",
+          "rows": 13652,
+          "last_close": "2026-08-24 20:35:00+00:00",
+          "last_open": "2026-08-24 20:30:00+00:00",
+          "last_close_price": 1.16593
+        },
+        "M1": {
+          "source": "EURUSD_M1.csv",
+          "coverage": "IN_RANGE",
+          "rows": 61313,
+          "last_close": "2026-08-24 20:35:00+00:00",
+          "last_open": "2026-08-24 20:34:00+00:00",
+          "last_close_price": 1.16593
+        }
+      }
+    }
+  },
+  "preflight_windows_cpu": {
+    "python": "3.11.15 (main, Jun 23 2026, 15:20:37) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "win32",
+    "gate_script": "scripts/run_temporal_episode_windows_cpu.ps1",
+    "result": "PASS",
+    "note": "GPU_DEPENDENCY_CHECK=PASS, COMPILE_WINDOWS_CPU=PASS, TEMPORAL_TESTS_WINDOWS_CPU=PASS (30 tests), exit code 0, CUDA_VISIBLE_DEVICES=-1, sin TensorFlow/Torch/CUDA."
+  }
+}

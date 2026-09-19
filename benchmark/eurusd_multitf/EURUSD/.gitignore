@@ -1,0 +1,4 @@
+# Datos crudos del benchmark multi-TF (plan SDD §10.2): los CSV/ZIP voluminosos
+# quedan SIN commit. El manifiesto (BENCHMARK_DATA_MANIFEST.json) es la fuente de
+# verdad de hashes y selección; los archivos se regeneran desde EURUSD.zip.
+*

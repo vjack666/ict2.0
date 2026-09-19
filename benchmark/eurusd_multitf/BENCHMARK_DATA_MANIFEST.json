@@ -1,0 +1,467 @@
+﻿{
+    "duplicate_detection":  {
+                                "byte_identical":  [
+                                                       {
+                                                           "files":  [
+                                                                         "EURUSD_H1.csv",
+                                                                         "EURUSD_H1_20y.csv"
+                                                                     ],
+                                                           "sha256":  "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66"
+                                                       }
+                                                   ],
+                                "conflicting_ohlc":  [
+                                                         {
+                                                             "conflicting_rows":  1114043,
+                                                             "files":  [
+                                                                           "EURUSD_M5.csv",
+                                                                           "EURUSD_M5_20y.csv"
+                                                                       ]
+                                                         },
+                                                         {
+                                                             "conflicting_rows":  31586,
+                                                             "files":  [
+                                                                           "EURUSD_M5.csv",
+                                                                           "EURUSD_M5_3m.csv"
+                                                                       ]
+                                                         }
+                                                     ],
+                                "overlapping_same_tf":  [
+                                                            {
+                                                                "common_timestamps":  139792,
+                                                                "files":  [
+                                                                              "EURUSD_H1.csv",
+                                                                              "EURUSD_H1_20y.csv"
+                                                                          ],
+                                                                "overlap_first":  "2006-01-01T21:00:00+00:00",
+                                                                "overlap_last":  "2026-09-17T18:00:00+00:00"
+                                                            },
+                                                            {
+                                                                "common_timestamps":  279383,
+                                                                "files":  [
+                                                                              "EURUSD_M5.csv",
+                                                                              "EURUSD_M5_20y.csv"
+                                                                          ],
+                                                                "overlap_first":  "2022-01-02T17:00:00+00:00",
+                                                                "overlap_last":  "2025-12-31T16:55:00+00:00"
+                                                            },
+                                                            {
+                                                                "common_timestamps":  12489,
+                                                                "files":  [
+                                                                              "EURUSD_M5.csv",
+                                                                              "EURUSD_M5_3m.csv"
+                                                                          ],
+                                                                "overlap_first":  "2026-06-18T10:55:00+00:00",
+                                                                "overlap_last":  "2026-08-24T20:35:00+00:00"
+                                                            }
+                                                        ],
+                                "row_identical":  [
+                                                      {
+                                                          "files":  [
+                                                                        "EURUSD_H1.csv",
+                                                                        "EURUSD_H1_20y.csv"
+                                                                    ]
+                                                      }
+                                                  ]
+                            },
+    "files":  [
+                  {
+                      "bytes":  944095,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_D1.csv",
+                      "first_time":  "1971-01-04T00:00:00+00:00",
+                      "last_time":  "2026-09-17T00:00:00+00:00",
+                      "max_gap_seconds":  864000.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  14365,
+                      "sha256":  "518f5023ebe365f5dda5d4d1b6c72b375843ec810f578154e58473c9210bb54a",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  0,
+                      "zero_range_candles":  1010
+                  },
+                  {
+                      "bytes":  9592633,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_H1.csv",
+                      "first_time":  "2006-01-01T21:00:00+00:00",
+                      "last_time":  "2026-09-17T18:00:00+00:00",
+                      "max_gap_seconds":  262800.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  139792,
+                      "sha256":  "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  11484,
+                      "zero_range_candles":  8321
+                  },
+                  {
+                      "bytes":  9592633,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_H1_20y.csv",
+                      "first_time":  "2006-01-01T21:00:00+00:00",
+                      "last_time":  "2026-09-17T18:00:00+00:00",
+                      "max_gap_seconds":  262800.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  139792,
+                      "sha256":  "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  11484,
+                      "zero_range_candles":  8321
+                  },
+                  {
+                      "bytes":  3362626,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_H4.csv",
+                      "first_time":  "1972-04-06T00:00:00+00:00",
+                      "last_time":  "2026-09-17T16:00:00+00:00",
+                      "max_gap_seconds":  374400.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  50000,
+                      "sha256":  "eb0608477c6da54773ef89a6edabc2217873694e76d17418ab8cc4dc617c7b73",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  0,
+                      "zero_range_candles":  699
+                  },
+                  {
+                      "bytes":  380287250,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_M1.csv",
+                      "first_time":  "2012-01-11T01:37:00+00:00",
+                      "last_time":  "2026-08-24T20:38:00+00:00",
+                      "max_gap_seconds":  788460.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  5780352,
+                      "sha256":  "dace9a21bf98193198d50beed35a7bba683b81c7918bcdcfa1b66974b2379b9a",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  435099,
+                      "zero_range_candles":  414933
+                  },
+                  {
+                      "bytes":  7833909,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_M15.csv",
+                      "first_time":  "2022-01-02T17:00:00+00:00",
+                      "last_time":  "2026-09-17T18:15:00+00:00",
+                      "max_gap_seconds":  260100.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  117134,
+                      "sha256":  "3a3c23828b4385a93f4c5ce550336b50360c9585f245f00fa364693ecf37598a",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  6431,
+                      "zero_range_candles":  42
+                  },
+                  {
+                      "bytes":  7412912,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread",
+                                      "symbol",
+                                      "timeframe"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_M3.csv",
+                      "first_time":  "2025-08-07T11:48:00+00:00",
+                      "last_time":  "2026-05-28T19:24:00+00:00",
+                      "max_gap_seconds":  172980.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  99940,
+                      "sha256":  "a92cb2544c3e1b9b9f2f9ad498999f2a0d18a7a9d86e9e77fbb5558db97bfe2b",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  0,
+                      "zero_range_candles":  228
+                  },
+                  {
+                      "bytes":  21422884,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_M5.csv",
+                      "first_time":  "2022-01-02T17:00:00+00:00",
+                      "last_time":  "2026-08-24T20:35:00+00:00",
+                      "max_gap_seconds":  371100.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  336540,
+                      "sha256":  "caa974d49f9294a311b68766a48a2e5fd71e1c458e85b9b1de078954b713805d",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  19609,
+                      "zero_range_candles":  613
+                  },
+                  {
+                      "bytes":  99621701,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_M5_20y.csv",
+                      "first_time":  "2006-01-01T00:00:00+00:00",
+                      "last_time":  "2025-12-31T21:55:00+00:00",
+                      "max_gap_seconds":  270300.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  1704105,
+                      "sha256":  "704dd2d903b705b7238c862cf1008f057b0fc3c6e33e8ade27f7b13845904714",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  286848,
+                      "zero_range_candles":  260642
+                  },
+                  {
+                      "bytes":  1268601,
+                      "columns":  [
+                                      "time",
+                                      "open",
+                                      "high",
+                                      "low",
+                                      "close",
+                                      "tick_volume",
+                                      "spread"
+                                  ],
+                      "duplicate_timestamps":  0,
+                      "filename":  "EURUSD_M5_3m.csv",
+                      "first_time":  "2026-06-18T10:55:00+00:00",
+                      "last_time":  "2026-09-17T18:50:00+00:00",
+                      "max_gap_seconds":  173100.0,
+                      "missing_OHLC":  0,
+                      "monotonic_time":  true,
+                      "rows":  18816,
+                      "sha256":  "84a4acddfdc3574e8af65c9e6c6242939cc6491dc2577331215dc6944083a3ea",
+                      "time_column":  "time",
+                      "timezone":  "UTC",
+                      "weekend_candles":  0,
+                      "zero_range_candles":  14
+                  }
+              ],
+    "generated_at":  "2026-09-19T00:52:43.647706+00:00",
+    "package_root":  "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM CLEAN\\benchmark\\eurusd_multitf\\EURUSD",
+    "recent_window_source_selection":  {
+                                           "D1":  {
+                                                      "reason":  "max coverage of window 2026-06-18 -\u003e 2026-09-17: 7862400s of window covered",
+                                                      "rejected":  [
+
+                                                                   ],
+                                                      "selected":  "EURUSD_D1.csv",
+                                                      "window_covered_seconds":  7862400
+                                                  },
+                                           "H1":  {
+                                                      "reason":  "max coverage of window 2026-06-18 -\u003e 2026-09-17: 7927200s of window covered",
+                                                      "rejected":  [
+                                                                       {
+                                                                           "detail":  "window coverage 7927200s vs selected 7927200s",
+                                                                           "file":  "EURUSD_H1_20y.csv",
+                                                                           "reason":  "REJECTED_SOURCE"
+                                                                       }
+                                                                   ],
+                                                      "selected":  "EURUSD_H1.csv",
+                                                      "window_covered_seconds":  7927200
+                                                  },
+                                           "H4":  {
+                                                      "reason":  "max coverage of window 2026-06-18 -\u003e 2026-09-17: 7920000s of window covered",
+                                                      "rejected":  [
+
+                                                                   ],
+                                                      "selected":  "EURUSD_H4.csv",
+                                                      "window_covered_seconds":  7920000
+                                                  },
+                                           "M1":  {
+                                                      "reason":  "max coverage of window 2026-06-18 -\u003e 2026-09-17: 5863080s of window covered",
+                                                      "rejected":  [
+
+                                                                   ],
+                                                      "selected":  "EURUSD_M1.csv",
+                                                      "window_covered_seconds":  5863080
+                                                  },
+                                           "M15":  {
+                                                       "reason":  "max coverage of window 2026-06-18 -\u003e 2026-09-17: 7928100s of window covered",
+                                                       "rejected":  [
+
+                                                                    ],
+                                                       "selected":  "EURUSD_M15.csv",
+                                                       "window_covered_seconds":  7928100
+                                                   },
+                                           "M5":  {
+                                                      "reason":  "max coverage of window 2026-06-18 -\u003e 2026-09-17: 7890900s of window covered",
+                                                      "rejected":  [
+                                                                       {
+                                                                           "detail":  "window coverage 5862900s vs selected 7890900s",
+                                                                           "file":  "EURUSD_M5.csv",
+                                                                           "reason":  "REJECTED_SOURCE"
+                                                                       },
+                                                                       {
+                                                                           "detail":  "window coverage 0s vs selected 7890900s",
+                                                                           "file":  "EURUSD_M5_20y.csv",
+                                                                           "reason":  "REJECTED_SOURCE"
+                                                                       }
+                                                                   ],
+                                                      "selected":  "EURUSD_M5_3m.csv",
+                                                      "window_covered_seconds":  7890900
+                                                  }
+                                       },
+    "schema_version":  "BENCHMARK_DATA_MANIFEST_V1",
+    "timeframe_source_selection":  {
+                                       "D1":  {
+                                                  "covers_control_a_2026_09_17_1820":  true,
+                                                  "covers_control_b_2026_08_24_2035":  true,
+                                                  "reason":  "widest span 1757808000s (1971-01-04T00:00:00+00:00 -\u003e 2026-09-17T00:00:00+00:00), rows=14365, sha256=518f5023ebe365f5...",
+                                                  "rejected":  [
+
+                                                               ],
+                                                  "selected":  "EURUSD_D1.csv"
+                                              },
+                                       "H1":  {
+                                                  "covers_control_a_2026_09_17_1820":  true,
+                                                  "covers_control_b_2026_08_24_2035":  true,
+                                                  "reason":  "widest span 653518800s (2006-01-01T21:00:00+00:00 -\u003e 2026-09-17T18:00:00+00:00), rows=139792, sha256=7a4669efb9405ccf...",
+                                                  "rejected":  [
+                                                                   {
+                                                                       "detail":  "span 653518800s vs selected 653518800s; rows=139792; covers_control_a=True; covers_control_b=True",
+                                                                       "file":  "EURUSD_H1_20y.csv",
+                                                                       "reason":  "REJECTED_SOURCE"
+                                                                   }
+                                                               ],
+                                                  "selected":  "EURUSD_H1.csv"
+                                              },
+                                       "H4":  {
+                                                  "covers_control_a_2026_09_17_1820":  true,
+                                                  "covers_control_b_2026_08_24_2035":  true,
+                                                  "reason":  "widest span 1718294400s (1972-04-06T00:00:00+00:00 -\u003e 2026-09-17T16:00:00+00:00), rows=50000, sha256=eb0608477c6da547...",
+                                                  "rejected":  [
+
+                                                               ],
+                                                  "selected":  "EURUSD_H4.csv"
+                                              },
+                                       "M1":  {
+                                                  "covers_control_a_2026_09_17_1820":  false,
+                                                  "covers_control_b_2026_08_24_2035":  true,
+                                                  "reason":  "widest span 461358060s (2012-01-11T01:37:00+00:00 -\u003e 2026-08-24T20:38:00+00:00), rows=5780352, sha256=dace9a21bf981931...",
+                                                  "rejected":  [
+
+                                                               ],
+                                                  "selected":  "EURUSD_M1.csv",
+                                                  "control_a_note":  "OUT_OF_RANGE: ultima vela M1 abre 2026-08-24T20:38 (cierra 20:39); no hay datos M1 el 2026-09-17. NO MISSING_DATA."
+                                              },
+                                       "M15":  {
+                                                   "covers_control_a_2026_09_17_1820":  true,
+                                                   "covers_control_b_2026_08_24_2035":  true,
+                                                   "reason":  "widest span 148526100s (2022-01-02T17:00:00+00:00 -\u003e 2026-09-17T18:15:00+00:00), rows=117134, sha256=3a3c23828b4385a9...",
+                                                   "rejected":  [
+
+                                                                ],
+                                                   "selected":  "EURUSD_M15.csv"
+                                               },
+                                       "M5":  {
+                                                  "covers_control_a_2026_09_17_1820":  true,
+                                                  "covers_control_b_2026_08_24_2035":  true,
+                                                  "reason":  "Plan SDD 10.4.2: perfil RECENT para CONTROL A/B (2026-06-18 a 2026-09-17). M5_3m cubre la ventana; M5_20y termina 2025-12-31 (estudio historico separado); M5.csv rechazado por conflicto OHLC.",
+                                                  "rejected":  [
+                                                                   {
+                                                                       "detail":  "span 146460900s vs selected 631144500s; rows=336540; covers_control_a=True; covers_control_b=True",
+                                                                       "file":  "EURUSD_M5.csv",
+                                                                       "reason":  "REJECTED_SOURCE"
+                                                                   },
+                                                                   {
+                                                                       "detail":  "span 7890900s vs selected 631144500s; rows=18816; covers_control_a=True; covers_control_b=True",
+                                                                       "file":  "EURUSD_M5_3m.csv",
+                                                                       "reason":  "REJECTED_SOURCE"
+                                                                   }
+                                                               ],
+                                                  "selected":  "EURUSD_M5_3m.csv"
+                                              }
+                                   },
+    "SOURCE_PROFILE_RECENT":  {
+                                  "D1":  "EURUSD_D1.csv",
+                                  "H4":  "EURUSD_H4.csv",
+                                  "H1":  "EURUSD_H1.csv",
+                                  "M15":  "EURUSD_M15.csv",
+                                  "M5":  "EURUSD_M5_3m.csv",
+                                  "M1":  "EURUSD_M1.csv",
+                                  "policy":  "Plan SDD 10.4.2: seleccion por perfil temporal, no por mayor numero de anos. M5_3m unico para CONTROL A/B y ventana reciente (2026-06-18 a 2026-09-17). M5_20y conservado para estudio historico separado (termina 2025-12-31). M5.csv rechazado por conflicto OHLC."
+                              },
+    "SOURCE_PROFILE_HISTORICAL":  {
+                                      "M5":  "EURUSD_M5_20y.csv",
+                                      "policy":  "Estudio historico separado; NO aporta a CONTROL A/B."
+                                  }
+}

@@ -181,14 +181,24 @@ def snapshot_tf(ms: dict[str, pd.DataFrame], tf: str, t: Any,
         return {"tf": tf, "available": False, "trend": "RANGING"}
     asof_bar: int | None = None
     if tf in ("M1", "M5", "M15"):
-        # LTF/exec: ultima barra con time <= t (esa barra ya cerro en el loop)
-        times = pd.to_datetime(df["time"], utc=True, errors="coerce")
-        tt = pd.to_datetime(t, utc=True, errors="coerce")
-        prior = df.index[times <= tt]
-        if len(prior) == 0:
-            return {"tf": tf, "available": False, "trend": "RANGING"}
-        asof_bar = int(prior[-1])
-        row = df.iloc[asof_bar]
+        # LTF/exec: última barra con time <= t (esa barra ya cerró en el loop).
+        # Si caller precomputó closed_idx (índice de la última vela cerrada <= t
+        # para este TF), usarlo en O(1) y saltar el scan booleano sobre todo el
+        # frame. Esto es la diferencia clave de memoria a lo largo de un loop
+        # de 380k velas de M1: sin closed_idx se hace pd.to_datetime + mask
+        # booleana sobre el frame completo en cada iteración; con closed_idx es
+        # O(1). Regresión cero: si no hay closed_idx, se usa el camino original.
+        if closed_idx is not None and 0 <= closed_idx < len(df):
+            asof_bar = int(closed_idx)
+            row = df.iloc[asof_bar]
+        else:
+            times = pd.to_datetime(df["time"], utc=True, errors="coerce")
+            tt = pd.to_datetime(t, utc=True, errors="coerce")
+            prior = df.index[times <= tt]
+            if len(prior) == 0:
+                return {"tf": tf, "available": False, "trend": "RANGING"}
+            asof_bar = int(prior[-1])
+            row = df.iloc[asof_bar]
     else:
         if closed_idx is not None and 0 <= closed_idx < len(df):
             asof_bar = int(closed_idx)
@@ -348,6 +358,7 @@ def ltf_structure_at(
     *,
     lookback: int = 120,
     exp012: bool = False,
+    closed_idx: int | None = None,
 ) -> dict[str, Any]:
     """Estructura fina closed-only de un TF de ejecucion (M5/M1) al tiempo t.
 
@@ -356,6 +367,11 @@ def ltf_structure_at(
 
     Anti look-ahead: se recorta el frame a las velas con ``time <= t`` ANTES de
     correr la deteccion, por lo que ninguna vela futura entra al calculo.
+
+    Si se pasa ``closed_idx`` (índice precomputado de la última vela cerrada <= t
+    para este TF), se usa para recortar la ventana de forma O(1) sin reconstruir
+    la máscara booleana sobre todo el frame (evita MemoryError en loops de replay
+    con M1 de 380k+ filas). Si no se pasa, se usa el camino original retrocompatible.
     """
     out: dict[str, Any] = {
         "tf": tf,
@@ -368,11 +384,17 @@ def ltf_structure_at(
     df = ms.get(tf)
     if df is None or len(df) == 0 or "time" not in df.columns:
         return out
-    times = pd.to_datetime(df["time"], utc=True, errors="coerce")
     tt = pd.to_datetime(t, utc=True, errors="coerce")
     if pd.isna(tt):
         return out
-    win = df.loc[times <= tt]
+    # Recorte closed-only: con closed_idx usa slicing O(1); sin closed_idx usa
+    # máscara booleana (camino retrocompatible). Ambas evitan que ninguna vela
+    # futura entre en la detección.
+    if closed_idx is not None and 0 <= closed_idx < len(df):
+        win = df.iloc[: int(closed_idx) + 1]
+    else:
+        times = pd.to_datetime(df["time"], utc=True, errors="coerce")
+        win = df.loc[times <= tt]
     if len(win) == 0:
         return out
     win = win.tail(int(max(lookback, 5))).reset_index(drop=True)
@@ -492,7 +514,7 @@ def build_context_stack(
     # estructura closed-only del motor (no redefinen el sesgo mayor).
     for tf in LTF_TFS:
         if tf in tfs:
-            fine = ltf_structure_at(ms, tf, t)
+            fine = ltf_structure_at(ms, tf, t, closed_idx=_ci.get(tf))
             base = dict(stack.get(tf) or {})
             if fine.get("available"):
                 base.update(
@@ -602,3 +624,60 @@ def top_down_allows_trade(
             return False, "ltf_not_confirming"
 
     return True, "ok"
+
+
+def build_closed_index(
+    ms: dict[str, pd.DataFrame],
+    t: Any,
+    *,
+    tfs: tuple[str, ...] = ("D1", "H4", "H1", "M15", "M5", "M1"),
+) -> dict[str, int]:
+    """Precomputa el índice de la última vela cerrada <= t para cada TF.
+
+    Usa searchsorted sobre la columna ``time`` de cada TF para O(log n) por TF
+    en vez del O(n) ciego de ``_closed_row_at_time``. El resultado se pasa a
+    ``build_context_stack(closed_index=...)`` y desde ahí a ``snapshot_tf`` y
+    ``ltf_structure_at``, que usan ``df.iloc[idx]`` en O(1) en cada iteración del
+    loop de replay.
+
+    Esto es la pieza que falta para que el loop de replay que recorre 380k velas
+    de M1 (380MB) no MemoryError: sin esto, ``snapshot_tf`` para M1/M5/M15 hace
+    ``pd.to_datetime(df["time"])`` + máscara booleana sobre el frame completo en
+    cada iteración; con esto es O(1) por iteración.
+
+    Devuelve ``{tf: idx}`` donde idx es el índice entero de la fila en df, o un
+    índice negativo si no hay vela cerrada <= t (el caller debe tratar como no
+    disponible).
+    """
+    out: dict[str, int] = {}
+    _tt = pd.to_datetime(t, utc=True, errors="coerce")
+    if pd.isna(_tt):
+        for tf in tfs:
+            out[tf] = -1
+        return out
+    for tf in tfs:
+        df = ms.get(tf)
+        if df is None or len(df) == 0 or "time" not in df.columns:
+            out[tf] = -1
+            continue
+        _times = pd.to_datetime(df["time"], utc=True, errors="coerce")
+        pos = int(_times.searchsorted(_tt, side="right"))
+        out[tf] = pos - 1
+    return out
+
+
+def build_multitf_closed_index(
+    ms: dict[str, pd.DataFrame],
+    t: Any,
+) -> dict[str, int]:
+    """Alias documentado: closed index para todos los TFs de la cadena multi-TF.
+
+    Equivalente a ``build_closed_index(ms, t, tfs=("D1","H4","H1","M15","M5","M1"))``.
+    Se usa desde el loop de replay para precomputar índices antes de cada llamada a
+    ``build_multitf_context(ms, t, closed_index=...))``.
+    """
+    return build_closed_index(
+        ms,
+        t,
+        tfs=("D1", "H4", "H1", "M15", "M5", "M1"),
+    )

@@ -1,7 +1,6 @@
 {
   "control": "CONTROL_B",
   "fecha_control_utc": "2026-08-24T20:35:00+00:00",
-  "timestamp_utc": "2026-08-24 20:35:00+00:00",
   "resultado": "PASS",
   "memory_error": "NO",
   "csv_usados": [
@@ -37,8 +36,8 @@
     "M1": 5780348
   },
   "contexto_ejecucion": {
-    "tiempo_ejecucion_s": 46.496,
-    "peak_memory_MB": 402.71,
+    "tiempo_s": 42.984,
+    "peak_memory_MB": 402.73,
     "iteraciones_totales": 30,
     "eventos_ict_unicos": 90
   },

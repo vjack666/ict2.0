@@ -32,8 +32,8 @@
     "M5": 336539
   },
   "contexto_ejecucion": {
-    "tiempo_s": 0.358,
-    "peak_memory_MB": 5.49
+    "tiempo_s": 0.34,
+    "peak_memory_MB": 5.48
   },
   "snapshots": {
     "D1": {

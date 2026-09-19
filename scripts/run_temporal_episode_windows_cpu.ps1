@@ -18,6 +18,17 @@ $env:CUDA_VISIBLE_DEVICES = "-1"
 $env:PYTHONUTF8 = "1"
 
 function Resolve-Python {
+    # Priorizar entorno de validación autónomo si existe (tiene pandas+numpy funcionales)
+    $VenvPython = Join-Path $RepoRoot ".venv_temporal/Scripts/python.exe"
+    if (Test-Path $VenvPython) {
+        try {
+            & $VenvPython -c "import pandas, sys; assert sys.version_info[:2] == (3,11)" *> $null
+            if ($LASTEXITCODE -eq 0) {
+                return @($VenvPython)
+            }
+        } catch {}
+    }
+
     try {
         & py -3.11 -c "import sys; print(sys.executable)" *> $null
         if ($LASTEXITCODE -eq 0) {
@@ -32,17 +43,21 @@ function Resolve-Python {
         }
     } catch {}
 
-    throw "No se encontró Python. Instala Python 3.11 x64 o habilita el launcher 'py'."
+    throw "No se encontró Python 3.11 funcional. Intenta: python -m venv .venv_temporal && .venv_temporal/Scripts/python -m pip install -r requirements.txt pandas numpy"
 }
 
 $Python = Resolve-Python
 
 function Invoke-Python {
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Args)
-    if ($Python.Count -eq 2) {
-        & $Python[0] $Python[1] @Args
+    if ($Python -is [array]) {
+        if ($Python.Count -eq 2) {
+            & $Python[0] $Python[1] @Args
+        } else {
+            & $Python[0] @Args
+        }
     } else {
-        & $Python[0] @Args
+        & $Python @Args
     }
     if ($LASTEXITCODE -ne 0) {
         throw "Python terminó con código $LASTEXITCODE"

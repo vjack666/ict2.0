@@ -16,6 +16,7 @@ build/
 venv/
 ENV/
 env/
+.venv_temporal/
 
 # IDE
 .vscode/

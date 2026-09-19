@@ -289,6 +289,12 @@ class MarketObject:
         seen = meta.get("_seen_events")
         if isinstance(seen, list):
             meta["_seen_events"] = set(seen)
+        # Cualquier otra clave cuyo valor serializado es una lista (proveniente de
+        # un set en el meta original) se reconstruye como set para garantizar
+        # round-trip SAVE->LOAD de meta con collections no JSON-serializables.
+        for k, v in list(meta.items()):
+            if isinstance(v, list) and k != "_seen_events":
+                meta[k] = set(v)
         return cls(
             id=d.get("id", ""), symbol=d.get("symbol", ""), type=ObjectType(d["type"]),
             origin_tf=d.get("origin_tf", ""), authority_tf=d.get("authority_tf", ""),

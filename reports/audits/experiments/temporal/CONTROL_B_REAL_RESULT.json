@@ -1,0 +1,57 @@
+{
+  "control": "CONTROL_B",
+  "fecha_control_utc": "2026-08-24T20:35:00+00:00",
+  "timestamp_utc": "2026-08-24 20:35:00+00:00",
+  "resultado": "PASS",
+  "memory_error": "NO",
+  "csv_usados": [
+    "D1",
+    "H4",
+    "H1",
+    "M15",
+    "M5",
+    "M1"
+  ],
+  "hashes_csv": {
+    "D1": "518f5023ebe365f5",
+    "H4": "eb0608477c6da547",
+    "H1": "7a4669efb9405ccf",
+    "M15": "3a3c23828b4385a9",
+    "M5": "84a4acddfdc3574e",
+    "M1": "dace9a21bf981931"
+  },
+  "fecha_ultima_vela_por_tf": {
+    "D1": "2026-09-17 00:00:00+00:00",
+    "H4": "2026-09-17 16:00:00+00:00",
+    "H1": "2026-09-17 18:00:00+00:00",
+    "M15": "2026-09-17 18:15:00+00:00",
+    "M5": "2026-08-24 20:35:00+00:00",
+    "M1": "2026-08-24 20:38:00+00:00"
+  },
+  "closed_index_base": {
+    "D1": 14346,
+    "H4": 49892,
+    "H1": 139361,
+    "M15": 115414,
+    "M5": 336539,
+    "M1": 5780348
+  },
+  "contexto_ejecucion": {
+    "tiempo_ejecucion_s": 46.496,
+    "peak_memory_MB": 402.71,
+    "iteraciones_totales": 30,
+    "eventos_ict_unicos": 90
+  },
+  "eventos_ict_por_tf": {
+    "D1": 30,
+    "H4": 30,
+    "H1": 30
+  },
+  "eventos_ict_por_trend": {
+    "RANGING": 90
+  },
+  "eventos_ict_por_bos_dir": {
+    "0": 90
+  },
+  "memory_error_corregido": true
+}

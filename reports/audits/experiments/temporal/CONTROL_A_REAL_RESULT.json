@@ -1,0 +1,77 @@
+{
+  "control": "CONTROL_A",
+  "fecha_control_utc": "2026-09-17T18:20:00+00:00",
+  "resultado": "PASS",
+  "memory_error": "NO",
+  "csv_usados": [
+    "D1",
+    "H4",
+    "H1",
+    "M15",
+    "M5"
+  ],
+  "hashes_csv": {
+    "D1": "518f5023ebe365f5",
+    "H4": "eb0608477c6da547",
+    "H1": "7a4669efb9405ccf",
+    "M15": "3a3c23828b4385a9",
+    "M5": "84a4acddfdc3574e"
+  },
+  "fecha_ultima_vela_por_tf": {
+    "D1": "2026-09-17 00:00:00+00:00",
+    "H4": "2026-09-17 16:00:00+00:00",
+    "H1": "2026-09-17 18:00:00+00:00",
+    "M15": "2026-09-17 18:15:00+00:00",
+    "M5": "2026-08-24 20:35:00+00:00"
+  },
+  "closed_index": {
+    "D1": 14364,
+    "H4": 49999,
+    "H1": 139791,
+    "M15": 117133,
+    "M5": 336539
+  },
+  "contexto_ejecucion": {
+    "tiempo_s": 0.358,
+    "peak_memory_MB": 5.49
+  },
+  "snapshots": {
+    "D1": {
+      "available": true,
+      "trend": "RANGING",
+      "bos_dir": 0,
+      "asof_bar": 14364,
+      "asof_time": "2026-09-17 00:00:00+00:00"
+    },
+    "H4": {
+      "available": true,
+      "trend": "RANGING",
+      "bos_dir": 0,
+      "asof_bar": 49999,
+      "asof_time": "2026-09-17 16:00:00+00:00"
+    },
+    "H1": {
+      "available": true,
+      "trend": "RANGING",
+      "bos_dir": 0,
+      "asof_bar": 139791,
+      "asof_time": "2026-09-17 18:00:00+00:00"
+    },
+    "M15": {
+      "available": true,
+      "trend": "RANGING",
+      "bos_dir": 0,
+      "asof_bar": 117133,
+      "asof_time": "2026-09-17 18:15:00+00:00"
+    },
+    "M5": {
+      "available": true,
+      "trend": "RANGING",
+      "bos_dir": 0,
+      "asof_bar": 336539,
+      "asof_time": "2026-08-24 20:35:00+00:00"
+    }
+  },
+  "eventos_ict_unicos": 0,
+  "eventos_ict_detalle": []
+}

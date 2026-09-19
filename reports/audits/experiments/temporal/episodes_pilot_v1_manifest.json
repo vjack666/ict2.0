@@ -1,0 +1,53 @@
+{
+  "artifact_checksum": "65700a320b140e06d8c6031db817f45481f43818f08633d907ae82ba11bd61e5",
+  "available_at_policy": "tradable_confirmation_creation_candidate",
+  "can_trade": false,
+  "created_at": "2026-09-19T00:14:32.848957+00:00",
+  "entry_authorized": false,
+  "episodes": 6,
+  "events": 24,
+  "git_commit": "4f7caf2c52a3fd47b07247c546c7bebe7423e999",
+  "materializer": "scripts/lab/experiments/mt_temporal_episode_materializer.py",
+  "order_reversal": {
+    "different": 6,
+    "episodes_tested": 6,
+    "identical": 0,
+    "insufficient_events": 0,
+    "sensitivity_percentage": 100.0,
+    "verdict": "PASS"
+  },
+  "schema_version": "TEMPORAL_EPISODE_V1",
+  "source_files": [
+    "reports\\audits\\experiments\\temporal\\market_state_historical_2022_2026.json",
+    "C:\\Users\\v_jac\\Desktop\\ICT System\\data\\raw\\EURUSD\\EURUSD_H4.parquet",
+    "C:\\Users\\v_jac\\Desktop\\ICT System\\data\\raw\\EURUSD\\EURUSD_M15.parquet"
+  ],
+  "source_hashes": {
+    "C:\\Users\\v_jac\\Desktop\\ICT System\\data\\raw\\EURUSD\\EURUSD_H4.parquet": "72ac26e75ed631e0c025d8294ae7f7ba736456626ea4cf2911cdf255eb1e5e45",
+    "C:\\Users\\v_jac\\Desktop\\ICT System\\data\\raw\\EURUSD\\EURUSD_M15.parquet": "94d37eb1e4dc1683d737f9b1bbec29683208e037515c7d1f0d04635bc9da86bd",
+    "reports\\audits\\experiments\\temporal\\market_state_historical_2022_2026.json": "66552e14d6c59098d3eaa5112fc8031fdd1c49564bc766627c416c6b33c998b4"
+  },
+  "timeframes": {
+    "D1": 0,
+    "H1": 0,
+    "H4": 6,
+    "M1": 0,
+    "M15": 6,
+    "M5": 0
+  },
+  "training_eligible": false,
+  "wyckoff_status": "MISSING",
+  "wyckoff_note": "No se proporcionó contexto Wyckoff causal para este piloto. Todos los episodios tienen wyckoff_context.status = MISSING.",
+  "source_data": "ICT SYSTEM data/raw/EURUSD (READ-ONLY): EURUSD_H4.parquet + EURUSD_M15.parquet",
+  "data_date_range": "H4: 2022-01-03 → 2026-09-01 | M15: 2022-01-02 → 2026-09-01",
+  "ntimeframes_present": {
+    "H4": 6,
+    "M15": 6
+  },
+  "ntimeframes_missing": {
+    "D1": 0,
+    "H1": 0,
+    "M5": 0,
+    "M1": 0
+  }
+}

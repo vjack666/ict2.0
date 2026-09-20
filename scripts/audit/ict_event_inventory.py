@@ -51,31 +51,33 @@ def extract(tf,closed,T,structure_fn,disp_fn,fvg_fn,ob_fn,lookback):
     # Source CSV 'time' denotes bar OPEN; engine expects bar CLOSE.
     d['time']=d['time']+pd.Timedelta(TFS[tf])
     assert (d['time']<=T).all()
-    def add(kind,direction,bar_i,at,level=None,orig_id=None):
+    def add(kind,direction,bar_i,at,level=None,orig_id=None,zone_high=None,close=None):
         t=pd.Timestamp(at)
         if t > T or t < T-pd.Timedelta('24h'):return
         e={'control':lookback,'tf':tf,'tipo':kind,'direccion':int(direction),
            'confirmation_time_utc':t.isoformat(),'bar_index_local':int(bar_i),
            'nivel':None if level is None or pd.isna(level) else float(level),
+           'zone_high':None if zone_high is None or pd.isna(zone_high) else float(zone_high),
+           'source_close':None if close is None or pd.isna(close) else float(close),
            'detector_object_id':orig_id}
         e['occurrence_id']=event_identity(tf,kind,t,direction)
         out.append(e)
     st=structure_fn(d).frame
     for i,row in st.loc[st['bos_dir']!=0].iterrows():
-        add('BOS',row['bos_dir'],i,row['time'],row.get('bos_level'))
+        add('BOS',row['bos_dir'],i,row['time'],row.get('bos_level'),close=row['close'])
     for i,row in st.loc[st['choch_dir']!=0].iterrows():
-        add('CHOCH',row['choch_dir'],i,row['time'],row.get('choch_proj_level'))
+        add('CHOCH',row['choch_dir'],i,row['time'],row.get('choch_proj_level'),close=row['close'])
     for i,row in st.loc[st['mss_dir']!=0].iterrows():
-        add('MSS',row['mss_dir'],i,row['time'])
+        add('MSS',row['mss_dir'],i,row['time'],row.get('close'),close=row['close'])
     di=disp_fn(d)
     for kind,sign,col in [('DISPLACEMENT_BULL',1,'displacement_bullish'),('DISPLACEMENT_BEAR',-1,'displacement_bearish')]:
         for i,row in di.loc[di[col]].iterrows():
-            add('DISPLACEMENT',sign,i,row['time'],row.get('close'))
+            add('DISPLACEMENT',sign,i,row['time'],row.get('low'),zone_high=row.get('high'),close=row['close'])
     rows=d[['time','open','high','low','close']].to_dict('records')
     for ob in ob_fn(rows,timeframe=tf,symbol='EURUSD'):
-        add('OB',ob.direction,ob.bar_index,ob.confirmation_time,ob.zone_low,orig_id=ob.id)
+        add('OB',ob.direction,ob.bar_index,ob.confirmation_time,ob.zone_low,orig_id=ob.id,zone_high=ob.zone_high)
     for fv in fvg_fn(rows,timeframe=tf,symbol='EURUSD'):
-        add('FVG',fv.direction,fv.bar_index,fv.confirmation_time,fv.zone_low,orig_id=fv.id)
+        add('FVG',fv.direction,fv.bar_index,fv.confirmation_time,fv.zone_low,orig_id=fv.id,zone_high=fv.zone_high)
     # No futuro: bos_real/quality/outcome are NOT published as as-of event attributes.
     # If no events, this is a valid detector observation, NOT accepted episode.
     return out,{'evaluated_bars':len(d),'event_rows_24h':len(out),

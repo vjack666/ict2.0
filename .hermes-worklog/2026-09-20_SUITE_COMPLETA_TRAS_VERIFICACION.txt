@@ -1,0 +1,26 @@
+........................................................................ [  8%]
+........................................................................ [ 17%]
+........................................................................ [ 25%]
+........................................................................ [ 34%]
+........................................................................ [ 42%]
+........................................................................ [ 51%]
+........................................................................ [ 59%]
+........................................................................ [ 68%]
+........................................................................ [ 76%]
+........................................................................ [ 85%]
+........................................................................ [ 93%]
+.....................................................                    [100%]
+============================== warnings summary ===============================
+tests/test_mechanical_bot_monthly.py::test_freeze_context_consumes_engine_context_and_cannot_pass_future_bar
+tests/test_mechanical_bot_monthly.py::test_freeze_context_consumes_engine_context_and_cannot_pass_future_bar
+tests/test_mechanical_bot_monthly.py::test_freeze_context_consumes_engine_context_and_cannot_pass_future_bar
+tests/test_mechanical_bot_monthly.py::test_freeze_context_consumes_engine_context_and_cannot_pass_future_bar
+tests/test_mechanical_bot_monthly.py::test_run_reports_daily_progress
+tests/test_mechanical_bot_monthly.py::test_run_reports_daily_progress
+tests/test_mechanical_bot_monthly.py::test_run_reports_daily_progress
+tests/test_mechanical_bot_monthly.py::test_run_reports_daily_progress
+  C:\Users\v_jac\Desktop\ICT SYSTEM\backtest\mechanical_bot_monthly.py:184: Pandas4Warning: The default 'epoch' date format is deprecated and will be removed in a future version, please use 'iso' date format instead.
+    timeframe_sha256={tf: sha256(canonical[tf].to_json(orient="split").encode()).hexdigest() for tf in canonical},
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+845 passed, 8 warnings in 65.70s (0:01:05)

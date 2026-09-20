@@ -1,0 +1,39 @@
+{
+  "status": "DETECTOR_INVENTORY_ONLY_NOT_P1_PASS",
+  "source": "EURUSD.zip original; selected CSV SHA256 validated 6/6 against BENCHMARK_DATA_MANIFEST.json",
+  "code": "scripts/audit/ict_event_inventory.py",
+  "code_git_blob_sha": "262b5c9c3281ef689da51c006b33882e8fc262a7",
+  "method": "detector occurrences by TF/type/confirmation_time/direction; last 24 h; warmup D1=600d H4=120d H1=45d M15=21d M5/M1=12d",
+  "A": {
+    "decision_time_utc": "2026-09-17T18:20:00Z",
+    "D1": 1,
+    "H4": 3,
+    "H1": 10,
+    "M15": 43,
+    "M5": 97,
+    "M1": "OUT_OF_RANGE",
+    "occurrences": 154
+  },
+  "B": {
+    "decision_time_utc": "2026-08-24T20:35:00Z",
+    "D1": 0,
+    "H4": 2,
+    "H1": 4,
+    "M15": 23,
+    "M5": 85,
+    "M1": 468,
+    "occurrences": 582,
+    "last_closed_M1": "2026-08-24T20:35:00Z"
+  },
+  "tests": {
+    "unit": "4 passed",
+    "real_csv_sha256": "6/6 match",
+    "dedup_by_control_occurrence_id": true
+  },
+  "limitations": [
+    "Not unique canonical MarketObject IDs or accepted funnel episodes",
+    "The old 90 count was 30 polls times three TFs with bos_dir=0",
+    "Not full P1 or independent FULL/PREFIX/future injection audit",
+    "D1/H4 broker calendar still requires verification"
+  ]
+}

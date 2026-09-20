@@ -111,6 +111,7 @@ def replay_closed_bars(frames: Mapping[str, Any], objects: list[Any], *, as_of: 
                 heappush(heap, (t, TFS.index(tf), idx, tf, bar))
         push_next()
     active = {}  # original source objects are never mutated
+    zones_by_tf = {tf: {} for tf in TFS}  # skip millions of irrelevant cross-TF bars
     birth_index = 0
     while heap or birth_index < len(scheduled):
         next_bar = heap[0][0] if heap else None
@@ -119,9 +120,8 @@ def replay_closed_bars(frames: Mapping[str, Any], objects: list[Any], *, as_of: 
         # Only previously tradable zones can be touched by a closed bar.
         while heap and heap[0][0] == t:
             _, _, _, tf, bar = heappop(heap)
-            for obj in tuple(active.values()):
-                if (obj.authority_tf == tf and obj.type.value in ZONAL
-                        and _availability(obj) < t):
+            for obj in tuple(zones_by_tf[tf].values()):
+                if _availability(obj) < t and not getattr(obj, 'is_terminal', False):
                     ms.advance_bar(obj.id, bar)
                     counts['lifecycle_observations'] += 1
             counts[f'bars_{tf}'] += 1
@@ -133,6 +133,8 @@ def replay_closed_bars(frames: Mapping[str, Any], objects: list[Any], *, as_of: 
                 raise ValueError(f'parent not born by child confirmation: {obj.id}')
             ms.ingest(obj)
             active[obj.id] = obj
+            if obj.type.value in ZONAL:
+                zones_by_tf[obj.authority_tf][obj.id] = obj
             counts[f'birth_{obj.origin_tf}'] += 1
             birth_index += 1
     projection = ms.projection_at(cutoff)

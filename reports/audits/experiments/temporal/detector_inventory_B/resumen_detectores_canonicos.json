@@ -1,0 +1,166 @@
+{
+  "classification": "CANONICAL_DETECTOR_EVENTS_NOT_FUNNEL_EPISODES",
+  "source_zip": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD.zip",
+  "code_root": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM",
+  "methods": [
+    "engine.bos.structure.detect_market_structure",
+    "detectors.displacement.detect_displacement",
+    "engine.detectors.fvg.detect_fvg",
+    "engine.detectors.ob.detect_order_blocks"
+  ],
+  "event_count_semantics": "detector occurrences by (TF,family,confirmation_time,direction), not canonical MarketObject IDs or accepted episodes",
+  "bar_time_assumption": "CSV time = OPEN; engine receives time=CLOSE (OPEN+TF); events counted only once per TF/type/direction/confirmation_time",
+  "limitations": [
+    "NO reconstruye MarketState, secuencias, accepted episodes, lifecycle ni seis-TF pipeline completo",
+    "Historia limitada por ventana de warm-up; los eventos dependen del contexto inicial",
+    "D1/H4 cierres aproximados como OPEN+periodo fijo; requiere cotejo de calendario broker",
+    "NO es auditoria independiente ni FULL/PREFIX/Future Injection completos",
+    "No se publican bos_real/quality/outcome: pueden depender de velas posteriores al evento",
+    "M1 de CONTROL A OUT_OF_RANGE; M5 seleccionada M5_3m para ambas ventanas",
+    "No compara desempeño de trading; un FVG/OB detectado NO implica un setup elegible"
+  ],
+  "controls": {
+    "B": {
+      "decision_time": "2026-08-24T20:35:00+00:00",
+      "frames": {
+        "D1": {
+          "total_source_rows": 14365,
+          "last_open": "2026-09-17T00:00:00+00:00",
+          "evaluated_bars": 425,
+          "event_rows_24h": 0,
+          "structure_bos_24h": 0,
+          "structure_choch_24h": 0,
+          "status": "DETECTORS_EXECUTED",
+          "first_used_open": "2025-01-02T00:00:00+00:00",
+          "last_used_open": "2026-08-21T00:00:00+00:00",
+          "last_used_close": "2026-08-22T00:00:00+00:00"
+        },
+        "H4": {
+          "total_source_rows": 50000,
+          "last_open": "2026-09-17T16:00:00+00:00",
+          "evaluated_bars": 515,
+          "event_rows_24h": 2,
+          "structure_bos_24h": 0,
+          "structure_choch_24h": 0,
+          "status": "DETECTORS_EXECUTED",
+          "first_used_open": "2026-04-27T00:00:00+00:00",
+          "last_used_open": "2026-08-24T16:00:00+00:00",
+          "last_used_close": "2026-08-24T20:00:00+00:00"
+        },
+        "H1": {
+          "total_source_rows": 139792,
+          "last_open": "2026-09-17T18:00:00+00:00",
+          "evaluated_bars": 749,
+          "event_rows_24h": 4,
+          "structure_bos_24h": 0,
+          "structure_choch_24h": 0,
+          "status": "DETECTORS_EXECUTED",
+          "first_used_open": "2026-07-10T21:00:00+00:00",
+          "last_used_open": "2026-08-24T19:00:00+00:00",
+          "last_used_close": "2026-08-24T20:00:00+00:00"
+        },
+        "M15": {
+          "total_source_rows": 117134,
+          "last_open": "2026-09-17T18:15:00+00:00",
+          "evaluated_bars": 1439,
+          "event_rows_24h": 23,
+          "structure_bos_24h": 2,
+          "structure_choch_24h": 7,
+          "status": "DETECTORS_EXECUTED",
+          "first_used_open": "2026-08-03T20:45:00+00:00",
+          "last_used_open": "2026-08-24T20:15:00+00:00",
+          "last_used_close": "2026-08-24T20:30:00+00:00"
+        },
+        "M5": {
+          "total_source_rows": 18816,
+          "last_open": "2026-09-17T18:50:00+00:00",
+          "evaluated_bars": 2304,
+          "event_rows_24h": 85,
+          "structure_bos_24h": 12,
+          "structure_choch_24h": 16,
+          "status": "DETECTORS_EXECUTED",
+          "first_used_open": "2026-08-12T20:35:00+00:00",
+          "last_used_open": "2026-08-24T20:30:00+00:00",
+          "last_used_close": "2026-08-24T20:35:00+00:00"
+        },
+        "M1": {
+          "total_source_rows": 5780352,
+          "last_open": "2026-08-24T20:38:00+00:00",
+          "evaluated_bars": 11520,
+          "event_rows_24h": 468,
+          "structure_bos_24h": 48,
+          "structure_choch_24h": 48,
+          "status": "DETECTORS_EXECUTED",
+          "first_used_open": "2026-08-12T20:35:00+00:00",
+          "last_used_open": "2026-08-24T20:34:00+00:00",
+          "last_used_close": "2026-08-24T20:35:00+00:00"
+        }
+      },
+      "families": {
+        "D1": {},
+        "H4": {
+          "OB": 1,
+          "FVG": 1
+        },
+        "H1": {
+          "DISPLACEMENT": 1,
+          "OB": 1,
+          "FVG": 2
+        },
+        "M15": {
+          "BOS": 2,
+          "CHOCH": 7,
+          "MSS": 1,
+          "DISPLACEMENT": 3,
+          "OB": 2,
+          "FVG": 8
+        },
+        "M5": {
+          "BOS": 12,
+          "CHOCH": 16,
+          "MSS": 2,
+          "DISPLACEMENT": 7,
+          "OB": 5,
+          "FVG": 43
+        },
+        "M1": {
+          "BOS": 48,
+          "CHOCH": 48,
+          "MSS": 13,
+          "DISPLACEMENT": 37,
+          "OB": 32,
+          "FVG": 290
+        }
+      },
+      "detector_occurrence_count_24h": 582
+    }
+  },
+  "verified_source_hashes": {
+    "D1": {
+      "filename": "EURUSD_D1.csv",
+      "sha256": "518f5023ebe365f5dda5d4d1b6c72b375843ec810f578154e58473c9210bb54a"
+    },
+    "H4": {
+      "filename": "EURUSD_H4.csv",
+      "sha256": "eb0608477c6da54773ef89a6edabc2217873694e76d17418ab8cc4dc617c7b73"
+    },
+    "H1": {
+      "filename": "EURUSD_H1.csv",
+      "sha256": "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66"
+    },
+    "M15": {
+      "filename": "EURUSD_M15.csv",
+      "sha256": "3a3c23828b4385a93f4c5ce550336b50360c9585f245f00fa364693ecf37598a"
+    },
+    "M5": {
+      "filename": "EURUSD_M5_3m.csv",
+      "sha256": "84a4acddfdc3574e8af65c9e6c6242939cc6491dc2577331215dc6944083a3ea"
+    },
+    "M1": {
+      "filename": "EURUSD_M1.csv",
+      "sha256": "dace9a21bf98193198d50beed35a7bba683b81c7918bcdcfa1b66974b2379b9a"
+    }
+  },
+  "status": "DETECTOR_INVENTORY_ONLY_NOT_P1_PASS",
+  "elapsed_seconds": 20.065
+}

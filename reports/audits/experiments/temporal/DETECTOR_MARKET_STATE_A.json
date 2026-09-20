@@ -1,0 +1,34 @@
+{
+  "status": "DETECTOR_OBJECTS_ONLY_NO_LINEAGE_LIFECYCLE_OR_EPISODES",
+  "control": "A",
+  "decision_time_utc": "2026-09-17T18:20:00Z",
+  "inventory_path": "reports\\audits\\experiments\\temporal\\detector_inventory_A\\eventos_detectores_canonicos_controles.csv",
+  "inventory_sha256": "a4ea50bc8198b5ebdd4d15e0a2d1b8a0b357c8b6160e3af7c994081806c63988",
+  "inventory_rows": 154,
+  "unique_detector_marketobjects": 154,
+  "by_tf": {
+    "D1": 1,
+    "H1": 10,
+    "H4": 3,
+    "M15": 43,
+    "M5": 97
+  },
+  "by_kind": {
+    "BOS": 16,
+    "CHOCH": 11,
+    "DISPLACEMENT": 22,
+    "FVG": 89,
+    "MSS": 5,
+    "OB": 11
+  },
+  "lineage_linked_count": 0,
+  "lifecycle_replayed_count": 0,
+  "accepted_episodes_count": null,
+  "accepted_episodes_status": "NOT_EVALUATED",
+  "gates": {
+    "P1_FULL_FUNNEL": "NOT_RUN",
+    "P2": "NOT_RUN",
+    "FULL_PREFIX_DETECTORS": "NOT_RUN",
+    "INDEPENDENT_AUDIT": "NOT_RUN"
+  }
+}

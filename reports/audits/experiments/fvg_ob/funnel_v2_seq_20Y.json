@@ -3,22 +3,22 @@
   "symbol": "EURUSD",
   "tf": "H1",
   "span": "20Y dukascopy",
-  "n_bars": 124377,
-  "chains": 12100,
-  "unique_setups": 9190,
-  "complete": 28,
+  "n_bars": 139792,
+  "chains": 20255,
+  "unique_setups": 9954,
+  "complete": 44,
   "status": {
-    "EXPIRED": 12072,
-    "COMPLETE": 28
+    "EXPIRED": 20211,
+    "COMPLETE": 44
   },
   "depth_dist": {
-    "1": 4579,
-    "2": 6056,
-    "3": 931,
-    "4": 498,
-    "5": 7,
+    "1": 7325,
+    "2": 8857,
+    "3": 2533,
+    "4": 1469,
+    "5": 26,
     "6": 1,
-    "7": 28
+    "7": 44
   },
   "complete_stage_signatures": [
     [
@@ -206,18 +206,18 @@
     "chains": 1460,
     "complete": 3
   },
-  "ratio_vs_v1": 8.29,
-  "elapsed_s": 25.6,
+  "ratio_vs_v1": 13.87,
+  "elapsed_s": 17.1,
   "gate": {
     "chains_positive": true,
     "has_complete": true,
     "not_explosive": true
   },
-  "generator_commit": "05bdecee143df80617e66de327f18754be4a55c7",
+  "generator_commit": "b277f7c9ec9d222c785fcfde23d043d10628e54a",
   "generator_worktree": "DIRTY",
   "generator_source_hashes": {
-    "engine/sequential_events.py": "dc56cc6ae10b1860a8bc76d205287a69db741bc6225850ae4f0a7ecee61323ff",
-    "engine/mtf_navigation.py": "2905f8f88ef9ac372622eaa5ec90e7508dd9a4ce853e0ba6b82ee9be84007921",
+    "engine/sequential_events.py": "efdfa6cb122d3dd932afd8e316d897cd49d291bc86e7fa05384aa7ad3f580bdf",
+    "engine/mtf_navigation.py": "133bf8cd36ac2fc3fccb699b40735d0f8ec07525c3b3fc721f013d21ddecf69e",
     "audits/codigo/mtf_seq_funnel.py": "a11feb2e3c77b940260664c56ade9b3d02af521d1e852dbf147f11fd8b092be1"
   }
 }

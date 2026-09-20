@@ -125,3 +125,12 @@ Ningún agente crea otra versión de `Episode`, otro Funnel o una copia de
 Resultado de trading, rentabilidad, optimización, entrenamiento, broker,
 producción, CME/OI, descarga externa, cambio de dataset, Wyckoff-7 estadístico,
 OTE y cualquier promoción.
+
+
+## Enmienda operacional 2026-09-20 — Inventario → MarketState, sin saltarse el funnel
+
+En `C:\\Users\\v_jac\\Desktop\\ICT SYSTEM` (ORIGINAL), el inventario de detectores (`scripts/audit/ict_event_inventory.py`) ahora emite `nivel`, `zone_high`, `source_close` y `confirmation_time_utc`. El puente `engine/detector_event_bridge.py` lo convierte en un conjunto **diagnóstico** de MarketObjects con identidad estable, deduplicación y nacimiento observable en la confirmación; `scripts/audit/ict_event_market_state.py` entrega un resumen por control. La salida A=154/B=582 representa **ocurrencias aisladas**, no setups o episodios. Para OB no se puede usar como nacimiento visible la vela de footprint previa a follow-through; para MSS se mantiene su tipo distinto de CHOCH. Los objetos del puente NO constituyen una fuente de lineage/lifecycle/eligibilidad por sí solos.
+
+Gates de esta fase: test unitario y datos reales del inventario completados en entorno de auditoría; P1 FULL_FUNNEL=NOT_RUN, FULL_PREFIX_DETECTORS=NOT_RUN, lifecycle completo=NOT_RUN, revisión independiente=NOT_RUN. El hecho de que `MarketState` tenga objetos ACTIVE inicialmente NO constituye certificación de estado actual: falta replay por TF. La integración futura debe reutilizar `engine/historical_event_objects.py` y `engine/episodes.py`, con causalidad y lineage acreditados. **No promover ni entrenar por estos conteos**.
+
+Ver `.hermes-worklog/2026-09-20_DETECTOR_MARKETSTATE_BRIDGE_ORIGINAL.md` para los comandos exactos, métricas reproducibles y el protocolo de integración selectiva al ORIGINAL.

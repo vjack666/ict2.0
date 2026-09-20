@@ -1,6 +1,5 @@
 """Prevent premature OB visibility, phantom BOS and overcounting in MarketState."""
 import importlib.util
-from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -56,12 +55,9 @@ def test_geometry_conflicts_and_missing_real_geometry_fail_closed():
         object_from_occurrence(dict(row,zone_high=1.099))
 
 
-def test_real_inventory_fixture_b_from_prior_audit():
-    fixture=Path(__file__).resolve().parents[1]/'reports/audits/experiments/temporal/ICT_EVENT_OCCURRENCES_AB_20260920.csv'
-    if not fixture.exists():
-        pytest.skip('historical fixture not included: real-data test requires local artifact')
-    # Historical fixture lacks high bound; conversion MUST reject, not invent 0-width OB/FVG.
-    actual=pd.read_csv(fixture)
-    sample=actual.loc[(actual['control']=='B') & (actual['tipo']=='FVG')].iloc[0].to_dict()
-    with pytest.raises(ValueError,match='zone_high'):
-        object_from_occurrence(sample)
+def test_prior_inventory_without_complete_geometry_is_rejected():
+    # Original inventory A/B had nivel but no zone_high; never fabricate FVG width.
+    prior=_row('FVG')
+    prior.pop('zone_high')
+    with pytest.raises(ValueError, match='zone_high'):
+        object_from_occurrence(prior)

@@ -1,0 +1,75 @@
+{
+  "schema": "ICT_CAUSAL_REPLAY_AB_FIX_V1",
+  "scope": "H4_M15_PILOT_ONLY",
+  "source": "EURUSD.zip (user provided)",
+  "data_hashes": {
+    "D1": "518f5023ebe365f5dda5d4d1b6c72b375843ec810f578154e58473c9210bb54a",
+    "H4": "eb0608477c6da54773ef89a6edabc2217873694e76d17418ab8cc4dc617c7b73",
+    "H1": "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66",
+    "M15": "3a3c23828b4385a93f4c5ce550336b50360c9585f245f00fa364693ecf37598a",
+    "M5": "84a4acddfdc3574e8af65c9e6c6242939cc6491dc2577331215dc6944083a3ea",
+    "M1": "dace9a21bf98193198d50beed35a7bba683b81c7918bcdcfa1b66974b2379b9a"
+  },
+  "checks": {
+    "focused_pytest": "18 PASS",
+    "full_prefix_producer": "12/12 PASS",
+    "full_prefix_marketstate_metadata": "12/12 PASS",
+    "future_injection": "A:2 real future bars PASS; B:102 real future bars PASS",
+    "reverse_order": "A/B PASS",
+    "save_load": "A/B PASS",
+    "repository_wide_windows_tests": "NOT_RUN",
+    "six_timeframe": "NOT_RUN",
+    "sequence": "NOT_RUN",
+    "funnel": "NOT_RUN",
+    "episodes": "NOT_RUN"
+  },
+  "controls": [
+    {
+      "name": "A",
+      "cutoff": "2026-09-17T18:20:00Z",
+      "bars": {
+        "H4": 515,
+        "M15": 1439
+      },
+      "producer": {
+        "OB_H4": 20,
+        "FVG_M15_linked": 1,
+        "BOS_M15_linked": 3,
+        "DISPLACEMENT_M15_linked": 4
+      },
+      "marketobjects": 28,
+      "with_parent": 8,
+      "states": {
+        "INVALIDATED": 20,
+        "PARTIALLY_MITIGATED": 1,
+        "ACTIVE": 7
+      },
+      "lifecycle_observations": 1036
+    },
+    {
+      "name": "B",
+      "cutoff": "2026-08-24T20:35:00Z",
+      "bars": {
+        "H4": 515,
+        "M15": 1439
+      },
+      "producer": {
+        "OB_H4": 20,
+        "FVG_M15_linked": 2,
+        "BOS_M15_linked": 3,
+        "DISPLACEMENT_M15_linked": 1
+      },
+      "marketobjects": 26,
+      "with_parent": 6,
+      "states": {
+        "INVALIDATED": 20,
+        "PARTIALLY_MITIGATED": 1,
+        "ACTIVE": 5
+      },
+      "lifecycle_observations": 1318
+    }
+  ],
+  "executed_details_sha256": "c0bb697fe8a3324ca63f92973f114b423aa5aec4b6a399387578e4551f9c8d91",
+  "verifier": "scripts/audit/verify_causal_replay_ab.py",
+  "limitations": "Pilot pass is not six-TF or canonical funnel certification; Hermes must rerun in full ORIGINAL Windows repository."
+}

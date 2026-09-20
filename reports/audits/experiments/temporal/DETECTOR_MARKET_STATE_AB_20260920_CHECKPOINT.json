@@ -1,0 +1,52 @@
+{
+  "date": "2026-09-20",
+  "scope": "DETECTOR_OCCURRENCES_TO_MARKETSTATE_ONLY",
+  "status": "BRIDGE_PASSED_NOT_P1_CERTIFIED",
+  "replay_source": "EURUSD.zip original provided in conversation",
+  "code_basis": "ICT SYSTEM ORIGINAL source recovered from supplied zip",
+  "hash_validation": "6/6 selected CSV SHA256 matched manifest in both controls",
+  "unit_tests": "21 passed in local isolated runtime (includes existing MarketState and HistoricalEventObjects tests)",
+  "control_A": {
+    "decision_utc": "2026-09-17T18:20:00Z",
+    "inventory": 154,
+    "marketobjects": 154,
+    "by_tf": {
+      "D1": 1,
+      "H4": 3,
+      "H1": 10,
+      "M15": 43,
+      "M5": 97
+    },
+    "M1": "OUT_OF_RANGE"
+  },
+  "control_B": {
+    "decision_utc": "2026-08-24T20:35:00Z",
+    "inventory": 582,
+    "marketobjects": 582,
+    "by_tf": {
+      "D1": 0,
+      "H4": 2,
+      "H1": 4,
+      "M15": 23,
+      "M5": 85,
+      "M1": 468
+    }
+  },
+  "known_limitations": [
+    "Object creation_time is confirmation time to prevent premature OB visibility",
+    "MSS distinct ObjectType added",
+    "No historical lifecycle replay: ACTIVE is only initial unverified state",
+    "No parent_object inferred; linked lineage=0",
+    "No end-to-end detector FULL/PREFIX or independently audited P1",
+    "Not an actual Windows checkout migration; user must verify original status and source parity",
+    "Old event CSV lacks zone_high; must regenerate with updated inventory"
+  ],
+  "gates": {
+    "P1_FULL_FUNNEL": "NOT_RUN",
+    "P2": "NOT_RUN",
+    "P3": "NOT_RUN",
+    "P4": "NOT_RUN",
+    "GRU_TRAINING": "NOT_AUTHORIZED_BY_THIS_CHECKPOINT",
+    "LIVE_TRADING": "NO"
+  }
+}

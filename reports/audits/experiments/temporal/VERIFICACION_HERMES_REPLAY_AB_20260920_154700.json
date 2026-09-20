@@ -1,0 +1,194 @@
+{
+  "scope": "H4_M15_PILOT_ONLY; NO SIX_TF/FUNNEL/EPISODES/GPU/MT5",
+  "source": "C:\\Users\\v_jac\\Desktop\\ICT SYSTEM\\data\\raw\\EURUSD.zip",
+  "manifest": "C:\\c\\Users\\v_jac\\Desktop\\ICT_SYSTEM_VALIDACION_REPLAY\\benchmark\\eurusd_multitf\\BENCHMARK_DATA_MANIFEST.json",
+  "source_hashes": {
+    "D1": {
+      "filename": "EURUSD_D1.csv",
+      "sha256": "518f5023ebe365f5dda5d4d1b6c72b375843ec810f578154e58473c9210bb54a"
+    },
+    "H4": {
+      "filename": "EURUSD_H4.csv",
+      "sha256": "eb0608477c6da54773ef89a6edabc2217873694e76d17418ab8cc4dc617c7b73"
+    },
+    "H1": {
+      "filename": "EURUSD_H1.csv",
+      "sha256": "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66"
+    },
+    "M15": {
+      "filename": "EURUSD_M15.csv",
+      "sha256": "3a3c23828b4385a93f4c5ce550336b50360c9585f245f00fa364693ecf37598a"
+    },
+    "M5": {
+      "filename": "EURUSD_M5_3m.csv",
+      "sha256": "84a4acddfdc3574e8af65c9e6c6242939cc6491dc2577331215dc6944083a3ea"
+    },
+    "M1": {
+      "filename": "EURUSD_M1.csv",
+      "sha256": "dace9a21bf98193198d50beed35a7bba683b81c7918bcdcfa1b66974b2379b9a"
+    }
+  },
+  "results": [
+    {
+      "control": "A",
+      "cutoff_utc": "2026-09-17T18:20:00+00:00",
+      "rows": {
+        "H4": 515,
+        "M15": 1439
+      },
+      "producer_counts": {
+        "ob_h4": 20,
+        "fvg_m15_linked": 1,
+        "bos_m15_linked": 3,
+        "displacement_m15_linked": 4
+      },
+      "marketobjects": 28,
+      "objects_with_parent": 8,
+      "states_as_of": {
+        "INVALIDATED": 20,
+        "PARTIALLY_MITIGATED": 1,
+        "ACTIVE": 7
+      },
+      "replay_stats": {
+        "bars_H4": 515,
+        "bars_M15": 1439,
+        "birth_H4": 20,
+        "birth_M15": 8,
+        "lifecycle_observations": 1036
+      },
+      "full_prefix_anchors": [
+        {
+          "at": "2026-09-03T18:20:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 24
+        },
+        {
+          "at": "2026-09-07T18:20:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 25
+        },
+        {
+          "at": "2026-09-10T18:20:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 28
+        },
+        {
+          "at": "2026-09-14T18:20:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 28
+        },
+        {
+          "at": "2026-09-16T18:20:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 28
+        },
+        {
+          "at": "2026-09-17T18:20:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 28
+        }
+      ],
+      "roundtrip_full_metadata": true,
+      "reversed_input_order": true,
+      "future_real_bars_injected": 2,
+      "future_injection_producer": true,
+      "future_injection_replay": true,
+      "future_metadata_leaks_at_birth": [],
+      "same_close_parent_links": [],
+      "result": "PASS_H4_M15_PIT_PILOT"
+    },
+    {
+      "control": "B",
+      "cutoff_utc": "2026-08-24T20:35:00+00:00",
+      "rows": {
+        "H4": 515,
+        "M15": 1439
+      },
+      "producer_counts": {
+        "ob_h4": 20,
+        "fvg_m15_linked": 2,
+        "bos_m15_linked": 3,
+        "displacement_m15_linked": 1
+      },
+      "marketobjects": 26,
+      "objects_with_parent": 6,
+      "states_as_of": {
+        "INVALIDATED": 20,
+        "ACTIVE": 5,
+        "PARTIALLY_MITIGATED": 1
+      },
+      "replay_stats": {
+        "bars_H4": 515,
+        "bars_M15": 1439,
+        "birth_H4": 20,
+        "birth_M15": 6,
+        "lifecycle_observations": 1318
+      },
+      "full_prefix_anchors": [
+        {
+          "at": "2026-08-10T20:35:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 18
+        },
+        {
+          "at": "2026-08-14T20:35:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 24
+        },
+        {
+          "at": "2026-08-17T20:35:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 24
+        },
+        {
+          "at": "2026-08-21T20:35:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 24
+        },
+        {
+          "at": "2026-08-23T20:35:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 24
+        },
+        {
+          "at": "2026-08-24T20:35:00+00:00",
+          "full_prefix_producer": true,
+          "full_prefix_projection": true,
+          "future_invalidation_metadata_leaks": [],
+          "objects_at_T": 26
+        }
+      ],
+      "roundtrip_full_metadata": true,
+      "reversed_input_order": true,
+      "future_real_bars_injected": 102,
+      "future_injection_producer": true,
+      "future_injection_replay": true,
+      "future_metadata_leaks_at_birth": [],
+      "same_close_parent_links": [],
+      "result": "PASS_H4_M15_PIT_PILOT"
+    }
+  ],
+  "all_pass": true
+}

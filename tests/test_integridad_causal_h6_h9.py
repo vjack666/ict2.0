@@ -193,12 +193,19 @@ def test_H6_relacion_cross_tf_usa_tiempo_no_bar_index():
 
 # ===================== OE-03 / H7 =====================
 def test_H7_vela_fuera_de_orden_rechazada_fail_closed():
-    """OE-03: vela atrasada (index menor al visto) => ValueError OUT_OF_ORDER."""
+    """OE-03: vela atrasada (index menor al visto) => ValueError OUT_OF_ORDER.
+
+    El OB nace a las 10:00 (anchor=10). La primera barra llega a las 11:00
+    (después del nacimiento, correcto). La segunda llega a las 12:00 pero con
+    índice menor (5 < 10), lo que constituye OUT_OF_ORDER por índice aunque
+    el tiempo sea posterior. Esto valida que el reloj por TF rechaza vela
+    atrasada independientemente del timestamp absoluto.
+    """
     ob = _ob(anchor=10)
     ms = MarketState()
     ms.ingest(ob)
-    bar1 = {"time": datetime(2026, 1, 1, 1, tzinfo=UTC), "__index__": 10, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
-    bar2_late = {"time": datetime(2026, 1, 1, 0, tzinfo=UTC), "__index__": 5, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
+    bar1 = {"time": datetime(2026, 1, 1, 11, tzinfo=UTC), "__index__": 10, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
+    bar2_late = {"time": datetime(2026, 1, 1, 12, tzinfo=UTC), "__index__": 5, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
     ms.advance_bar(ob.id, bar1)
     with pytest.raises(ValueError):
         ms.advance_bar(ob.id, bar2_late)
@@ -210,20 +217,20 @@ def test_H7_mismo_tf_reloj_independiente_no_contamina_otro_tf():
     ob_h4 = _ob(origin_tf="H4", anchor=10)
     ms = MarketState()
     ms.ingest(ob_h4)
-    ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 4, tzinfo=UTC), "__index__": 10, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105})
+    ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 11, tzinfo=UTC), "__index__": 10, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105})
     # M15 atrasada llega después; no debe colapsar el reloj H4
     ms._update_last_seen("M15", datetime(2026, 1, 1, 0, tzinfo=UTC), 1)
     with pytest.raises(ValueError):
-        ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 3, tzinfo=UTC), "__index__": 9, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105})
+        ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 10, tzinfo=UTC), "__index__": 9, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105})
     # y el reloj H4 sigue avanzable hacia adelante
-    ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 5, tzinfo=UTC), "__index__": 11, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105})
+    ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 12, tzinfo=UTC), "__index__": 11, "tf": "H4", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105})
 
 
 # ===================== OE-04 / H8 =====================
 def test_H8_h4_no_puede_observar_h4():
     """OE-04: observe_lower_tf con observed_tf == origin_tf (H4) rechazado."""
     ob = _ob(origin_tf="H4")
-    bar = {"time": datetime(2026, 1, 1, 1, tzinfo=UTC), "tf": "H4", "__index__": 10, "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
+    bar = {"time": datetime(2026, 1, 1, 11, tzinfo=UTC), "tf": "H4", "__index__": 10, "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
     with pytest.raises(ValueError):
         observe_lower_tf(ob, bar, observed_tf="H4")
 
@@ -231,7 +238,7 @@ def test_H8_h4_no_puede_observar_h4():
 def test_H8_d1_no_puede_observar_h4():
     """OE-04: una temporalidad SUPERIOR no observa una inferior (D1 -> H4)."""
     ob = _ob(origin_tf="H4")
-    bar = {"time": datetime(2026, 1, 1, 1, tzinfo=UTC), "tf": "D1", "__index__": 1, "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
+    bar = {"time": datetime(2026, 1, 1, 11, tzinfo=UTC), "tf": "D1", "__index__": 1, "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
     with pytest.raises(ValueError):
         observe_lower_tf(ob, bar, observed_tf="D1")
 
@@ -241,7 +248,7 @@ def test_H8_m15_observa_correctamente_h4_sin_cambiar_estado():
     ob = _ob(origin_tf="H4")
     ms = MarketState()
     ms.ingest(ob)
-    bar_m15 = {"time": datetime(2026, 1, 1, 0, 30, tzinfo=UTC), "tf": "M15", "__index__": 2, "open": 1.1005, "high": 1.1010, "low": 1.0990, "close": 1.1005}
+    bar_m15 = {"time": datetime(2026, 1, 1, 11, 30, tzinfo=UTC), "tf": "M15", "__index__": 2, "open": 1.1005, "high": 1.1010, "low": 1.0990, "close": 1.1005}
     ms.advance_bar(ob.id, bar_m15, observed_tf="M15")
     assert ob.state == ObjectState.ACTIVE, "H8 roto: observación LTF mutó estado oficial"
 
@@ -286,11 +293,11 @@ def test_OE06_objeto_terminal_no_resucita():
     ms = MarketState()
     ms.ingest(ob)
     # OB bullish zone 1.1000-1.1050; cierre MÁS ALLÁ del far_side (1.1000) => INVALIDATED
-    invalidate_bar = {"time": datetime(2026, 1, 1, 2, tzinfo=UTC), "tf": "H4", "__index__": 12, "open": 1.101, "high": 1.102, "low": 1.099, "close": 1.099}
+    invalidate_bar = {"time": datetime(2026, 1, 1, 11, tzinfo=UTC), "tf": "H4", "__index__": 12, "open": 1.101, "high": 1.102, "low": 1.099, "close": 1.099}
     ms.advance_bar(ob.id, invalidate_bar)
     assert ob.state == ObjectState.INVALIDATED
     # intentar revivirlo con vela posterior => sigue terminal, no resucita
-    revive = {"time": datetime(2026, 1, 1, 3, tzinfo=UTC), "tf": "H4", "__index__": 13, "open": 1.101, "high": 1.102, "low": 1.100, "close": 1.101}
+    revive = {"time": datetime(2026, 1, 1, 12, tzinfo=UTC), "tf": "H4", "__index__": 13, "open": 1.101, "high": 1.102, "low": 1.100, "close": 1.101}
     ms.advance_bar(ob.id, revive)
     assert ob.state == ObjectState.INVALIDATED
 
@@ -332,7 +339,7 @@ def test_OE10_padre_htf_invalidado_hijo_ltf_sigue_existiendo():
     ms.ingest(ob_h4)
     ms.ingest(fvg_m15)
     # invalidar el padre H4
-    ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 2, tzinfo=UTC), "tf": "H4", "__index__": 12, "open": 1.101, "high": 1.102, "low": 1.099, "close": 1.099})
+    ms.advance_bar(ob_h4.id, {"time": datetime(2026, 1, 1, 11, tzinfo=UTC), "tf": "H4", "__index__": 12, "open": 1.101, "high": 1.102, "low": 1.099, "close": 1.099})
     assert ob_h4.state == ObjectState.INVALIDATED
     # el hijo LTF sigue existiendo en su propio estado (no lo mato por herencia)
     assert fvg_m15.state == ObjectState.ACTIVE
@@ -365,9 +372,9 @@ def test_OE11_save_load_conserva_reloj_out_of_order():
     ob = _ob(anchor=10, confirm=10, tradable=10)
     ms = _MS()
     ms.ingest(ob)
-    bar1 = {"time": datetime(2026, 1, 1, 1, tzinfo=UTC), "__index__": 10, "tf": "H4",
+    bar1 = {"time": datetime(2026, 1, 1, 11, tzinfo=UTC), "__index__": 10, "tf": "H4",
             "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
-    bar_late = {"time": datetime(2026, 1, 1, 0, tzinfo=UTC), "__index__": 5, "tf": "H4",
+    bar_late = {"time": datetime(2026, 1, 1, 12, tzinfo=UTC), "__index__": 5, "tf": "H4",
                 "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.105}
     ms.advance_bar(ob.id, bar1)
     # original rechaza la vela atrasada

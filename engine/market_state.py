@@ -159,6 +159,15 @@ class MarketState:
                 new_state=new,
             )
         )
+        # Cuando se registra una transición mediante API pública y el estado
+        # cambió, se debe guardar un snapshot para que projection_at() sea
+        # coherente con el historial de estados. Esto valida el contrato:
+        # "una transición registrada debe mantener coherentes el historial y
+        # los snapshots completos".
+        if prev is not None and prev != new:
+            obj = self._objects.get(obj_id)
+            if obj is not None:
+                self._save_object_snapshot(obj, timestamp)
 
     def history_of(self, obj_id: str) -> list[StateTransition]:
         """Línea temporal de transiciones de un objeto (copia, no editable)."""
@@ -252,11 +261,12 @@ class MarketState:
         if bar_time is not None and last_time is not None:
             if bar_time < last_time:
                 return True
-            if bar_time == last_time:
-                # mismo instante: desempata por bar_index si existe
-                if bar_idx is not None and last_idx is not None and bar_idx < last_idx:
-                    return True
-                return False
+            # Si el tiempo es igual o mayor, pero el índice es menor,
+            # también es OUT_OF_ORDER: el índice es el desempate cronológico
+            # dentro de un mismo instante, pero un índice menor con tiempo
+            # mayor también indica reenvío (vela anterior reenviada como nueva).
+            if bar_idx is not None and last_idx is not None and bar_idx < last_idx:
+                return True
             return False
         # solo bar_index disponible en ambos
         if bar_idx is not None and last_idx is not None and bar_idx < last_idx:

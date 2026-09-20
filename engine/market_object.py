@@ -26,6 +26,7 @@ def _restored_float(value: object) -> float:
 class ObjectType(str, Enum):
     BOS = "BOS"
     CHOCH = "CHOCH"
+    MSS = "MSS"
     FVG = "FVG"
     ORDER_BLOCK = "ORDER_BLOCK"
     LIQUIDITY = "LIQUIDITY"

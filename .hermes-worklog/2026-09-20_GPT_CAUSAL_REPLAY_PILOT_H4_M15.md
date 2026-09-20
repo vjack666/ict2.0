@@ -23,7 +23,7 @@ SDD existente `docs/planificacion/SDD_EPISODES_FUNNEL_V1.md` actualizado con alc
 
 ## Verificación efectivamente ejecutada
 
-Entorno aislado de desarrollo, solo archivos nuevos: `PYTHONPATH=. python -m pytest -q tests/test_causal_replay.py` → **6 passed**, `python -m compileall -q engine/causal_replay.py scripts/audit/run_causal_replay.py tests/test_causal_replay.py` → OK. Los blob SHA de los archivos publicados fueron comparados con el contenido local probado: módulo `a740733ebfbbb20c6da030498fac71195f95d038`, test `ef95ee61a9c288c6cabd0711270d3274e060141d`, CLI `6dbc5f680fc278aa9fac39198d93fe04cd25b114`.
+Entorno aislado de desarrollo, solo archivos nuevos: `PYTHONPATH=. python -m pytest -q tests/test_causal_replay.py` → **6 passed**, `python -m compileall -q engine/causal_replay.py scripts/audit/run_causal_replay.py tests/test_causal_replay.py` → OK. Los blob SHA de los archivos publicados fueron comparados con el contenido local probado: módulo `0f90a6518fb4b4a0ae2b4d3abe12ec169945c46c`, test `ef95ee61a9c288c6cabd0711270d3274e060141d`, CLI `6dbc5f680fc278aa9fac39198d93fe04cd25b114`.
 
 **Limitaciones:** las seis pruebas NO ejecutan el MarketState real, el productor histórico real, los CSV de EURUSD ni el funnel completo. La compatibilidad integral del piloto y los resultados A/B deben verificarse por Hermes en Windows antes de solicitar la promoción/merge. La entrada `frames[TF].time` debe ser hora de cierre; el CLI convierte explicitamente la hora de apertura CSV. Los OB que se produjeron con información futura en `build_historical_event_objects` necesitarán FULL/PREFIX independiente del productor antes de usar como datos certificados.
 

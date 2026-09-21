@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PR16 Six-TF Lineage Trace</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #5d6d7e;
+      --line: #7b8794;
+      --ok: #137333;
+      --warn: #9a6700;
+      --block: #b3261e;
+      --blue: #1a73e8;
+      --card: #e9eef6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 14px/1.45 "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      padding: 24px 32px 10px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+    .subtitle {
+      color: var(--muted);
+      max-width: 1040px;
+    }
+    main {
+      padding: 16px 32px 32px;
+      display: grid;
+      gap: 18px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid #d9dee7;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      overflow: hidden;
+    }
+    .panel h2 {
+      font-size: 16px;
+      margin: 0;
+      padding: 14px 16px;
+      border-bottom: 1px solid #e4e8ef;
+      background: #fbfcfe;
+    }
+    .body {
+      padding: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .fact {
+      background: var(--card);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .fact b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    code {
+      font-family: Consolas, "SFMono-Regular", monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .ok { color: var(--ok); font-weight: 700; }
+    .warn { color: var(--warn); font-weight: 700; }
+    .block { color: var(--block); font-weight: 700; }
+    svg {
+      width: 100%;
+      min-height: 820px;
+      display: block;
+      background:
+        linear-gradient(#ffffff, #ffffff) padding-box,
+        repeating-linear-gradient(0deg, #f1f3f6 0, #f1f3f6 1px, transparent 1px, transparent 40px),
+        repeating-linear-gradient(90deg, #f1f3f6 0, #f1f3f6 1px, transparent 1px, transparent 40px);
+    }
+    .node rect {
+      fill: #fff;
+      stroke: #ccd5e1;
+      stroke-width: 1.2;
+      rx: 7;
+    }
+    .node.primary rect { stroke: var(--blue); stroke-width: 2; }
+    .node.ok rect { stroke: var(--ok); stroke-width: 2; }
+    .node.warn rect { stroke: var(--warn); stroke-width: 2; }
+    .node text.title {
+      font-weight: 700;
+      fill: var(--ink);
+      font-size: 13px;
+    }
+    .node text.meta {
+      fill: var(--muted);
+      font-size: 11px;
+    }
+    .edge {
+      stroke: var(--line);
+      stroke-width: 1.6;
+      fill: none;
+      marker-end: url(#arrow);
+    }
+    .edge.ok { stroke: var(--ok); }
+    .edge.blue { stroke: var(--blue); }
+    .edge.warn { stroke: var(--warn); stroke-dasharray: 6 4; }
+    .label {
+      fill: #fff;
+      stroke: #e2e8f0;
+      stroke-width: 1;
+    }
+    .label-text {
+      fill: var(--muted);
+      font-size: 11px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid #e4e8ef;
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+    th {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      background: #fbfcfe;
+    }
+    .note {
+      color: var(--muted);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PR #16 — trazado del linaje jerárquico seis temporalidades</h1>
+    <div class="subtitle">
+      Vista reducida del flujo certificado para <code>chatgpt/full-lineage-gate-20260921</code>.
+      El grafo completo de Graphify tiene 12,877 nodos; esta vista muestra solo el recorrido operativo relevante.
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Estado certificado</h2>
+      <div class="body grid">
+        <div class="fact"><b>PR</b><code>#16 feat(lineage): enforce complete D1-H4-H1-M15-M5-M1 lineage</code></div>
+        <div class="fact"><b>Estado</b><span class="ok">MERGED</span></div>
+        <div class="fact"><b>HEAD certificado</b><code>5146055a5c9c94b7933e2b3252372ebd183cdc96</code></div>
+        <div class="fact"><b>Merge commit</b><code>d4fdf68def1915ce29f0e3abe31e33f19eeb92ea</code></div>
+        <div class="fact"><b>Gate focal</b><span class="ok">83 passed</span></div>
+        <div class="fact"><b>Gate benchmark</b><span class="ok">all_pass=true</span></div>
+        <div class="fact"><b>Modo</b><code>OBSERVE_ONLY_NO_ORDER</code></div>
+        <div class="fact"><b>Trading</b><span class="block">can_trade=false</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Grafo enfocado</h2>
+      <svg viewBox="0 0 1180 820" role="img" aria-label="Trazado PR16 six timeframe lineage">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#7b8794"></path>
+          </marker>
+        </defs>
+
+        <path class="edge blue" d="M 170 100 C 250 100, 270 100, 350 100"></path>
+        <path class="edge blue" d="M 540 100 C 620 100, 640 100, 720 100"></path>
+        <path class="edge blue" d="M 910 100 C 990 100, 1000 150, 1000 210"></path>
+
+        <path class="edge ok" d="M 1000 300 C 1000 350, 930 365, 860 365"></path>
+        <path class="edge ok" d="M 720 365 C 640 365, 610 365, 530 365"></path>
+        <path class="edge ok" d="M 390 365 C 315 365, 285 365, 210 365"></path>
+
+        <path class="edge ok" d="M 140 435 C 140 490, 140 505, 140 560"></path>
+        <path class="edge ok" d="M 140 620 C 235 650, 310 650, 405 620"></path>
+        <path class="edge ok" d="M 475 560 C 475 505, 475 490, 475 435"></path>
+        <path class="edge ok" d="M 545 365 C 625 365, 650 365, 730 365"></path>
+        <path class="edge ok" d="M 870 365 C 940 365, 1000 335, 1000 300"></path>
+
+        <path class="edge warn" d="M 475 620 C 560 675, 680 675, 765 620"></path>
+        <path class="edge warn" d="M 835 560 C 900 510, 965 455, 1000 300"></path>
+
+        <g class="node primary" transform="translate(30 60)">
+          <rect width="140" height="80"></rect>
+          <text class="title" x="14" y="25">EURUSD.zip</text>
+          <text class="meta" x="14" y="45">BENCHMARK_ZIP</text>
+          <text class="meta" x="14" y="63">sha256 PASS</text>
+        </g>
+
+        <g class="node primary" transform="translate(350 60)">
+          <rect width="190" height="80"></rect>
+          <text class="title" x="14" y="25">build_object_market_state</text>
+          <text class="meta" x="14" y="45">engine/mt5_operational_snapshot.py</text>
+          <text class="meta" x="14" y="63">closed-only projection</text>
+        </g>
+
+        <g class="node primary" transform="translate(720 60)">
+          <rect width="190" height="80"></rect>
+          <text class="title" x="14" y="25">build_mt5_operational_snapshot</text>
+          <text class="meta" x="14" y="45">composes daily snapshot</text>
+          <text class="meta" x="14" y="63">can_trade=false</text>
+        </g>
+
+        <g class="node ok" transform="translate(900 210)">
+          <rect width="200" height="90"></rect>
+          <text class="title" x="14" y="25">build_daily_motor_snapshot</text>
+          <text class="meta" x="14" y="45">engine/daily_motor.py</text>
+          <text class="meta" x="14" y="63">Graphify: direct call</text>
+          <text class="meta" x="14" y="79">OBSERVE_ONLY_NO_ORDER</text>
+        </g>
+
+        <g class="node ok" transform="translate(720 325)">
+          <rect width="140" height="80"></rect>
+          <text class="title" x="14" y="25">D1 → H4</text>
+          <text class="meta" x="14" y="45">edge mandatory</text>
+          <text class="meta" x="14" y="63">fail-closed</text>
+        </g>
+
+        <g class="node ok" transform="translate(390 325)">
+          <rect width="140" height="80"></rect>
+          <text class="title" x="14" y="25">H4 → H1</text>
+          <text class="meta" x="14" y="45">edge mandatory</text>
+          <text class="meta" x="14" y="63">fail-closed</text>
+        </g>
+
+        <g class="node ok" transform="translate(70 325)">
+          <rect width="140" height="80"></rect>
+          <text class="title" x="14" y="25">H1 → M15</text>
+          <text class="meta" x="14" y="45">edge mandatory</text>
+          <text class="meta" x="14" y="63">fail-closed</text>
+        </g>
+
+        <g class="node ok" transform="translate(70 560)">
+          <rect width="140" height="80"></rect>
+          <text class="title" x="14" y="25">M15 → M5</text>
+          <text class="meta" x="14" y="45">edge mandatory</text>
+          <text class="meta" x="14" y="63">fail-closed</text>
+        </g>
+
+        <g class="node ok" transform="translate(405 560)">
+          <rect width="140" height="80"></rect>
+          <text class="title" x="14" y="25">M5 → M1</text>
+          <text class="meta" x="14" y="45">edge mandatory</text>
+          <text class="meta" x="14" y="63">fail-closed</text>
+        </g>
+
+        <g class="node ok" transform="translate(730 540)">
+          <rect width="210" height="100"></rect>
+          <text class="title" x="14" y="25">validate_six_tf_lineage</text>
+          <text class="meta" x="14" y="45">engine/lineage.py</text>
+          <text class="meta" x="14" y="63">D1/H4/H1/M15/M5/M1</text>
+          <text class="meta" x="14" y="81">FULL == PREFIX</text>
+        </g>
+
+        <g class="node warn" transform="translate(930 560)">
+          <rect width="190" height="100"></rect>
+          <text class="title" x="14" y="25">Gates PR16</text>
+          <text class="meta" x="14" y="45">83 passed</text>
+          <text class="meta" x="14" y="63">all_pass=true</text>
+          <text class="meta" x="14" y="81">future rejected</text>
+        </g>
+
+        <rect class="label" x="247" y="82" width="70" height="22" rx="4"></rect>
+        <text class="label-text" x="257" y="97">hashes</text>
+        <rect class="label" x="608" y="82" width="74" height="22" rx="4"></rect>
+        <text class="label-text" x="618" y="97">objects</text>
+        <rect class="label" x="963" y="154" width="112" height="22" rx="4"></rect>
+        <text class="label-text" x="973" y="169">daily payload</text>
+        <rect class="label" x="935" y="410" width="108" height="22" rx="4"></rect>
+        <text class="label-text" x="945" y="425">six-TF gate</text>
+      </svg>
+    </section>
+
+    <section class="panel">
+      <h2>Evidencia de cierre</h2>
+      <div class="body">
+        <table>
+          <thead>
+            <tr><th>Chequeo</th><th>Resultado</th><th>Nota</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>PR #16</td><td class="ok">MERGED</td><td>Merge commit <code>d4fdf68def1915ce29f0e3abe31e33f19eeb92ea</code></td></tr>
+            <tr><td>Gate focal</td><td class="ok">83 passed</td><td>Suite exacta del workflow lineage gate</td></tr>
+            <tr><td>Benchmark gate</td><td class="ok">all_pass=true</td><td>Ejecutado previamente contra EURUSD.zip original</td></tr>
+            <tr><td>Graphify path</td><td class="ok">direct call</td><td><code>build_daily_motor_snapshot() --calls--> validate_six_tf_lineage()</code></td></tr>
+            <tr><td>Operación</td><td class="block">No trading</td><td><code>OBSERVE_ONLY_NO_ORDER</code>, <code>can_trade=false</code></td></tr>
+          </tbody>
+        </table>
+        <p class="note">Esta vista no sustituye el grafo completo; es una reducción ejecutiva del trazado del PR #16 para revisión humana.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

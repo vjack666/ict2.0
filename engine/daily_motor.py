@@ -12,6 +12,7 @@ from typing import Any, Mapping, Sequence
 
 import pandas as pd
 
+from engine.lineage import validate_hierarchical_lineage
 from engine.market_object import MarketObject, ObjectState, ObjectType
 from engine.plan import build_context_stack, build_event_sequence, ltf_structure_at, top_down_allows_trade
 
@@ -364,6 +365,8 @@ def build_daily_motor_snapshot(
     context_state: Any = None,
     wyckoff_snapshot: Any = None,
     event_sequence: Mapping[str, Any] | None = None,
+    lineage_objects: Mapping[str, Any] | Sequence[Any] | None = None,
+    require_valid_lineage: bool = True,
 ) -> dict[str, Any]:
     """Build a closed-only, canonical daily context + LTF snapshot.
 
@@ -393,6 +396,7 @@ def build_daily_motor_snapshot(
         "sequence": _sequence_payload(sequence_snapshot),
         "wyckoff": _wyckoff_payload(wyckoff_snapshot),
         "lineage_refs": [],
+        "lineage": {"valid": True, "status": "EMPTY", "object_count": 0, "link_count": 0, "roots": [], "errors": [], "warnings": [], "links": []},
         "ltf": {"tf": config.exec_tf, "available": False, "zone_refs": [], "retest_state": "NO_ZONE"},
     }
     if tt is None:
@@ -460,7 +464,53 @@ def build_daily_motor_snapshot(
     zone = _canonical_zone_state(canonical_zones, config.exec_tf, direction, tt)
     annotations = _annotation_state(frames.get(config.exec_tf), tt)
 
-    if not ltf_available:
+    # Unifica todos los MarketObjects visibles por el adaptador en un registro
+    # global y valida el grafo antes de publicar el snapshot. canonical_zones
+    # siempre entra al registro; lineage_objects permite incluir padres/peers
+    # de otras TF que el daily motor no consume directamente.
+    lineage_registry: dict[str, MarketObject] = {}
+    if isinstance(lineage_objects, Mapping):
+        raw_lineage_objects = list(lineage_objects.values())
+    elif isinstance(lineage_objects, Sequence) and not isinstance(lineage_objects, (str, bytes)):
+        raw_lineage_objects = list(lineage_objects)
+    else:
+        raw_lineage_objects = []
+    for raw in raw_lineage_objects:
+        obj = _coerce_market_object(raw)
+        if obj is not None:
+            lineage_registry[str(obj.id)] = obj
+    for raw_objects in (canonical_zones or {}).values():
+        for raw in raw_objects or ():
+            obj = _coerce_market_object(raw)
+            if obj is not None:
+                lineage_registry[str(obj.id)] = obj
+
+    lineage_root_ids = [ref["zone_id"] for ref in zone["zone_refs"]]
+    if lineage_registry:
+        lineage_validation = validate_hierarchical_lineage(
+            lineage_registry,
+            decision_time=tt,
+            root_ids=lineage_root_ids,
+            require_related=True,
+        )
+        lineage_report = lineage_validation.to_dict()
+        lineage_report["status"] = "PASS" if lineage_validation.valid else "FAIL"
+    else:
+        lineage_validation = None
+        lineage_report = {
+            "valid": True,
+            "status": "EMPTY",
+            "object_count": 0,
+            "link_count": 0,
+            "roots": [],
+            "errors": [],
+            "warnings": [],
+            "links": [],
+        }
+
+    if require_valid_lineage and lineage_registry and not lineage_report["valid"]:
+        status = "LINEAGE_INVALID"
+    elif not ltf_available:
         status = "NO_LTF_DATA"
     elif not gate_allowed:
         status = "WAIT_CONTEXT"
@@ -494,7 +544,17 @@ def build_daily_motor_snapshot(
     # setup al último snapshot. Si el caller no lo entrega, se reconstruye
     # closed-only desde los frames canónicos hasta T.
     event_history = dict(event_sequence or supplied_context.get("event_sequence") or build_event_sequence(frames, tt))
-    lineage_refs = sorted(set(zone["lineage_refs"]) | {str(ref) for ref in supplied_context.get("lineage_refs", []) or []})
+    validated_link_refs = {
+        str(ref)
+        for link_item in lineage_report.get("links", [])
+        for ref in (link_item.get("parent_id"), link_item.get("child_id"))
+        if ref
+    }
+    lineage_refs = sorted(
+        set(zone["lineage_refs"])
+        | {str(ref) for ref in supplied_context.get("lineage_refs", []) or []}
+        | validated_link_refs
+    )
     confirmation_state = "NO_DATA" if not ltf_available else "CONFIRMED" if structure_confirmed else "WAITING"
     ltf = {
         "tf": config.exec_tf,
@@ -547,6 +607,7 @@ def build_daily_motor_snapshot(
         "sequence": sequence,
         "event_history": event_history,
         "lineage_refs": lineage_refs,
+        "lineage": lineage_report,
         "ltf": ltf,
     }
     return _safe_value(snapshot)

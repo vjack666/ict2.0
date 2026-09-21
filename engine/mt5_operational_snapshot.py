@@ -17,7 +17,7 @@ from engine.Wyckoff import build_wyckoff_snapshot
 from engine.daily_motor import build_daily_motor_snapshot
 from engine.mechanical_signal_assessment import assess_mechanical_signal
 from engine.ltf_canonical_feed import build_canonical_objects, build_ltf_canonical_feed
-from engine.lineage import build_six_tf_lineage_spine
+from engine.lineage import build_six_tf_lineage_spine, validate_six_tf_persistence_consistency
 from engine.market_state import MarketState as ObjectMarketState
 from engine.mtf_navigation import MTFNavigator, NavigatorConfig
 from engine.plan import build_context_stack, ltf_confirms
@@ -227,6 +227,25 @@ def build_mt5_operational_snapshot(
     ) if tt is not None else None
     object_state = build_object_market_state(normalized, tt, symbol=symbol) if tt is not None else ObjectMarketState()
     object_projection = object_state.objects_existing_at(tt) if tt is not None else []
+    lineage_persistence = (
+        validate_six_tf_persistence_consistency(
+            object_projection,
+            normalized,
+            tt,
+            symbol=symbol,
+        )
+        if tt is not None
+        else {
+            "valid": False,
+            "status": "FAIL",
+            "errors": ["invalid_decision_time"],
+            "persisted": {},
+            "derived": {},
+            "persisted_signature": [],
+            "derived_signature": [],
+            "derived_layers": {},
+        }
+    )
     # Reuse the authoritative event-sourced M15 projection for the daily
     # consumer. Detection/relations remain canonical in ltf_canonical_feed;
     # lifecycle is owned only by Object MarketState in this assembler.
@@ -256,6 +275,8 @@ def build_mt5_operational_snapshot(
         status = "BLOCKED"
     lineage_gate = daily.get("lineage", {}) if isinstance(daily, Mapping) else {}
     if not bool(lineage_gate.get("valid", False)):
+        status = "BLOCKED"
+    if not bool(lineage_persistence.get("valid", False)):
         status = "BLOCKED"
     snapshot = _safe({
         "schema_version": "MT5_OPERATIONAL_SNAPSHOT_V1",
@@ -295,6 +316,7 @@ def build_mt5_operational_snapshot(
         "wyckoff": wyckoff.to_dict() if wyckoff is not None else None,
         "daily_motor": daily,
         "lineage_gate": lineage_gate,
+        "lineage_persistence": lineage_persistence,
         "micro_structure": micro_structure,
         "micro_confirmation": micro_confirmation,
         "status": status,

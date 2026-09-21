@@ -106,6 +106,9 @@ class MarketState:
         self._objects: dict[str, MarketObject] = {}
         # Línea temporal causal e inmutable por objeto (append-only).
         self._history: dict[str, list[StateTransition]] = {}
+        # Sparse immutable object snapshots: historical projections must NOT copy
+        # current first_touch / invalidation / metadata back into the past.
+        self._snapshots: dict[str, list[tuple[Any, MarketObject]]] = {}
         # OE-03 / H7: registro del último instante procesado por reloj de TF.
         # Si llega una vela con time/bar_index MENOR al ya visto en esa TF,
         # se rechaza fail-closed (no se reorganiza el pasado silenciosamente).
@@ -128,6 +131,7 @@ class MarketState:
         if obj.id in self._objects:
             return self._objects[obj.id]
         self._objects[obj.id] = obj
+        self._snapshots[obj.id] = [(obj.creation_time, deepcopy(obj))]
         self._record_transition(
             obj.id, obj.creation_time, obj.bar_index, obj.authority_tf, None, obj.state
         )
@@ -155,6 +159,15 @@ class MarketState:
                 new_state=new,
             )
         )
+        # Cuando se registra una transición mediante API pública y el estado
+        # cambió, se debe guardar un snapshot para que projection_at() sea
+        # coherente con el historial de estados. Esto valida el contrato:
+        # "una transición registrada debe mantener coherentes el historial y
+        # los snapshots completos".
+        if prev is not None and prev != new:
+            obj = self._objects.get(obj_id)
+            if obj is not None:
+                self._save_object_snapshot(obj, timestamp)
 
     def history_of(self, obj_id: str) -> list[StateTransition]:
         """Línea temporal de transiciones de un objeto (copia, no editable)."""
@@ -201,6 +214,7 @@ class MarketState:
                 f"time={bar_time} index={bar_idx} anterior al último instante "
                 f"procesado en esa TF; no se reescribe el pasado (contrato H7 fail-closed)."
             )
+        before = self._observable_signature(obj)
         prev = obj.state
         if observed_tf is not None:
             observe_lower_tf(obj, bar, observed_tf=observed_tf)
@@ -211,6 +225,10 @@ class MarketState:
             ts = bar.get("time")
             bi = bar.get("__index__", bar.get("index"))
             self._record_transition(obj_id, ts, bi, tf, prev, new)
+        # Include touches / CE / metadata even if official state remains ACTIVE.
+        # No snapshot for irrelevant bars => avoids O(objects x bars) history.
+        if self._observable_signature(obj) != before:
+            self._save_object_snapshot(obj, bar.get("time"))
         # Avanza el reloj de la TF sólo si la barra fue aceptada.
         self._update_last_seen(tf, bar_time, bar_idx)
 
@@ -218,7 +236,10 @@ class MarketState:
         obj = self._objects.get(obj_id)
         if obj is None:
             return
+        before = self._observable_signature(obj)
         observe_lower_tf(obj, bar, observed_tf=observed_tf)
+        if self._observable_signature(obj) != before:
+            self._save_object_snapshot(obj, bar.get("time"))
         # La observación LTF no cambia el estado oficial => no hay transición.
 
     # --- OE-03 / H7: reloj de TF y guarda fail-closed ------------------------
@@ -240,11 +261,12 @@ class MarketState:
         if bar_time is not None and last_time is not None:
             if bar_time < last_time:
                 return True
-            if bar_time == last_time:
-                # mismo instante: desempata por bar_index si existe
-                if bar_idx is not None and last_idx is not None and bar_idx < last_idx:
-                    return True
-                return False
+            # Si el tiempo es igual o mayor, pero el índice es menor,
+            # también es OUT_OF_ORDER: el índice es el desempate cronológico
+            # dentro de un mismo instante, pero un índice menor con tiempo
+            # mayor también indica reenvío (vela anterior reenviada como nueva).
+            if bar_idx is not None and last_idx is not None and bar_idx < last_idx:
+                return True
             return False
         # solo bar_index disponible en ambos
         if bar_idx is not None and last_idx is not None and bar_idx < last_idx:
@@ -305,24 +327,51 @@ class MarketState:
                 break
         return chosen.new_state if chosen is not None else None
 
-    def projection_at(self, t: Any) -> dict[str, MarketObject]:
-        """Proyecciones históricas de todos los objetos existentes en o antes de T.
+    @staticmethod
+    def _observable_signature(obj: MarketObject) -> tuple:
+        """Changes visible to a historical consumer (exclude private dedupe)."""
+        return (obj.state, obj.first_touch_bar, obj.first_touch_time,
+                obj.touch_count, obj.invalidated_bar, obj.invalidated_time,
+                obj.mitigation_level, obj.age_bars,
+                {k: deepcopy(v) for k, v in obj.meta.items() if k != "_seen_events"})
 
-        Devuelve COPIAS PROFUNDAS con ``state`` congelado en T. No son
-        referencias vivas: mutar el objeto actual no las afecta (sin look-ahead).
+    def _save_object_snapshot(self, obj: MarketObject, at: Any) -> None:
+        when = _as_utc(at)
+        if when is None:
+            raise ValueError(f"snapshot without trusted time: {obj.id}")
+        arr = self._snapshots.setdefault(obj.id, [])
+        if arr and _as_utc(arr[-1][0]) is not None and when < _as_utc(arr[-1][0]):
+            raise ValueError(f"snapshot time reversed: {obj.id}")
+        frozen = deepcopy(obj)
+        if arr and _as_utc(arr[-1][0]) == when:
+            arr[-1] = (when, frozen)
+        else:
+            arr.append((when, frozen))
+
+    def projection_at(self, t: Any) -> dict[str, MarketObject]:
+        """Return point-in-time full object versions, NOT current metadata.
+
+        Legacy checkpoints without an object-history cannot safely reconstruct
+        past touch_count, invalidated_time, CE_TOUCHED etc: fail closed.
         """
         tt = _as_utc(t)
         out: dict[str, MarketObject] = {}
         for oid, obj in self._objects.items():
             ct = _as_utc(obj.creation_time)
             if tt is not None and ct is not None and ct > tt:
-                continue  # aún no nacía en T
-            s = self.state_at(oid, t)
-            if s is None:
                 continue
-            proj = deepcopy(obj)
-            proj.state = s
-            out[oid] = proj
+            history = self._snapshots.get(oid)
+            if not history:
+                raise ValueError(f"NO_CAUSAL_METADATA_HISTORY: {oid}; replay required")
+            chosen = None
+            for when, snapshot in history:
+                at = _as_utc(when)
+                if tt is None or at is None or at <= tt:
+                    chosen = snapshot
+                else:
+                    break
+            if chosen is not None:
+                out[oid] = deepcopy(chosen)
         return out
 
     def objects_existing_at(self, t: Any) -> list[MarketObject]:
@@ -413,6 +462,11 @@ class MarketState:
                 oid: [tr.to_dict() for tr in hist]
                 for oid, hist in self._history.items()
             },
+            "object_snapshots": {
+                oid: [{"timestamp": str(when) if when is not None else None,
+                       "object": snap.to_dict()} for when, snap in history]
+                for oid, history in self._snapshots.items()
+            },
             # OE-03 / H7 / OE-11: el reloj de TF y el registro de eventos fuera de
             # orden DEBEN persistirse; si no, el MarketState restaurado olvida hasta
             # qué instante vivió y aceptaría velas que el original rechazaría
@@ -432,6 +486,10 @@ class MarketState:
             ms._add_object(obj)  # no duplica la transición fundacional
         for oid, trs in d.get("history", {}).items():
             ms._history[oid] = [StateTransition.from_dict(tr) for tr in trs]
+        for oid, history in d.get("object_snapshots", {}).items():
+            ms._snapshots[oid] = [(_as_utc(item["timestamp"]),
+                                   MarketObject.from_dict(item["object"]))
+                                  for item in history]
         # OE-03 / H7 / OE-11: restaurar el reloj de TF para equivalencia de
         # comportamiento (mismo rechazo OUT_OF_ORDER antes y después de SAVE/LOAD).
         for tf, pair in d.get("last_seen", {}).items():

@@ -89,8 +89,8 @@ def build_historical_event_objects(
     """Build the deterministic v2 causal event DAG.
 
     Required frames are H4 and M15 with close-time column ``time``. Every event
-    is published on its confirmation candle close. Pairing uses only already
-    published parents and frozen elapsed-time windows.
+    is published on its confirmation candle close. Pairing uses strictly prior-close published parents and frozen elapsed-time windows.
+    Same-close H4 OB cannot be a demonstrated parent of an M15 event.
     """
     cfg = config or HistoricalEventConfig()
     h4 = frames.get("H4")
@@ -114,7 +114,7 @@ def build_historical_event_objects(
         candidates = [
             ob for ob in obs
             if ob.direction == direction
-            and _utc(ob.tradable_time) <= event_time
+            and _utc(ob.tradable_time) < event_time
             and event_time - _utc(ob.tradable_time) <= poi_window
             and is_active(ob, event_time)
         ]
@@ -149,7 +149,7 @@ def build_historical_event_objects(
         candidates = [
             ob for ob in obs
             if ob.direction == direction
-            and _utc(ob.tradable_time) <= event_time
+            and _utc(ob.tradable_time) < event_time
             and event_time - _utc(ob.tradable_time) <= poi_window
             and is_active(ob, event_time)
         ]
@@ -177,7 +177,7 @@ def build_historical_event_objects(
         candidates = [
             ob for ob in obs
             if ob.direction == fvg.direction
-            and _utc(ob.tradable_time) <= event_time
+            and _utc(ob.tradable_time) < event_time
             and event_time - _utc(ob.tradable_time) <= poi_window
             and _overlaps(ob, fvg)
             and is_active(ob, event_time)

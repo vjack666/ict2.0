@@ -1,16 +1,28 @@
 flowchart TB
     CLIENTE([Cliente / autoridad final])
-    CEO[Codex<br/>CEO operativo]
+    CEO[Codex<br/>CEO operativo<br/>Estado global: shadow diagnostico avanzado]
     CLIENTE --> CEO
 
-    CEO --> D0[D0 · Dirección y gobierno<br/>COO · Compliance · Alertas]
-    CEO --> D1[D1 · Operaciones y conocimiento<br/>PMO · KM · Repo Steward]
-    CEO --> D2[D2 · CTO / motor diario<br/>Engineer · Integration Agent]
-    CEO --> D3[D3 · CAIO / infraestructura IA<br/>ML Scientist · Model Evaluator]
-    CEO --> D4[D4 · CDO / datos y lineage<br/>Data Engineer · Dataset Steward]
-    CEO --> D5[D5 · CRO / assurance independiente<br/>QA · Auditor · Reproducibility]
-    CEO --> D6[D6 · Research y laboratorio<br/>Hermes · Scientist · Research Engineer]
-    CEO --> D7[D7 · Delivery y releases<br/>Release Manager · Operator]
+    CEO --> B1[1 Datos<br/>Completo para shadow<br/>fuente real preservada]
+    CEO --> B2[2 Detectores ICT<br/>Completos como insumo]
+    CEO --> B3[3 Inventario eventos<br/>Completo como conteo<br/>no equivale a funnel]
+    CEO --> B4[4 MarketState<br/>Implementado causal PIT]
+    CEO --> B5[5 Secuencias ICT<br/>Phase-1 seis-TF instalada]
+    CEO --> B6[6 Lifecycle<br/>Implementado/revisado<br/>gates reales pendientes]
+    CEO --> B7[7 Funnel y episodios<br/>v1 + Mision1 F2 PASS]
+    CEO --> B8[8 Auditoria cientifica<br/>FULL/PREFIX shadow PASS]
+    CEO --> B9[9 IA<br/>dataset + baseline shadow PASS<br/>no productivo]
+    CEO --> B10[10 Ejecucion MT5<br/>bloqueada<br/>can_trade=false]
+    CEO --> B11[11 Documentacion<br/>SDD + worklog + graphify actualizados]
+
+    CEO --> D0[D0 · Dirección y gobierno]
+    CEO --> D1[D1 · Operaciones y conocimiento]
+    CEO --> D2[D2 · CTO / motor diario]
+    CEO --> D3[D3 · CAIO / infraestructura IA]
+    CEO --> D4[D4 · CDO / datos y lineage]
+    CEO --> D5[D5 · CRO / assurance independiente]
+    CEO --> D6[D6 · Research y laboratorio]
+    CEO --> D7[D7 · Delivery y releases]
 
     D6 -->|propone y evalúa| D5
     D5 -->|certifica evidencia| CEO
@@ -21,6 +33,12 @@ flowchart TB
     classDef authority fill:#17324d,color:#fff,stroke:#0b1f33;
     classDef department fill:#e8f1f8,color:#102a43,stroke:#477ea8;
     classDef assurance fill:#fff3cd,color:#5c4300,stroke:#c99a00;
+    classDef complete fill:#d4edda,color:#155724,stroke:#28a745;
+    classDef progress fill:#fff3cd,color:#5c4300,stroke:#ffc107;
+    classDef blocked fill:#f8d7da,color:#721c24,stroke:#dc3545;
     class CLIENTE,CEO authority;
     class D0,D1,D2,D3,D4,D6,D7 department;
     class D5 assurance;
+    class B1,B2,B3,B4,B5,B7,B8,B11 complete;
+    class B6,B9 progress;
+    class B10 blocked;

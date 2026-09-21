@@ -87,11 +87,57 @@ El cierre de una fase activa un resumen institucional sin que el cliente tenga q
 - Delegación ejecutable completa del Mission Controller: **pendiente**; sigue el plan MC-3..MC-8 de `docs/planificacion/SDD_HERMES_MISSION_CONTROLLER.md`.
 - Migración física de carpetas: **no autorizada todavía**; requiere inventario de consumidores, wrappers, actualización documental y pruebas.
 
-## 7. Vista Graphify
+## 7. Comparativo contra organigrama visual del 2026-09-20
+
+La imagen previa marcaba el estado global como **EN DESARROLLO**, fase actual
+**Integración Detectores -> MarketState** y progreso estimado **~35%**. Tras
+los cierres del 2026-09-21, el estado correcto es:
+
+```text
+Fase actual: Mision 1 F2-F5 completada en shadow diagnostico
+Progreso global estimado: ~72%
+Siguiente hito: productor historico real seis-TF sobre fuente original
+```
+
+La subida de progreso no significa edge ni operación. Significa que el cableado
+estructural llegó hasta Episodes/Funnel, backtest económico aislado, dataset IA
+y entrenamiento shadow, todo con `can_trade=false`.
+
+| Bloque de la imagen previa | Estado 2026-09-20 | Estado actual 2026-09-21 | Evidencia |
+| --- | --- | --- | --- |
+| 1. Datos | mayormente completo; versionado en progreso | **Completo para misión shadow**; fuente real pendiente para productor histórico final | manifiestos, `EURUSD.zip` protegido, hashes previos |
+| 2. Detectores ICT | completo | **Completo como insumo** | detectores y tests existentes |
+| 3. Inventario de eventos | completo | **Completo como inventario; no equivale a funnel real** | `ICT_EVENT_INVENTORY_AB_20260920.*` |
+| 4. MarketState | puente en desarrollo | **Implementado + causal replay + linaje snapshot** | `engine/market_state.py`, `engine/daily_motor.py` |
+| 5. Secuencias ICT | sin completar | **Avanzado / Phase-1 seis-TF instalada** | `engine/sequence.py`, `tests/test_sixtf_causal_sequence_phase1.py` |
+| 6. Lifecycle | parcial/sin completar | **Implementado/revisado; integración completa real aún protegida por gates** | `engine/lifecycle.py`, tests de lifecycle/MarketState |
+| 7. Funnel y episodios | sin completar | **Completo en capa v1 + Misión 1 shadow F2** | `engine/episodes.py`, `engine/mission1_six_tf_pipeline.py` |
+| 8. Auditoría científica | sin completar | **Avanzada; FULL/PREFIX y regresión relacionada PASS en misión shadow** | 51 tests relacionados PASS, Graphify actualizado |
+| 9. Inteligencia artificial | sin completar | **Shadow diagnostic completo; no productivo** | `mission1_dataset.json`, `mission1_training.json` |
+| 10. Ejecución MT5 | sin completar | **No promovida; permanece bloqueada para trading** | `can_trade=false` |
+| 11. Documentación y soporte | parcial | **Actualizada y versionada** | SDD, plan, worklogs, índice, commit `16deb66b` |
+
+### Estado operativo por bloque
+
+| # | Área | Estado actual | Semáforo | Próxima condición real |
+| --- | --- | --- | --- | --- |
+| 1 | Datos | Fuente preservada; no se fabricó M1 ni se modificó ZIP | 🟢 | usar fuente original en productor histórico real |
+| 2 | Detectores ICT | Insumos disponibles | 🟢 | mantener regresiones |
+| 3 | Inventario eventos | Conteos A/B preservados; no son setup/funnel | 🟢 | consumirlos solo si pasan replay causal |
+| 4 | MarketState | Causal, point-in-time, con snapshot/lineage | 🟢 | productor histórico seis-TF real |
+| 5 | Secuencias ICT | Multi-vela y seis-TF Phase-1 cerrada | 🟢 | conectar a episodios reales |
+| 6 | Lifecycle | Contratos y tests existentes; no promoción operativa | 🟡 | replay integral por TF/fuente real |
+| 7 | Funnel/Episodios | v1 implementado + Misión 1 F2 shadow PASS | 🟢 | reemplazar fixture contractual por productor histórico real |
+| 8 | Auditoría científica | FULL/PREFIX shadow y regresión relacionada PASS | 🟢 | auditoría sobre datos reales completos |
+| 9 | IA | Dataset + baseline shadow PASS; accuracy 0.333 | 🟡 | modelo real sólo tras dataset histórico causal |
+| 10 | Ejecución MT5 | No autorizada / `can_trade=false` | 🔴 | requiere certificación, no parte de esta misión |
+| 11 | Documentación | SDD, plan, worklog, índice y grafo actualizados | 🟢 | mantener bitácora por cada fase |
+
+## 8. Vista Graphify
 
 La organización está representada de forma versionable en
 [`ORGANIGRAMA_ICT_2_0.mmd`](ORGANIGRAMA_ICT_2_0.mmd) y fue incorporada al grafo de conocimiento del repositorio mediante Graphify. Los artefactos generados son [`GRAPH_REPORT.md`](../graphify-out/GRAPH_REPORT.md) y [`graph.json`](../graphify-out/graph.json); la visualización [`graph.html`](../graphify-out/graph.html) solo se genera cuando el tamaño del grafo lo permite.
 
-La actualización del 2026-08-22 reconstruyó el grafo con 5.205 nodos, 8.996 relaciones y 434 comunidades. El organigrama D0–D7 sigue siendo la autoridad explícita; Graphify funciona como mapa navegable y detector de conexiones, no como sustituto del registro de departamentos ni de las reglas de gobierno.
+La actualización del 2026-09-21 reconstruyó el grafo con 17.147 nodos, 28.697 relaciones y 1.394 comunidades. El organigrama D0–D7 sigue siendo la autoridad explícita; Graphify funciona como mapa navegable y detector de conexiones, no como sustituto del registro de departamentos ni de las reglas de gobierno.
 
 El checklist operativo para la próxima apertura está en [`OPENING_READINESS_CHECKLIST.md`](OPENING_READINESS_CHECKLIST.md).

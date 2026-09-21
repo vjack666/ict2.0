@@ -26,6 +26,7 @@ jobs:
         run: |
           pytest -q \
             tests/test_phase_d_lineage.py \
+            tests/test_full_sixtf_lineage_gate.py \
             tests/test_fvg_ob_relations.py \
             tests/test_historical_event_objects.py \
             tests/test_setup_builder_integration.py \

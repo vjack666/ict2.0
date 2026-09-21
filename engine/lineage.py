@@ -347,11 +347,127 @@ def validate_hierarchical_lineage(
     )
 
 
+SIX_TF_CHAIN: tuple[str, ...] = ("D1", "H4", "H1", "M15", "M5", "M1")
+
+
+@dataclass(frozen=True)
+class SixTFLineageValidationResult:
+    valid: bool
+    required_chain: tuple[str, ...]
+    object_ids: tuple[str, ...]
+    missing_tfs: tuple[str, ...]
+    errors: tuple[str, ...]
+    global_validation: LineageValidationResult
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "valid": self.valid,
+            "required_chain": list(self.required_chain),
+            "object_ids": list(self.object_ids),
+            "missing_tfs": list(self.missing_tfs),
+            "errors": list(self.errors),
+            "global_validation": self.global_validation.to_dict(),
+        }
+
+
+def validate_six_tf_lineage(
+    objects: Mapping[str, Any] | Sequence[Any] | Iterable[Any],
+    *,
+    decision_time: object = None,
+    required_chain: Sequence[str] = SIX_TF_CHAIN,
+    require_related: bool = True,
+) -> SixTFLineageValidationResult:
+    """Exige una espina causal directa D1→H4→H1→M15→M5→M1.
+
+    No basta con que las seis temporalidades existan por separado: debe existir
+    al menos un camino parent_object continuo cuyo orden de TF coincida
+    exactamente con required_chain. La validación global sigue siendo
+    obligatoria, por lo que huérfanos, ciclos, referencias relacionadas rotas y
+    objetos futuros invalidan también la certificación 6-TF.
+    """
+    chain = tuple(str(tf).upper() for tf in required_chain)
+    if len(chain) < 2 or len(set(chain)) != len(chain):
+        raise ValueError("required_chain debe contener TF únicas en orden jerárquico")
+
+    raw_values = list(objects.values()) if isinstance(objects, Mapping) else list(objects or ())
+    coerced: list[MarketObject] = []
+    for raw in raw_values:
+        obj = _coerce_market_object(raw)
+        if obj is not None:
+            coerced.append(obj)
+
+    global_validation = validate_hierarchical_lineage(
+        coerced,
+        decision_time=decision_time,
+        require_related=require_related,
+    )
+    by_id = {str(obj.id): obj for obj in coerced}
+    present_tfs = {str(obj.origin_tf).upper() for obj in coerced}
+    missing_tfs = tuple(tf for tf in chain if tf not in present_tfs)
+    errors = list(global_validation.errors)
+    if missing_tfs:
+        errors.append("temporalidades ausentes: " + ",".join(missing_tfs))
+
+    selected: tuple[str, ...] = ()
+    leaf_tf = chain[-1]
+    leaves = sorted(
+        (obj for obj in coerced if str(obj.origin_tf).upper() == leaf_tf),
+        key=lambda obj: str(obj.id),
+    )
+    for leaf in leaves:
+        current = leaf
+        reverse_path: list[MarketObject] = []
+        ok = True
+        for expected_tf in reversed(chain):
+            if current is None or str(current.origin_tf).upper() != expected_tf:
+                ok = False
+                break
+            reverse_path.append(current)
+            if expected_tf == chain[0]:
+                if current.parent_object:
+                    ok = False
+                break
+            parent_id = str(current.parent_object or "")
+            parent = by_id.get(parent_id)
+            if parent is None:
+                ok = False
+                break
+            current = parent
+        if ok and len(reverse_path) == len(chain):
+            path = tuple(reversed(reverse_path))
+            if tuple(str(obj.origin_tf).upper() for obj in path) == chain:
+                selected = tuple(str(obj.id) for obj in path)
+                break
+
+    if not selected:
+        errors.append("no existe camino parent_object directo " + "→".join(chain))
+    else:
+        symbols = {
+            str(by_id[oid].symbol).upper()
+            for oid in selected
+            if str(by_id[oid].symbol or "").strip()
+        }
+        if len(symbols) > 1:
+            errors.append("la espina 6-TF mezcla símbolos: " + ",".join(sorted(symbols)))
+
+    return SixTFLineageValidationResult(
+        valid=not errors,
+        required_chain=chain,
+        object_ids=selected,
+        missing_tfs=missing_tfs,
+        errors=tuple(errors),
+        global_validation=global_validation,
+    )
+
+
 __all__ = [
     "CausalLink",
     "LineageValidationResult",
+    "SIX_TF_CHAIN",
+    "SixTFLineageValidationResult",
     "link",
     "trace_setup_lineage",
     "validate_hierarchical_lineage",
+    "validate_six_tf_lineage",
     "validate_links",
 ]

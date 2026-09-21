@@ -79,3 +79,38 @@ def test_no_future_beyond_allowed_window_is_linked():
 
     assert relate_fvg_ob([fvg], [future_ob], max_bars_apart=20, causal_mode="strict") == []
     assert relate_fvg_ob([fvg], [future_ob], max_bars_apart=20, causal_mode="symmetric") == []
+
+
+
+def test_relation_links_cross_tf_preserves_tf_domain_and_uses_time():
+    ob = MarketObject(
+        id="o_cross", symbol="EURUSD", type=ObjectType.ORDER_BLOCK,
+        origin_tf="H4", role=Role.CONTEXT, direction=1,
+        zone_low=1.1020, zone_high=1.1080,
+        creation_time="2026-09-17T12:00:00+00:00",
+        state=ObjectState.ACTIVE,
+        bar_index=1000, bar_time="2026-09-17T12:00:00+00:00",
+        candidate_bar=1000, candidate_time="2026-09-17T12:00:00+00:00",
+        confirmation_bar=1000, confirmation_time="2026-09-17T12:00:00+00:00",
+        tradable_bar=1000, tradable_time="2026-09-17T12:00:00+00:00",
+    )
+    fvg = MarketObject(
+        id="f_cross", symbol="EURUSD", type=ObjectType.FVG,
+        origin_tf="M15", role=Role.REFINEMENT, direction=1,
+        zone_low=1.1000, zone_high=1.1050,
+        creation_time="2026-09-17T12:15:00+00:00",
+        state=ObjectState.ACTIVE,
+        bar_index=5, bar_time="2026-09-17T12:15:00+00:00",
+        candidate_bar=4, candidate_time="2026-09-17T12:10:00+00:00",
+        confirmation_bar=5, confirmation_time="2026-09-17T12:15:00+00:00",
+        tradable_bar=5, tradable_time="2026-09-17T12:15:00+00:00",
+    )
+
+    relations = relate_fvg_ob([fvg], [ob], causal_mode="strict")
+    assert len(relations) == 1
+    links = relation_links(relations, {fvg.id: fvg}, {ob.id: ob})
+    assert len(links) == 1
+    assert links[0].parent_tf == "H4"
+    assert links[0].child_tf == "M15"
+    assert links[0].parent_bar == 1000
+    assert links[0].child_bar == 5

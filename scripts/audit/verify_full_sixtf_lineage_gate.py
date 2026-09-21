@@ -253,26 +253,39 @@ def main() -> int:
     else:
         parquet_dir = Path(args.parquet_dir or "data/raw/EURUSD")
         missing_files = []
+        read_errors = []
         local_files = {}
         for tf in SIX_TF_CHAIN:
             path = parquet_dir / f"EURUSD_{tf}.parquet"
             if not path.is_file():
                 missing_files.append(str(path))
                 continue
+            size = path.stat().st_size
+            if size < 1024:
+                read_errors.append(f"{tf}: file too small ({size} bytes), possible Git-LFS pointer")
+                continue
             local_files[tf] = {
                 "path": str(path),
-                "bytes": path.stat().st_size,
+                "bytes": size,
                 "sha256": sha256_file(path),
             }
-            frames[tf] = read_parquet_window(path, tf, WINDOW_START[tf], CONTROL_B)
+            try:
+                frames[tf] = read_parquet_window(path, tf, WINDOW_START[tf], CONTROL_B)
+            except Exception as exc:
+                read_errors.append(f"{tf}: {type(exc).__name__}: {exc}")
 
         provenance = {
             "mode": "LOCAL_PARQUET",
             "parquet_dir": str(parquet_dir),
             "files": local_files,
             "missing_files": missing_files,
+            "read_errors": read_errors,
         }
-        provenance_pass = not missing_files and len(frames) == len(SIX_TF_CHAIN)
+        provenance_pass = (
+            not missing_files
+            and not read_errors
+            and len(frames) == len(SIX_TF_CHAIN)
+        )
 
     checks = run_checks(frames, CONTROL_B) if provenance_pass else {
         "all_pass": False,

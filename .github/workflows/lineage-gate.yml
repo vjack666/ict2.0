@@ -21,7 +21,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pandas numpy
+          pip install pandas numpy pyarrow
       - name: Focal lineage integration suite
         run: |
           pytest -q \

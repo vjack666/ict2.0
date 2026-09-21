@@ -1,4 +1,4 @@
-from engine.lineage import CausalLink, link, validate_links
+from engine.lineage import CausalLink, link, validate_hierarchical_lineage, validate_links
 from engine.market_object import MarketObject, ObjectType, Role
 
 
@@ -91,3 +91,56 @@ def test_causal_link_is_immutable():
         pass
     else:
         raise AssertionError("CausalLink must be immutable")
+
+
+
+def test_global_lineage_rejects_orphan_parent():
+    child = obj(2, 12, typ=ObjectType.FVG, parent="missing")
+    result = validate_hierarchical_lineage([child])
+    assert result.valid is False
+    assert any("parent_object huérfano" in item for item in result.errors)
+
+
+def test_global_lineage_rejects_cycle():
+    a = obj(1, 10)
+    b = obj(2, 12, typ=ObjectType.FVG, parent=a.id)
+    a.parent_object = b.id
+    result = validate_hierarchical_lineage([a, b])
+    assert result.valid is False
+    assert any("ciclo parent_object" in item for item in result.errors)
+
+
+def test_cross_tf_uses_timestamps_not_incomparable_bar_indices():
+    parent = MarketObject(
+        id="h4_parent", symbol="EURUSD", type=ObjectType.ORDER_BLOCK,
+        origin_tf="H4", role=Role.CONTEXT, direction=1,
+        zone_high=1.2, zone_low=1.1, bar_index=1000,
+        bar_time="2026-09-17T12:00:00+00:00",
+    )
+    child = MarketObject(
+        id="m15_child", symbol="EURUSD", type=ObjectType.FVG,
+        origin_tf="M15", role=Role.REFINEMENT, direction=1,
+        zone_high=1.2, zone_low=1.1, bar_index=5,
+        bar_time="2026-09-17T12:15:00+00:00", parent_object=parent.id,
+    )
+    result = validate_hierarchical_lineage([parent, child])
+    assert result.valid is True
+    assert result.link_count == 1
+
+
+def test_cross_tf_future_parent_time_is_rejected_globally():
+    parent = MarketObject(
+        id="h4_future", symbol="EURUSD", type=ObjectType.ORDER_BLOCK,
+        origin_tf="H4", role=Role.CONTEXT, direction=1,
+        zone_high=1.2, zone_low=1.1, bar_index=1,
+        bar_time="2026-09-17T12:30:00+00:00",
+    )
+    child = MarketObject(
+        id="m15_past", symbol="EURUSD", type=ObjectType.FVG,
+        origin_tf="M15", role=Role.REFINEMENT, direction=1,
+        zone_high=1.2, zone_low=1.1, bar_index=999,
+        bar_time="2026-09-17T12:15:00+00:00", parent_object=parent.id,
+    )
+    result = validate_hierarchical_lineage([parent, child])
+    assert result.valid is False
+    assert any("parent_time" in item for item in result.errors)

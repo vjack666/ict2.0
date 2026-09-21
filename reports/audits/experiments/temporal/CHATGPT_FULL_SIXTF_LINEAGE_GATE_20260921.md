@@ -13,10 +13,11 @@ The hierarchy is now mandatory in the operational path. It is not sufficient for
 - engine.lineage.validate_hierarchical_lineage: global object-graph validation.
 - engine.lineage.build_six_tf_lineage_spine: closed-bar six-TF context spine.
 - engine.lineage.validate_six_tf_lineage: exact direct-parent hierarchy gate.
+- engine.lineage.validate_six_tf_persistence_consistency: exact persisted-MarketState vs closed-feed parity gate.
 - engine.setup_builder.build_setups_at: fail-closed when global or six-TF lineage fails.
 - engine.daily_motor.build_daily_motor_snapshot: publishes lineage report and returns LINEAGE_INVALID on failure.
 - engine.mt5_operational_snapshot.build_object_market_state: persists six-TF context anchors in MarketState.
-- engine.mt5_operational_snapshot.build_mt5_operational_snapshot: operational status becomes BLOCKED when lineage is invalid.
+- engine.mt5_operational_snapshot.build_mt5_operational_snapshot: operational status becomes BLOCKED when lineage is invalid or the persisted six-TF spine drifts from the closed feeds.
 - scripts/daily/morning_read.py: refreshes D1/H4/H1/M15/M5/M1 by default.
 
 M5/M1 context anchors are observational ObjectType.CONTRACT objects. They do not replace or mutate FVG/OB/BOS/displacement lifecycle and are explicitly excluded from lifecycle advancement.
@@ -34,6 +35,7 @@ M5/M1 context anchors are observational ObjectType.CONTRACT objects. They do not
 - Each of the five direct hierarchy edges is mandatory.
 - Mixed-symbol six-TF spines fail closed.
 - Closed-bar condition is open_time + TF_duration <= decision_time.
+- The persisted six-TF MarketState spine must exactly match the spine re-derived from the same closed feeds at decision_time (id, TF, parent, bar index, timestamp, close-price anchor, symbol and source times).
 
 ## Real-data control provenance
 
@@ -60,6 +62,17 @@ Closed-bar geometry:
 | M5 | 2026-08-24 20:30Z | 2026-08-24 20:35Z |
 | M1 | 2026-08-24 20:34Z | 2026-08-24 20:35Z |
 
+Audited close-price anchors used by the regression fixture:
+
+| TF | close |
+|---|---:|
+| D1 | 1.16750 |
+| H4 | 1.16648 |
+| H1 | 1.16648 |
+| M15 | 1.16585 |
+| M5 | 1.16593 |
+| M1 | 1.16593 |
+
 The September 17 control is intentionally not used for six-TF certification because M1 ends on August 24.
 
 ## Tests installed
@@ -81,6 +94,10 @@ The September 17 control is intentionally not used for six-TF certification beca
 - Missing M1 => operational BLOCKED.
 - Daily motor missing M1 => LINEAGE_INVALID.
 - Setup Builder requires complete six-TF lineage.
+- Real Control-B OHLC anchors for all six TFs are preserved by the lineage objects.
+- Persisted six-TF spine == feed-derived six-TF spine => PASS.
+- Tampered persisted M5 anchor => FAIL.
+- Missing persisted six-TF spine => FAIL.
 
 A reproducible raw-data verifier is installed at scripts/audit/verify_full_sixtf_lineage_gate.py. It validates the original EURUSD.zip hashes before accepting a result.
 
@@ -93,6 +110,10 @@ A reproducible raw-data verifier is installed at scripts/audit/verify_full_sixtf
 - five mandatory edges: 5/5 PASS
 - six mandatory TF removal checks: 6/6 PASS
 - future node rejection: PASS
+- real Control-B close anchors preserved: 6/6 PASS
+- persisted-vs-derived six-TF parity: PASS
+- tampered persisted anchor rejection: PASS
+- missing persisted spine rejection: PASS
 - earlier global-gate tests for orphan/cycle/cross-TF/future controls: PASS
 
 ## External runner limitation

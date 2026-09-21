@@ -12,8 +12,8 @@ from typing import Any, Mapping, Sequence
 
 import pandas as pd
 
-from engine.lineage import SIX_TF_CHAIN, validate_hierarchical_lineage, validate_six_tf_lineage
-from engine.market_object import MarketObject, ObjectState, ObjectType, Role
+from engine.lineage import build_six_tf_lineage_spine, validate_hierarchical_lineage, validate_six_tf_lineage
+from engine.market_object import MarketObject, ObjectState, ObjectType
 from engine.plan import build_context_stack, build_event_sequence, ltf_structure_at, top_down_allows_trade
 
 
@@ -26,15 +26,6 @@ _OBSERVABLE_ZONE_STATES = {
     ObjectState.ACTIVE.value,
     ObjectState.PARTIALLY_MITIGATED.value,
     ObjectState.MITIGATED.value,
-}
-
-_TF_DURATION = {
-    "D1": pd.Timedelta(days=1),
-    "H4": pd.Timedelta(hours=4),
-    "H1": pd.Timedelta(hours=1),
-    "M15": pd.Timedelta(minutes=15),
-    "M5": pd.Timedelta(minutes=5),
-    "M1": pd.Timedelta(minutes=1),
 }
 
 
@@ -117,91 +108,6 @@ def _closed_time(frame: pd.DataFrame | None, decision_time: Any) -> pd.Timestamp
     times = pd.to_datetime(frame["time"], utc=True, errors="coerce").dropna()
     past = times[times <= tt]
     return past.max() if not past.empty else None
-
-
-def _closed_bar_info(frame: pd.DataFrame | None, tf: str, decision_time: Any) -> dict[str, Any] | None:
-    """Última vela REALMENTE cerrada: open_time + duración_TF <= decision_time."""
-    if frame is None or frame.empty or "time" not in frame.columns:
-        return None
-    tt = _timestamp(decision_time)
-    duration = _TF_DURATION.get(str(tf).upper())
-    if tt is None or duration is None:
-        return None
-    opens = pd.to_datetime(frame["time"], utc=True, errors="coerce")
-    closes = opens + duration
-    mask = opens.notna() & (closes <= tt)
-    if not mask.any():
-        return None
-    positions = mask.to_numpy().nonzero()[0]
-    pos = int(positions[-1])
-    open_time = opens.iloc[pos]
-    close_time = closes.iloc[pos]
-    row = frame.iloc[pos]
-    try:
-        price = float(row.get("close", 0.0))
-    except (TypeError, ValueError):
-        price = 0.0
-    return {
-        "bar_index": int(pos),
-        "open_time": open_time,
-        "close_time": close_time,
-        "price": price,
-    }
-
-
-def _six_tf_context_spine(
-    frames: Mapping[str, pd.DataFrame],
-    decision_time: Any,
-) -> tuple[list[MarketObject], dict[str, Any]]:
-    """Construye la espina observacional cerrada D1→H4→H1→M15→M5→M1."""
-    objects: list[MarketObject] = []
-    layers: dict[str, Any] = {}
-    parent_id: str | None = None
-    for tf in SIX_TF_CHAIN:
-        info = _closed_bar_info(frames.get(tf), tf, decision_time)
-        if info is None:
-            layers[tf] = {"available": False, "closed_only": False}
-            parent_id = None
-            continue
-        stamp = pd.Timestamp(info["close_time"])
-        object_id = f"LINEAGE_LAYER_{tf}_{stamp.value}"
-        obj = MarketObject(
-            id=object_id,
-            symbol="",
-            type=ObjectType.CONTRACT,
-            origin_tf=tf,
-            role=Role.CONTEXT,
-            direction=0,
-            zone_high=float(info["price"]),
-            zone_low=float(info["price"]),
-            creation_time=stamp,
-            state=ObjectState.ACTIVE,
-            parent_object=parent_id,
-            bar_index=int(info["bar_index"]),
-            bar_time=stamp,
-            candidate_bar=int(info["bar_index"]),
-            candidate_time=stamp,
-            confirmation_bar=int(info["bar_index"]),
-            confirmation_time=stamp,
-            tradable_bar=int(info["bar_index"]),
-            tradable_time=stamp,
-            meta={
-                "lineage_layer_anchor": True,
-                "source_open_time": pd.Timestamp(info["open_time"]).isoformat(),
-                "source_close_time": stamp.isoformat(),
-            },
-        )
-        objects.append(obj)
-        parent_id = obj.id
-        layers[tf] = {
-            "available": True,
-            "closed_only": bool(stamp <= _timestamp(decision_time)),
-            "object_id": obj.id,
-            "bar_index": int(info["bar_index"]),
-            "open_time": pd.Timestamp(info["open_time"]).isoformat(),
-            "close_time": stamp.isoformat(),
-        }
-    return objects, layers
 
 
 def _direction_value(value: Any) -> int:
@@ -582,7 +488,7 @@ def build_daily_motor_snapshot(
 
     lineage_root_ids = [ref["zone_id"] for ref in zone["zone_refs"]]
 
-    six_tf_spine, six_tf_layers = _six_tf_context_spine(frames, tt)
+    six_tf_spine, six_tf_layers = build_six_tf_lineage_spine(frames, tt)
     six_tf_validation = validate_six_tf_lineage(
         six_tf_spine,
         decision_time=tt,

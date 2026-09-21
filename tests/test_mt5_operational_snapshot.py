@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import pytest
 
+from engine.lineage import validate_six_tf_lineage
 from engine.market_object import ObjectState
 from engine.mt5_operational_snapshot import build_mt5_operational_snapshot, build_object_market_state
 
@@ -61,6 +62,8 @@ def test_snapshot_is_blocked_when_required_mt5_timeframe_is_missing():
     )
     assert result["status"] == "BLOCKED"
     assert result["missing_timeframes"] == ["M1"]
+    assert result["lineage_gate"]["valid"] is False
+    assert "M1" in result["lineage_gate"]["six_tf_context"]["missing_tfs"]
     assert result["policy"] == "OBSERVE_ONLY_NO_ORDER"
     assert result["entry_authorized"] is False
     assert result["mechanical_signal_assessment"]["entry_authorized"] is False
@@ -141,3 +144,71 @@ def test_missing_micro_data_and_invalid_time_never_confirm(monkeypatch):
         assert result["micro_confirmation"]["confirmed"] is False
         assert result["micro_confirmation"]["available"] is False
         assert result["can_trade"] is False
+
+
+
+def test_operational_snapshot_installs_valid_six_tf_lineage_gate():
+    frames = _frames()
+    t = pd.Timestamp("2024-01-02 07:00", tz="UTC")
+    result = build_mt5_operational_snapshot(
+        frames,
+        t,
+        required_tfs=("D1", "H4", "H1", "M15", "M5", "M1"),
+        generator_commit="abc123",
+    )
+    assert result["status"] == "READY"
+    assert result["lineage_gate"]["valid"] is True
+    assert result["lineage_persistence"]["valid"] is True
+    assert result["lineage_persistence"]["persisted_signature"] == result["lineage_persistence"]["derived_signature"]
+    six = result["lineage_gate"]["six_tf_context"]
+    assert six["valid"] is True
+    assert six["required_chain"] == ["D1", "H4", "H1", "M15", "M5", "M1"]
+
+    projection = result["object_projection"]
+    anchors = [
+        obj for obj in projection
+        if (obj.get("meta") or {}).get("lineage_layer_anchor")
+    ]
+    validated = validate_six_tf_lineage(anchors, decision_time=t)
+    assert validated.valid is True
+    assert len(validated.object_ids) == 6
+
+
+def test_operational_six_tf_lineage_is_future_invariant():
+    t = pd.Timestamp("2024-01-02 07:00", tz="UTC")
+    base = _frames()
+    before = build_mt5_operational_snapshot(base, t, generator_commit="abc123")
+    extended = {
+        tf: pd.concat([df, _frame("2024-01-03", n=2)], ignore_index=True)
+        for tf, df in base.items()
+    }
+    after = build_mt5_operational_snapshot(extended, t, generator_commit="abc123")
+    assert before["lineage_gate"]["six_tf_context"] == after["lineage_gate"]["six_tf_context"]
+    assert before["lineage_gate"]["valid"] == after["lineage_gate"]["valid"] == True
+
+
+
+def test_six_tf_lineage_anchors_survive_market_state_save_load():
+    from engine.market_state import MarketState
+
+    frames = _frames()
+    t = pd.Timestamp("2024-01-02 07:00", tz="UTC")
+    state = build_object_market_state(frames, t, symbol="EURUSD")
+    payload = json.loads(json.dumps(state.to_dict()))
+    restored = MarketState.from_dict(payload)
+
+    before = [
+        obj for obj in state.objects_existing_at(t)
+        if bool(obj.meta.get("lineage_layer_anchor"))
+    ]
+    after = [
+        obj for obj in restored.objects_existing_at(t)
+        if bool(obj.meta.get("lineage_layer_anchor"))
+    ]
+    v_before = validate_six_tf_lineage(before, decision_time=t)
+    v_after = validate_six_tf_lineage(after, decision_time=t)
+
+    assert v_before.valid is True
+    assert v_after.valid is True
+    assert v_before.object_ids == v_after.object_ids
+    assert [obj.to_dict() for obj in before] == [obj.to_dict() for obj in after]

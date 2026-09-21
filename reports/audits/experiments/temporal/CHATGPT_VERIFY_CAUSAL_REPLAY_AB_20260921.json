@@ -1,0 +1,52 @@
+{
+  "scope": "H4_M15_PILOT_ONLY; NO SIX_TF/FUNNEL/EPISODES/GPU/MT5",
+  "source": "/mnt/data/EURUSD.zip",
+  "source_zip_sha256": "359ef7e3219142422acec473ae786bd07de13043e2cf0e9a532a9e3eb1eab642",
+  "manifest": "benchmark/eurusd_multitf/BENCHMARK_DATA_MANIFEST.json",
+  "result_json_sha256": "5530947d67a52ee7793f886b5e1a127ea8ea0f13c785bb14c0cac3c01eb0bb15",
+  "source_hashes": {
+    "D1": {"filename": "EURUSD_D1.csv", "sha256": "518f5023ebe365f5dda5d4d1b6c72b375843ec810f578154e58473c9210bb54a"},
+    "H4": {"filename": "EURUSD_H4.csv", "sha256": "eb0608477c6da54773ef89a6edabc2217873694e76d17418ab8cc4dc617c7b73"},
+    "H1": {"filename": "EURUSD_H1.csv", "sha256": "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66"},
+    "M15": {"filename": "EURUSD_M15.csv", "sha256": "3a3c23828b4385a93f4c5ce550336b50360c9585f245f00fa364693ecf37598a"},
+    "M5": {"filename": "EURUSD_M5_3m.csv", "sha256": "84a4acddfdc3574e8af65c9e6c6242939cc6491dc2577331215dc6944083a3ea"},
+    "M1": {"filename": "EURUSD_M1.csv", "sha256": "dace9a21bf98193198d50beed35a7bba683b81c7918bcdcfa1b66974b2379b9a"}
+  },
+  "tests": {
+    "causal_related": {"passed": 93, "failed": 0},
+    "focused_integration": {"passed": 55, "failed": 0},
+    "wider_nonblocked": {"passed": 847, "skipped": 2, "deselected_environment_or_missing_artifact": 7}
+  },
+  "results": [
+    {
+      "control": "A",
+      "cutoff_utc": "2026-09-17T18:20:00+00:00",
+      "marketobjects": 28,
+      "objects_with_parent": 8,
+      "full_prefix_anchors_all_pass": true,
+      "roundtrip_full_metadata": true,
+      "reversed_input_order": true,
+      "future_injection_producer": true,
+      "future_injection_replay": true,
+      "future_metadata_leaks_at_birth": [],
+      "same_close_parent_links": [],
+      "result": "PASS_H4_M15_PIT_PILOT"
+    },
+    {
+      "control": "B",
+      "cutoff_utc": "2026-08-24T20:35:00+00:00",
+      "marketobjects": 26,
+      "objects_with_parent": 6,
+      "full_prefix_anchors_all_pass": true,
+      "roundtrip_full_metadata": true,
+      "reversed_input_order": true,
+      "future_injection_producer": true,
+      "future_injection_replay": true,
+      "future_metadata_leaks_at_birth": [],
+      "same_close_parent_links": [],
+      "result": "PASS_H4_M15_PIT_PILOT"
+    }
+  ],
+  "all_pass": true,
+  "approval_scope": "H4_M15_CAUSAL_REPLAY_INTEGRATION_ONLY"
+}

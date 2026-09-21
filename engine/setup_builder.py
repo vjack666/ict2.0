@@ -21,6 +21,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional
 import uuid
 
+from engine.lineage import validate_hierarchical_lineage, validate_six_tf_lineage
 from engine.market_object import MarketObject, ObjectState, ObjectType, Role
 from engine.relations import relate_fvg_ob
 
@@ -421,6 +422,47 @@ def build_setups_at(
         # H3 + H2: la elegibilidad final (direction vs sesgo HTF y presencia de
         # confirmation/trigger) la CENTRALIZA classify_eligibility.
         classify_eligibility(setup, ctx, require_complete=True)
+
+        # Compuerta global obligatoria: un setup no puede quedar ELIGIBLE si
+        # alguno de sus objetos tiene padre/related huérfano, ciclo o violación
+        # temporal. El contexto externo se incorpora al universo cuando existe.
+        lineage_universe = list(existing)
+        if context_obj is not None and context_obj.id not in by_id:
+            lineage_universe.append(context_obj)
+        lineage_root_ids = [
+            obj.id for obj in (
+                context_obj, setup.poi, setup.refinement, setup.confirmation, setup.trigger
+            ) if obj is not None
+        ]
+        lineage = validate_hierarchical_lineage(
+            lineage_universe,
+            decision_time=t,
+            root_ids=lineage_root_ids,
+            require_related=True,
+        )
+        setup.meta["lineage_validation"] = lineage.to_dict()
+
+        six_tf = validate_six_tf_lineage(
+            lineage_universe,
+            decision_time=t,
+            require_related=True,
+        )
+        setup.meta["six_tf_lineage_validation"] = six_tf.to_dict()
+
+        lineage_errors = list(lineage.errors)
+        if not six_tf.valid:
+            lineage_errors.extend(
+                error for error in six_tf.errors
+                if error not in lineage_errors
+            )
+        if lineage_errors:
+            setup.eligibility = SetupEligibility.BLOCKED
+            lineage_reason = "LINEAGE_INVALID: " + "; ".join(lineage_errors[:4])
+            setup.reason = (
+                f"{setup.reason} | {lineage_reason}"
+                if setup.reason
+                else lineage_reason
+            )
         setups.append(setup)
     return setups
 

@@ -17,6 +17,7 @@ from engine.Wyckoff import build_wyckoff_snapshot
 from engine.daily_motor import build_daily_motor_snapshot
 from engine.mechanical_signal_assessment import assess_mechanical_signal
 from engine.ltf_canonical_feed import build_canonical_objects, build_ltf_canonical_feed
+from engine.lineage import build_six_tf_lineage_spine, validate_six_tf_persistence_consistency
 from engine.market_state import MarketState as ObjectMarketState
 from engine.mtf_navigation import MTFNavigator, NavigatorConfig
 from engine.plan import build_context_stack, ltf_confirms
@@ -92,7 +93,10 @@ def _advance_object_state(
         if frame.empty:
             continue
         pending = sorted(
-            (obj for obj in market_state.all_objects() if obj.authority_tf == tf),
+            (
+                obj for obj in market_state.all_objects()
+                if obj.authority_tf == tf and not bool(obj.meta.get("lineage_layer_anchor"))
+            ),
             key=lambda obj: (str(obj.tradable_time), str(obj.id)),
         )
         if not pending:
@@ -142,8 +146,27 @@ def build_object_market_state(
         symbol=symbol,
     )
     state = ObjectMarketState()
-    for obj in assembled["objects"]:
-        state.ingest(deepcopy(obj))
+    event_objects = [deepcopy(obj) for obj in assembled["objects"]]
+    for obj in event_objects:
+        state.ingest(obj)
+
+    # Espina temporal obligatoria D1→H4→H1→M15→M5→M1. Los anchors nacen
+    # en el cierre real de cada TF y solo referencian, de forma observacional,
+    # los eventos ya existentes de su propia capa. No reescriben el linaje de
+    # nacimiento de FVG/OB ni introducen padres futuros en esos objetos.
+    anchors, _layers = build_six_tf_lineage_spine(
+        frames,
+        decision_time,
+        symbol=symbol,
+    )
+    event_ids_by_tf: dict[str, list[str]] = {}
+    for obj in event_objects:
+        event_ids_by_tf.setdefault(str(obj.origin_tf), []).append(str(obj.id))
+    for anchor in anchors:
+        anchor.related_objects = sorted(event_ids_by_tf.get(str(anchor.origin_tf), []))
+        anchor.meta["lineage_refs"] = list(anchor.related_objects)
+        state.ingest(anchor)
+
     _advance_object_state(state, frames, decision_time)
     return state
 
@@ -204,6 +227,25 @@ def build_mt5_operational_snapshot(
     ) if tt is not None else None
     object_state = build_object_market_state(normalized, tt, symbol=symbol) if tt is not None else ObjectMarketState()
     object_projection = object_state.objects_existing_at(tt) if tt is not None else []
+    lineage_persistence = (
+        validate_six_tf_persistence_consistency(
+            object_projection,
+            normalized,
+            tt,
+            symbol=symbol,
+        )
+        if tt is not None
+        else {
+            "valid": False,
+            "status": "FAIL",
+            "errors": ["invalid_decision_time"],
+            "persisted": {},
+            "derived": {},
+            "persisted_signature": [],
+            "derived_signature": [],
+            "derived_layers": {},
+        }
+    )
     # Reuse the authoritative event-sourced M15 projection for the daily
     # consumer. Detection/relations remain canonical in ltf_canonical_feed;
     # lifecycle is owned only by Object MarketState in this assembler.
@@ -219,6 +261,9 @@ def build_mt5_operational_snapshot(
         canonical_zones=canonical.get("zones"),
         sequence_snapshot=canonical.get("sequence"),
         wyckoff_snapshot=wyckoff,
+        lineage_objects=object_projection,
+        require_valid_lineage=True,
+        require_full_six_tf_lineage=True,
     )
     # Publish the same canonical micro confirmation used by the daily brief.
     # The viewer consumes this result; it must never infer it from candles.
@@ -227,6 +272,11 @@ def build_mt5_operational_snapshot(
     micro_confirmation = ltf_confirms(micro_structure, int(daily.get("direction", 0) or 0))
     status = "BLOCKED" if missing else "READY"
     if provenance_errors:
+        status = "BLOCKED"
+    lineage_gate = daily.get("lineage", {}) if isinstance(daily, Mapping) else {}
+    if not bool(lineage_gate.get("valid", False)):
+        status = "BLOCKED"
+    if not bool(lineage_persistence.get("valid", False)):
         status = "BLOCKED"
     snapshot = _safe({
         "schema_version": "MT5_OPERATIONAL_SNAPSHOT_V1",
@@ -265,6 +315,8 @@ def build_mt5_operational_snapshot(
         "sequence": canonical.get("sequence", {}),
         "wyckoff": wyckoff.to_dict() if wyckoff is not None else None,
         "daily_motor": daily,
+        "lineage_gate": lineage_gate,
+        "lineage_persistence": lineage_persistence,
         "micro_structure": micro_structure,
         "micro_confirmation": micro_confirmation,
         "status": status,

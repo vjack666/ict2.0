@@ -242,6 +242,8 @@ def relation_links(
                 child_bar=_confirm_bar(child),
                 parent_time=parent.bar_time or parent.creation_time,
                 child_time=child.bar_time or child.creation_time,
+                parent_tf=parent.origin_tf,
+                child_tf=child.origin_tf,
             )
         )
     return validate_links(links)

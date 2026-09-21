@@ -36,15 +36,12 @@ def _ob_h4() -> MarketObject:
         candidate_bar=100, candidate_time=_ts(100),
         confirmation_bar=101, confirmation_time=_ts(101),
         tradable_bar=101, tradable_time=_ts(101),
+        parent_object="CTX_D1_1",
     )
 
 
 def _fvg_m15(refines: str | None = "OB_H4_1") -> MarketObject:
-    """FVG M15 bullish, ACTIVE, que refina (por parent_object) al OB H4.
-
-    Su zona [1.1020, 1.1040] se solapa con el OB H4 [1.1000, 1.1050] y cumple
-    el orden causal estricto: ob_anchor(100) < fvg_confirm(115), lag 15.
-    """
+    """FVG M15 del setup, unido a la espina por H1 y al OB H4 por related_objects."""
     return MarketObject(
         id="FVG_M15_1", symbol="EURUSD", type=ObjectType.FVG,
         origin_tf="M15", role=Role.REFINEMENT, direction=1,
@@ -54,14 +51,15 @@ def _fvg_m15(refines: str | None = "OB_H4_1") -> MarketObject:
         candidate_bar=110, candidate_time=_ts(110),
         confirmation_bar=115, confirmation_time=_ts(115),
         tradable_bar=115, tradable_time=_ts(115),
-        parent_object=refines,
+        parent_object="CTX_H1_1",
+        related_objects=[refines] if refines else [],
     )
 
 
 def _ctx_d1() -> MarketObject:
     """Contexto HTF (D1 bullish) que se entrega vía ctx, no en el MarketState."""
     return MarketObject(
-        id="CTX_D1_1", symbol="EURUSD", type=ObjectType.ORDER_BLOCK,
+        id="CTX_D1_1", symbol="EURUSD", type=ObjectType.CONTRACT,
         origin_tf="D1", role=Role.CONTEXT, direction=1,
         zone_low=1.0900, zone_high=1.0950,
         creation_time=_ts(0), state=ObjectState.ACTIVE,
@@ -69,6 +67,51 @@ def _ctx_d1() -> MarketObject:
         candidate_bar=0, candidate_time=_ts(0),
         confirmation_bar=1, confirmation_time=_ts(1),
         tradable_bar=1, tradable_time=_ts(1),
+    )
+
+
+def _ctx_h1() -> MarketObject:
+    return MarketObject(
+        id="CTX_H1_1", symbol="EURUSD", type=ObjectType.CONTRACT,
+        origin_tf="H1", role=Role.CONTEXT, direction=0,
+        zone_low=1.1025, zone_high=1.1025,
+        creation_time=_ts(105), state=ObjectState.ACTIVE,
+        bar_index=105, bar_time=_ts(105),
+        candidate_bar=105, candidate_time=_ts(105),
+        confirmation_bar=105, confirmation_time=_ts(105),
+        tradable_bar=105, tradable_time=_ts(105),
+        parent_object="OB_H4_1",
+        meta={"lineage_layer_anchor": True},
+    )
+
+
+def _ctx_m5() -> MarketObject:
+    return MarketObject(
+        id="CTX_M5_1", symbol="EURUSD", type=ObjectType.CONTRACT,
+        origin_tf="M5", role=Role.CONTEXT, direction=0,
+        zone_low=1.1030, zone_high=1.1030,
+        creation_time=_ts(116), state=ObjectState.ACTIVE,
+        bar_index=116, bar_time=_ts(116),
+        candidate_bar=116, candidate_time=_ts(116),
+        confirmation_bar=116, confirmation_time=_ts(116),
+        tradable_bar=116, tradable_time=_ts(116),
+        parent_object="FVG_M15_1",
+        meta={"lineage_layer_anchor": True},
+    )
+
+
+def _ctx_m1() -> MarketObject:
+    return MarketObject(
+        id="CTX_M1_1", symbol="EURUSD", type=ObjectType.CONTRACT,
+        origin_tf="M1", role=Role.CONTEXT, direction=0,
+        zone_low=1.1031, zone_high=1.1031,
+        creation_time=_ts(117), state=ObjectState.ACTIVE,
+        bar_index=117, bar_time=_ts(117),
+        candidate_bar=117, candidate_time=_ts(117),
+        confirmation_bar=117, confirmation_time=_ts(117),
+        tradable_bar=117, tradable_time=_ts(117),
+        parent_object="CTX_M5_1",
+        meta={"lineage_layer_anchor": True},
     )
 
 
@@ -113,10 +156,13 @@ def _state(direction: int = 1) -> MarketState:
     """MarketState sintético COMPLETO (contexto + POI + refinement + confirmation + trigger)."""
     ms = MarketState()
     ob = _ob_h4(); ob.direction = direction
+    h1 = _ctx_h1()
     fvg = _fvg_m15(); fvg.direction = direction
+    m5 = _ctx_m5()
+    m1 = _ctx_m1()
     bos = _bos_h4(); bos.direction = direction
     disp = _disp_m15(); disp.direction = direction
-    for o in (ob, fvg, bos, disp):
+    for o in (ob, h1, fvg, m5, m1, bos, disp):
         ms.ingest(o)
     return ms
 
@@ -144,6 +190,8 @@ def test_eligible_when_htf_context_is_bullish():
     assert s.meta["causal_order"] == "OB_BEFORE_FVG"
     assert s.meta["poi_tf"] == "H4"
     assert s.meta["refinement_tf"] == "M15"
+    assert s.meta["six_tf_lineage_validation"]["valid"] is True
+    assert s.meta["six_tf_lineage_validation"]["required_chain"] == ["D1", "H4", "H1", "M15", "M5", "M1"]
 
 
 def test_blocked_when_htf_context_not_bullish():
@@ -200,7 +248,7 @@ def test_no_setup_when_ob_not_active():
 def test_composer_does_not_mutate_objects():
     ms = _state()
     ob = ms.all_objects()[0]
-    fvg = ms.all_objects()[1]
+    fvg = next(o for o in ms.all_objects() if o.id == "FVG_M15_1")
     ob_state_before = ob.state
     fvg_state_before = fvg.state
     ob_meta_before = dict(ob.meta)

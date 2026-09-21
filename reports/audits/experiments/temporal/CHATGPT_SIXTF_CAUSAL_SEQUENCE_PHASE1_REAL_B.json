@@ -1,0 +1,97 @@
+{
+  "schema_version": "SIXTF_CAUSAL_SEQUENCE_PHASE1_EVIDENCE_V1",
+  "scope": "SIX_TF_CAUSAL_SEQUENCE_PHASE1_ONLY",
+  "tested_on": "2026-09-21",
+  "base_approved_sha": "c8103747956db13403fe8b42ce858288ba35c442",
+  "engine_blobs": {
+    "engine/sequence.py": "f804e0c02546fcbd262f3d9def8d999363fb973a",
+    "engine/poi_anchor.py": "dd6cfcc3156f97fcc30cb21578c68f745ed134b2",
+    "engine/plan.py": "3f010dc2a84ce0ceaf858d3ce8e470f026c9047b",
+    "engine/multitf_context.py": "0f1271dc44737fe729b0fe71b479b4b82615a644"
+  },
+  "synthetic_and_regression_tests": {
+    "passed": 80,
+    "failed": 0,
+    "command_scope": [
+      "tests/test_sixtf_causal_sequence_phase1.py",
+      "tests/test_sequence_event_patience.py",
+      "tests/test_sequential_events.py",
+      "tests/test_sequential_outcome.py",
+      "tests/test_mtf_navigation.py",
+      "tests/test_mtf_replay_orchestrator.py",
+      "tests/test_mtf_replay_schema.py",
+      "tests/test_mtf_replay_t7.py",
+      "tests/test_mtf_replay_t7b.py",
+      "tests/test_mtf_replay_t7f_completion.py",
+      "tests/test_plan_snapshot_temporal_invariance.py",
+      "tests/test_sequence_audit_replay.py",
+      "tests/test_validate_mtf_ltf_intraday.py",
+      "tests/test_exp_seq_ctx_01_context_bucket.py"
+    ],
+    "new_phase1_tests": {
+      "count": 6,
+      "same_close_htf_parent_rejected": true,
+      "cross_tf_order_uses_timestamp_not_bar_index": true,
+      "six_tf_birth_snapshot": true,
+      "single_candle_cannot_complete_core_sequence": true,
+      "strict_multibar_sequence_1_2_3_4": true,
+      "sequence_state_context_roundtrip": true
+    }
+  },
+  "real_data": {
+    "source": "EURUSD.zip",
+    "source_zip_sha256": "359ef7e3219142422acec473ae786bd07de13043e2cf0e9a532a9e3eb1eab642",
+    "source_hashes": {
+      "D1": {"filename": "EURUSD_D1.csv", "sha256": "518f5023ebe365f5dda5d4d1b6c72b375843ec810f578154e58473c9210bb54a", "pass": true},
+      "H4": {"filename": "EURUSD_H4.csv", "sha256": "eb0608477c6da54773ef89a6edabc2217873694e76d17418ab8cc4dc617c7b73", "pass": true},
+      "H1": {"filename": "EURUSD_H1.csv", "sha256": "7a4669efb9405ccffea5330f343c5bac017d32621ac8590bb0fb47bdd1530f66", "pass": true},
+      "M15": {"filename": "EURUSD_M15.csv", "sha256": "3a3c23828b4385a93f4c5ce550336b50360c9585f245f00fa364693ecf37598a", "pass": true},
+      "M5": {"filename": "EURUSD_M5_3m.csv", "sha256": "84a4acddfdc3574e8af65c9e6c6242939cc6491dc2577331215dc6944083a3ea", "pass": true},
+      "M1": {"filename": "EURUSD_M1.csv", "sha256": "dace9a21bf98193198d50beed35a7bba683b81c7918bcdcfa1b66974b2379b9a", "pass": true}
+    },
+    "control_b": {
+      "decision_time": "2026-08-24T20:35:00+00:00",
+      "all_six_layers_available": true,
+      "all_six_layers_closed_only": true,
+      "future_invariance": true,
+      "layers": {
+        "D1": {"asof_time": "2026-08-24T00:00:00+00:00", "closed_at_or_before_T": true},
+        "H4": {"asof_time": "2026-08-24T20:00:00+00:00", "closed_at_or_before_T": true},
+        "H1": {"asof_time": "2026-08-24T20:00:00+00:00", "closed_at_or_before_T": true},
+        "M15": {"asof_time": "2026-08-24T20:30:00+00:00", "closed_at_or_before_T": true},
+        "M5": {"asof_time": "2026-08-24T20:35:00+00:00", "closed_at_or_before_T": true},
+        "M1": {"asof_time": "2026-08-24T20:35:00+00:00", "closed_at_or_before_T": true}
+      },
+      "htf_provenance_future_invariance": true,
+      "real_bullish_parent": {
+        "time": "2026-08-18T17:00:00+00:00",
+        "direction": 1,
+        "kind": "BOS",
+        "tf": "H1",
+        "level": 1.15799,
+        "strictly_earlier_than_T": true
+      },
+      "real_bearish_parent": {
+        "time": "2026-08-21T17:00:00+00:00",
+        "direction": -1,
+        "kind": "BOS",
+        "tf": "H1",
+        "level": 1.16962,
+        "strictly_earlier_than_T": true
+      }
+    },
+    "control_a_limitation": {
+      "decision_time": "2026-09-17T18:20:00+00:00",
+      "M1_last_time": "2026-08-24T20:38:00+00:00",
+      "M1_covers_control_a": false,
+      "classification": "OUT_OF_RANGE_NOT_MISSING_DATA"
+    },
+    "all_pass": true
+  },
+  "regression_boundary": {
+    "h4_m15_replay_base": "c8103747956db13403fe8b42ce858288ba35c442",
+    "note": "Phase-1 engine changes do not modify engine/market_state.py, engine/historical_event_objects.py, engine/causal_replay.py or scripts/audit/verify_causal_replay_ab.py. The prior H4/M15 certified implementation remains byte-identical in this branch lineage."
+  },
+  "verdict": "PASS_PHASE1_ONLY",
+  "not_certified": ["FULL_SIX_TF_MARKETOBJECT_LINEAGE", "SIX_TF_FUNNEL", "EPISODES", "GRU", "MT5", "TRADING"]
+}

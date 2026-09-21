@@ -124,6 +124,8 @@ class SequenceState:
     displace_id: str = ""
     bos_id: str = ""
     entry_id: str = ""
+    # Ancla de contexto HTF real (BOS/CHOCH previo). No es un POI zonal.
+    context_id: str = ""
     # Fase 6: cierre de la formacion. LIQUIDITY (raiz) y POI/REFINEMENT.
     liquidity_id: str = ""
     poi_id: str = ""
@@ -153,6 +155,7 @@ class SequenceState:
         self.displace_id = ""
         self.bos_id = ""
         self.entry_id = ""
+        self.context_id = ""
         self.liquidity_id = ""
         self.poi_id = ""
         self.refinement_id = ""
@@ -190,6 +193,7 @@ class SequenceState:
             "poi_present": self.poi_present,
             "invalidation_rules": [_rule_to_dict(r) for r in self.invalidation_rules],
             "history": [(str(t), int(i), str(e)) for t, i, e in self.history],
+            "context_id": self.context_id,
             "liquidity_id": self.liquidity_id,
             "sweep_id": self.sweep_id,
             "displace_id": self.displace_id,
@@ -233,6 +237,7 @@ class SequenceState:
         st.poi_present = data.get("poi_present")
         st.invalidation_rules = [_rule_from_dict(r) for r in data.get("invalidation_rules", [])]
         st.history = [(t, int(i), e) for t, i, e in data.get("history", [])]
+        st.context_id = data.get("context_id", "")
         st.liquidity_id = data.get("liquidity_id", "")
         st.sweep_id = data.get("sweep_id", "")
         st.displace_id = data.get("displace_id", "")
@@ -620,7 +625,7 @@ def _freeze_context_anchor(context: dict | None, htf: str | None,
     """
     # M15 también se sella cuando es la capa donde nace el sweep. Así la
     # secuencia conserva la historia completa D1 -> H4 -> H1 -> M15.
-    selected = ("D1", "H4", "H1", "M15") if context is not None else (str(htf or "H4"),)
+    selected = ("D1", "H4", "H1", "M15", "M5", "M1") if context is not None else (str(htf or "H4"),)
     layers: dict[str, dict] = {}
     for tf in selected:
         raw = ((context or {}).get(tf) or {}) if context is not None else (est_htf or {})
@@ -688,6 +693,8 @@ def _init_sequence_audit(audit: dict | None, cfg: SequenceConfig) -> None:
         "displace_gap": cfg.displace_gap,
         "bos_gap": cfg.bos_gap,
         "structural_invalidation": bool(cfg.invalidate_on_opposite_swing),
+        "core_stage_order": ["SWEEP", "DISPLACE", "BOS", "RETURN"],
+        "strict_later_bar_per_core_stage": True,
     })
     audit.setdefault("invalidations", [])
     audit.setdefault("suspensions", [])
@@ -814,7 +821,7 @@ def _build_ltf_contract(state: "SequenceState", objs, obj, ltf_tf: str, target: 
 
 
 def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
-                 htf_poi_fn=None, ltf_tf: str = "M15", bos_table: dict | None = None,
+                 htf_poi_fn=None, htf_context_object_fn=None, ltf_tf: str = "M15", bos_table: dict | None = None,
                  htf_pd_index=None, ltf_map: dict | None = None,
                  htf: str | None = None,
                  est_htf_ctx_fn=None, exec_frames: dict | None = None,
@@ -839,10 +846,11 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
         baseline de 1 nivel. Los otros 5 TF viajan disponibles en el
         contexto pero aún no influyen en la lógica. Sin est_htf_ctx_fn, el
         comportamiento es exactamente el de antes (est_htf_fn legacy).
-    htf_poi_fn(i, target) -> bool OPCIONAL: si se pasa, la zona de entrada del
-        LTF (FVG/OB) SOLO se memoriza cuando el HTF tiene un POI en esa
-        direccion (fidelidad ICT, tesis 18). Si es None (default), el
-        comportamiento es el historico (no rompe llamadores existentes).
+    htf_poi_fn(i, target) -> bool OPCIONAL: hook legacy de presencia HTF.
+    htf_context_object_fn(i, target) -> MarketObject | None OPCIONAL: resolver
+        estricto de contexto estructural real D1/H4/H1. El objeto debe estar
+        confirmado en un cierre ESTRICTAMENTE anterior a la vela LTF actual.
+        Es un BOS/CHOCH de contexto (Role.CONTEXT), NO un POI zonal fabricado.
     bos_table -> dict bucket->ventana (R10 Propuesta A). Si cfg.bos_gap is None,
         la ventana de confirmacion BOS se deriva de la FUERZA del quiebre via
         esta tabla empirica (sin indicadores). Si bos_gap es int, se ignora.
@@ -1017,16 +1025,35 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 )
                 _record_context_anchor(audit, state)
                 state.note("SWEEP", i)
+                # Provenance HTF estricta: resolver un BOS/CHOCH de CONTEXTO
+                # real al nacer el escenario. No es un POI zonal y nunca se
+                # refecha en la vela LTF. El parent debe existir antes del sweep.
+                if htf_context_object_fn is not None:
+                    _ctx_obj = htf_context_object_fn(i, target)
+                    if _ctx_obj is not None:
+                        if _ctx_obj.origin_tf not in _POI_TFS:
+                            raise ValueError("HTF context resolver returned non-HTF object")
+                        if _ctx_obj.role is not Role.CONTEXT:
+                            raise ValueError("HTF context resolver must return Role.CONTEXT")
+                        if int(_ctx_obj.direction) != int(target):
+                            raise ValueError("HTF context resolver returned opposite direction")
+                        _pt = pd.to_datetime(_ctx_obj.tradable_time, utc=True, errors="coerce")
+                        _st = pd.to_datetime(obj.meta.get("time"), utc=True, errors="coerce")
+                        if pd.isna(_pt) or pd.isna(_st) or not (_pt < _st):
+                            raise ValueError("HTF context must be observable strictly before LTF sweep")
+                        state.context_id = _ctx_obj.id
+                        state.event_objs[_ctx_obj.id] = _ctx_obj
                 # B5: Expediente nace con el sweep (Ley 7 unicidad por id hash).
-                # Fase 5/6 (Arq A): guarda el id del evento SWEEP para enlazar hijos.
-                # Fase 6: crea LIQUIDITY (raiz) y enlaza SWEEP -> LIQUIDITY.
+                # LIQUIDITY puede referenciar el contexto HTF previo; LIQUIDITY y
+                # SWEEP son el mismo hecho de barrido, no dos etapas core separadas.
                 _liq_level = (float(obj.meta.get("ssl_price", np.nan)) if target == 1
                               else float(obj.meta.get("bsl_price", np.nan)))
                 _liq_obj = _make_event_object(
                     obj.meta.get("symbol", "") or "", ltf_tf, "LIQUIDITY",
-                    target, i, obj.meta.get("time"), _liq_level, "",
+                    target, i, obj.meta.get("time"), _liq_level, state.context_id,
                     {"phase": "LIQUIDITY",
-                     "kind": "SSL" if target == 1 else "BSL"},
+                     "kind": "SSL" if target == 1 else "BSL",
+                     "context_id": state.context_id},
                     role="CONTEXT", obj_type="LIQUIDITY")
                 state.liquidity_id = _liq_obj.id
                 state.event_objs[_liq_obj.id] = _liq_obj
@@ -1062,6 +1089,8 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 phase_seen["SWEEP"] += 1
         elif state.phase == "SWEEP_DONE":
             if (not cfg.require_displacement) or _has_displacement(obj, target, est_htf):
+                if i <= state.sweep_idx:
+                    raise AssertionError("causal sequence violation: DISPLACE must follow SWEEP on a later bar")
                 state.phase = "DISPLACE_DONE"
                 state.displace_idx = i
                 state.note("DISPLACE", i)
@@ -1078,6 +1107,8 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 phase_seen["DISPLACE"] += 1
         elif state.phase == "DISPLACE_DONE":
             if _has_bos(obj, est_htf, target, cfg.counter_trend):
+                if i <= state.displace_idx:
+                    raise AssertionError("causal sequence violation: BOS must follow DISPLACE on a later bar")
                 # Secuencia canonica BOS->CHOCH->BOS (libro 02 §3.1): en
                 # contratendencia exigir CHOCH (giro) ANTES del BOS de confirmacion.
                 if cfg.counter_trend and not _has_choch(obj, est_htf, target, cfg.counter_trend):
@@ -1105,10 +1136,13 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 _poi_anchored = bool(htf_poi_fn is not None and htf_poi_fn(i, target))
                 _have_htf = bool(htf) and str(htf).upper() in _POI_TFS
                 if _poi_anchored and _have_htf:
+                    # Compatibilidad legacy: el boolean hook histórico aún
+                    # conserva su POI sintético. El nuevo contexto 6TF estricto
+                    # viaja por state.context_id y NO se hace pasar por POI.
                     _poi_obj = _make_event_object(
                         obj.meta.get("symbol", "") or "", htf, "POI",
                         target, i, obj.meta.get("time"), state.bos_level, state.bos_id,
-                        {"phase": "POI", "anchored": True},
+                        {"phase": "POI", "anchored": True, "legacy_synthetic": True},
                         role="POI", obj_type="BOS")
                     state.poi_id = _poi_obj.id
                     state.event_objs[_poi_obj.id] = _poi_obj
@@ -1134,6 +1168,12 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                 if _poi_anchored:
                     _advance_expediente(state.expediente, "POI", i, obj.meta.get("time"),
                                         event_id=_poi_obj.id, parent_event_id=state.bos_id)
+                if state.context_id and state.expediente is not None:
+                    _context_obj = state.event_objs.get(state.context_id)
+                    if _context_obj is not None:
+                        state.expediente.meta["context_id"] = _context_obj.id
+                        state.expediente.meta["context_tf"] = _context_obj.origin_tf
+                        state.expediente.meta["context_time"] = str(_context_obj.tradable_time)
                 _advance_expediente(state.expediente, "REFINEMENT", i, obj.meta.get("time"),
                                     event_id=_ref_obj.id, parent_event_id=_ref_parent)
                 # TRAZAR EL CUADRO: usar la zona cacheada (FVG/OB del tramo
@@ -1182,6 +1222,8 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
         elif state.phase == "BOS_DONE":
             # ENTRADA = el precio RETORNA al cuadro trazado (mitigation), no FVG instantaneo.
             if _touches_zone(obj, state.zone_high, state.zone_low):
+                if i <= state.bos_idx:
+                    raise AssertionError("causal sequence violation: RETURN must follow BOS on a later bar")
                 # SENAL: la secuencia completa ocurrio en orden y el precio
                 # volvio al cuadro (igual que el trader que espera el toque).
                 zone_auth = getattr(state, "zone_authority", None)
@@ -1232,8 +1274,13 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
                     "htf_aligned": state.htf_aligned,
                     "htf_reason": state.htf_reason,
                     "context_anchor": _safe(state.context_anchor),
+                    "sequence_span_bars": int(i - state.sweep_idx),
+                    "strict_multibar_core": bool(
+                        state.sweep_idx < state.displace_idx < state.bos_idx < i
+                    ),
                     # Fase 5/6 (Arq A): ids de eventos + niveles derivables (aditivo).
                     "event_ids": {
+                        "CONTEXT": state.context_id,
                         "LIQUIDITY": state.liquidity_id,
                         "SWEEP": state.sweep_id,
                         "DISPLACE": state.displace_id,
@@ -1278,7 +1325,7 @@ def _run_sequence_impl(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
 
 
 def run_sequence(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
-                htf_poi_fn=None, ltf_tf: str = "M15", bos_table: dict | None = None,
+                htf_poi_fn=None, htf_context_object_fn=None, ltf_tf: str = "M15", bos_table: dict | None = None,
                 htf_pd_index=None, ltf_map: dict | None = None,
                 htf: str | None = None,
                 est_htf_ctx_fn=None, exec_frames: dict | None = None,
@@ -1290,7 +1337,7 @@ def run_sequence(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
     """
     s, p, _, _ = _run_sequence_impl(
         ltf_df_or_objs, est_htf_fn, cfg,
-        htf_poi_fn=htf_poi_fn, ltf_tf=ltf_tf, bos_table=bos_table,
+        htf_poi_fn=htf_poi_fn, htf_context_object_fn=htf_context_object_fn, ltf_tf=ltf_tf, bos_table=bos_table,
         htf_pd_index=htf_pd_index, ltf_map=ltf_map,
         htf=htf, est_htf_ctx_fn=est_htf_ctx_fn, exec_frames=exec_frames, audit=audit,
     )
@@ -1298,7 +1345,7 @@ def run_sequence(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
 
 
 def run_sequence_traced(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
-                        htf_poi_fn=None, ltf_tf: str = "M15", bos_table: dict | None = None,
+                        htf_poi_fn=None, htf_context_object_fn=None, ltf_tf: str = "M15", bos_table: dict | None = None,
                         htf_pd_index=None, ltf_map: dict | None = None,
                         htf: str | None = None,
                         est_htf_ctx_fn=None, exec_frames: dict | None = None,
@@ -1320,7 +1367,7 @@ def run_sequence_traced(ltf_df_or_objs: Any, est_htf_fn, cfg: SequenceConfig,
         objs = list(ltf_df_or_objs) if copy_objs else ltf_df_or_objs
     runner = SequenceRunner(
         objs, est_htf_ctx_fn, cfg, est_htf_fn=est_htf_fn, ltf_tf=ltf_tf, htf=htf,
-        htf_poi_fn=htf_poi_fn, bos_table=bos_table, htf_pd_index=htf_pd_index,
+        htf_poi_fn=htf_poi_fn, htf_context_object_fn=htf_context_object_fn, bos_table=bos_table, htf_pd_index=htf_pd_index,
         ltf_map=ltf_map, exec_frames=exec_frames, initial_state=initial_state, audit=audit,
         invalidation_ltf_df=source_ltf_df)
     return runner.run_all(start_i=start_i)
@@ -1340,7 +1387,7 @@ class SequenceRunner:
     """
 
     def __init__(self, objs, est_htf_ctx_fn, cfg, ltf_tf="M15", htf=None,
-                 htf_poi_fn=None, bos_table=None, htf_pd_index=None,
+                 htf_poi_fn=None, htf_context_object_fn=None, bos_table=None, htf_pd_index=None,
                  ltf_map=None, exec_frames=None, initial_state=None, est_htf_fn=None,
                  audit: dict | None = None, invalidation_ltf_df=None):
         # objs es la lista COMPLETA de MarketObject[] (índices absolutos).
@@ -1351,6 +1398,7 @@ class SequenceRunner:
         self.ltf_tf = ltf_tf
         self.htf = htf
         self.htf_poi_fn = htf_poi_fn
+        self.htf_context_object_fn = htf_context_object_fn
         self.bos_table = bos_table
         self.htf_pd_index = htf_pd_index
         self.ltf_map = ltf_map
@@ -1371,7 +1419,7 @@ class SequenceRunner:
         """
         sigs, phase, exp, state = _run_sequence_impl(
             self.objs, self.est_htf_fn, self.cfg,
-            htf_poi_fn=self.htf_poi_fn, ltf_tf=self.ltf_tf,
+            htf_poi_fn=self.htf_poi_fn, htf_context_object_fn=self.htf_context_object_fn, ltf_tf=self.ltf_tf,
             bos_table=self.bos_table, htf_pd_index=self.htf_pd_index,
             ltf_map=self.ltf_map, htf=self.htf,
             est_htf_ctx_fn=self.est_htf_ctx_fn, exec_frames=self.exec_frames,

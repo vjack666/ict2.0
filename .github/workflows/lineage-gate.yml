@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - chatgpt/full-lineage-gate-20260921
+  pull_request:
+    branches:
+      - hermes/evidencia-ict-replay-pass-20260920
 
 jobs:
   lineage:

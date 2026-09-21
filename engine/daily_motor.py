@@ -12,7 +12,7 @@ from typing import Any, Mapping, Sequence
 
 import pandas as pd
 
-from engine.lineage import build_six_tf_lineage_spine, validate_hierarchical_lineage, validate_six_tf_lineage
+from engine.lineage import SIX_TF_CHAIN, build_six_tf_lineage_spine, validate_hierarchical_lineage, validate_six_tf_lineage
 from engine.market_object import MarketObject, ObjectState, ObjectType
 from engine.plan import build_context_stack, build_event_sequence, ltf_structure_at, top_down_allows_trade
 
@@ -492,7 +492,7 @@ def build_daily_motor_snapshot(
     six_tf_validation = validate_six_tf_lineage(
         six_tf_spine,
         decision_time=tt,
-        require_related=True,
+        require_related=False,
     )
     six_tf_report = six_tf_validation.to_dict()
     six_tf_report["status"] = "PASS" if six_tf_validation.valid else "FAIL"

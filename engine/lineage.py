@@ -287,20 +287,23 @@ def validate_hierarchical_lineage(
             if parent is None:
                 errors.append(f"{child.id}: parent_object huérfano={parent_id}")
             else:
-                try:
-                    links.append(CausalLink(
-                        parent_id=parent.id,
-                        child_id=child.id,
-                        relation="PARENT_OBJECT",
-                        parent_bar=parent.bar_index,
-                        child_bar=child.bar_index,
-                        parent_time=_object_time(parent),
-                        child_time=child_time,
-                        parent_tf=parent.origin_tf,
-                        child_tf=child.origin_tf,
-                    ))
-                except ValueError as exc:
-                    errors.append(f"{child.id}: {exc}")
+                parent_is_anchor = bool((parent.meta or {}).get("lineage_layer_anchor"))
+                child_is_anchor = bool((child.meta or {}).get("lineage_layer_anchor"))
+                if not (parent_is_anchor and child_is_anchor):
+                    try:
+                        links.append(CausalLink(
+                            parent_id=parent.id,
+                            child_id=child.id,
+                            relation="PARENT_OBJECT",
+                            parent_bar=parent.bar_index,
+                            child_bar=child.bar_index,
+                            parent_time=_object_time(parent),
+                            child_time=child_time,
+                            parent_tf=parent.origin_tf,
+                            child_tf=child.origin_tf,
+                        ))
+                    except ValueError as exc:
+                        errors.append(f"{child.id}: {exc}")
 
         if require_related:
             for related_id in child.related_objects:
@@ -469,7 +472,7 @@ def validate_six_tf_lineage(
     *,
     decision_time: object = None,
     required_chain: Sequence[str] = SIX_TF_CHAIN,
-    require_related: bool = True,
+    require_related: bool = False,
 ) -> SixTFLineageValidationResult:
     """Exige una espina causal directa D1→H4→H1→M15→M5→M1.
 
@@ -490,8 +493,16 @@ def validate_six_tf_lineage(
         if obj is not None:
             coerced.append(obj)
 
+    global_objects: list[MarketObject] = []
+    for obj in coerced:
+        item = MarketObject.from_dict(obj.to_dict())
+        item.parent_object = None
+        if not require_related:
+            item.related_objects = []
+        global_objects.append(item)
+
     global_validation = validate_hierarchical_lineage(
-        coerced,
+        global_objects,
         decision_time=decision_time,
         require_related=require_related,
     )

@@ -62,11 +62,12 @@ def sha256_member(zf: zipfile.ZipFile, member: str) -> str:
 def read_window(
     zf: zipfile.ZipFile,
     member: str,
+    tf: str,
     start: pd.Timestamp,
     decision_time: pd.Timestamp,
 ) -> pd.DataFrame:
     chunks = []
-    duration = TF_DURATION[Path(member).stem.rsplit("_", 1)[-1]]
+    duration = TF_DURATION[str(tf).upper()]
     with zf.open(member) as handle:
         for chunk in pd.read_csv(handle, chunksize=200_000):
             times = pd.to_datetime(chunk["time"], utc=True, errors="coerce")
@@ -210,7 +211,7 @@ def main() -> int:
                 "expected_sha256": expected,
                 "pass": actual == expected,
             }
-            frames[tf] = read_window(zf, member, WINDOW_START[tf], CONTROL_B)
+            frames[tf] = read_window(zf, member, tf, WINDOW_START[tf], CONTROL_B)
 
     checks = run_checks(frames, CONTROL_B)
     result = {

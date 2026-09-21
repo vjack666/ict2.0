@@ -90,6 +90,7 @@ def build_htf_structure_index(
     return events
 
 
+
 def resolve_htf_poi_event(
     events: list[_ParentEvent],
     ltf_time,

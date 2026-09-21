@@ -34,6 +34,35 @@ def _frames() -> dict[str, pd.DataFrame]:
     return {tf: _frame(tf) for tf in ("D1", "H4", "H1", "M15")}
 
 
+def _lineage_objects() -> list[MarketObject]:
+    parent = MarketObject(
+        id="POI_H1_1",
+        type=ObjectType.ORDER_BLOCK,
+        origin_tf="H1",
+        direction=1,
+        zone_high=1.1030,
+        zone_low=1.1000,
+        state=ObjectState.ACTIVE,
+        creation_time=pd.Timestamp("2020-01-01 06:00", tz="UTC"),
+        bar_index=1,
+        bar_time=pd.Timestamp("2020-01-01 06:00", tz="UTC"),
+    )
+    bos = MarketObject(
+        id="BOS_M15_1",
+        type=ObjectType.BOS,
+        origin_tf="M15",
+        direction=1,
+        zone_high=1.1030,
+        zone_low=1.1000,
+        state=ObjectState.ACTIVE,
+        creation_time=pd.Timestamp("2020-01-01 11:00", tz="UTC"),
+        bar_index=11,
+        bar_time=pd.Timestamp("2020-01-01 11:00", tz="UTC"),
+        related_objects=["FVG_M15_CANONICAL_1"],
+    )
+    return [parent, bos]
+
+
 def _canonical_zone(*, retested: bool = True) -> MarketObject:
     return MarketObject(
         id="FVG_M15_CANONICAL_1",
@@ -59,6 +88,7 @@ def test_daily_motor_is_observe_only_and_reports_ltf():
         _frames(),
         decision_time=pd.Timestamp("2020-01-02"),
         canonical_zones={"M15": [_canonical_zone()]},
+        lineage_objects=_lineage_objects(),
         sequence_snapshot={"refs": ["SEQ_H1_1"], "depth": 7},
         context_snapshot={"poi_refs": ["POI_H1_1"]},
     )
@@ -112,6 +142,7 @@ def test_daily_motor_future_added_to_one_tf_does_not_mutate_snapshot(future_tf):
         decision_time=t,
         config=DailyMotorConfig(require_pd=False),
         canonical_zones=zones,
+        lineage_objects=_lineage_objects(),
     )
     frames[future_tf] = pd.concat([frames[future_tf], _frame(future_tf, n=5, future=True)], ignore_index=True)
     after = build_daily_motor_snapshot(
@@ -119,6 +150,7 @@ def test_daily_motor_future_added_to_one_tf_does_not_mutate_snapshot(future_tf):
         decision_time=t,
         config=DailyMotorConfig(require_pd=False),
         canonical_zones=zones,
+        lineage_objects=_lineage_objects(),
     )
     assert after == before
 
@@ -132,6 +164,7 @@ def test_daily_motor_same_input_is_deterministic_and_ltf_cannot_change_bias():
         decision_time=t,
         config=DailyMotorConfig(require_pd=False),
         canonical_zones={"M15": [_canonical_zone()]},
+        lineage_objects=_lineage_objects(),
         sequence_snapshot={"refs": ["SEQ_H1_1"], "depth": 7},
         context_snapshot=context,
     )
@@ -140,6 +173,7 @@ def test_daily_motor_same_input_is_deterministic_and_ltf_cannot_change_bias():
         decision_time=t,
         config=DailyMotorConfig(require_pd=False),
         canonical_zones={"M15": [_canonical_zone()]},
+        lineage_objects=_lineage_objects(),
         sequence_snapshot={"refs": ["SEQ_H1_1"], "depth": 7},
         context_snapshot=context,
     )
@@ -174,6 +208,7 @@ def test_daily_motor_retest_requires_canonical_touch_after_tradable():
         decision_time=pd.Timestamp("2020-01-02", tz="UTC"),
         config=DailyMotorConfig(require_pd=False),
         canonical_zones={"M15": [_canonical_zone(retested=False)]},
+        lineage_objects=_lineage_objects(),
     )
     assert result["ltf"]["zone_present"] is True
     assert result["ltf"]["retest_observed"] is False
@@ -200,3 +235,33 @@ def test_daily_motor_uses_authoritative_context_state_and_keeps_navigation_trace
     assert result["context"]["market_state"]["policy"] == "CONTEXT_STATE_NOT_ENTRY_SIGNAL"
     assert result["context"]["market_state"]["path"]["steps"]
     assert result["entry_authorized"] is False
+
+
+def test_daily_motor_fails_closed_on_orphan_lineage():
+    result = build_daily_motor_snapshot(
+        _frames(),
+        decision_time=pd.Timestamp("2020-01-02", tz="UTC"),
+        config=DailyMotorConfig(require_pd=False),
+        canonical_zones={"M15": [_canonical_zone()]},
+    )
+    assert result["lineage"]["valid"] is False
+    assert result["lineage"]["status"] == "FAIL"
+    assert result["status"] == "LINEAGE_INVALID"
+    assert any("huérfano" in item for item in result["lineage"]["errors"])
+
+
+def test_daily_motor_publishes_validated_typed_lineage():
+    result = build_daily_motor_snapshot(
+        _frames(),
+        decision_time=pd.Timestamp("2020-01-02", tz="UTC"),
+        config=DailyMotorConfig(require_pd=False),
+        canonical_zones={"M15": [_canonical_zone()]},
+        lineage_objects=_lineage_objects(),
+    )
+    assert result["lineage"]["valid"] is True
+    assert result["lineage"]["status"] == "PASS"
+    assert result["lineage"]["link_count"] == 1
+    link = result["lineage"]["links"][0]
+    assert link["parent_id"] == "POI_H1_1"
+    assert link["child_id"] == "FVG_M15_CANONICAL_1"
+    assert link["relation"] == "PARENT_OBJECT"

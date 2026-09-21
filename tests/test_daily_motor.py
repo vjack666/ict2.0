@@ -31,7 +31,7 @@ def _frame(tf: str, n: int = 30, *, trend: str = "BULLISH", future: bool = False
 
 
 def _frames() -> dict[str, pd.DataFrame]:
-    return {tf: _frame(tf) for tf in ("D1", "H4", "H1", "M15")}
+    return {tf: _frame(tf) for tf in ("D1", "H4", "H1", "M15", "M5", "M1")}
 
 
 def _lineage_objects() -> list[MarketObject]:
@@ -97,6 +97,8 @@ def test_daily_motor_is_observe_only_and_reports_ltf():
     assert "entry" not in result
     assert result["profile_id"] == "DAILY_D1_H4_H1_M15_READING"
     assert set(result["asof_times_by_tf"]) == {"D1", "H4", "H1", "M15"}
+    assert result["lineage"]["six_tf_context"]["valid"] is True
+    assert result["lineage"]["six_tf_context"]["required_chain"] == ["D1", "H4", "H1", "M15", "M5", "M1"]
     assert result["ltf"]["tf"] == "M15"
     assert result["ltf"]["zone_present"] is True
     assert result["ltf"]["zone_refs"][0]["zone_id"] == "FVG_M15_CANONICAL_1"
@@ -132,7 +134,7 @@ def test_daily_motor_ignores_future_ltf_and_htf_rows():
     assert json.dumps(after, sort_keys=True, allow_nan=False)
 
 
-@pytest.mark.parametrize("future_tf", ["D1", "H4", "M15"])
+@pytest.mark.parametrize("future_tf", ["D1", "H4", "H1", "M15", "M5", "M1"])
 def test_daily_motor_future_added_to_one_tf_does_not_mutate_snapshot(future_tf):
     frames = _frames()
     t = pd.Timestamp("2020-01-01 12:00", tz="UTC")
@@ -197,6 +199,7 @@ def test_daily_motor_missing_context_does_not_promote_ltf():
         frames,
         decision_time=pd.Timestamp("2020-01-02"),
         config=DailyMotorConfig(require_d1=False, require_itf=False, require_context=False, require_pd=False),
+        require_full_six_tf_lineage=False,
     )
     assert result["status"] in {"WAIT_CONTEXT", "WAIT_LTF_CONFIRMATION", "WAIT_LTF_ZONE", "WAIT_RETEST"}
     assert result["entry_authorized"] is False
@@ -265,3 +268,35 @@ def test_daily_motor_publishes_validated_typed_lineage():
     assert link["parent_id"] == "POI_H1_1"
     assert link["child_id"] == "FVG_M15_CANONICAL_1"
     assert link["relation"] == "PARENT_OBJECT"
+
+
+
+def test_daily_motor_fails_closed_when_m1_layer_is_missing():
+    frames = _frames()
+    frames.pop("M1")
+    result = build_daily_motor_snapshot(
+        frames,
+        decision_time=pd.Timestamp("2020-01-02", tz="UTC"),
+        config=DailyMotorConfig(require_pd=False),
+        canonical_zones={"M15": [_canonical_zone()]},
+        lineage_objects=_lineage_objects(),
+    )
+    assert result["status"] == "LINEAGE_INVALID"
+    six = result["lineage"]["six_tf_context"]
+    assert six["valid"] is False
+    assert "M1" in six["missing_tfs"]
+
+
+def test_daily_motor_six_tf_spine_is_closed_only_and_direct():
+    result = build_daily_motor_snapshot(
+        _frames(),
+        decision_time=pd.Timestamp("2020-01-02", tz="UTC"),
+        config=DailyMotorConfig(require_pd=False),
+        canonical_zones={"M15": [_canonical_zone()]},
+        lineage_objects=_lineage_objects(),
+    )
+    six = result["lineage"]["six_tf_context"]
+    assert six["valid"] is True
+    assert len(six["object_ids"]) == 6
+    assert list(six["layers"]) == ["D1", "H4", "H1", "M15", "M5", "M1"]
+    assert all(layer["closed_only"] for layer in six["layers"].values())

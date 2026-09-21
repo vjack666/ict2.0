@@ -83,6 +83,22 @@ def read_window(
     return pd.concat(chunks, ignore_index=True).sort_values("time").reset_index(drop=True)
 
 
+def read_parquet_window(
+    path: Path,
+    tf: str,
+    start: pd.Timestamp,
+    decision_time: pd.Timestamp,
+) -> pd.DataFrame:
+    columns = ["time", "open", "high", "low", "close"]
+    frame = pd.read_parquet(path, columns=columns)
+    times = pd.to_datetime(frame["time"], utc=True, errors="coerce")
+    duration = TF_DURATION[str(tf).upper()]
+    mask = (times >= start) & (times <= decision_time + duration * 3)
+    out = frame.loc[mask].copy()
+    out["time"] = times.loc[mask]
+    return out.sort_values("time").reset_index(drop=True)
+
+
 def _fingerprint(objects: list[MarketObject]) -> list[dict]:
     return [
         {
@@ -180,7 +196,13 @@ def run_checks(frames: dict[str, pd.DataFrame], decision_time: pd.Timestamp) -> 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source", required=True, help="Original EURUSD.zip")
+    source_group = parser.add_mutually_exclusive_group()
+    source_group.add_argument("--source", help="Original EURUSD.zip benchmark package")
+    source_group.add_argument(
+        "--parquet-dir",
+        default=None,
+        help="Directory containing EURUSD_D1/H4/H1/M15/M5/M1.parquet",
+    )
     parser.add_argument(
         "--manifest",
         default="benchmark/eurusd_multitf/BENCHMARK_DATA_MANIFEST.json",
@@ -191,57 +213,92 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    source = Path(args.source)
-    manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8-sig"))
-    selected = manifest["SOURCE_PROFILE_RECENT"]
-    by_name = {row["filename"]: row for row in manifest["files"]}
-
-    source_hash = sha256_file(source)
     hashes = {}
     frames = {}
-    with zipfile.ZipFile(source) as zf:
-        for tf in SIX_TF_CHAIN:
-            filename = selected[tf]
-            member = f"EURUSD/{filename}"
-            actual = sha256_member(zf, member)
-            expected = by_name[filename]["sha256"]
-            hashes[tf] = {
-                "filename": filename,
-                "actual_sha256": actual,
-                "expected_sha256": expected,
-                "pass": actual == expected,
-            }
-            frames[tf] = read_window(zf, member, tf, WINDOW_START[tf], CONTROL_B)
+    provenance = {}
 
-    checks = run_checks(frames, CONTROL_B)
+    if args.source:
+        source = Path(args.source)
+        manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8-sig"))
+        selected = manifest["SOURCE_PROFILE_RECENT"]
+        by_name = {row["filename"]: row for row in manifest["files"]}
+        source_hash = sha256_file(source)
+
+        with zipfile.ZipFile(source) as zf:
+            for tf in SIX_TF_CHAIN:
+                filename = selected[tf]
+                member = f"EURUSD/{filename}"
+                actual = sha256_member(zf, member)
+                expected = by_name[filename]["sha256"]
+                hashes[tf] = {
+                    "filename": filename,
+                    "actual_sha256": actual,
+                    "expected_sha256": expected,
+                    "pass": actual == expected,
+                }
+                frames[tf] = read_window(zf, member, tf, WINDOW_START[tf], CONTROL_B)
+
+        provenance = {
+            "mode": "BENCHMARK_ZIP",
+            "source": str(source),
+            "source_zip_sha256": source_hash,
+            "source_zip_expected": EXPECTED_ZIP_SHA256,
+            "source_zip_pass": source_hash == EXPECTED_ZIP_SHA256,
+            "source_hashes": hashes,
+        }
+        provenance_pass = bool(
+            provenance["source_zip_pass"]
+            and all(item["pass"] for item in hashes.values())
+        )
+    else:
+        parquet_dir = Path(args.parquet_dir or "data/raw/EURUSD")
+        missing_files = []
+        local_files = {}
+        for tf in SIX_TF_CHAIN:
+            path = parquet_dir / f"EURUSD_{tf}.parquet"
+            if not path.is_file():
+                missing_files.append(str(path))
+                continue
+            local_files[tf] = {
+                "path": str(path),
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+            frames[tf] = read_parquet_window(path, tf, WINDOW_START[tf], CONTROL_B)
+
+        provenance = {
+            "mode": "LOCAL_PARQUET",
+            "parquet_dir": str(parquet_dir),
+            "files": local_files,
+            "missing_files": missing_files,
+        }
+        provenance_pass = not missing_files and len(frames) == len(SIX_TF_CHAIN)
+
+    checks = run_checks(frames, CONTROL_B) if provenance_pass else {
+        "all_pass": False,
+        "required_chain": list(SIX_TF_CHAIN),
+        "error": "source_provenance_incomplete",
+    }
     result = {
         "schema_version": "FULL_SIXTF_LINEAGE_GATE_V1",
-        "source": str(source),
-        "source_zip_sha256": source_hash,
-        "source_zip_expected": EXPECTED_ZIP_SHA256,
-        "source_zip_pass": source_hash == EXPECTED_ZIP_SHA256,
-        "source_hashes": hashes,
+        "provenance": provenance,
         **checks,
     }
-    result["all_pass"] = bool(
-        result["source_zip_pass"]
-        and all(item["pass"] for item in hashes.values())
-        and checks["all_pass"]
-    )
+    result["all_pass"] = bool(provenance_pass and checks["all_pass"])
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2, default=str), encoding="utf-8")
     print(json.dumps({
         "all_pass": result["all_pass"],
-        "source_zip_pass": result["source_zip_pass"],
-        "source_hashes_pass": all(item["pass"] for item in hashes.values()),
-        "full_lineage": result["full"]["valid"],
-        "full_prefix_identical": result["full_prefix_identical"],
-        "save_load_roundtrip": result["save_load_roundtrip"],
-        "edges": result["edge_fail_closed"],
-        "missing_tfs": result["missing_tf_fail_closed"],
-        "future_object_rejected": result["future_object_rejected"],
+        "provenance_mode": provenance.get("mode"),
+        "provenance_pass": provenance_pass,
+        "full_lineage": result.get("full", {}).get("valid", False),
+        "full_prefix_identical": result.get("full_prefix_identical", False),
+        "save_load_roundtrip": result.get("save_load_roundtrip", False),
+        "edges": result.get("edge_fail_closed", {}),
+        "missing_tfs": result.get("missing_tf_fail_closed", {}),
+        "future_object_rejected": result.get("future_object_rejected", False),
         "output": str(out),
     }, indent=2))
     return 0 if result["all_pass"] else 1

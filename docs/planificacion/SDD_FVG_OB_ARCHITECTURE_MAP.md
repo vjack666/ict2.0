@@ -75,6 +75,15 @@ Detector canónico de OB basado en footprint candle + closed follow-through. Bre
 
 `CausalLink` y validaciones temporales/duplicados. Gate D validado.
 
+### `engine/lineage_hierarchy.py`
+
+Adaptador jerarquico instalado el 2026-09-21 en commit `117c8f31`.
+Consume `MarketObject`, `CausalLink` y relaciones FVG/OB para producir
+`HierarchicalLineage` con raices, hojas, profundidad, breaks, huerfanos,
+ciclos, futuros, no resueltos, conteos y provenance por TF. Soporta cobertura
+D1/H4/H1/M15/M5/M1 y marca H4/M15-only como `LINEAGE_LEGACY_UNVALIDATED`
+cuando se exige el grafo completo de seis temporalidades.
+
 ### `engine/dealing_range.py`
 
 Solo `DISCOUNT | EQ | PREMIUM`; OTE/Fibonacci 62–79% prohibidos.
@@ -87,6 +96,11 @@ Navegación MTF/AHF v1 implementada. El parche O(n) de precompute conserva equiv
 
 Lectura LTF diaria D1→H4→H1→M15 implementada como snapshot observacional; no es API de órdenes.
 
+Desde `117c8f31`, el snapshot diario publica un resumen `lineage` estructurado
+y nunca usa `lineage: None` como contrato. Si recibe lineage explicito no
+validado, el candidato queda en `WAIT_LINEAGE_VALIDATION`. La ausencia de
+lineage queda visible como `LINEAGE_NOT_PROVIDED`.
+
 ## 4. Lineage y temporalidad
 
 Garantías vigentes:
@@ -96,6 +110,9 @@ Garantías vigentes:
 - timestamps monotónicos;
 - no enlaces futuros;
 - candidate/confirmation/tradable/observation respetan el contrato temporal.
+- la cobertura jerarquica completa se evalua sobre D1/H4/H1/M15/M5/M1 cuando
+  el caller activa `require_all_six_tfs`;
+- legacy H4/M15 no se promociona silenciosamente a seis temporalidades.
 
 ## 5. Integración ICT vigente
 
@@ -142,6 +159,7 @@ El siguiente gate es TNA behavioral/full-span.
 | D-extension FVG↔OB | PASS STRICT + CI |
 | Funnel MTF+SEQ 20Y | PASS + CI |
 | Context State contract | NORMATIVO |
+| Lineage Hierarchy v1 | INSTALLED + TESTED |
 | AHF implementation | IMPLEMENTADO v1 |
 | TNA trace | PASS estratificado |
 | TNA behavioral/full-span | PENDIENTE |
@@ -155,6 +173,8 @@ El siguiente gate es TNA behavioral/full-span.
 2. Detección especializada de Breaker y BPR.
 3. Lifecycle completo de mitigación/touch a nivel de ejecución.
 4. Integración HTF/ITF/EXEC como grafo causal completo de producción.
+   El contrato/adaptador ya existe; queda pendiente que todos los productores
+   entreguen de forma sistematica objetos/links completos de seis TF.
 5. POI → retest → entry → SL → TP como especificación de ejecución congelada.
 6. Dataset causal de outcome para backtest.
 7. TNA behavioral/full-span.

@@ -4,6 +4,11 @@
 **Precondición:** Gate C PASS  
 **Alcance:** lineage y relaciones causales; sin ejecución, scoring, aprendizaje ni optimización.
 
+**Enmienda 2026-09-21:** instalado contrato jerarquico `LINEAGE_HIERARCHY_V1`
+en `engine/lineage_hierarchy.py` y conectado al snapshot observacional de
+`engine/daily_motor.py`. Ver
+`docs/contratos/CONTRATO_LINEAGE_HIERARCHY_V1.md`.
+
 ## Objetivo
 
 Convertir los objetos detectados en una cadena causal auditable, sin permitir que un evento histórico dependa de información futura.
@@ -24,6 +29,11 @@ Reglas obligatorias:
 ## Implementación
 
 `engine/lineage.py` conserva el consumidor `trace_setup_lineage()` y ahora además expone `CausalLink`, `link()` y `validate_links()` como contrato ejecutable de relaciones históricas.
+
+`engine/lineage_hierarchy.py` agrega el adaptador de grafo jerarquico:
+deriva o consume `CausalLink`, valida ciclos, huerfanos, referencias no
+resueltas, futuros, profundidad, raices/hojas, provenance por TF y cobertura
+D1/H4/H1/M15/M5/M1. El adaptador no detecta nuevos objetos ni inventa padres.
 
 La cadena canónica conserva el orden:
 
@@ -46,6 +56,25 @@ Cobertura específica:
 - inmutabilidad de `CausalLink`.
 
 El primer intento de Gate D falló por una discrepancia entre el `lineage.py` preexistente y el contrato de pruebas (`CausalLink` no estaba implementado). Se corrigió el código y se volvió a ejecutar la suite. El segundo intento quedó completamente verde.
+
+## Evidencia enmienda jerarquica 2026-09-21
+
+**Commit local:** `117c8f31 feat(lineage): enforce hierarchical lineage snapshot contract`
+
+Cobertura nueva:
+
+- cadena D1 -> H4 -> H1 -> M15 -> M5 -> M1 valida con `require_all_six_tfs=True`;
+- H4/M15-only queda `LINEAGE_LEGACY_UNVALIDATED` cuando se exige seis TF;
+- ausencia de lineage se publica como `LINEAGE_NOT_PROVIDED`, no como `None`;
+- lineage invalido recibido por `daily_motor` bloquea candidato con `WAIT_LINEAGE_VALIDATION`;
+- no quedan `type: ignore` ni `Optional[...]` en la ruta nueva.
+
+Resultados:
+
+- `tests/test_daily_motor.py tests/test_lineage_hierarchy.py`: `13 passed`;
+- grupo lineage/causalidad: `53 passed`;
+- suite completa: `865 passed, 8 warnings`;
+- `graphify update .`: PASS.
 
 ## Fuera de alcance
 

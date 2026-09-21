@@ -70,7 +70,8 @@ El snapshot operativo debe conservar:
 schema_version, symbol, source=MT5_LOCAL, decision_time,
 asof_times_by_tf, source_files, source_hashes, worktree/commit,
 context_state, object_market_state, canonical_zones, sequence,
-wyckoff, lineage_refs, status, policy=OBSERVE_ONLY_NO_ORDER
+wyckoff, lineage_refs, lineage, lineage_validated, candidate_status,
+status, policy=OBSERVE_ONLY_NO_ORDER
 ```
 
 La salida de esta versión es descriptiva. No contiene orden, fill, broker,
@@ -108,6 +109,8 @@ calcula entrada, SL, TP, pips ni beneficio hipotético.
 2. Frescura de todos los TF requeridos y exclusión de vela abierta.
 3. Snapshot serializable con hashes, commit, configuración y timestamps.
 4. Autoridad TF y lineage conservados.
+4b. Si se entrega `HierarchicalLineage`, debe publicarse su resumen y bloquear
+    el candidato con `WAIT_LINEAGE_VALIDATION` cuando no sea valido.
 5. Inmutabilidad de entradas y política `OBSERVE_ONLY_NO_ORDER`.
 6. FULL/PREFIX causal para varios `decision_time` sobre fixtures sintéticos.
 7. Determinismo: mismo input/config/commit produce el mismo contenido lógico.

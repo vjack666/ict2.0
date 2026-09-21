@@ -5,8 +5,8 @@ MetaTrader5 esta instalado) y regenera los charts TradingView-style en
 reports/charts/. Lectura SOLAMENTE: no calcula entry/SL/TP ni ordenes.
 
 Uso:
-  .venv/Scripts/python scripts/daily/morning_read.py --symbols EURUSD --tfs "D1 H4 H1 M15"
-  .venv/Scripts/python scripts/daily/morning_read.py --symbols EURUSD --tfs "D1 H4 H1 M15" --no-mt5
+  .venv/Scripts/python scripts/daily/morning_read.py --symbols EURUSD --tfs "D1 H4 H1 M15 M5 M1"
+  .venv/Scripts/python scripts/daily/morning_read.py --symbols EURUSD --tfs "D1 H4 H1 M15 M5 M1" --no-mt5
 """
 from __future__ import annotations
 
@@ -63,7 +63,7 @@ def gen_charts(symbols, tfs):
 def main() -> int:
     ap = argparse.ArgumentParser(description="Lectura visual matutina EURUSD (read-only)")
     ap.add_argument("--symbols", nargs="*", default=["EURUSD"])
-    ap.add_argument("--tfs", default="D1 H4 H1 M15")
+    ap.add_argument("--tfs", default="D1 H4 H1 M15 M5 M1")
     ap.add_argument("--no-mt5", action="store_true", help="Omitir refresh MT5; usar datos locales.")
     args = ap.parse_args()
 

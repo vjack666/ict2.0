@@ -158,6 +158,8 @@ def test_operational_snapshot_installs_valid_six_tf_lineage_gate():
     )
     assert result["status"] == "READY"
     assert result["lineage_gate"]["valid"] is True
+    assert result["lineage_persistence"]["valid"] is True
+    assert result["lineage_persistence"]["persisted_signature"] == result["lineage_persistence"]["derived_signature"]
     six = result["lineage_gate"]["six_tf_context"]
     assert six["valid"] is True
     assert six["required_chain"] == ["D1", "H4", "H1", "M15", "M5", "M1"]

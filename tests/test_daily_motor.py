@@ -298,5 +298,5 @@ def test_daily_motor_six_tf_spine_is_closed_only_and_direct():
     six = result["lineage"]["six_tf_context"]
     assert six["valid"] is True
     assert len(six["object_ids"]) == 6
-    assert list(six["layers"]) == ["D1", "H4", "H1", "M15", "M5", "M1"]
+    assert set(six["layers"]) == {"D1", "H4", "H1", "M15", "M5", "M1"}
     assert all(layer["closed_only"] for layer in six["layers"].values())

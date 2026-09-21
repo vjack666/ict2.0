@@ -554,6 +554,114 @@ def validate_six_tf_lineage(
     )
 
 
+def validate_six_tf_persistence_consistency(
+    persisted_objects: Mapping[str, Any] | Sequence[Any] | Iterable[Any],
+    frames: Mapping[str, Any],
+    decision_time: object,
+    *,
+    symbol: str = "",
+    required_chain: Sequence[str] = SIX_TF_CHAIN,
+) -> dict[str, Any]:
+    """Contrasta la espina 6-TF persistida con la derivada de barras cerradas.
+
+    La validación global del registro completo sigue siendo responsabilidad de
+    validate_hierarchical_lineage. Aquí se aíslan únicamente los anchors
+    lineage_layer_anchor para comprobar que MarketState no publique una
+    espina vieja, alterada o incompleta respecto de los feeds en T.
+    """
+    raw_values = (
+        list(persisted_objects.values())
+        if isinstance(persisted_objects, Mapping)
+        else list(persisted_objects or ())
+    )
+    anchors: list[MarketObject] = []
+    for raw in raw_values:
+        obj = _coerce_market_object(raw)
+        if obj is not None and bool((obj.meta or {}).get("lineage_layer_anchor")):
+            anchors.append(obj)
+
+    inferred_symbol = str(symbol or "").strip()
+    if not inferred_symbol:
+        inferred_symbol = next(
+            (str(obj.symbol) for obj in anchors if str(obj.symbol or "").strip()),
+            "",
+        )
+
+    persisted = validate_six_tf_lineage(
+        anchors,
+        decision_time=decision_time,
+        required_chain=required_chain,
+        # Anchor.related_objects may point to canonical event objects outside
+        # this isolated subset. Those refs are checked by the global registry.
+        require_related=False,
+    )
+    expected_objects, expected_layers = build_six_tf_lineage_spine(
+        frames,
+        decision_time,
+        symbol=inferred_symbol,
+        required_chain=required_chain,
+    )
+    expected = validate_six_tf_lineage(
+        expected_objects,
+        decision_time=decision_time,
+        required_chain=required_chain,
+        require_related=False,
+    )
+
+    def signature(
+        objects: Sequence[MarketObject],
+        validation: SixTFLineageValidationResult,
+    ) -> list[dict[str, Any]]:
+        by_id = {str(obj.id): obj for obj in objects}
+        rows: list[dict[str, Any]] = []
+        for oid in validation.object_ids:
+            obj = by_id.get(str(oid))
+            if obj is None:
+                continue
+            meta = obj.meta or {}
+            rows.append({
+                "id": str(obj.id),
+                "tf": str(obj.origin_tf).upper(),
+                "parent_id": str(obj.parent_object or ""),
+                "bar_index": obj.bar_index,
+                "tradable_time": str(pd.to_datetime(_object_time(obj), utc=True, errors="coerce")),
+                "zone_low": obj.zone_low,
+                "zone_high": obj.zone_high,
+                "symbol": str(obj.symbol or "").upper(),
+                "source_open_time": str(meta.get("source_open_time") or ""),
+                "source_close_time": str(meta.get("source_close_time") or ""),
+            })
+        return rows
+
+    persisted_signature = signature(anchors, persisted)
+    expected_signature = signature(expected_objects, expected)
+    errors: list[str] = []
+    if not anchors:
+        errors.append("espina 6-TF persistida ausente")
+    if not persisted.valid:
+        errors.extend(f"persisted:{item}" for item in persisted.errors)
+    if not expected.valid:
+        errors.extend(f"derived:{item}" for item in expected.errors)
+    exact_match = bool(
+        persisted.valid
+        and expected.valid
+        and persisted_signature == expected_signature
+    )
+    if persisted.valid and expected.valid and not exact_match:
+        errors.append("espina 6-TF persistida no coincide con barras cerradas en decision_time")
+
+    return {
+        "valid": bool(exact_match and not errors),
+        "status": "PASS" if exact_match and not errors else "FAIL",
+        "errors": errors,
+        "persisted": persisted.to_dict(),
+        "derived": expected.to_dict(),
+        "persisted_signature": persisted_signature,
+        "derived_signature": expected_signature,
+        "derived_layers": expected_layers,
+    }
+
+
 __all__ = [
     "CausalLink",
     "LineageValidationResult",
@@ -564,5 +672,6 @@ __all__ = [
     "trace_setup_lineage",
     "validate_hierarchical_lineage",
     "validate_six_tf_lineage",
+    "validate_six_tf_persistence_consistency",
     "validate_links",
 ]

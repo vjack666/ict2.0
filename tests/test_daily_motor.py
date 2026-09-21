@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 from engine.daily_motor import DailyMotorConfig, build_daily_motor_snapshot
+from engine.lineage_hierarchy import HierarchicalLineage, LineageStatus
 from engine.market_object import MarketObject, ObjectState, ObjectType
 from engine.mtf_navigation import MTFNavigator, NavigatorConfig
 
@@ -73,6 +74,8 @@ def test_daily_motor_is_observe_only_and_reports_ltf():
     assert result["ltf"]["retest_state"] == "OBSERVED"
     assert result["sequence"] == {"available": True, "refs": ["SEQ_H1_1"], "depth": 7}
     assert "POI_H1_1" in result["lineage_refs"]
+    assert result["lineage"]["status"] == "LINEAGE_NOT_PROVIDED"
+    assert result["lineage_validated"] is False
 
 
 def test_daily_motor_does_not_promote_legacy_dataframe_zone_flags():
@@ -178,6 +181,23 @@ def test_daily_motor_retest_requires_canonical_touch_after_tradable():
     assert result["ltf"]["zone_present"] is True
     assert result["ltf"]["retest_observed"] is False
     assert result["status"] == "WAIT_RETEST"
+
+
+def test_daily_motor_invalid_supplied_lineage_blocks_observable_candidate():
+    result = build_daily_motor_snapshot(
+        _frames(),
+        decision_time=pd.Timestamp("2020-01-02", tz="UTC"),
+        config=DailyMotorConfig(require_pd=False),
+        canonical_zones={"M15": [_canonical_zone()]},
+        context_snapshot={"direction_hint": "BULLISH"},
+        lineage=HierarchicalLineage(status=LineageStatus.INVALID, breaks=["missing_parent"]),
+    )
+
+    assert result["lineage"]["available"] is True
+    assert result["lineage"]["status"] == "LINEAGE_INVALID"
+    assert result["lineage_validated"] is False
+    assert result["status"] == "WAIT_LINEAGE_VALIDATION"
+    assert result["candidate_status"] == "WAIT_LINEAGE_VALIDATION"
 
 
 def test_daily_motor_uses_authoritative_context_state_and_keeps_navigation_trace():

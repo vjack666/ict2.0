@@ -14,6 +14,7 @@ import pandas as pd
 
 from engine.market_object import MarketObject, ObjectState, ObjectType
 from engine.plan import build_context_stack, build_event_sequence, ltf_structure_at, top_down_allows_trade
+from engine.lineage_hierarchy import HierarchicalLineage, lineage_result_to_snapshot_summary
 
 
 _TERMINAL_ZONE_STATES = {
@@ -352,6 +353,29 @@ def _wyckoff_payload(wyckoff_snapshot: Any) -> dict[str, Any]:
     }
 
 
+def _lineage_payload(lineage: HierarchicalLineage | None) -> dict[str, Any]:
+    if lineage is None:
+        return {
+            "available": False,
+            "status": "LINEAGE_NOT_PROVIDED",
+            "lineage_validated": False,
+            "roots": [],
+            "leaves": [],
+            "depth": 0,
+            "breaks": ["lineage_not_provided"],
+            "orphan_ids": [],
+            "cycle_ids": [],
+            "future_links": [],
+            "unresolved_ids": [],
+            "temporal_violations": [],
+            "relation_counts": {},
+            "provenance_by_tf": {},
+            "tfs_present": [],
+            "six_tfs_complete": False,
+        }
+    return {"available": True, **lineage_result_to_snapshot_summary(lineage)}
+
+
 def build_daily_motor_snapshot(
     frames: Mapping[str, pd.DataFrame],
     decision_time: Any = None,
@@ -364,6 +388,7 @@ def build_daily_motor_snapshot(
     context_state: Any = None,
     wyckoff_snapshot: Any = None,
     event_sequence: Mapping[str, Any] | None = None,
+    lineage: HierarchicalLineage | None = None,
 ) -> dict[str, Any]:
     """Build a closed-only, canonical daily context + LTF snapshot.
 
@@ -377,6 +402,7 @@ def build_daily_motor_snapshot(
     if decision_time is None:
         decision_time = _asof_time(frames, config.exec_tf)
     tt = _timestamp(decision_time)
+    lineage_summary = _lineage_payload(lineage)
     empty = {
         "policy": "OBSERVE_ONLY_NO_ORDER",
         "profile_id": config.profile_id,
@@ -393,6 +419,9 @@ def build_daily_motor_snapshot(
         "sequence": _sequence_payload(sequence_snapshot),
         "wyckoff": _wyckoff_payload(wyckoff_snapshot),
         "lineage_refs": [],
+        "lineage": lineage_summary,
+        "lineage_validated": bool(lineage_summary["lineage_validated"]),
+        "candidate_status": "NO_LTF_DATA",
         "ltf": {"tf": config.exec_tf, "available": False, "zone_refs": [], "retest_state": "NO_ZONE"},
     }
     if tt is None:
@@ -470,6 +499,8 @@ def build_daily_motor_snapshot(
         status = "WAIT_LTF_ZONE"
     elif not zone["retest_observed"]:
         status = "WAIT_RETEST"
+    elif lineage is not None and not lineage_summary["lineage_validated"]:
+        status = "WAIT_LINEAGE_VALIDATION"
     else:
         status = "OBSERVABLE_SETUP"
 
@@ -547,6 +578,9 @@ def build_daily_motor_snapshot(
         "sequence": sequence,
         "event_history": event_history,
         "lineage_refs": lineage_refs,
+        "lineage": lineage_summary,
+        "lineage_validated": bool(lineage_summary["lineage_validated"]),
+        "candidate_status": status,
         "ltf": ltf,
     }
     return _safe_value(snapshot)

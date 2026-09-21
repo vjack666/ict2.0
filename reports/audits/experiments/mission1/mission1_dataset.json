@@ -1,0 +1,3680 @@
+{
+  "aggregates": {
+    "design": 36,
+    "holdout": 12,
+    "labels": {
+      "continuation": 20,
+      "failure": 20,
+      "reversal": 20
+    },
+    "rows": 60,
+    "validation": 12
+  },
+  "can_trade": false,
+  "checksum": "e16ff1399d31fab83f5d1eda880fb3a29ebc55c566328dfdc1f9b259bf8d394e",
+  "phase": "F4_AI_CAUSAL_DATASET",
+  "rows": [
+    {
+      "can_trade": false,
+      "episode_id": "EP_1c61d383a088b8537dc6f28c",
+      "event_time": "2026-01-05T12:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_000_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_000_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_000_H4_POI"
+          ],
+          "M1": [
+            "M1_000_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_000_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_000_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T18:00:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_53e32b65df99e541210522f7",
+      "event_time": "2026-01-05T12:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_001_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_001_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_001_H4_POI"
+          ],
+          "M1": [
+            "M1_001_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_001_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_001_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T18:15:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_1ec1198bbba44e51f12db681",
+      "event_time": "2026-01-05T12:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_002_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_002_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_002_H4_POI"
+          ],
+          "M1": [
+            "M1_002_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_002_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_002_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T18:30:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_83f31693ce5d058c0646f150",
+      "event_time": "2026-01-05T12:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_003_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_003_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_003_H4_POI"
+          ],
+          "M1": [
+            "M1_003_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_003_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_003_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T18:45:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_bb3b264ca42c4f3965cf5ed7",
+      "event_time": "2026-01-05T13:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_004_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_004_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_004_H4_POI"
+          ],
+          "M1": [
+            "M1_004_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_004_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_004_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T19:00:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_fecf7cda19461db3051ee61c",
+      "event_time": "2026-01-05T13:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_005_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_005_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_005_H4_POI"
+          ],
+          "M1": [
+            "M1_005_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_005_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_005_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T19:15:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_8b41b86faf7ca65519e5f89b",
+      "event_time": "2026-01-05T13:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_006_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_006_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_006_H4_POI"
+          ],
+          "M1": [
+            "M1_006_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_006_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_006_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T19:30:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_2eb27baa77b38011efe8f6f1",
+      "event_time": "2026-01-05T13:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_007_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_007_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_007_H4_POI"
+          ],
+          "M1": [
+            "M1_007_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_007_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_007_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T19:45:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_d7ff4f3d7336d81d87b318ce",
+      "event_time": "2026-01-05T14:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_008_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_008_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_008_H4_POI"
+          ],
+          "M1": [
+            "M1_008_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_008_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_008_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T20:00:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_8f2da37646dbd75b00a6eaf5",
+      "event_time": "2026-01-05T14:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_009_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_009_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_009_H4_POI"
+          ],
+          "M1": [
+            "M1_009_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_009_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_009_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T20:15:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_c5ea54af5d237caef7bbe23a",
+      "event_time": "2026-01-05T14:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_010_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_010_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_010_H4_POI"
+          ],
+          "M1": [
+            "M1_010_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_010_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_010_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T20:30:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_7ed8574ab7034c49c3be3289",
+      "event_time": "2026-01-05T14:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_011_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_011_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_011_H4_POI"
+          ],
+          "M1": [
+            "M1_011_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_011_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_011_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T20:45:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_bbc81be66a9834e1fd10d22f",
+      "event_time": "2026-01-05T15:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_012_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_012_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_012_H4_POI"
+          ],
+          "M1": [
+            "M1_012_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_012_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_012_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T21:00:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_6a5522e996d2943daa528543",
+      "event_time": "2026-01-05T15:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_013_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_013_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_013_H4_POI"
+          ],
+          "M1": [
+            "M1_013_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_013_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_013_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T21:15:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_a2efab36676b72839e683bc3",
+      "event_time": "2026-01-05T15:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_014_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_014_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_014_H4_POI"
+          ],
+          "M1": [
+            "M1_014_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_014_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_014_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T21:30:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_4788130fcd77e0b89c7b5db6",
+      "event_time": "2026-01-05T15:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_015_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_015_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_015_H4_POI"
+          ],
+          "M1": [
+            "M1_015_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_015_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_015_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T21:45:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5389de1c2e6696cf0da578fa",
+      "event_time": "2026-01-05T16:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_016_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_016_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_016_H4_POI"
+          ],
+          "M1": [
+            "M1_016_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_016_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_016_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T22:00:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_b96d3b4e680d809b88db84d2",
+      "event_time": "2026-01-05T16:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_017_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_017_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_017_H4_POI"
+          ],
+          "M1": [
+            "M1_017_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_017_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_017_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T22:15:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_68314c10fa74c33167727711",
+      "event_time": "2026-01-05T16:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_018_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_018_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_018_H4_POI"
+          ],
+          "M1": [
+            "M1_018_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_018_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_018_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T22:30:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_3e42d3b6569a699eb9c386c0",
+      "event_time": "2026-01-05T16:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_019_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_019_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_019_H4_POI"
+          ],
+          "M1": [
+            "M1_019_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_019_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_019_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T22:45:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_eef803b5d4308cfe75ae236d",
+      "event_time": "2026-01-05T17:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_020_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_020_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_020_H4_POI"
+          ],
+          "M1": [
+            "M1_020_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_020_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_020_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T23:00:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_9f6d6110c7f6e2bf6e2ae71f",
+      "event_time": "2026-01-05T17:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_021_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_021_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_021_H4_POI"
+          ],
+          "M1": [
+            "M1_021_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_021_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_021_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T23:15:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_d996515fc71c0976ae5ca0dc",
+      "event_time": "2026-01-05T17:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_022_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_022_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_022_H4_POI"
+          ],
+          "M1": [
+            "M1_022_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_022_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_022_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-05T23:30:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_efbe93e86512cacbab5e0371",
+      "event_time": "2026-01-05T17:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_023_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_023_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_023_H4_POI"
+          ],
+          "M1": [
+            "M1_023_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_023_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_023_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-05T23:45:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_802366b9c284cac2890d4178",
+      "event_time": "2026-01-05T18:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_024_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_024_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_024_H4_POI"
+          ],
+          "M1": [
+            "M1_024_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_024_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_024_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T00:00:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_d56dbec2e26a9a69b2c0486a",
+      "event_time": "2026-01-05T18:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_025_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_025_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_025_H4_POI"
+          ],
+          "M1": [
+            "M1_025_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_025_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_025_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T00:15:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_7105ef3adf04e954a79d56f9",
+      "event_time": "2026-01-05T18:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_026_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_026_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_026_H4_POI"
+          ],
+          "M1": [
+            "M1_026_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_026_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_026_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T00:30:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_692128b7971be6829c9ec13b",
+      "event_time": "2026-01-05T18:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_027_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_027_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_027_H4_POI"
+          ],
+          "M1": [
+            "M1_027_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_027_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_027_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T00:45:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5c93d69377e24b695bdd17e4",
+      "event_time": "2026-01-05T19:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_028_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_028_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_028_H4_POI"
+          ],
+          "M1": [
+            "M1_028_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_028_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_028_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T01:00:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_98f1d3763aa70bc64c52eed4",
+      "event_time": "2026-01-05T19:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_029_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_029_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_029_H4_POI"
+          ],
+          "M1": [
+            "M1_029_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_029_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_029_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T01:15:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_08ea70a11d9ecfd350765f15",
+      "event_time": "2026-01-05T19:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_030_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_030_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_030_H4_POI"
+          ],
+          "M1": [
+            "M1_030_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_030_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_030_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T01:30:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_016ec603253aa4f6149baf85",
+      "event_time": "2026-01-05T19:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_031_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_031_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_031_H4_POI"
+          ],
+          "M1": [
+            "M1_031_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_031_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_031_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T01:45:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_dc25840908a389779a1cdf56",
+      "event_time": "2026-01-05T20:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_032_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_032_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_032_H4_POI"
+          ],
+          "M1": [
+            "M1_032_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_032_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_032_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T02:00:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_d04d7df4a223df0f8286d161",
+      "event_time": "2026-01-05T20:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_033_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_033_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_033_H4_POI"
+          ],
+          "M1": [
+            "M1_033_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_033_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_033_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T02:15:00+00:00",
+      "label_end_6": "continuation",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_42a7007bb9e3d4c0acbaddc5",
+      "event_time": "2026-01-05T20:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_034_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_034_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_034_H4_POI"
+          ],
+          "M1": [
+            "M1_034_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_034_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_034_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T02:30:00+00:00",
+      "label_end_6": "reversal",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_552761d229c5c1023c06914b",
+      "event_time": "2026-01-05T20:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_035_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_035_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_035_H4_POI"
+          ],
+          "M1": [
+            "M1_035_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_035_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_035_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T02:45:00+00:00",
+      "label_end_6": "failure",
+      "split": "DESIGN"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_1f43e8210e5929cb76333796",
+      "event_time": "2026-01-05T21:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_036_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_036_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_036_H4_POI"
+          ],
+          "M1": [
+            "M1_036_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_036_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_036_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T03:00:00+00:00",
+      "label_end_6": "continuation",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_4d7801daf64a574dc1451aef",
+      "event_time": "2026-01-05T21:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_037_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_037_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_037_H4_POI"
+          ],
+          "M1": [
+            "M1_037_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_037_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_037_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T03:15:00+00:00",
+      "label_end_6": "reversal",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_2b1b6607910ecf94d5f5146d",
+      "event_time": "2026-01-05T21:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_038_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_038_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_038_H4_POI"
+          ],
+          "M1": [
+            "M1_038_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_038_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_038_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T03:30:00+00:00",
+      "label_end_6": "failure",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_32ca0cb472bec45a7f5960b4",
+      "event_time": "2026-01-05T21:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_039_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_039_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_039_H4_POI"
+          ],
+          "M1": [
+            "M1_039_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_039_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_039_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T03:45:00+00:00",
+      "label_end_6": "continuation",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_c54672cd728e582e54c6c12a",
+      "event_time": "2026-01-05T22:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_040_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_040_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_040_H4_POI"
+          ],
+          "M1": [
+            "M1_040_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_040_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_040_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T04:00:00+00:00",
+      "label_end_6": "reversal",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5383f6b4f5502afcb534c3c8",
+      "event_time": "2026-01-05T22:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_041_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_041_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_041_H4_POI"
+          ],
+          "M1": [
+            "M1_041_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_041_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_041_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T04:15:00+00:00",
+      "label_end_6": "failure",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_59c8efb697a69aec9ba72270",
+      "event_time": "2026-01-05T22:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_042_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_042_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_042_H4_POI"
+          ],
+          "M1": [
+            "M1_042_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_042_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_042_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T04:30:00+00:00",
+      "label_end_6": "continuation",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_9070ab4fcd2ab1eee110e115",
+      "event_time": "2026-01-05T22:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_043_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_043_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_043_H4_POI"
+          ],
+          "M1": [
+            "M1_043_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_043_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_043_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T04:45:00+00:00",
+      "label_end_6": "reversal",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_18735973094d768b844c3131",
+      "event_time": "2026-01-05T23:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_044_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_044_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_044_H4_POI"
+          ],
+          "M1": [
+            "M1_044_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_044_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_044_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T05:00:00+00:00",
+      "label_end_6": "failure",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5619320f6b7f6d8270206bd6",
+      "event_time": "2026-01-05T23:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_045_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_045_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_045_H4_POI"
+          ],
+          "M1": [
+            "M1_045_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_045_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_045_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T05:15:00+00:00",
+      "label_end_6": "continuation",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5a7ee5b17983379d6ae3346a",
+      "event_time": "2026-01-05T23:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_046_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_046_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_046_H4_POI"
+          ],
+          "M1": [
+            "M1_046_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_046_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_046_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T05:30:00+00:00",
+      "label_end_6": "reversal",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_39049baa3ac96f9b604bf5e5",
+      "event_time": "2026-01-05T23:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_047_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_047_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_047_H4_POI"
+          ],
+          "M1": [
+            "M1_047_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_047_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_047_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T05:45:00+00:00",
+      "label_end_6": "failure",
+      "split": "VALIDATION"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_56d48063261c6a528ed24b28",
+      "event_time": "2026-01-06T00:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_048_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_048_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_048_H4_POI"
+          ],
+          "M1": [
+            "M1_048_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_048_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_048_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T06:00:00+00:00",
+      "label_end_6": "continuation",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_b8afd66463e7159f7a5cec8a",
+      "event_time": "2026-01-06T00:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_049_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_049_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_049_H4_POI"
+          ],
+          "M1": [
+            "M1_049_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_049_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_049_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T06:15:00+00:00",
+      "label_end_6": "reversal",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5236a850a56c930b0ad8554f",
+      "event_time": "2026-01-06T00:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_050_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_050_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_050_H4_POI"
+          ],
+          "M1": [
+            "M1_050_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_050_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_050_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T06:30:00+00:00",
+      "label_end_6": "failure",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_9ab841efde01059ee481ea06",
+      "event_time": "2026-01-06T00:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_051_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_051_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_051_H4_POI"
+          ],
+          "M1": [
+            "M1_051_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_051_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_051_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T06:45:00+00:00",
+      "label_end_6": "continuation",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5d03bfdbb038c9fa273c7597",
+      "event_time": "2026-01-06T01:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_052_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_052_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_052_H4_POI"
+          ],
+          "M1": [
+            "M1_052_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_052_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_052_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T07:00:00+00:00",
+      "label_end_6": "reversal",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_5a09632bb12f02ded86f44df",
+      "event_time": "2026-01-06T01:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_053_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_053_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_053_H4_POI"
+          ],
+          "M1": [
+            "M1_053_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_053_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_053_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T07:15:00+00:00",
+      "label_end_6": "failure",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_e86cba201639c69ccbf3f15e",
+      "event_time": "2026-01-06T01:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_054_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_054_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_054_H4_POI"
+          ],
+          "M1": [
+            "M1_054_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_054_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_054_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T07:30:00+00:00",
+      "label_end_6": "continuation",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_a7181af6e505fc292b2256de",
+      "event_time": "2026-01-06T01:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_055_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_055_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_055_H4_POI"
+          ],
+          "M1": [
+            "M1_055_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_055_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_055_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T07:45:00+00:00",
+      "label_end_6": "reversal",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_41657fae406c745f2d564978",
+      "event_time": "2026-01-06T02:00:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_056_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_056_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_056_H4_POI"
+          ],
+          "M1": [
+            "M1_056_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_056_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_056_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T08:00:00+00:00",
+      "label_end_6": "failure",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_6f5086e72ab428f09eb30218",
+      "event_time": "2026-01-06T02:15:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_057_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_057_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_057_H4_POI"
+          ],
+          "M1": [
+            "M1_057_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_057_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_057_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T08:15:00+00:00",
+      "label_end_6": "continuation",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_b0d9689f5c53d0b8f29a7319",
+      "event_time": "2026-01-06T02:30:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_058_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_058_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_058_H4_POI"
+          ],
+          "M1": [
+            "M1_058_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_058_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_058_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": 1
+        }
+      },
+      "label_available_time": "2026-01-06T08:30:00+00:00",
+      "label_end_6": "reversal",
+      "split": "HOLDOUT"
+    },
+    {
+      "can_trade": false,
+      "episode_id": "EP_6389be1539d464b8d10da16a",
+      "event_time": "2026-01-06T02:45:00+00:00",
+      "features_at_t": {
+        "M1": {
+          "available": true
+        },
+        "M5": {
+          "available": true
+        },
+        "context_state": {
+          "lineage_status": "LINEAGE_VALID",
+          "six_tfs_complete": true
+        },
+        "lifecycle": {
+          "status": "ACCEPTED"
+        },
+        "lineage": {
+          "D1": [
+            "M1_059_D1_CONTEXT"
+          ],
+          "H1": [
+            "M1_059_H1_CONTEXT"
+          ],
+          "H4": [
+            "M1_059_H4_POI"
+          ],
+          "M1": [
+            "M1_059_M1_TRIGGER"
+          ],
+          "M15": [
+            "M1_059_M15_REFINEMENT"
+          ],
+          "M5": [
+            "M1_059_M5_CONFIRMATION"
+          ]
+        },
+        "permissions": {
+          "can_trade": false,
+          "shadow_mode": true
+        },
+        "reason_codes": [
+          "ACCEPTED"
+        ],
+        "schema_group": "engine_v2",
+        "zones": {
+          "component_tfs": {
+            "confirmation": "M5",
+            "context_htf": "D1",
+            "poi": "H4",
+            "refinement": "M15",
+            "trigger": "M1"
+          },
+          "direction": -1
+        }
+      },
+      "label_available_time": "2026-01-06T08:45:00+00:00",
+      "label_end_6": "failure",
+      "split": "HOLDOUT"
+    }
+  ],
+  "schema_version": "1.0",
+  "status": "PASS"
+}

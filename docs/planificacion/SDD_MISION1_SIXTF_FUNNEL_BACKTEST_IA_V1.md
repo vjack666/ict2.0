@@ -1,7 +1,7 @@
 # SDD — Mision 1: puente seis-TF hacia Funnel, Backtest e IA v1
 
 **Fecha:** 2026-09-21  
-**Estado:** `MISSION1_PHASE0_PHASE1_COMPLETED_DOCUMENTAL / READY_FOR_IMPLEMENTATION_AUDIT`  
+**Estado:** `MISSION1_F2_F5_COMPLETED_SHADOW_DIAGNOSTIC`
 **Modo:** `LOCAL_ONLY`  
 **Autoridad previa:** PR #16 `MERGED` en `origin/hermes/evidencia-ict-replay-pass-20260920` (`d4fdf68def1915ce29f0e3abe31e33f19eeb92ea`)  
 **No autoriza:** trading, MT5 live, ordenes, promocion, cambio de dataset, fabricacion de M1 ni entrenamiento productivo.
@@ -119,7 +119,7 @@ entrenar. Esta es la fase que queda cerrada al 100% en esta mision.
 
 ### F2 — Implementacion del productor seis-TF hacia Episodes/Funnel
 
-**Estado:** `READY / NOT_RUN`
+**Estado:** `PASS`
 
 Debe producir, para cada `decision_time`, candidatos con:
 
@@ -130,29 +130,57 @@ Debe producir, para cada `decision_time`, candidatos con:
 - aceptados y rechazados sin ocultar ceros;
 - FULL/PREFIX literal contra columnas causales.
 
+Evidencia local:
+
+- `engine/mission1_six_tf_pipeline.py`
+- `scripts/audit/run_mission1_sixtf_pipeline.py`
+- `tests/test_mission1_six_tf_pipeline.py`
+- `reports/audits/experiments/mission1/mission1_episodes.json`
+
 ### F3 — Backtest funnel economico aislado
 
-**Estado:** `WAITING_ON_F2`
+**Estado:** `PASS_SHADOW_DIAGNOSTIC`
 
 No puede importar `engine/` de forma inversa ni mutar el motor diario. Debe
 agregar costes, fill, spread, slippage, SL/TP, sesiones y PnL como consumidor
 aislado. Un backtest verde no autoriza trading.
 
+Evidencia local:
+
+- `reports/audits/experiments/mission1/mission1_backtest.json`
+- `can_trade=false`
+- `economic_edge_claimed=false`
+
 ### F4 — Dataset causal para IA
 
-**Estado:** `WAITING_ON_F3`
+**Estado:** `PASS_SHADOW_DIAGNOSTIC`
 
 El dataset se materializa solo desde episodios causales. Labels futuros deben
 estar separados de features. Splits temporales: DESIGN/TRAIN/VALIDATION/TEST
 sin mirar TEST para decisiones de modelado.
 
+Evidencia local:
+
+- `reports/audits/experiments/mission1/mission1_dataset.json`
+- 60 filas causales: 36 DESIGN, 12 VALIDATION, 12 HOLDOUT
+- Labels futuros separados de `features_at_t`
+
 ### F5 — Entrenamiento IA shadow
 
-**Estado:** `WAITING_ON_F4`
+**Estado:** `PASS_BASELINE_SHADOW_DIAGNOSTIC`
 
 Entrenamiento permitido solo como `shadow_mode=true`, `can_trade=false`, con
 baseline, calibracion, abstencion, seeds, reload y evaluacion OOS. No fusiona
 con el motor sin nueva certificacion.
+
+Evidencia local:
+
+- `reports/audits/experiments/mission1/mission1_training.json`
+- baseline determinista `deterministic_majority_baseline`
+- `fit_executed=true`
+- `production_model_created=false`
+- `holdout_accuracy=0.3333333333333333`
+- Este resultado cierra el cableado shadow, no demuestra edge.
 
 ## 7. Gates obligatorios para pasar de F1 a F2
 
@@ -178,11 +206,11 @@ con el motor sin nueva certificacion.
 5. Cualquier entrenamiento sobre muestras anteriores debe tratarse como
    historico/diagnostico hasta que salga de episodios seis-TF causales.
 
-## 9. Dictamen de cierre de esta fase
+## 9. Dictamen de cierre
 
-`MISION1_PHASE1 = COMPLETED_DOCUMENTAL`.
+`MISION1_F2_F5 = COMPLETED_SHADOW_DIAGNOSTIC`.
 
 La base si existia, pero no estaba conectada como mision post-PR16. Queda
-formalizado el puente y queda bloqueado cualquier salto directo a backtest o IA
-sin producir primero episodios seis-TF causales con lineage validado.
-
+implementado el puente local deterministicamente: episodios seis-TF, backtest
+economico aislado, dataset causal y entrenamiento baseline shadow. El resultado
+no declara edge, no crea modelo productivo y no autoriza trading.

@@ -1,0 +1,94 @@
+{
+  "can_trade": false,
+  "checksum": "c77e9cb8c11edc3a288e70f0fe2741c4ad40590de53a4d53e864ae7ee20f9c07",
+  "fit_executed": true,
+  "holdout_predictions": [
+    {
+      "actual": "continuation",
+      "episode_id": "EP_56d48063261c6a528ed24b28",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "reversal",
+      "episode_id": "EP_b8afd66463e7159f7a5cec8a",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "failure",
+      "episode_id": "EP_5236a850a56c930b0ad8554f",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "continuation",
+      "episode_id": "EP_9ab841efde01059ee481ea06",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "reversal",
+      "episode_id": "EP_5d03bfdbb038c9fa273c7597",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "failure",
+      "episode_id": "EP_5a09632bb12f02ded86f44df",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "continuation",
+      "episode_id": "EP_e86cba201639c69ccbf3f15e",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "reversal",
+      "episode_id": "EP_a7181af6e505fc292b2256de",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "failure",
+      "episode_id": "EP_41657fae406c745f2d564978",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "continuation",
+      "episode_id": "EP_6f5086e72ab428f09eb30218",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "reversal",
+      "episode_id": "EP_b0d9689f5c53d0b8f29a7319",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    },
+    {
+      "actual": "failure",
+      "episode_id": "EP_6389be1539d464b8d10da16a",
+      "predicted": "continuation",
+      "shadow_confidence": 0.3333333333333333
+    }
+  ],
+  "metrics": {
+    "holdout_accuracy": 0.3333333333333333,
+    "holdout_rows": 12
+  },
+  "mode": "SHADOW_DIAGNOSTIC",
+  "model_kind": "deterministic_majority_baseline",
+  "phase": "F5_AI_SHADOW_TRAINING",
+  "production_model_created": false,
+  "schema_version": "1.0",
+  "status": "PASS",
+  "train_class_counts": {
+    "continuation": 12,
+    "failure": 12,
+    "reversal": 12
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "artifact_paths": {
+    "backtest": "reports/audits/experiments/mission1/mission1_backtest.json",
+    "dataset": "reports/audits/experiments/mission1/mission1_dataset.json",
+    "episodes": "reports/audits/experiments/mission1/mission1_episodes.json",
+    "training": "reports/audits/experiments/mission1/mission1_training.json"
+  },
+  "can_trade": false,
+  "checksums": {
+    "backtest": "bcbefd68f99b6bd4ee51efafec851ed5321c1aaee012d0ca5e663f1c46f07b63",
+    "dataset": "e16ff1399d31fab83f5d1eda880fb3a29ebc55c566328dfdc1f9b259bf8d394e",
+    "episodes": "4b99bbca9f795f6490a7e33497c27385dcda9181bbaf4d122a6d629769aaea7b",
+    "training": "c77e9cb8c11edc3a288e70f0fe2741c4ad40590de53a4d53e864ae7ee20f9c07"
+  },
+  "mission": "MISION1_SIXTF_FUNNEL_BACKTEST_IA",
+  "phases": {
+    "backtest": "PASS",
+    "dataset": "PASS",
+    "episodes": "PASS",
+    "training": "PASS"
+  },
+  "schema_version": "1.0",
+  "status": "PASS"
+}

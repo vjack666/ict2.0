@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Iterable, Mapping, Sequence
 
-from engine.market_object import MarketObject
+import pandas as pd
+
+from engine.market_object import MarketObject, ObjectState, ObjectType, Role
 
 _CHAIN_ORDER = ["LIQUIDITY", "SWEEP", "DISPLACE", "BOS", "POI", "REFINEMENT", "RETURN"]
 
@@ -348,6 +350,98 @@ def validate_hierarchical_lineage(
 
 
 SIX_TF_CHAIN: tuple[str, ...] = ("D1", "H4", "H1", "M15", "M5", "M1")
+_TF_DURATION = {
+    "D1": pd.Timedelta(days=1),
+    "H4": pd.Timedelta(hours=4),
+    "H1": pd.Timedelta(hours=1),
+    "M15": pd.Timedelta(minutes=15),
+    "M5": pd.Timedelta(minutes=5),
+    "M1": pd.Timedelta(minutes=1),
+}
+
+
+def build_six_tf_lineage_spine(
+    frames: Mapping[str, Any],
+    decision_time: object,
+    *,
+    symbol: str = "",
+    required_chain: Sequence[str] = SIX_TF_CHAIN,
+) -> tuple[list[MarketObject], dict[str, Any]]:
+    """Materializa la espina temporal cerrada usando el reloj real de cada TF."""
+    tt = pd.to_datetime(decision_time, utc=True, errors="coerce")
+    chain = tuple(str(tf).upper() for tf in required_chain)
+    if pd.isna(tt):
+        return [], {tf: {"available": False, "closed_only": False} for tf in chain}
+
+    objects: list[MarketObject] = []
+    layers: dict[str, Any] = {}
+    parent_id: str | None = None
+
+    for tf in chain:
+        frame = frames.get(tf)
+        duration = _TF_DURATION.get(tf)
+        if frame is None or getattr(frame, "empty", True) or "time" not in frame.columns or duration is None:
+            layers[tf] = {"available": False, "closed_only": False}
+            parent_id = None
+            continue
+
+        opens = pd.to_datetime(frame["time"], utc=True, errors="coerce")
+        closes = opens + duration
+        mask = opens.notna() & (closes <= tt)
+        positions = mask.to_numpy().nonzero()[0]
+        if len(positions) == 0:
+            layers[tf] = {"available": False, "closed_only": False}
+            parent_id = None
+            continue
+
+        pos = int(positions[-1])
+        open_time = opens.iloc[pos]
+        close_time = closes.iloc[pos]
+        row = frame.iloc[pos]
+        try:
+            price = float(row.get("close", 0.0))
+        except (TypeError, ValueError):
+            price = 0.0
+
+        object_id = f"LINEAGE_LAYER_{tf}_{pd.Timestamp(close_time).value}"
+        obj = MarketObject(
+            id=object_id,
+            symbol=symbol,
+            type=ObjectType.CONTRACT,
+            origin_tf=tf,
+            role=Role.CONTEXT,
+            direction=0,
+            zone_high=price,
+            zone_low=price,
+            creation_time=close_time,
+            state=ObjectState.ACTIVE,
+            parent_object=parent_id,
+            bar_index=pos,
+            bar_time=close_time,
+            candidate_bar=pos,
+            candidate_time=close_time,
+            confirmation_bar=pos,
+            confirmation_time=close_time,
+            tradable_bar=pos,
+            tradable_time=close_time,
+            meta={
+                "lineage_layer_anchor": True,
+                "source_open_time": pd.Timestamp(open_time).isoformat(),
+                "source_close_time": pd.Timestamp(close_time).isoformat(),
+            },
+        )
+        objects.append(obj)
+        parent_id = obj.id
+        layers[tf] = {
+            "available": True,
+            "closed_only": bool(close_time <= tt),
+            "object_id": obj.id,
+            "bar_index": pos,
+            "open_time": pd.Timestamp(open_time).isoformat(),
+            "close_time": pd.Timestamp(close_time).isoformat(),
+        }
+
+    return objects, layers
 
 
 @dataclass(frozen=True)
@@ -464,6 +558,7 @@ __all__ = [
     "CausalLink",
     "LineageValidationResult",
     "SIX_TF_CHAIN",
+    "build_six_tf_lineage_spine",
     "SixTFLineageValidationResult",
     "link",
     "trace_setup_lineage",

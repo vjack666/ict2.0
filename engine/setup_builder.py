@@ -21,7 +21,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional
 import uuid
 
-from engine.lineage import validate_hierarchical_lineage
+from engine.lineage import validate_hierarchical_lineage, validate_six_tf_lineage
 from engine.market_object import MarketObject, ObjectState, ObjectType, Role
 from engine.relations import relate_fvg_ob
 
@@ -441,9 +441,28 @@ def build_setups_at(
             require_related=True,
         )
         setup.meta["lineage_validation"] = lineage.to_dict()
-        if not lineage.valid:
+
+        six_tf = validate_six_tf_lineage(
+            lineage_universe,
+            decision_time=t,
+            require_related=True,
+        )
+        setup.meta["six_tf_lineage_validation"] = six_tf.to_dict()
+
+        lineage_errors = list(lineage.errors)
+        if not six_tf.valid:
+            lineage_errors.extend(
+                error for error in six_tf.errors
+                if error not in lineage_errors
+            )
+        if lineage_errors:
             setup.eligibility = SetupEligibility.BLOCKED
-            setup.reason = "LINEAGE_INVALID: " + "; ".join(lineage.errors[:3])
+            lineage_reason = "LINEAGE_INVALID: " + "; ".join(lineage_errors[:4])
+            setup.reason = (
+                f"{setup.reason} | {lineage_reason}"
+                if setup.reason
+                else lineage_reason
+            )
         setups.append(setup)
     return setups
 

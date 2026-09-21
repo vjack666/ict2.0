@@ -1,4 +1,6 @@
-from engine.lineage import CausalLink, link, validate_hierarchical_lineage, validate_links
+import json
+
+from engine.lineage import CausalLink, link, validate_hierarchical_lineage, validate_links, validate_six_tf_lineage
 from engine.market_object import MarketObject, ObjectType, Role
 
 
@@ -144,3 +146,97 @@ def test_cross_tf_future_parent_time_is_rejected_globally():
     result = validate_hierarchical_lineage([parent, child])
     assert result.valid is False
     assert any("parent_time" in item for item in result.errors)
+
+
+
+def _six_tf_chain():
+    tfs = ("D1", "H4", "H1", "M15", "M5", "M1")
+    times = (
+        "2026-08-22T00:00:00+00:00",
+        "2026-08-24T20:00:00+00:00",
+        "2026-08-24T20:00:01+00:00",
+        "2026-08-24T20:30:00+00:00",
+        "2026-08-24T20:35:00+00:00",
+        "2026-08-24T20:35:00+00:00",
+    )
+    out = []
+    parent = None
+    for idx, (tf, when) in enumerate(zip(tfs, times)):
+        item = MarketObject(
+            id=f"SPINE_{tf}",
+            symbol="EURUSD",
+            type=ObjectType.CONTRACT,
+            origin_tf=tf,
+            role=Role.CONTEXT,
+            direction=0,
+            zone_low=1.0,
+            zone_high=1.0,
+            bar_index=idx,
+            bar_time=when,
+            parent_object=parent,
+            meta={"lineage_layer_anchor": True},
+        )
+        out.append(item)
+        parent = item.id
+    return out
+
+
+def test_six_tf_direct_parent_spine_passes():
+    chain = _six_tf_chain()
+    result = validate_six_tf_lineage(
+        chain,
+        decision_time="2026-08-24T20:35:00+00:00",
+    )
+    assert result.valid is True
+    assert result.object_ids == (
+        "SPINE_D1", "SPINE_H4", "SPINE_H1",
+        "SPINE_M15", "SPINE_M5", "SPINE_M1",
+    )
+    assert result.missing_tfs == ()
+
+
+def test_six_tf_every_parent_edge_is_mandatory():
+    original = _six_tf_chain()
+    for idx in range(1, len(original)):
+        chain = [MarketObject.from_dict(item.to_dict()) for item in original]
+        chain[idx].parent_object = None
+        result = validate_six_tf_lineage(
+            chain,
+            decision_time="2026-08-24T20:35:00+00:00",
+        )
+        assert result.valid is False, f"edge into {chain[idx].origin_tf} should be mandatory"
+        assert any("no existe camino parent_object directo" in error for error in result.errors)
+
+
+def test_six_tf_missing_each_layer_fails_closed():
+    original = _six_tf_chain()
+    for tf in ("D1", "H4", "H1", "M15", "M5", "M1"):
+        chain = [item for item in original if item.origin_tf != tf]
+        result = validate_six_tf_lineage(
+            chain,
+            decision_time="2026-08-24T20:35:00+00:00",
+        )
+        assert result.valid is False
+        assert tf in result.missing_tfs
+
+
+def test_six_tf_save_load_roundtrip_preserves_exact_spine():
+    before = _six_tf_chain()
+    payload = json.loads(json.dumps([item.to_dict() for item in before]))
+    restored = [MarketObject.from_dict(item) for item in payload]
+    a = validate_six_tf_lineage(before, decision_time="2026-08-24T20:35:00+00:00")
+    b = validate_six_tf_lineage(restored, decision_time="2026-08-24T20:35:00+00:00")
+    assert a.valid is True and b.valid is True
+    assert a.object_ids == b.object_ids
+    assert a.required_chain == b.required_chain
+
+
+def test_six_tf_rejects_mixed_symbol_spine():
+    chain = _six_tf_chain()
+    chain[-1].symbol = "XAUUSD"
+    result = validate_six_tf_lineage(
+        chain,
+        decision_time="2026-08-24T20:35:00+00:00",
+    )
+    assert result.valid is False
+    assert any("mezcla símbolos" in error for error in result.errors)

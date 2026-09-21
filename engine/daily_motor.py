@@ -132,8 +132,8 @@ def _closed_bar_info(frame: pd.DataFrame | None, tf: str, decision_time: Any) ->
     mask = opens.notna() & (closes <= tt)
     if not mask.any():
         return None
-    positions = [i for i, flag in enumerate(mask.tolist()) if flag]
-    pos = positions[-1]
+    positions = mask.to_numpy().nonzero()[0]
+    pos = int(positions[-1])
     open_time = opens.iloc[pos]
     close_time = closes.iloc[pos]
     row = frame.iloc[pos]

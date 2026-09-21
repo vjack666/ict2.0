@@ -183,3 +183,30 @@ def test_operational_six_tf_lineage_is_future_invariant():
     after = build_mt5_operational_snapshot(extended, t, generator_commit="abc123")
     assert before["lineage_gate"]["six_tf_context"] == after["lineage_gate"]["six_tf_context"]
     assert before["lineage_gate"]["valid"] == after["lineage_gate"]["valid"] == True
+
+
+
+def test_six_tf_lineage_anchors_survive_market_state_save_load():
+    from engine.market_state import MarketState
+
+    frames = _frames()
+    t = pd.Timestamp("2024-01-02 07:00", tz="UTC")
+    state = build_object_market_state(frames, t, symbol="EURUSD")
+    payload = json.loads(json.dumps(state.to_dict()))
+    restored = MarketState.from_dict(payload)
+
+    before = [
+        obj for obj in state.objects_existing_at(t)
+        if bool(obj.meta.get("lineage_layer_anchor"))
+    ]
+    after = [
+        obj for obj in restored.objects_existing_at(t)
+        if bool(obj.meta.get("lineage_layer_anchor"))
+    ]
+    v_before = validate_six_tf_lineage(before, decision_time=t)
+    v_after = validate_six_tf_lineage(after, decision_time=t)
+
+    assert v_before.valid is True
+    assert v_after.valid is True
+    assert v_before.object_ids == v_after.object_ids
+    assert [obj.to_dict() for obj in before] == [obj.to_dict() for obj in after]

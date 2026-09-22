@@ -4,6 +4,7 @@ from backtest.sixtf_forensic import (
     audit_episode_sequence,
     build_ai_shadow_dataset,
     classify_session,
+    write_blackbox_jsonl,
 )
 
 
@@ -156,3 +157,61 @@ def test_ai_shadow_features_do_not_include_future_labels():
     assert dataset["rows"][0]["ai_shadow_decision"] == "ACEPTAR_ANALISIS"
     assert "net_R" not in dataset["rows"][0]["features"]
     assert "exit_status" not in dataset["rows"][0]["features"]
+
+
+def test_real_sequence_evidence_supersedes_synthetic_compression_review():
+    ts = "2022-03-15T09:30:00Z"
+    audit = audit_episode_sequence(
+        _episode(
+            {
+                "refinement": _component("M15", ts, bar=10),
+                "confirmation": _component("M5", ts, bar=11),
+                "trigger": _component("M1", ts, bar=12),
+            }
+        ),
+        {
+            "sequence_status": "PASS",
+            "timeframe": "M1",
+            "chain_id": "SEQ_M1_1",
+            "stages": ["LIQUIDITY_POOL", "SWEEP", "DISPLACEMENT", "STRUCTURE", "OB", "FVG", "RETEST"],
+            "strictly_increasing_bars": True,
+        },
+    )
+
+    assert audit["sequence_audit_status"] == "PASS"
+    assert "SYNTHETIC_STAGE_COMPRESSION" not in audit["review_flags"]
+    assert audit["sequence_evidence"]["chain_id"] == "SEQ_M1_1"
+
+
+def test_blackbox_jsonl_records_forensic_and_policy(tmp_path):
+    path = tmp_path / "blackbox.jsonl"
+    write_blackbox_jsonl(
+        path=path,
+        trades=[
+            {
+                "episode_id": "EP_FORENSIC",
+                "decision_time": "2022-03-15T13:00:00Z",
+                "exit_status": "TP",
+                "net_R": 0.77,
+                "session": "NEW_YORK",
+            }
+        ],
+        audit_rows=[
+            {
+                "episode_id": "EP_FORENSIC",
+                "sequence_audit_status": "PASS",
+                "sequence_evidence": {"chain_id": "SEQ_M1_1"},
+            }
+        ],
+        ai_rows=[
+            {
+                "features": {"episode_id": "EP_FORENSIC"},
+                "ai_shadow_decision": "ACEPTAR_ANALISIS",
+            }
+        ],
+    )
+
+    line = path.read_text(encoding="utf-8").strip()
+    assert '"kind": "SIXTF_FORENSIC_BLACKBOX_V1"' in line
+    assert '"can_trade": false' in line
+    assert '"chain_id": "SEQ_M1_1"' in line

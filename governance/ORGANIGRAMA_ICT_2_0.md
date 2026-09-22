@@ -94,9 +94,9 @@ La imagen previa marcaba el estado global como **EN DESARROLLO**, fase actual
 los cierres del 2026-09-21, el estado correcto es:
 
 ```text
-Fase actual: Mision 5 backtest forense seis-TF + IA shadow ejecutado Q1
-Progreso global estimado: ~84%
-Siguiente hito: corregir fabrica de etapas para eliminar compresion sintetica antes de IA/calibracion
+Fase actual: Mision 6 secuencia real M1 conectada al backtest + caja negra
+Progreso global estimado: ~86%
+Siguiente hito: calibrar filtro de calidad para bajar de 32-40 a 2-3 trades/semana
 ```
 
 La subida de progreso no significa edge ni operación. Significa que el cableado
@@ -133,8 +133,8 @@ aislado sobre marzo 2022 con 553 episodios. El resultado economico fue negativo
 | 5 | Secuencias ICT | Multi-vela y seis-TF Phase-1 cerrada/conectada | 🟢 | calibrar filtros/entry |
 | 6 | Lifecycle | Contratos y tests existentes; no promoción operativa | 🟡 | replay integral por TF/fuente real |
 | 7 | Funnel/Episodios | v1 implementado + backtest consumidor seis-TF PASS tecnico | 🟢 | calibrar expectancy |
-| 8 | Auditoría científica | Q1 forense ejecutado; 1440/1440 REVIEW por compresión sintética | 🟡 | corregir fábrica de etapas multi-bar |
-| 9 | IA | Shadow diagnostic; ABSTENERSE 1440/1440 por auditoría forense | 🟡 | entrenar solo tras pasar secuencia operativa |
+| 8 | Auditoría científica | Secuencia real M1 conectada; marzo forense PASS 553/553 con caja negra | 🟢 | calibrar calidad/expectancy |
+| 9 | IA | Shadow diagnostic; 184 aceptados y 369 abstenciones en marzo | 🟡 | reducir frecuencia y pérdida antes de entrenamiento |
 | 10 | Ejecución MT5 | No autorizada / `can_trade=false` | 🔴 | requiere certificación, no parte de esta misión |
 | 11 | Documentación | SDD, plan, worklog, índice y grafo actualizados | 🟢 | mantener bitácora por cada fase |
 

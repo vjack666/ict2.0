@@ -11,10 +11,14 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import date, datetime, time, timezone
+import json
+from pathlib import Path
 from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo
 
 import pandas as pd
+
+from engine.sequential_events import SeqConfig, run_sequential, summarize_chains
 
 CORE_ROLES: tuple[str, ...] = ("refinement", "confirmation", "trigger")
 LABEL_FIELDS: set[str] = {
@@ -97,7 +101,10 @@ def _component_time(component: Mapping[str, Any], key: str) -> pd.Timestamp | No
     return _utc(value)
 
 
-def audit_episode_sequence(episode: Mapping[str, Any]) -> dict[str, Any]:
+def audit_episode_sequence(
+    episode: Mapping[str, Any],
+    sequence_evidence: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     """Audit temporal evidence for one Episode.
 
     ``PASS`` means no hard defect was found.  ``REVIEW`` means evidence is
@@ -166,6 +173,19 @@ def audit_episode_sequence(episode: Mapping[str, Any]) -> dict[str, Any]:
 
     unique_reasons = sorted(set(reasons))
     unique_review = sorted(set(review))
+    sequence_evidence = dict(sequence_evidence or {})
+    real_sequence_pass = sequence_evidence.get("sequence_status") == "PASS"
+    if real_sequence_pass:
+        # Real multi-bar evidence from engine.sequential_events supersedes the
+        # synthetic timestamp compression of the six-TF connector.  Keep the
+        # compression flag as diagnostic context, but do not let it block AI
+        # shadow analysis when a strict real chain exists before decision_time.
+        unique_review = [flag for flag in unique_review if flag != "SYNTHETIC_STAGE_COMPRESSION"]
+        unique_reasons = [
+            reason
+            for reason in unique_reasons
+            if reason not in {"SAME_TIMESTAMP_STAGE", "SAME_BAR_CORE_STAGE"}
+        ]
     status = "BLOCKED" if unique_reasons else ("REVIEW" if unique_review else "PASS")
     return {
         "episode_id": episode.get("episode_id"),
@@ -173,13 +193,21 @@ def audit_episode_sequence(episode: Mapping[str, Any]) -> dict[str, Any]:
         "sequence_audit_status": status,
         "reasons": unique_reasons,
         "review_flags": unique_review,
+        "sequence_evidence": sequence_evidence,
         "role_times": role_times,
         "role_bars": role_bars,
     }
 
 
-def audit_episodes(episodes: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
-    rows = [audit_episode_sequence(episode) for episode in episodes]
+def audit_episodes(
+    episodes: Iterable[Mapping[str, Any]],
+    sequence_evidence_by_episode: Mapping[str, Mapping[str, Any]] | None = None,
+) -> dict[str, Any]:
+    evidence = sequence_evidence_by_episode or {}
+    rows = [
+        audit_episode_sequence(episode, evidence.get(str(episode.get("episode_id")), {}))
+        for episode in episodes
+    ]
     statuses = Counter(row["sequence_audit_status"] for row in rows)
     reason_counts = Counter(reason for row in rows for reason in row["reasons"])
     review_counts = Counter(flag for row in rows for flag in row["review_flags"])
@@ -192,6 +220,81 @@ def audit_episodes(episodes: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
         "reason_counts": dict(sorted(reason_counts.items())),
         "review_flag_counts": dict(sorted(review_counts.items())),
         "episodes": rows,
+    }
+
+
+def _row_time(frame: pd.DataFrame, bar: int) -> str | None:
+    if bar < 0 or bar >= len(frame) or "time" not in frame.columns:
+        return None
+    return _utc(frame.iloc[bar]["time"]).isoformat()
+
+
+def build_sequence_evidence(
+    episodes: Iterable[Mapping[str, Any]],
+    ltf_frame: pd.DataFrame,
+    *,
+    timeframe: str = "M1",
+    config: SeqConfig | None = None,
+) -> dict[str, Any]:
+    """Attach real sequential-event evidence to Episodes.
+
+    The sequential engine is run once over the closed LTF frame.  For each
+    episode, the latest COMPLETE chain with matching direction and last_bar at
+    or before decision_time is selected.  This does not create a trade; it only
+    proves whether a real multi-bar sequence existed before the episode.
+    """
+    cfg = config or SeqConfig(max_active_chains=128)
+    frame = ltf_frame.copy().reset_index(drop=True)
+    frame["time"] = pd.to_datetime(frame["time"], utc=True, errors="coerce")
+    chains = run_sequential(frame, cfg, timeframe=timeframe)
+    complete = [chain for chain in chains if chain.status == "COMPLETE"]
+    evidence: dict[str, Mapping[str, Any]] = {}
+    for episode in episodes:
+        decision_time = _utc(episode["decision_time"])
+        direction = int(episode.get("direction", 0))
+        selected = None
+        selected_time = None
+        for chain in complete:
+            if int(chain.direction) != direction:
+                continue
+            last_time = _row_time(frame, int(chain.last_bar))
+            if last_time is None:
+                continue
+            stamp = _utc(last_time)
+            if stamp <= decision_time and (selected_time is None or stamp > selected_time):
+                selected = chain
+                selected_time = stamp
+        if selected is None:
+            evidence[str(episode.get("episode_id"))] = {
+                "sequence_status": "REVIEW",
+                "reason": "NO_COMPLETE_REAL_SEQUENCE_BEFORE_DECISION",
+                "timeframe": timeframe,
+            }
+            continue
+        nodes = []
+        for node in selected.nodes:
+            node_dict = node.to_dict()
+            node_dict["time"] = _row_time(frame, int(node.bar))
+            nodes.append(node_dict)
+        strict_bars = [int(node["bar"]) for node in nodes]
+        evidence[str(episode.get("episode_id"))] = {
+            "sequence_status": "PASS",
+            "timeframe": timeframe,
+            "chain_id": selected.chain_id,
+            "chain_status": selected.status,
+            "chain_direction": int(selected.direction),
+            "last_bar_time": selected_time.isoformat() if selected_time is not None else None,
+            "stage_count": len(nodes),
+            "stages": [node["stage"] for node in nodes],
+            "strictly_increasing_bars": all(b > a for a, b in zip(strict_bars, strict_bars[1:])),
+            "nodes": nodes,
+        }
+    return {
+        "artifact_kind": "SIXTF_REAL_SEQUENCE_EVIDENCE_V1",
+        "timeframe": timeframe,
+        "sequential_summary": summarize_chains(chains),
+        "complete_chain_count": len(complete),
+        "evidence_by_episode": evidence,
     }
 
 
@@ -248,6 +351,41 @@ def classify_failure(trade: Mapping[str, Any], audit: Mapping[str, Any]) -> str:
     if trade.get("net_R") is not None and float(trade["net_R"]) <= 0:
         return "CALIBRATION_OR_CONTEXT"
     return "PASS_OR_UNCLASSIFIED"
+
+
+def write_blackbox_jsonl(
+    *,
+    path: Path,
+    trades: Iterable[Mapping[str, Any]],
+    audit_rows: Iterable[Mapping[str, Any]],
+    ai_rows: Iterable[Mapping[str, Any]],
+) -> None:
+    audits = {row.get("episode_id"): row for row in audit_rows}
+    ai = {
+        row.get("features", {}).get("episode_id"): row
+        for row in ai_rows
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        for trade in trades:
+            episode_id = trade.get("episode_id")
+            record = {
+                "kind": "SIXTF_FORENSIC_BLACKBOX_V1",
+                "episode_id": episode_id,
+                "decision_time": trade.get("decision_time"),
+                "exit_status": trade.get("exit_status"),
+                "net_R": trade.get("net_R"),
+                "session": trade.get("session"),
+                "forensic": audits.get(episode_id, {}),
+                "ai_shadow": ai.get(episode_id, {}),
+                "policy": {
+                    "can_trade": False,
+                    "orders_sent": False,
+                    "mt5_connected": False,
+                    "diagnostic_only": True,
+                },
+            }
+            handle.write(json.dumps(record, sort_keys=True, default=str) + "\n")
 
 
 def failure_taxonomy(trades: Iterable[Mapping[str, Any]], audit_rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
@@ -318,10 +456,12 @@ __all__ = [
     "audit_episode_sequence",
     "audit_episodes",
     "attach_sessions",
+    "build_sequence_evidence",
     "build_ai_shadow_dataset",
     "classify_session",
     "failure_taxonomy",
     "session_windows",
     "summarize_by_session",
     "weekly_frequency",
+    "write_blackbox_jsonl",
 ]

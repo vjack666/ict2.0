@@ -24,10 +24,12 @@ from backtest.economics import EconomicScenario
 from backtest.sixtf_forensic import (
     attach_sessions,
     audit_episodes,
+    build_sequence_evidence,
     build_ai_shadow_dataset,
     failure_taxonomy,
     summarize_by_session,
     weekly_frequency,
+    write_blackbox_jsonl,
 )
 from backtest.sixtf_episode_backtest import (
     SixTFBacktestConfig,
@@ -68,6 +70,8 @@ def run(
     spread_pips: float,
     slippage_pips: float,
     commission_per_lot_side: float,
+    sequence_tf: str,
+    blackbox_output: Path | None,
 ) -> dict[str, Any]:
     out_dir = output.parent
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -104,12 +108,28 @@ def run(
         economics=economic_scenario,
     )
     trades = attach_sessions(trades)
-    forensic_audit = audit_episodes(window.get("episodes", []))
+    sequence_evidence = build_sequence_evidence(
+        window.get("episodes", []),
+        frames[sequence_tf],
+        timeframe=sequence_tf,
+    )
+    forensic_audit = audit_episodes(
+        window.get("episodes", []),
+        sequence_evidence.get("evidence_by_episode", {}),
+    )
     audit_rows = forensic_audit.get("episodes", [])
     session_summary = summarize_by_session(trades)
     weekly = weekly_frequency(trades)
     taxonomy = failure_taxonomy(trades, audit_rows)
     ai_shadow_dataset = build_ai_shadow_dataset(trades, audit_rows)
+    if blackbox_output is None:
+        blackbox_output = output.with_suffix(".blackbox.jsonl")
+    write_blackbox_jsonl(
+        path=blackbox_output,
+        trades=trades,
+        audit_rows=audit_rows,
+        ai_rows=ai_shadow_dataset.get("rows", []),
+    )
     summary = summarize_trades(trades)
     status = (
         "PASS_DIAGNOSTIC"
@@ -155,10 +175,17 @@ def run(
                 "throughput; six closed TF layers, MarketObjects, lineage, Episodes "
                 "and FULL/PREFIX remain enforced."
             ),
+            "sequence_tf": sequence_tf,
+            "blackbox_jsonl": str(blackbox_output),
             "mt5_connected": False,
             "orders_sent": False,
         },
         "summary": summary,
+        "sequence_evidence": {
+            k: v
+            for k, v in sequence_evidence.items()
+            if k != "evidence_by_episode"
+        },
         "forensic_audit": forensic_audit,
         "session_summary": session_summary,
         "weekly_frequency": weekly,
@@ -194,6 +221,8 @@ def main() -> int:
     parser.add_argument("--spread-pips", type=float, default=1.0)
     parser.add_argument("--slippage-pips", type=float, default=0.3)
     parser.add_argument("--commission-per-lot-side", type=float, default=5.0)
+    parser.add_argument("--sequence-tf", choices=["M1", "M5", "M15"], default="M1")
+    parser.add_argument("--blackbox-output", type=Path)
     parser.add_argument("--output", type=Path, default=Path("reports/audits/experiments/mission4/sixtf_episode_backtest.json"))
     args = parser.parse_args()
     report = run(
@@ -209,6 +238,8 @@ def main() -> int:
         spread_pips=args.spread_pips,
         slippage_pips=args.slippage_pips,
         commission_per_lot_side=args.commission_per_lot_side,
+        sequence_tf=args.sequence_tf,
+        blackbox_output=args.blackbox_output,
     )
     print(json.dumps(_jsonable({k: report[k] for k in ("status", "period", "decision_count", "episode_count", "summary", "policy")}), indent=2, sort_keys=True))
     return 0 if report["status"] in {"PASS_DIAGNOSTIC", "REVIEW"} else 1

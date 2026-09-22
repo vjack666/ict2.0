@@ -214,3 +214,38 @@ La base si existia, pero no estaba conectada como mision post-PR16. Queda
 implementado el puente local deterministicamente: episodios seis-TF, backtest
 economico aislado, dataset causal y entrenamiento baseline shadow. El resultado
 no declara edge, no crea modelo productivo y no autoriza trading.
+
+## 10. Fase F6 — fuente real y productor historico
+
+**Estado 2026-09-21:** `PARTIAL_PASS / PRODUCER_SIXTF_PENDING`.
+
+Se ejecuto la siguiente fase escrita en los planes: sustituir la fixture
+contractual por evidencia real. La fuente original ya pasa el gate seis-TF de
+contexto, y el productor/replay historico real existente pasa el piloto H4/M15.
+Sin embargo, `engine/historical_event_objects.py` todavia produce la cadena
+real H4/M15; no genera objetos y relaciones completas D1/H4/H1/M15/M5/M1 para
+alimentar `engine/episodes.py` como funnel real seis-TF.
+
+Evidencia:
+
+- `mission1_next_real_source_sixtf_context.json`: `all_pass=true`,
+  `all_six_layers_available=true`, `all_six_layers_closed_only=true`,
+  `future_invariance=true`, `control_a_m1_coverage=false` esperado por fin real
+  de M1.
+- `mission1_next_real_source_h4_m15_replay.json`: `all_pass=true`, control A
+  `PASS_H4_M15_PIT_PILOT`, control B `PASS_H4_M15_PIT_PILOT`.
+
+Siguiente implementacion requerida:
+
+```text
+historical_event_objects seis-TF
+  -> D1/H4/H1 context objects
+  -> M15 refinement/structure
+  -> M5 confirmation
+  -> M1 trigger/retest
+  -> HierarchicalLineage LINEAGE_VALID
+  -> build_episodes real
+```
+
+Hasta completar esa extension, la Mision 1 real-source queda en preflight
+positivo, no en funnel real completo.

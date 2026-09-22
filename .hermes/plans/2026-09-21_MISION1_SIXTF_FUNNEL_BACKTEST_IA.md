@@ -91,3 +91,33 @@ Sustituir la fixture contractual de F2 por productor historico real sobre la
 fuente original, conservando los mismos gates. Esta siguiente etapa no es
 necesaria para cerrar el cableado F2-F5 shadow, pero si para buscar evidencia
 empirica real o edge.
+
+## Fase siguiente ejecutada: F6 — preflight productor historico real
+
+**Estado:** `PARTIAL_PASS / PRODUCER_SIXTF_PENDING`
+
+- [x] Buscar SDD, planes y tareas pendientes relacionados.
+- [x] Confirmar que la fase siguiente escrita es sustituir la fixture
+  contractual por productor historico real sobre fuente original.
+- [x] Ejecutar verificador real seis-TF de contexto contra `EURUSD.zip`.
+- [x] Ejecutar verificador real H4/M15 de productor + causal replay contra
+  `EURUSD.zip`.
+- [x] Registrar que el productor historico real existente todavia es H4/M15 y
+  no cubre objetos completos D1/H4/H1/M15/M5/M1 para Episodes/Funnel.
+
+Evidencia:
+
+- `reports/audits/experiments/mission1/mission1_next_real_source_sixtf_context.json`
+- `reports/audits/experiments/mission1/mission1_next_real_source_h4_m15_replay.json`
+- `.hermes-worklog/2026-09-21_MISION1_F6_REAL_SOURCE_PREFLIGHT.md`
+
+Resultado:
+
+```text
+six_tf_context_all_pass=true
+h4_m15_replay_all_pass=true
+producer_historical_scope=H4_M15_PILOT_ONLY
+next_required_work=extend historical_event_objects to six-TF object production
+```
+
+No se declara full funnel real, edge, MT5 ni entrenamiento productivo.

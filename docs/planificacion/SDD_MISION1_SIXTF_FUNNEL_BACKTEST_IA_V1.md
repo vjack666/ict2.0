@@ -217,14 +217,31 @@ no declara edge, no crea modelo productivo y no autoriza trading.
 
 ## 10. Fase F6 — fuente real y productor historico
 
-**Estado 2026-09-21:** `PARTIAL_PASS / PRODUCER_SIXTF_PENDING`.
+**Estado 2026-09-21:** `PARTIAL_PASS / FACTORY_SIXTF_CONTEXT_EXISTS / CONNECTION_PENDING`.
 
 Se ejecuto la siguiente fase escrita en los planes: sustituir la fixture
 contractual por evidencia real. La fuente original ya pasa el gate seis-TF de
 contexto, y el productor/replay historico real existente pasa el piloto H4/M15.
-Sin embargo, `engine/historical_event_objects.py` todavia produce la cadena
-real H4/M15; no genera objetos y relaciones completas D1/H4/H1/M15/M5/M1 para
-alimentar `engine/episodes.py` como funnel real seis-TF.
+La auditoria posterior aclara un punto importante: no falta "toda la fabrica".
+Ya existe una fabrica/capa real de contexto y features seis-TF en
+`scripts/lab/experiments/v2_extractor_engine.py`, `engine/multitf_context.py`,
+`engine/mtf_navigation.py` y `engine/ahf.py`. Esa capa carga y navega
+D1/H4/H1/M15/M5/M1 con velas cerradas. Lo que falta conectar es su salida al
+contrato canónico de objetos:
+
+```text
+Context/features seis-TF reales
+  -> MarketObject con parent_object/related_objects
+  -> HierarchicalLineage VALID
+  -> SetupBuilder
+  -> Episodes/Funnel real
+```
+
+`engine/historical_event_objects.py` sigue siendo el productor histórico real
+de `MarketObject`, pero su alcance actual es H4/M15. `engine/detector_event_bridge.py`
+puede convertir ocurrencias de detectores de las seis temporalidades a
+`MarketObject`, pero declara explícitamente `lineage_status=UNRESOLVED` y
+`lifecycle_status=NOT_REPLAYED`; no construye secuencia, lifecycle ni funnel.
 
 Evidencia:
 
@@ -234,12 +251,20 @@ Evidencia:
   de M1.
 - `mission1_next_real_source_h4_m15_replay.json`: `all_pass=true`, control A
   `PASS_H4_M15_PIT_PILOT`, control B `PASS_H4_M15_PIT_PILOT`.
+- `scripts/lab/experiments/v2_extractor_engine.py`: `TIMEFRAMES =
+  ("D1", "H4", "H1", "M15", "M5", "M1")`; genera `features_at_t` y snapshot
+  de contexto, pero registra `lineage.available=false`.
+- `engine/setup_builder.py` y `engine/episodes.py`: ya consumen
+  `MarketObject` con relaciones por `parent_object/related_objects`; el hueco
+  esta antes de ellos, en la conversion de contexto/eventos seis-TF a grafo
+  real de objetos.
 
 Siguiente implementacion requerida:
 
 ```text
-historical_event_objects seis-TF
-  -> D1/H4/H1 context objects
+conectar fabrica seis-TF existente
+  -> productor MarketObject seis-TF
+  -> D1/H4/H1 context/POI
   -> M15 refinement/structure
   -> M5 confirmation
   -> M1 trigger/retest

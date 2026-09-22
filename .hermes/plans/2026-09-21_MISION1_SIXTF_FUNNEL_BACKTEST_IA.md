@@ -94,7 +94,7 @@ empirica real o edge.
 
 ## Fase siguiente ejecutada: F6 — preflight productor historico real
 
-**Estado:** `PARTIAL_PASS / PRODUCER_SIXTF_PENDING`
+**Estado:** `PARTIAL_PASS / FACTORY_SIXTF_CONTEXT_EXISTS / CONNECTION_PENDING`
 
 - [x] Buscar SDD, planes y tareas pendientes relacionados.
 - [x] Confirmar que la fase siguiente escrita es sustituir la fixture
@@ -102,8 +102,10 @@ empirica real o edge.
 - [x] Ejecutar verificador real seis-TF de contexto contra `EURUSD.zip`.
 - [x] Ejecutar verificador real H4/M15 de productor + causal replay contra
   `EURUSD.zip`.
-- [x] Registrar que el productor historico real existente todavia es H4/M15 y
-  no cubre objetos completos D1/H4/H1/M15/M5/M1 para Episodes/Funnel.
+- [x] Registrar que la fabrica de contexto/features seis-TF ya existe, pero
+  no esta conectada como productor real de `MarketObject` + `Episodes/Funnel`.
+- [x] Registrar que el productor historico real de `MarketObject` existente
+  todavia es H4/M15 y no cubre objetos completos D1/H4/H1/M15/M5/M1.
 
 Evidencia:
 
@@ -116,8 +118,10 @@ Resultado:
 ```text
 six_tf_context_all_pass=true
 h4_m15_replay_all_pass=true
-producer_historical_scope=H4_M15_PILOT_ONLY
-next_required_work=extend historical_event_objects to six-TF object production
+factory_sixtf_context=EXISTS
+producer_marketobject_scope=H4_M15_PILOT_ONLY
+connection_to_real_episodes=PENDING
+next_required_work=connect existing six-TF context factory to six-TF MarketObject production and build_episodes
 ```
 
 No se declara full funnel real, edge, MT5 ni entrenamiento productivo.

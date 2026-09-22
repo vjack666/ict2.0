@@ -196,12 +196,48 @@ tests focales -> 5 passed
 regresion relacionada -> 39 passed
 ```
 
+## Mision 4 ejecutada — backtest economico aislado seis-TF
+
+**Estado tecnico:** `PASS_DIAGNOSTIC`  
+**Estado economico:** `REVIEW_NEGATIVE_EXPECTANCY`
+
+- [x] Crear consumidor aislado en `backtest/`.
+- [x] Consumir episodios reales seis-TF.
+- [x] Resolver salida con M1 futuro.
+- [x] Aplicar spread, slippage y comision.
+- [x] Mantener `can_trade=false` y `edge_claimed=false`.
+- [x] Ejecutar ventana amplia viable.
+- [x] Documentar resultado negativo sin maquillar.
+
+Evidencia:
+
+- `backtest/sixtf_episode_backtest.py`
+- `scripts/audit/run_sixtf_episode_backtest.py`
+- `tests/test_sixtf_episode_backtest.py`
+- `reports/audits/experiments/mission4/sixtf_episode_backtest_2022_03.json`
+- `.hermes-worklog/2026-09-21_MISION4_SIXTF_ECONOMIC_BACKTEST.md`
+
+Resultado:
+
+```text
+period=2022-03-01T00:00:00Z -> 2022-03-31T23:00:00Z
+decision_count=553
+episode_count=553
+resolved_count=466
+TP=153
+SL=313
+HORIZON=87
+win_rate=0.3283261802575107
+mean_net_R=-0.5733476394850038
+sum_net_R=-267.1800000000118
+tests relacionados=45 passed
+```
+
 Siguiente paso:
 
 ```text
-Mision 4: backtest economico aislado
-  -> consumir episodios reales de ventana
-  -> costes/spread/slippage/comision
-  -> PnL diagnostico
+Mision 5: calibracion
+  -> revisar entry/SL/TP/horizon/filtros
+  -> no entrenar IA economica hasta mejorar expectancy
   -> mantener can_trade=false
 ```

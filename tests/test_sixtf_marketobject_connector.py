@@ -6,6 +6,7 @@ from engine.lineage_hierarchy import LineageStatus
 from engine.market_object import ObjectType
 from engine.sixtf_marketobject_connector import (
     SIX_TFS,
+    SixTFConnectorConfig,
     build_sixtf_episodes,
     build_sixtf_market_state,
 )
@@ -104,6 +105,20 @@ def test_connector_fails_closed_when_a_layer_is_missing():
         assert "MISSING_CLOSED_LAYER:M1" in str(exc)
     else:
         raise AssertionError("expected missing M1 to fail closed")
+
+
+def test_connector_fast_backtest_mode_keeps_six_tf_lineage():
+    decision_time = pd.Timestamp("2026-01-05T12:00:00Z")
+    artifact = build_sixtf_market_state(
+        _frames(),
+        decision_time,
+        config=SixTFConnectorConfig(build_context_snapshot=False),
+    )
+
+    assert artifact["context_state"]["status"] == "SKIPPED_FOR_ECONOMIC_BACKTEST"
+    assert artifact["lineage_summary"]["six_tfs_complete"] is True
+    assert artifact["lineage_summary"]["lineage_validated"] is True
+    assert set(artifact["lineage_summary"]["provenance_by_tf"]) == set(SIX_TFS)
 
 
 def test_window_runner_passes_full_prefix_over_multiple_decisions(tmp_path, monkeypatch):

@@ -94,17 +94,19 @@ La imagen previa marcaba el estado global como **EN DESARROLLO**, fase actual
 los cierres del 2026-09-21, el estado correcto es:
 
 ```text
-Fase actual: Mision 3 ventana seis-TF + FULL/PREFIX completada en shadow diagnostico
-Progreso global estimado: ~79%
-Siguiente hito: backtest economico aislado sobre episodios reales
+Fase actual: Mision 4 backtest economico seis-TF completado en diagnostico
+Progreso global estimado: ~81%
+Siguiente hito: calibracion de entrada/salida/filtros por expectancy negativa
 ```
 
 La subida de progreso no significa edge ni operación. Significa que el cableado
 estructural llegó hasta Episodes/Funnel, backtest económico aislado, dataset IA
-y entrenamiento shadow, todo con `can_trade=false`. Tras la Mision 3, ademas
+y entrenamiento shadow, todo con `can_trade=false`. Tras la Mision 4, ademas
 existe un conector ejecutable entre la fabrica seis-TF y `MarketObject ->
 HierarchicalLineage -> SetupBuilder -> Episodes`, probado en una ventana de
-13 decisiones historicas con FULL/PREFIX literal PASS.
+13 decisiones historicas con FULL/PREFIX literal PASS, y un backtest economico
+aislado sobre marzo 2022 con 553 episodios. El resultado economico fue negativo
+(`mean_net_R=-0.5733`), por lo que no hay edge declarado.
 
 | Bloque de la imagen previa | Estado 2026-09-20 | Estado actual 2026-09-21 | Evidencia |
 | --- | --- | --- | --- |
@@ -114,8 +116,8 @@ HierarchicalLineage -> SetupBuilder -> Episodes`, probado en una ventana de
 | 4. MarketState | puente en desarrollo | **Implementado + causal replay + linaje snapshot + conector seis-TF** | `engine/market_state.py`, `engine/daily_motor.py`, `engine/sixtf_marketobject_connector.py` |
 | 5. Secuencias ICT | sin completar | **Avanzado / Phase-1 seis-TF instalada + conectado a Episodes** | `engine/sequence.py`, `tests/test_sixtf_causal_sequence_phase1.py`, `tests/test_sixtf_marketobject_connector.py` |
 | 6. Lifecycle | parcial/sin completar | **Implementado/revisado; integración completa real aún protegida por gates** | `engine/lifecycle.py`, tests de lifecycle/MarketState |
-| 7. Funnel y episodios | sin completar | **Completo en capa v1 + Misión 3 ventana real shadow** | `engine/episodes.py`, `engine/mission1_six_tf_pipeline.py`, `engine/sixtf_marketobject_connector.py` |
-| 8. Auditoría científica | sin completar | **Avanzada; FULL/PREFIX de ventana PASS** | 13/13 decisiones PASS, 39 tests relacionados PASS |
+| 7. Funnel y episodios | sin completar | **Completo en capa v1 + Misión 4 backtest consumidor** | `engine/episodes.py`, `engine/sixtf_marketobject_connector.py`, `backtest/sixtf_episode_backtest.py` |
+| 8. Auditoría científica | sin completar | **Avanzada; FULL/PREFIX + backtest diagnostico PASS tecnico** | 553 episodios, 45 tests relacionados PASS |
 | 9. Inteligencia artificial | sin completar | **Shadow diagnostic completo; no productivo** | `mission1_dataset.json`, `mission1_training.json` |
 | 10. Ejecución MT5 | sin completar | **No promovida; permanece bloqueada para trading** | `can_trade=false` |
 | 11. Documentación y soporte | parcial | **Actualizada y versionada** | SDD, plan, worklogs, índice, commit `16deb66b` |
@@ -128,11 +130,11 @@ HierarchicalLineage -> SetupBuilder -> Episodes`, probado en una ventana de
 | 2 | Detectores ICT | Insumos disponibles | 🟢 | mantener regresiones |
 | 3 | Inventario eventos | Conteos A/B preservados; no son setup/funnel | 🟢 | consumirlos solo si pasan replay causal |
 | 4 | MarketState | Causal, point-in-time, con snapshot/lineage y conector seis-TF | 🟢 | escalar a ventana historica |
-| 5 | Secuencias ICT | Multi-vela y seis-TF Phase-1 cerrada/conectada | 🟢 | backtest economico aislado |
+| 5 | Secuencias ICT | Multi-vela y seis-TF Phase-1 cerrada/conectada | 🟢 | calibrar filtros/entry |
 | 6 | Lifecycle | Contratos y tests existentes; no promoción operativa | 🟡 | replay integral por TF/fuente real |
-| 7 | Funnel/Episodios | v1 implementado + ventana seis-TF real shadow PASS | 🟢 | backtest economico aislado |
-| 8 | Auditoría científica | FULL/PREFIX de ventana y regresión relacionada PASS | 🟢 | auditoria economica aislada |
-| 9 | IA | Dataset + baseline shadow PASS; accuracy 0.333 | 🟡 | modelo real sólo tras dataset histórico causal |
+| 7 | Funnel/Episodios | v1 implementado + backtest consumidor seis-TF PASS tecnico | 🟢 | calibrar expectancy |
+| 8 | Auditoría científica | FULL/PREFIX + backtest diagnostico; edge negativo | 🟡 | calibracion y nueva auditoria |
+| 9 | IA | Dataset + baseline shadow PASS; accuracy 0.333 | 🟡 | esperar calibracion economica |
 | 10 | Ejecución MT5 | No autorizada / `can_trade=false` | 🔴 | requiere certificación, no parte de esta misión |
 | 11 | Documentación | SDD, plan, worklog, índice y grafo actualizados | 🟢 | mantener bitácora por cada fase |
 

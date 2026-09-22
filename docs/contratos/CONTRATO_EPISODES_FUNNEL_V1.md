@@ -284,3 +284,33 @@ window_checksum=77b70956af5e1d7036f97633229ade3f6ca05669728d359658698955e82d68df
 Este resultado satisface el gate causal de ventana para la muestra auditada. No
 autoriza trading, no demuestra edge y no sustituye el backtest economico
 aislado.
+
+## 13. Consumo economico aislado — 2026-09-21
+
+El primer consumidor economico aislado compatible con Episodes seis-TF es:
+
+```text
+backtest/sixtf_episode_backtest.py
+scripts/audit/run_sixtf_episode_backtest.py
+```
+
+Propiedades:
+
+- consume Episodes ya aceptados;
+- no crea señales;
+- resuelve outcome solo con M1 futuro;
+- aplica costes explicitos mediante `backtest.economics`;
+- conserva `can_trade=false` y `edge_claimed=false`.
+
+Resultado de la ventana auditada:
+
+```text
+status=PASS_DIAGNOSTIC
+economic_status=REVIEW_NEGATIVE_EXPECTANCY
+decision_count=553
+mean_net_R=-0.5733476394850038
+sum_net_R=-267.1800000000118
+```
+
+Este resultado no prueba edge; al contrario, bloquea cualquier promocion
+economica hasta calibrar reglas/filtros y volver a auditar.

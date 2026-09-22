@@ -373,11 +373,59 @@ regresion relacionada -> 39 passed
 ```
 
 Mision 3 no declara edge ni backtest economico. Cierra el gate de ventana
-causal para la ventana auditada y habilita el siguiente paso metodologico:
+causal para la ventana auditada y habilita el siguiente paso metodologico.
+
+## 13. Mision 4 — backtest economico aislado seis-TF
+
+**Estado tecnico 2026-09-21:** `PASS_DIAGNOSTIC`.  
+**Estado economico 2026-09-21:** `REVIEW_NEGATIVE_EXPECTANCY`.
+
+Se actualizo el backtest para consumir los episodios reales seis-TF generados
+por el motor actual:
 
 ```text
-backtest economico aislado sobre episodios reales de ventana
-  -> costes/spread/slippage/comision
-  -> PnL diagnostico
-  -> dataset IA shadow solo despues de gates
+seis TF -> MarketObject -> HierarchicalLineage -> Episodes -> backtest economico aislado
+```
+
+Entregables:
+
+- `backtest/sixtf_episode_backtest.py`
+- `scripts/audit/run_sixtf_episode_backtest.py`
+- `tests/test_sixtf_episode_backtest.py`
+- `reports/audits/experiments/mission4/sixtf_episode_backtest_2022_03.json`
+- `.hermes-worklog/2026-09-21_MISION4_SIXTF_ECONOMIC_BACKTEST.md`
+
+Ventana final completada en verde:
+
+```text
+2022-03-01T00:00:00Z -> 2022-03-31T23:00:00Z
+decision_count=553
+episode_count=553
+rejection_count=553
+resolved_count=466
+unresolved_count=87
+TP=153
+SL=313
+HORIZON=87
+win_rate=0.3283261802575107
+mean_net_R=-0.5733476394850038
+sum_net_R=-267.1800000000118
+can_trade=false
+edge_claimed=false
+```
+
+Pruebas:
+
+```text
+regresion relacionada -> 45 passed
+```
+
+Dictamen:
+
+```text
+backtest_updated_to_six_tf_engine=true
+technical_backtest_gate=PASS_DIAGNOSTIC
+economic_edge_claimed=false
+can_trade=false
+next_required_work=calibrate entry/exit/filter rules before AI economic dataset
 ```

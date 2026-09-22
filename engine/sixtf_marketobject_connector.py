@@ -35,6 +35,7 @@ SIX_TFS: tuple[str, ...] = ("D1", "H4", "H1", "M15", "M5", "M1")
 class SixTFConnectorConfig:
     symbol: str = "EURUSD"
     require_all_six_tfs: bool = True
+    build_context_snapshot: bool = True
     navigator_config: NavigatorConfig = field(
         default_factory=lambda: NavigatorConfig(precompute_sequences=False)
     )
@@ -187,11 +188,19 @@ def build_sixtf_market_state(
     if missing:
         raise ValueError(f"MISSING_CLOSED_LAYER:{','.join(missing)}")
 
-    # Execute the existing six-TF context factory as provenance.  Its output is
-    # not reinterpreted as an entry signal; it proves this connector is attached
-    # to the existing causal context path instead of a parallel shortcut.
-    nav = MTFNavigator(dict(frames), cfg.navigator_config)
-    context_state = nav.navigate(_utc(decision_time), exec_tf="M15")
+    # Execute the existing six-TF context factory as provenance when requested.
+    # Massive economic backtests may set ``build_context_snapshot=False`` after
+    # the connector has already passed the dedicated context/FULL-PREFIX gates;
+    # object production still requires all six closed layers and validates
+    # HierarchicalLineage(require_all_six_tfs=True).
+    if cfg.build_context_snapshot:
+        nav = MTFNavigator(dict(frames), cfg.navigator_config)
+        context_state = nav.navigate(_utc(decision_time), exec_tf="M15").to_dict()
+    else:
+        context_state = {
+            "status": "SKIPPED_FOR_ECONOMIC_BACKTEST",
+            "policy": "six_tf_objects_and_lineage_still_required",
+        }
 
     direction = _direction(frames, decision_time)
     cutoffs = _chain_cutoffs(frames, decision_time)
@@ -297,7 +306,7 @@ def build_sixtf_market_state(
         "projection": projection,
         "lineage": lineage,
         "lineage_summary": lineage_result_to_snapshot_summary(lineage),
-        "context_state": context_state.to_dict(),
+        "context_state": context_state,
         "direction": direction,
         "decision_time": _utc(decision_time),
     }

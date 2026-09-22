@@ -20,7 +20,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from engine.data_feed import load_frames
-from engine.sixtf_marketobject_connector import SIX_TFS, build_sixtf_episodes
+from engine.sixtf_marketobject_connector import SIX_TFS, SixTFConnectorConfig, build_sixtf_episodes
 
 
 def _jsonable(value: Any) -> Any:
@@ -124,6 +124,7 @@ def run_window(
     decisions: int,
     step_minutes: int,
     output: Path,
+    fast_backtest_mode: bool = False,
 ) -> dict[str, Any]:
     start = pd.Timestamp(start_time, tz="UTC")
     end = pd.Timestamp(end_time, tz="UTC")
@@ -141,10 +142,11 @@ def run_window(
     rejections: list[dict[str, Any]] = []
     full_prefix_failures: list[dict[str, Any]] = []
     errors: list[dict[str, Any]] = []
+    connector_config = SixTFConnectorConfig(build_context_snapshot=not fast_backtest_mode)
     for decision in decision_times:
         try:
-            full = build_sixtf_episodes(frames, decision)
-            prefix = build_sixtf_episodes(_truncate_frames(frames, decision), decision)
+            full = build_sixtf_episodes(frames, decision, config=connector_config)
+            prefix = build_sixtf_episodes(_truncate_frames(frames, decision), decision, config=connector_config)
             full_core = _core_for_prefix(full)
             prefix_core = _core_for_prefix(prefix)
             full_hash = _sha(full_core)
@@ -200,6 +202,7 @@ def run_window(
         "can_trade": False,
         "diagnostic_only": True,
         "edge_claimed": False,
+        "fast_backtest_mode": fast_backtest_mode,
         "window_gates": {
             "all_runs_executed": len(errors) == 0,
             "full_prefix_all_pass": len(full_prefix_failures) == 0,
@@ -241,6 +244,7 @@ def main() -> int:
     window.add_argument("--end-time", required=True)
     window.add_argument("--decisions", type=int, default=24)
     window.add_argument("--step-minutes", type=int, default=60)
+    window.add_argument("--fast-backtest-mode", action="store_true")
     window.add_argument("--output", type=Path, default=Path("reports/audits/experiments/mission3/sixtf_window_report.json"))
     parser.add_argument("--data-dir", type=Path, default=Path("data/raw/EURUSD"))
     parser.add_argument("--decision-time")
@@ -254,6 +258,7 @@ def main() -> int:
             decisions=args.decisions,
             step_minutes=args.step_minutes,
             output=args.output,
+            fast_backtest_mode=args.fast_backtest_mode,
         )
     else:
         if not args.decision_time:

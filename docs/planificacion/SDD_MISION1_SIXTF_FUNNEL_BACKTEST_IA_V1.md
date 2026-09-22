@@ -324,12 +324,60 @@ edge_claimed=false
 diagnostic_only=true
 ```
 
-La implementacion no declara edge ni trading. El siguiente paso metodologico es:
+La implementacion no declara edge ni trading.
+
+## 12. Mision 3 — ventana historica multi-decision_time
+
+**Estado 2026-09-21:** `PASS_SHADOW_DIAGNOSTIC`.
+
+Se extendio `scripts/audit/run_sixtf_marketobject_connector.py` con modo
+`window` para ejecutar muchas decisiones historicas y comparar cada salida
+FULL contra PREFIX truncado en `decision_time`.
+
+Evidencia real local:
 
 ```text
-ventana historica multi-decision_time
-  -> episodios aceptados/rechazados reales
-  -> FULL/PREFIX de ventana
-  -> backtest economico aislado
-  -> dataset IA shadow
+python scripts/audit/run_sixtf_marketobject_connector.py window ^
+  --data-dir data/raw/EURUSD ^
+  --start-time 2022-03-31T00:00:00Z ^
+  --end-time 2022-03-31T12:00:00Z ^
+  --decisions 13 ^
+  --step-minutes 60 ^
+  --output reports/audits/experiments/mission3/sixtf_window_report.json
+```
+
+Resultado:
+
+```text
+status=PASS
+decision_count=13
+pass_count=13
+episode_count=13
+rejection_count=13
+error_count=0
+full_prefix_failure_count=0
+full_prefix_all_pass=true
+all_lineage_valid=true
+all_six_tfs_complete=true
+window_checksum=77b70956af5e1d7036f97633229ade3f6ca05669728d359658698955e82d68df
+can_trade=false
+edge_claimed=false
+diagnostic_only=true
+```
+
+Pruebas:
+
+```text
+tests/test_sixtf_marketobject_connector.py -> 5 passed
+regresion relacionada -> 39 passed
+```
+
+Mision 3 no declara edge ni backtest economico. Cierra el gate de ventana
+causal para la ventana auditada y habilita el siguiente paso metodologico:
+
+```text
+backtest economico aislado sobre episodios reales de ventana
+  -> costes/spread/slippage/comision
+  -> PnL diagnostico
+  -> dataset IA shadow solo despues de gates
 ```

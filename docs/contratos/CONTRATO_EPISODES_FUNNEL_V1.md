@@ -252,3 +252,35 @@ reports/audits/experiments/mission1/sixtf_marketobject_connector_report.json
 Esta enmienda no cambia el criterio de cierre global del contrato. Para ventana
 histórica completa sigue siendo obligatorio ejecutar FULL/PREFIX sobre múltiples
 `decision_time` antes de usar la salida para backtest económico o dataset IA.
+
+## 12. Evidencia de ventana FULL/PREFIX — 2026-09-21
+
+La obligacion de FULL/PREFIX multi-`decision_time` fue ejecutada en modo shadow
+diagnostico mediante:
+
+```text
+scripts/audit/run_sixtf_marketobject_connector.py window
+```
+
+Artefacto:
+
+```text
+reports/audits/experiments/mission3/sixtf_window_report.json
+```
+
+Resultado de la ventana auditada:
+
+```text
+status=PASS
+decision_count=13
+episode_count=13
+rejection_count=13
+full_prefix_failure_count=0
+all_lineage_valid=true
+all_six_tfs_complete=true
+window_checksum=77b70956af5e1d7036f97633229ade3f6ca05669728d359658698955e82d68df
+```
+
+Este resultado satisface el gate causal de ventana para la muestra auditada. No
+autoriza trading, no demuestra edge y no sustituye el backtest economico
+aislado.

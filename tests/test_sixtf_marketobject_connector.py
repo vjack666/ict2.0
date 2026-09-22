@@ -9,6 +9,7 @@ from engine.sixtf_marketobject_connector import (
     build_sixtf_episodes,
     build_sixtf_market_state,
 )
+from scripts.audit.run_sixtf_marketobject_connector import run_window
 
 
 def _frame(start: str, periods: int, freq: str, step: float) -> pd.DataFrame:
@@ -103,3 +104,26 @@ def test_connector_fails_closed_when_a_layer_is_missing():
         assert "MISSING_CLOSED_LAYER:M1" in str(exc)
     else:
         raise AssertionError("expected missing M1 to fail closed")
+
+
+def test_window_runner_passes_full_prefix_over_multiple_decisions(tmp_path, monkeypatch):
+    from scripts.audit import run_sixtf_marketobject_connector as runner
+
+    monkeypatch.setattr(runner, "load_frames", lambda *args, **kwargs: _frames(periods=120))
+    output = tmp_path / "window.json"
+    report = run_window(
+        data_dir=tmp_path,
+        start_time="2026-01-03T00:00:00Z",
+        end_time="2026-01-03T12:00:00Z",
+        decisions=6,
+        step_minutes=60,
+        output=output,
+    )
+
+    assert report["status"] == "PASS"
+    assert report["window_gates"]["full_prefix_all_pass"] is True
+    assert report["window_gates"]["all_lineage_valid"] is True
+    assert report["window_gates"]["all_six_tfs_complete"] is True
+    assert report["aggregates"]["episode_count"] >= 1
+    assert report["aggregates"]["rejection_count"] >= 1
+    assert output.exists()

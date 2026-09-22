@@ -164,11 +164,44 @@ can_trade=false
 edge_claimed=false
 ```
 
+## Mision 3 ejecutada — ventana historica multi-decision_time
+
+**Estado:** `PASS_SHADOW_DIAGNOSTIC`
+
+- [x] Extender runner con modo `window`.
+- [x] Ejecutar multiples `decision_time` sobre datos locales seis-TF.
+- [x] Comparar FULL vs PREFIX truncado en cada `decision_time`.
+- [x] Registrar episodios aceptados y rechazos explicitos.
+- [x] Agregar checksum de ventana.
+- [x] Mantener `can_trade=false` y `edge_claimed=false`.
+- [x] Ejecutar pruebas focales y regresion relacionada.
+
+Evidencia:
+
+- `scripts/audit/run_sixtf_marketobject_connector.py`
+- `reports/audits/experiments/mission3/sixtf_window_report.json`
+- `.hermes-worklog/2026-09-21_MISION3_SIXTF_WINDOW_FULL_PREFIX.md`
+
+Resultados:
+
+```text
+status=PASS
+decision_count=13
+pass_count=13
+episode_count=13
+rejection_count=13
+full_prefix_failure_count=0
+window_checksum=77b70956af5e1d7036f97633229ade3f6ca05669728d359658698955e82d68df
+tests focales -> 5 passed
+regresion relacionada -> 39 passed
+```
+
 Siguiente paso:
 
 ```text
-Mision 3: ventana historica multi-decision_time
-  -> FULL/PREFIX de ventana
-  -> reporte de episodios aceptados/rechazados
-  -> backtest economico aislado
+Mision 4: backtest economico aislado
+  -> consumir episodios reales de ventana
+  -> costes/spread/slippage/comision
+  -> PnL diagnostico
+  -> mantener can_trade=false
 ```

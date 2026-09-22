@@ -25,7 +25,9 @@ from backtest.sixtf_forensic import (
     attach_sessions,
     audit_episodes,
     build_sequence_evidence,
+    build_timeframe_worker_evidence,
     build_ai_shadow_dataset,
+    classify_entry_protocols_for_episodes,
     failure_taxonomy,
     summarize_by_session,
     weekly_frequency,
@@ -117,11 +119,26 @@ def run(
         window.get("episodes", []),
         sequence_evidence.get("evidence_by_episode", {}),
     )
+    worker_evidence = build_timeframe_worker_evidence(
+        frames,
+        [trade["decision_time"] for trade in trades],
+        sequence_evidence.get("evidence_by_episode", {}),
+    )
     audit_rows = forensic_audit.get("episodes", [])
     session_summary = summarize_by_session(trades)
     weekly = weekly_frequency(trades)
     taxonomy = failure_taxonomy(trades, audit_rows)
-    ai_shadow_dataset = build_ai_shadow_dataset(trades, audit_rows)
+    entry_protocol_summary = classify_entry_protocols_for_episodes(
+        window.get("episodes", []),
+        audit_rows,
+        frames,
+        ltf=sequence_tf,
+    )
+    ai_shadow_dataset = build_ai_shadow_dataset(
+        trades,
+        audit_rows,
+        entry_protocol_summary.get("by_episode", {}),
+    )
     if blackbox_output is None:
         blackbox_output = output.with_suffix(".blackbox.jsonl")
     write_blackbox_jsonl(
@@ -129,6 +146,7 @@ def run(
         trades=trades,
         audit_rows=audit_rows,
         ai_rows=ai_shadow_dataset.get("rows", []),
+        protocol_by_episode=entry_protocol_summary.get("by_episode", {}),
     )
     summary = summarize_trades(trades)
     status = (
@@ -187,6 +205,12 @@ def run(
             if k != "evidence_by_episode"
         },
         "forensic_audit": forensic_audit,
+        "entry_protocol_summary": {
+            k: v
+            for k, v in entry_protocol_summary.items()
+            if k != "by_episode"
+        },
+        "timeframe_worker_evidence": worker_evidence,
         "session_summary": session_summary,
         "weekly_frequency": weekly,
         "failure_taxonomy": taxonomy,

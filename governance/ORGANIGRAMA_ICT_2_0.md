@@ -94,9 +94,9 @@ La imagen previa marcaba el estado global como **EN DESARROLLO**, fase actual
 los cierres del 2026-09-21, el estado correcto es:
 
 ```text
-Fase actual: Mision 6 secuencia real M1 conectada al backtest + caja negra
-Progreso global estimado: ~86%
-Siguiente hito: calibrar filtro de calidad para bajar de 32-40 a 2-3 trades/semana
+Fase actual: Mision 7 protocolos de entrada + trabajadores conectados al backtest
+Progreso global estimado: ~88%
+Siguiente hito: calibrar calidad para bajar la IA shadow a 2-3 oportunidades/semana
 ```
 
 La subida de progreso no significa edge ni operación. Significa que el cableado
@@ -105,8 +105,9 @@ y entrenamiento shadow, todo con `can_trade=false`. Tras la Mision 4, ademas
 existe un conector ejecutable entre la fabrica seis-TF y `MarketObject ->
 HierarchicalLineage -> SetupBuilder -> Episodes`, probado en una ventana de
 13 decisiones historicas con FULL/PREFIX literal PASS, y un backtest economico
-aislado sobre marzo 2022 con 553 episodios. El resultado economico fue negativo
-(`mean_net_R=-0.5733`), por lo que no hay edge declarado.
+aislado sobre marzo 2022 con 553 episodios. La Mision 7 conectó PO3, Silver
+Bullet, Turtle Soup y evidencia de trabajadores por temporalidad al backtest.
+El resultado economico sigue negativo, por lo que no hay edge declarado.
 
 | Bloque de la imagen previa | Estado 2026-09-20 | Estado actual 2026-09-21 | Evidencia |
 | --- | --- | --- | --- |
@@ -114,11 +115,11 @@ aislado sobre marzo 2022 con 553 episodios. El resultado economico fue negativo
 | 2. Detectores ICT | completo | **Completo como insumo** | detectores y tests existentes |
 | 3. Inventario de eventos | completo | **Completo como inventario; no equivale a funnel real** | `ICT_EVENT_INVENTORY_AB_20260920.*` |
 | 4. MarketState | puente en desarrollo | **Implementado + causal replay + linaje snapshot + conector seis-TF** | `engine/market_state.py`, `engine/daily_motor.py`, `engine/sixtf_marketobject_connector.py` |
-| 5. Secuencias ICT | sin completar | **Avanzado / Phase-1 seis-TF instalada + conectado a Episodes** | `engine/sequence.py`, `tests/test_sixtf_causal_sequence_phase1.py`, `tests/test_sixtf_marketobject_connector.py` |
+| 5. Secuencias ICT | sin completar | **Avanzado / Phase-1 seis-TF + M1 real + protocolos de tesis conectados** | `engine/sequence.py`, `engine/sequential_events.py`, `engine/po3.py`, `engine/silver_bullet.py`, `engine/turtle_soup.py` |
 | 6. Lifecycle | parcial/sin completar | **Implementado/revisado; integración completa real aún protegida por gates** | `engine/lifecycle.py`, tests de lifecycle/MarketState |
 | 7. Funnel y episodios | sin completar | **Completo en capa v1 + Misión 4 backtest consumidor** | `engine/episodes.py`, `engine/sixtf_marketobject_connector.py`, `backtest/sixtf_episode_backtest.py` |
-| 8. Auditoría científica | sin completar | **Avanzada; FULL/PREFIX + backtest diagnostico PASS tecnico** | 553 episodios, 45 tests relacionados PASS |
-| 9. Inteligencia artificial | sin completar | **Shadow diagnostic completo; no productivo** | `mission1_dataset.json`, `mission1_training.json` |
+| 8. Auditoría científica | sin completar | **Avanzada; caja negra con secuencia, protocolos y workers** | 121 episodios Misión 7 semanal, 70 tests relacionados PASS |
+| 9. Inteligencia artificial | sin completar | **Shadow diagnostic + abstención por protocolo; no productivo** | `ai_shadow_dataset`, `entry_protocol_summary` |
 | 10. Ejecución MT5 | sin completar | **No promovida; permanece bloqueada para trading** | `can_trade=false` |
 | 11. Documentación y soporte | parcial | **Actualizada y versionada** | SDD, plan, worklogs, índice, commit `16deb66b` |
 
@@ -130,11 +131,11 @@ aislado sobre marzo 2022 con 553 episodios. El resultado economico fue negativo
 | 2 | Detectores ICT | Insumos disponibles | 🟢 | mantener regresiones |
 | 3 | Inventario eventos | Conteos A/B preservados; no son setup/funnel | 🟢 | consumirlos solo si pasan replay causal |
 | 4 | MarketState | Causal, point-in-time, con snapshot/lineage y conector seis-TF | 🟢 | escalar a ventana historica |
-| 5 | Secuencias ICT | Multi-vela y seis-TF Phase-1 cerrada/conectada | 🟢 | calibrar filtros/entry |
+| 5 | Secuencias ICT | Multi-vela, seis-TF y protocolos de tesis conectados al backtest | 🟢 | calibrar filtros/entry |
 | 6 | Lifecycle | Contratos y tests existentes; no promoción operativa | 🟡 | replay integral por TF/fuente real |
 | 7 | Funnel/Episodios | v1 implementado + backtest consumidor seis-TF PASS tecnico | 🟢 | calibrar expectancy |
-| 8 | Auditoría científica | Secuencia real M1 conectada; marzo forense PASS 553/553 con caja negra | 🟢 | calibrar calidad/expectancy |
-| 9 | IA | Shadow diagnostic; 184 aceptados y 369 abstenciones en marzo | 🟡 | reducir frecuencia y pérdida antes de entrenamiento |
+| 8 | Auditoría científica | Secuencia real + protocolos + worker evidence en caja negra | 🟢 | ampliar chunks y calibrar calidad/expectancy |
+| 9 | IA | Shadow diagnostic; semana 2022-03-07 aceptó 40/121 por protocolo/sesión | 🟡 | reducir frecuencia y pérdida antes de entrenamiento |
 | 10 | Ejecución MT5 | No autorizada / `can_trade=false` | 🔴 | requiere certificación, no parte de esta misión |
 | 11 | Documentación | SDD, plan, worklog, índice y grafo actualizados | 🟢 | mantener bitácora por cada fase |
 

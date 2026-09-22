@@ -26,8 +26,35 @@ Cada corrida debe poder emitir JSONL append/readable por episodio con:
 
 - `episode_id`, `decision_time`, `exit_status`, `net_R`, sesión;
 - veredicto forense y cadena secuencial usada;
+- clasificación de protocolos de entrada de tesis: PO3, Silver Bullet y Turtle
+  Soup, siempre como diagnóstico;
 - decisión IA shadow;
 - política `can_trade=false`, `orders_sent=false`, `mt5_connected=false`.
+
+## Protocolos de entrada de tesis
+
+Desde la Misión 7, el backtest consume los módulos existentes:
+
+- `engine.po3.build_po3_state`;
+- `engine.silver_bullet.is_silver_bullet`;
+- `engine.turtle_soup.is_turtle_soup`;
+- `engine.killzone.killzone_en`.
+
+La clasificación de familias (`PO3`, `SILVER_BULLET`, `TURTLE_SOUP`) no crea
+órdenes ni cambia el motor. Si ninguna familia completa está presente, la IA
+shadow debe abstenerse aunque la secuencia M1 sea causalmente válida.
+
+## Trabajadores por temporalidad
+
+El backtest puede publicar evidencia diagnóstica de trabajadores lógicos sin
+crear motores nuevos:
+
+- D1/H4/H1/M15/M5: `engine.mtf_navigation.MTFNavigator`.
+- M1: `engine.sequential_events.run_sequential`.
+- Coordinador: runner forense del backtest.
+
+La evidencia de trabajadores es un mapa de contexto y trazabilidad. No es una
+señal de entrada y no autoriza trading.
 
 ## Límite
 

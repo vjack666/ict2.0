@@ -3,6 +3,8 @@ from __future__ import annotations
 from backtest.sixtf_forensic import (
     audit_episode_sequence,
     build_ai_shadow_dataset,
+    build_timeframe_worker_evidence,
+    classify_entry_protocols,
     classify_session,
     write_blackbox_jsonl,
 )
@@ -151,12 +153,104 @@ def test_ai_shadow_features_do_not_include_future_labels():
     dataset = build_ai_shadow_dataset(
         [trade],
         [{"episode_id": "EP_FORENSIC", "sequence_audit_status": "PASS", "reasons": [], "review_flags": []}],
+        {"EP_FORENSIC": {"primary_family": "PO3", "complete_families": ["PO3"]}},
     )
 
     assert dataset["feature_label_leakage_pass"] is True
     assert dataset["rows"][0]["ai_shadow_decision"] == "ACEPTAR_ANALISIS"
     assert "net_R" not in dataset["rows"][0]["features"]
     assert "exit_status" not in dataset["rows"][0]["features"]
+
+
+def test_ai_shadow_abstains_without_complete_entry_protocol():
+    dataset = build_ai_shadow_dataset(
+        [
+            {
+                "episode_id": "EP_NO_PROTOCOL",
+                "decision_time": "2022-03-15T13:00:00Z",
+                "direction": 1,
+                "session": "NEW_YORK",
+                "in_london": False,
+                "in_new_york": True,
+                "component_tfs": {},
+                "object_refs": [],
+            }
+        ],
+        [{"episode_id": "EP_NO_PROTOCOL", "sequence_audit_status": "PASS", "reasons": [], "review_flags": []}],
+        {"EP_NO_PROTOCOL": {"primary_family": "NONE", "complete_families": []}},
+    )
+
+    assert dataset["rows"][0]["ai_shadow_decision"] == "ABSTENERSE"
+    assert dataset["rows"][0]["features"]["entry_protocol_primary"] == "NONE"
+
+
+def test_entry_protocol_classifier_uses_existing_po3_and_silver_bullet_modules():
+    episode = _episode({}, decision_time="2022-03-15T14:55:00Z")
+    audit = {
+        "episode_id": "EP_FORENSIC",
+        "sequence_evidence": {
+            "sequence_status": "PASS",
+            "nodes": [
+                {"stage": "SWEEP", "time": "2022-03-15T14:10:00Z", "detail": "sweep_EQL"},
+                {"stage": "STRUCTURE", "time": "2022-03-15T14:20:00Z"},
+                {"stage": "OB", "time": "2022-03-15T14:25:00Z"},
+                {"stage": "FVG", "time": "2022-03-15T14:30:00Z"},
+                {"stage": "RETEST", "time": "2022-03-15T14:45:00Z"},
+            ],
+        },
+    }
+    frames = {
+        "M1": __import__("pandas").DataFrame(
+            [
+                {"time": "2022-03-14T00:00:00Z", "open": 1.10, "high": 1.11, "low": 1.09, "close": 1.10},
+                {"time": "2022-03-15T14:10:00Z", "open": 1.10, "high": 1.101, "low": 1.089, "close": 1.1005},
+                {"time": "2022-03-15T14:11:00Z", "open": 1.1005, "high": 1.103, "low": 1.1004, "close": 1.1028},
+            ]
+        )
+    }
+
+    protocol = classify_entry_protocols(episode, audit, frames, ltf="M1")
+
+    assert protocol["families"]["PO3"]["complete"] is True
+    assert protocol["families"]["SILVER_BULLET"]["complete"] is True
+    assert "PO3" in protocol["complete_families"]
+    assert "SILVER_BULLET" in protocol["complete_families"]
+
+
+def test_timeframe_worker_evidence_keeps_six_tf_workers_diagnostic_only():
+    pd = __import__("pandas")
+    frames = {}
+    for tf, freq in {
+        "D1": "1D",
+        "H4": "4h",
+        "H1": "1h",
+        "M15": "15min",
+        "M5": "5min",
+        "M1": "1min",
+    }.items():
+        times = pd.date_range("2022-03-01T00:00:00Z", periods=240, freq=freq)
+        frames[tf] = pd.DataFrame(
+            {
+                "time": times,
+                "open": [1.10 + i * 0.0001 for i in range(len(times))],
+                "high": [1.101 + i * 0.0001 for i in range(len(times))],
+                "low": [1.099 + i * 0.0001 for i in range(len(times))],
+                "close": [1.1005 + i * 0.0001 for i in range(len(times))],
+                "volume": [100 + i for i in range(len(times))],
+            }
+        )
+
+    evidence = build_timeframe_worker_evidence(
+        frames,
+        ["2022-03-05T12:00:00Z"],
+        {"EP_FORENSIC": {"sequence_status": "PASS"}},
+    )
+
+    assert set(evidence["worker_model"]) >= {"D1", "H4", "H1", "M15", "M5", "M1", "COORDINATOR"}
+    assert evidence["layer_counts"]["D1"]["available"] == 1
+    assert evidence["m1_sequence_status_counts"]["PASS"] == 1
+    assert evidence["policy"]["can_trade"] is False
+    assert evidence["policy"]["entry_authorized"] is False
 
 
 def test_real_sequence_evidence_supersedes_synthetic_compression_review():

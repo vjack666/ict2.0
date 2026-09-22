@@ -18,7 +18,12 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 
+from engine.killzone import killzone_en
+from engine.mtf_navigation import MTFNavigator
+from engine.po3 import build_po3_state
+from engine.silver_bullet import is_silver_bullet
 from engine.sequential_events import SeqConfig, run_sequential, summarize_chains
+from engine.turtle_soup import is_turtle_soup
 
 CORE_ROLES: tuple[str, ...] = ("refinement", "confirmation", "trigger")
 LABEL_FIELDS: set[str] = {
@@ -353,18 +358,201 @@ def classify_failure(trade: Mapping[str, Any], audit: Mapping[str, Any]) -> str:
     return "PASS_OR_UNCLASSIFIED"
 
 
+def _node_by_stage(sequence_evidence: Mapping[str, Any], stage: str) -> Mapping[str, Any] | None:
+    for node in sequence_evidence.get("nodes", []) or []:
+        if node.get("stage") == stage:
+            return node
+    return None
+
+
+def classify_entry_protocols(
+    episode: Mapping[str, Any],
+    audit: Mapping[str, Any],
+    frames: Mapping[str, pd.DataFrame],
+    *,
+    ltf: str = "M1",
+) -> dict[str, Any]:
+    """Classify PO3, Turtle Soup and Silver Bullet for one audited episode."""
+    seq = dict(audit.get("sequence_evidence") or {})
+    direction = int(episode.get("direction", 0) or 0)
+    bias = "BULLISH" if direction > 0 else "BEARISH" if direction < 0 else "NEUTRAL"
+    sweep = _node_by_stage(seq, "SWEEP")
+    structure = _node_by_stage(seq, "STRUCTURE")
+    ob = _node_by_stage(seq, "OB")
+    fvg = _node_by_stage(seq, "FVG")
+    retest = _node_by_stage(seq, "RETEST")
+    sweep_time = sweep.get("time") if sweep else None
+    retest_time = retest.get("time") if retest else None
+    sweep_detail = str((sweep or {}).get("detail") or "")
+    sweep_down = "EQL" in sweep_detail or direction > 0
+    sweep_up = "EQH" in sweep_detail or direction < 0
+    structure_dict = {
+        "H4": {"trend": bias},
+        ltf: {
+            "sweep_up": sweep_up,
+            "sweep_down": sweep_down,
+            "bos_dir": direction if structure else 0,
+            "bos_status": "active" if structure else "",
+            "fvg_state": "active" if fvg else "none",
+            "ob_dir": "bullish" if ob and direction > 0 else "bearish" if ob and direction < 0 else "none",
+        },
+    }
+    po3_state = build_po3_state(structure_dict, bias=bias, exec_tf=ltf, htf="H4")
+    turtle_ok, turtle_meta = is_turtle_soup(sweep_time, direction, dict(frames), ltf=ltf)
+    silver_ok, silver_meta = is_silver_bullet(sweep_time, retest_time, direction, killzone_en)
+    families = {
+        "PO3": {
+            "complete": bool(po3_state.complete),
+            "phases": po3_state.phases_present(),
+            "direction": po3_state.direction,
+            "aligned": po3_state.aligned,
+            "incomplete_reason": list(po3_state.incomplete_reason),
+        },
+        "TURTLE_SOUP": {
+            "complete": bool(turtle_ok),
+            **turtle_meta,
+        },
+        "SILVER_BULLET": {
+            "complete": bool(silver_ok),
+            **silver_meta,
+        },
+    }
+    complete = [name for name, payload in families.items() if payload.get("complete")]
+    return {
+        "artifact_kind": "ICT_ENTRY_PROTOCOL_CLASSIFICATION_V1",
+        "episode_id": episode.get("episode_id"),
+        "decision_time": episode.get("decision_time"),
+        "ltf": ltf,
+        "sequence_status": seq.get("sequence_status"),
+        "complete_families": complete,
+        "primary_family": complete[0] if complete else "NONE",
+        "families": families,
+        "can_trade": False,
+        "entry_authorized": False,
+    }
+
+
+def classify_entry_protocols_for_episodes(
+    episodes: Iterable[Mapping[str, Any]],
+    audit_rows: Iterable[Mapping[str, Any]],
+    frames: Mapping[str, pd.DataFrame],
+    *,
+    ltf: str = "M1",
+) -> dict[str, Any]:
+    audits = {row.get("episode_id"): row for row in audit_rows}
+    by_episode = {
+        str(episode.get("episode_id")): classify_entry_protocols(
+            episode,
+            audits.get(episode.get("episode_id"), {}),
+            frames,
+            ltf=ltf,
+        )
+        for episode in episodes
+    }
+    counts = Counter()
+    primary = Counter()
+    for item in by_episode.values():
+        complete = item.get("complete_families", [])
+        if complete:
+            for family in complete:
+                counts[family] += 1
+            primary[item.get("primary_family", "NONE")] += 1
+        else:
+            primary["NONE"] += 1
+    return {
+        "artifact_kind": "ICT_ENTRY_PROTOCOL_SUMMARY_V1",
+        "counts_by_complete_family": dict(sorted(counts.items())),
+        "counts_by_primary_family": dict(sorted(primary.items())),
+        "by_episode": by_episode,
+    }
+
+
+def build_timeframe_worker_evidence(
+    frames: Mapping[str, pd.DataFrame],
+    decision_times: Iterable[Any],
+    sequence_evidence_by_episode: Mapping[str, Mapping[str, Any]] | None = None,
+    *,
+    max_decisions: int = 48,
+) -> dict[str, Any]:
+    """Summarize the existing logical workers by timeframe for the backtest.
+
+    This is a backtest-side black-box view only.  D1/H4/H1/M15/M5 are read
+    from the existing MTF navigator, while M1 is read from the real sequential
+    evidence already attached to episodes.  No worker authorizes entries.
+    """
+
+    all_decisions = list(decision_times)
+    decisions = all_decisions[:max(0, max_decisions)]
+    navigator = MTFNavigator({tf: frame for tf, frame in frames.items() if tf != "M1"})
+    layer_counts: dict[str, Counter[str]] = {tf: Counter() for tf in ("D1", "H4", "H1", "M15", "M5")}
+    nav_status = Counter()
+    samples: list[dict[str, Any]] = []
+    for decision_time in decisions:
+        state = navigator.navigate(decision_time, exec_tf="M5")
+        nav_status[state.status] += 1
+        state_dict = state.to_dict()
+        for tf in layer_counts:
+            payload = state_dict.get("layers", {}).get(tf)
+            if payload:
+                layer_counts[tf]["available"] += 1
+                if payload.get("answers"):
+                    layer_counts[tf]["answered"] += 1
+            else:
+                layer_counts[tf]["missing"] += 1
+        if len(samples) < 5:
+            samples.append(
+                {
+                    "decision_time": _iso(decision_time),
+                    "navigation_status": state.status,
+                    "layers_present": sorted(state_dict.get("layers", {})),
+                    "path_steps": state_dict.get("path", {}).get("steps", []),
+                    "policy": "WORKER_EVIDENCE_NOT_ENTRY_SIGNAL",
+                }
+            )
+
+    m1_evidence = sequence_evidence_by_episode or {}
+    m1_counts = Counter(str(row.get("sequence_status", "MISSING")) for row in m1_evidence.values())
+    return {
+        "artifact_kind": "SIXTF_TIMEFRAME_WORKER_EVIDENCE_V1",
+        "worker_model": {
+            "D1": "MTFNavigator context worker",
+            "H4": "MTFNavigator location worker",
+            "H1": "MTFNavigator structure/sequence-depth worker",
+            "M15": "MTFNavigator refinement worker",
+            "M5": "MTFNavigator confirmation worker",
+            "M1": "sequential_events execution/evidence worker",
+            "COORDINATOR": "backtest forensic runner; diagnostic only",
+        },
+        "decision_count": len(all_decisions),
+        "sampled_decision_count": len(decisions),
+        "sample_policy": f"FIRST_{max_decisions}_DECISIONS_FOR_MTF_WORKER_BLACKBOX",
+        "navigation_status_counts": dict(sorted(nav_status.items())),
+        "layer_counts": {tf: dict(sorted(counts.items())) for tf, counts in layer_counts.items()},
+        "m1_sequence_status_counts": dict(sorted(m1_counts.items())),
+        "samples": samples,
+        "policy": {
+            "can_trade": False,
+            "entry_authorized": False,
+            "orders_sent": False,
+            "mt5_connected": False,
+        },
+    }
+
+
 def write_blackbox_jsonl(
     *,
     path: Path,
     trades: Iterable[Mapping[str, Any]],
     audit_rows: Iterable[Mapping[str, Any]],
     ai_rows: Iterable[Mapping[str, Any]],
+    protocol_by_episode: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> None:
     audits = {row.get("episode_id"): row for row in audit_rows}
     ai = {
         row.get("features", {}).get("episode_id"): row
         for row in ai_rows
     }
+    protocols = protocol_by_episode or {}
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
         for trade in trades:
@@ -377,6 +565,7 @@ def write_blackbox_jsonl(
                 "net_R": trade.get("net_R"),
                 "session": trade.get("session"),
                 "forensic": audits.get(episode_id, {}),
+                "entry_protocols": protocols.get(str(episode_id), {}),
                 "ai_shadow": ai.get(episode_id, {}),
                 "policy": {
                     "can_trade": False,
@@ -399,12 +588,15 @@ def failure_taxonomy(trades: Iterable[Mapping[str, Any]], audit_rows: Iterable[M
 def build_ai_shadow_dataset(
     trades: Iterable[Mapping[str, Any]],
     audit_rows: Iterable[Mapping[str, Any]],
+    protocol_by_episode: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     audits = {row.get("episode_id"): row for row in audit_rows}
+    protocols = protocol_by_episode or {}
     rows: list[dict[str, Any]] = []
     leakage: list[str] = []
     for trade in trades:
         audit = audits.get(trade.get("episode_id"), {})
+        protocol = protocols.get(str(trade.get("episode_id")), {})
         session = str(trade.get("session", "UNKNOWN"))
         features = {
             "episode_id": trade.get("episode_id"),
@@ -421,6 +613,8 @@ def build_ai_shadow_dataset(
             "sequence_audit_status": audit.get("sequence_audit_status", "MISSING"),
             "forensic_reason_count": len(audit.get("reasons", [])),
             "forensic_review_count": len(audit.get("review_flags", [])),
+            "entry_protocol_primary": protocol.get("primary_family", "NONE"),
+            "entry_protocol_complete_count": len(protocol.get("complete_families", [])),
         }
         labels = {
             "exit_status": trade.get("exit_status"),
@@ -429,9 +623,10 @@ def build_ai_shadow_dataset(
         }
         overlap = sorted(set(features) & LABEL_FIELDS)
         leakage.extend(overlap)
+        has_protocol = bool(protocol.get("complete_families"))
         if audit.get("sequence_audit_status") == "BLOCKED":
             decision = "RECHAZAR_ANALISIS"
-        elif audit.get("sequence_audit_status") == "REVIEW" or session == "OFF_SESSION":
+        elif audit.get("sequence_audit_status") == "REVIEW" or session == "OFF_SESSION" or not has_protocol:
             decision = "ABSTENERSE"
         else:
             decision = "ACEPTAR_ANALISIS"
@@ -457,7 +652,10 @@ __all__ = [
     "audit_episodes",
     "attach_sessions",
     "build_sequence_evidence",
+    "build_timeframe_worker_evidence",
     "build_ai_shadow_dataset",
+    "classify_entry_protocols",
+    "classify_entry_protocols_for_episodes",
     "classify_session",
     "failure_taxonomy",
     "session_windows",

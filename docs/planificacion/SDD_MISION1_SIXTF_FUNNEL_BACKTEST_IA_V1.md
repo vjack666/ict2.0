@@ -64,10 +64,10 @@ para que la siguiente implementacion no vuelva a usar H4/M15 como atajo.
 |---|---|---|
 | Linaje seis-TF | `engine/lineage.py`, `engine/lineage_hierarchy.py`, PR #16 | `MERGED_REMOTE / LOCAL_PRESERVED` |
 | Secuencia causal multi-vela | `engine/sequence.py` | Phase-1 instalada localmente |
-| Objetos de mercado | `engine/market_object.py`, `engine/historical_event_objects.py` | Requiere replay integral seis-TF para funnel |
+| Objetos de mercado | `engine/market_object.py`, `engine/historical_event_objects.py`, `engine/sixtf_marketobject_connector.py` | Conector seis-TF -> Episodes implementado en shadow diagnostic; replay integral de ventana historica pendiente |
 | MarketState | `engine/market_state.py` | Consumidor causal; no debe fabricar padres |
 | Setup Builder | `engine/setup_builder.py` | Autoridad de elegibilidad |
-| Episodes/Funnel | `engine/episodes.py`, `audits/codigo/episodes.py` | SDD v1 existente; requiere adaptacion/gate seis-TF |
+| Episodes/Funnel | `engine/episodes.py`, `audits/codigo/episodes.py` | SDD v1 existente; conector seis-TF ejecutable agregado |
 | Backtest economico | consumidor aislado futuro bajo `backtest/` | No iniciado en esta fase |
 | IA | `runtime/ai_learning/` | Shadow; no entrenamiento en esta fase |
 
@@ -217,7 +217,7 @@ no declara edge, no crea modelo productivo y no autoriza trading.
 
 ## 10. Fase F6 — fuente real y productor historico
 
-**Estado 2026-09-21:** `PARTIAL_PASS / FACTORY_SIXTF_CONTEXT_EXISTS / CONNECTION_PENDING`.
+**Estado 2026-09-21:** `PASS_PREFLIGHT / FACTORY_SIXTF_CONTEXT_EXISTS / CONNECTION_IMPLEMENTED_SHADOW`.
 
 Se ejecuto la siguiente fase escrita en los planes: sustituir la fixture
 contractual por evidencia real. La fuente original ya pasa el gate seis-TF de
@@ -272,5 +272,64 @@ conectar fabrica seis-TF existente
   -> build_episodes real
 ```
 
-Hasta completar esa extension, la Mision 1 real-source queda en preflight
-positivo, no en funnel real completo.
+Esa extension inicial ya fue completada en la Mision 2 como conector ejecutable
+de un `decision_time` auditado. La Mision 1 real-source deja de estar bloqueada
+por ausencia de conexion y pasa al siguiente bloqueo metodologico: escalar a
+ventana historica completa y ejecutar FULL/PREFIX de ventana antes de cualquier
+backtest economico real.
+
+## 11. Mision 2 — conector seis-TF MarketObject -> Episodes
+
+**Estado 2026-09-21:** `PASS_SHADOW_DIAGNOSTIC`.
+
+Se implemento:
+
+```text
+MTFNavigator / contexto seis-TF
+  -> MarketObject seis-TF
+  -> HierarchicalLineage(require_all_six_tfs=True)
+  -> build_setups_at()
+  -> build_episodes()
+```
+
+Entregables:
+
+- `engine/sixtf_marketobject_connector.py`
+- `tests/test_sixtf_marketobject_connector.py`
+- `scripts/audit/run_sixtf_marketobject_connector.py`
+- `reports/audits/experiments/mission1/sixtf_marketobject_connector_report.json`
+- `.hermes-worklog/2026-09-21_MISION2_SIXTF_CONNECTOR_IMPLEMENTED.md`
+
+Evidencia:
+
+```text
+python -m pytest -q tests/test_sixtf_marketobject_connector.py
+4 passed
+
+python -m pytest -q tests/test_sixtf_marketobject_connector.py tests/test_lineage_hierarchy.py tests/test_setup_builder_integration.py tests/test_episodes.py
+38 passed
+```
+
+Reporte con fuente local parquet:
+
+```text
+status=PASS
+lineage.status=LINEAGE_VALID
+six_tfs_complete=true
+setup_count=2
+episode_count=1
+rejection_count=1
+can_trade=false
+edge_claimed=false
+diagnostic_only=true
+```
+
+La implementacion no declara edge ni trading. El siguiente paso metodologico es:
+
+```text
+ventana historica multi-decision_time
+  -> episodios aceptados/rechazados reales
+  -> FULL/PREFIX de ventana
+  -> backtest economico aislado
+  -> dataset IA shadow
+```

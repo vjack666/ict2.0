@@ -96,3 +96,21 @@ many decision_times
 ```
 
 Mantener `can_trade=false`.
+
+## Marcado documental posterior
+
+Actualizado tras el cierre tecnico:
+
+- `docs/planificacion/SDD_MISION1_SIXTF_FUNNEL_BACKTEST_IA_V1.md`
+  - Marca F6 como `CONNECTION_IMPLEMENTED_SHADOW`.
+  - Agrega seccion Mision 2 con estado `PASS_SHADOW_DIAGNOSTIC`.
+- `.hermes/plans/2026-09-21_MISION1_SIXTF_FUNNEL_BACKTEST_IA.md`
+  - Marca checklist Mision 2 completo.
+  - Cambia el siguiente paso a ventana historica multi-decision_time.
+- `docs/contratos/CONTRATO_EPISODES_FUNNEL_V1.md`
+  - Agrega enmienda de implementacion seis-TF con
+    `engine/sixtf_marketobject_connector.py`.
+- `governance/ORGANIGRAMA_ICT_2_0.md` y `.mmd`
+  - Actualizan fase actual, progreso estimado y hito siguiente.
+- `.hermes-index.md`
+  - Ya registra la Mision 2 y sus evidencias.

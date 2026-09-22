@@ -220,3 +220,35 @@ El contrato queda satisfecho cuando una segunda ejecución con el mismo corpus,
 configuración y commit produce el mismo conjunto de Episodes, rechazos,
 agregados y checksum lógico, y cuando FULL/PREFIX coincide literalmente para
 todo lo observable en cada T probado.
+
+## 11. Enmienda de implementación seis-TF — 2026-09-21
+
+La implementación local autorizada para conectar seis temporalidades al Funnel
+v1 es:
+
+```text
+engine/sixtf_marketobject_connector.py
+```
+
+Este conector es compatible con el contrato porque:
+
+1. Publica objetos por `MarketState.ingest()` y lee por `projection_at(T)`.
+2. Convierte la fábrica/contexto seis-TF existente en `MarketObject` con
+   identidad estable.
+3. Mantiene `parent_object` / `related_objects` explícitos.
+4. Valida `HierarchicalLineage(require_all_six_tfs=True)` antes de aceptar.
+5. Alimenta `build_setups_at()` y después `build_episodes()`.
+6. Conserva rechazos explícitos; no oculta candidatos rechazados.
+7. Mantiene `can_trade=false`, `edge_claimed=false` y `diagnostic_only=true`.
+
+Evidencia de cierre de la enmienda:
+
+```text
+tests/test_sixtf_marketobject_connector.py -> 4 passed
+regresion relacionada -> 38 passed
+reports/audits/experiments/mission1/sixtf_marketobject_connector_report.json
+```
+
+Esta enmienda no cambia el criterio de cierre global del contrato. Para ventana
+histórica completa sigue siendo obligatorio ejecutar FULL/PREFIX sobre múltiples
+`decision_time` antes de usar la salida para backtest económico o dataset IA.

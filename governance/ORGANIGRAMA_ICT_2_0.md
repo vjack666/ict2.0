@@ -94,24 +94,26 @@ La imagen previa marcaba el estado global como **EN DESARROLLO**, fase actual
 los cierres del 2026-09-21, el estado correcto es:
 
 ```text
-Fase actual: Mision 1 F2-F5 completada en shadow diagnostico
-Progreso global estimado: ~72%
-Siguiente hito: productor historico real seis-TF sobre fuente original
+Fase actual: Mision 2 conector seis-TF -> Episodes completado en shadow diagnostico
+Progreso global estimado: ~76%
+Siguiente hito: ventana historica multi-decision_time + FULL/PREFIX
 ```
 
 La subida de progreso no significa edge ni operación. Significa que el cableado
 estructural llegó hasta Episodes/Funnel, backtest económico aislado, dataset IA
-y entrenamiento shadow, todo con `can_trade=false`.
+y entrenamiento shadow, todo con `can_trade=false`. Tras la Mision 2, ademas
+existe un conector ejecutable entre la fabrica seis-TF y `MarketObject ->
+HierarchicalLineage -> SetupBuilder -> Episodes`.
 
 | Bloque de la imagen previa | Estado 2026-09-20 | Estado actual 2026-09-21 | Evidencia |
 | --- | --- | --- | --- |
 | 1. Datos | mayormente completo; versionado en progreso | **Completo para misión shadow**; fuente real pendiente para productor histórico final | manifiestos, `EURUSD.zip` protegido, hashes previos |
 | 2. Detectores ICT | completo | **Completo como insumo** | detectores y tests existentes |
 | 3. Inventario de eventos | completo | **Completo como inventario; no equivale a funnel real** | `ICT_EVENT_INVENTORY_AB_20260920.*` |
-| 4. MarketState | puente en desarrollo | **Implementado + causal replay + linaje snapshot** | `engine/market_state.py`, `engine/daily_motor.py` |
-| 5. Secuencias ICT | sin completar | **Avanzado / Phase-1 seis-TF instalada** | `engine/sequence.py`, `tests/test_sixtf_causal_sequence_phase1.py` |
+| 4. MarketState | puente en desarrollo | **Implementado + causal replay + linaje snapshot + conector seis-TF** | `engine/market_state.py`, `engine/daily_motor.py`, `engine/sixtf_marketobject_connector.py` |
+| 5. Secuencias ICT | sin completar | **Avanzado / Phase-1 seis-TF instalada + conectado a Episodes** | `engine/sequence.py`, `tests/test_sixtf_causal_sequence_phase1.py`, `tests/test_sixtf_marketobject_connector.py` |
 | 6. Lifecycle | parcial/sin completar | **Implementado/revisado; integración completa real aún protegida por gates** | `engine/lifecycle.py`, tests de lifecycle/MarketState |
-| 7. Funnel y episodios | sin completar | **Completo en capa v1 + Misión 1 shadow F2** | `engine/episodes.py`, `engine/mission1_six_tf_pipeline.py` |
+| 7. Funnel y episodios | sin completar | **Completo en capa v1 + Misión 2 conector real shadow** | `engine/episodes.py`, `engine/mission1_six_tf_pipeline.py`, `engine/sixtf_marketobject_connector.py` |
 | 8. Auditoría científica | sin completar | **Avanzada; FULL/PREFIX y regresión relacionada PASS en misión shadow** | 51 tests relacionados PASS, Graphify actualizado |
 | 9. Inteligencia artificial | sin completar | **Shadow diagnostic completo; no productivo** | `mission1_dataset.json`, `mission1_training.json` |
 | 10. Ejecución MT5 | sin completar | **No promovida; permanece bloqueada para trading** | `can_trade=false` |
@@ -124,11 +126,11 @@ y entrenamiento shadow, todo con `can_trade=false`.
 | 1 | Datos | Fuente preservada; no se fabricó M1 ni se modificó ZIP | 🟢 | usar fuente original en productor histórico real |
 | 2 | Detectores ICT | Insumos disponibles | 🟢 | mantener regresiones |
 | 3 | Inventario eventos | Conteos A/B preservados; no son setup/funnel | 🟢 | consumirlos solo si pasan replay causal |
-| 4 | MarketState | Causal, point-in-time, con snapshot/lineage | 🟢 | productor histórico seis-TF real |
-| 5 | Secuencias ICT | Multi-vela y seis-TF Phase-1 cerrada | 🟢 | conectar a episodios reales |
+| 4 | MarketState | Causal, point-in-time, con snapshot/lineage y conector seis-TF | 🟢 | escalar a ventana historica |
+| 5 | Secuencias ICT | Multi-vela y seis-TF Phase-1 cerrada/conectada | 🟢 | FULL/PREFIX de ventana |
 | 6 | Lifecycle | Contratos y tests existentes; no promoción operativa | 🟡 | replay integral por TF/fuente real |
-| 7 | Funnel/Episodios | v1 implementado + Misión 1 F2 shadow PASS | 🟢 | reemplazar fixture contractual por productor histórico real |
-| 8 | Auditoría científica | FULL/PREFIX shadow y regresión relacionada PASS | 🟢 | auditoría sobre datos reales completos |
+| 7 | Funnel/Episodios | v1 implementado + conector seis-TF real shadow PASS | 🟢 | generar episodios en ventana historica |
+| 8 | Auditoría científica | FULL/PREFIX focal y regresión relacionada PASS | 🟢 | FULL/PREFIX sobre ventana multi-decision_time |
 | 9 | IA | Dataset + baseline shadow PASS; accuracy 0.333 | 🟡 | modelo real sólo tras dataset histórico causal |
 | 10 | Ejecución MT5 | No autorizada / `can_trade=false` | 🔴 | requiere certificación, no parte de esta misión |
 | 11 | Documentación | SDD, plan, worklog, índice y grafo actualizados | 🟢 | mantener bitácora por cada fase |

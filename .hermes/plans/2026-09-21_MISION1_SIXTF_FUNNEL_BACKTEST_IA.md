@@ -94,7 +94,7 @@ empirica real o edge.
 
 ## Fase siguiente ejecutada: F6 — preflight productor historico real
 
-**Estado:** `PARTIAL_PASS / FACTORY_SIXTF_CONTEXT_EXISTS / CONNECTION_PENDING`
+**Estado:** `PASS_PREFLIGHT / FACTORY_SIXTF_CONTEXT_EXISTS / CONNECTION_IMPLEMENTED_SHADOW`
 
 - [x] Buscar SDD, planes y tareas pendientes relacionados.
 - [x] Confirmar que la fase siguiente escrita es sustituir la fixture
@@ -125,3 +125,50 @@ next_required_work=connect existing six-TF context factory to six-TF MarketObjec
 ```
 
 No se declara full funnel real, edge, MT5 ni entrenamiento productivo.
+
+## Mision 2 ejecutada — conector seis-TF MarketObject -> Episodes
+
+**Estado:** `PASS_SHADOW_DIAGNOSTIC`
+
+- [x] Crear puente entre fabrica seis-TF existente y `MarketObject`.
+- [x] Validar `HierarchicalLineage(require_all_six_tfs=True)`.
+- [x] Alimentar `build_setups_at()`.
+- [x] Alimentar `build_episodes()`.
+- [x] Conservar rechazos explicitos.
+- [x] Ejecutar pruebas focales.
+- [x] Ejecutar regresion relacionada.
+- [x] Generar reporte local.
+- [x] Actualizar bitacora, indice y Graphify.
+- [x] Commit y push en rama existente, sin crear ramas nuevas.
+
+Evidencia:
+
+- `engine/sixtf_marketobject_connector.py`
+- `tests/test_sixtf_marketobject_connector.py`
+- `scripts/audit/run_sixtf_marketobject_connector.py`
+- `reports/audits/experiments/mission1/sixtf_marketobject_connector_report.json`
+- `.hermes-worklog/2026-09-21_MISION2_SIXTF_CONNECTOR_IMPLEMENTED.md`
+
+Resultados:
+
+```text
+tests/test_sixtf_marketobject_connector.py -> 4 passed
+regresion relacionada -> 38 passed
+sixtf_marketobject_connector_report.status=PASS
+lineage.status=LINEAGE_VALID
+six_tfs_complete=true
+setup_count=2
+episode_count=1
+rejection_count=1
+can_trade=false
+edge_claimed=false
+```
+
+Siguiente paso:
+
+```text
+Mision 3: ventana historica multi-decision_time
+  -> FULL/PREFIX de ventana
+  -> reporte de episodios aceptados/rechazados
+  -> backtest economico aislado
+```

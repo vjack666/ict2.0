@@ -24,6 +24,13 @@ motores nuevos.
   - Exporta `timeframe_worker_evidence`.
 - `tests/test_sixtf_forensic.py`
   - Pruebas de protocolos, abstención sin protocolo y evidencia de workers.
+- Documentación de gobierno
+  - SDD propio: `docs/planificacion/SDD_MISION7_ENTRY_PROTOCOLS_WORKERS_BACKTEST_V1.md`.
+  - Autoridad: `docs/INDICE_AUTORIDAD.md`.
+  - Biblioteca ICT: `docs/ict/00_INDICE.md`.
+  - Contratos multimodelo/frecuencia: `docs/contratos/ICT_MULTIMODEL_CANDIDATE_V1.md`
+    y `docs/contratos/FREQ_GATE_2_3_WEEKLY_V1.md`.
+  - Plan multimodelo: `docs/planificacion/PLAN_ICT_MULTIMODELO_INTRADIA_V1.md`.
 
 ## Evidencia
 
@@ -75,3 +82,11 @@ negativo.
 - El mes completo fue interrumpido por coste de ejecución; la ventana semanal
   queda como aceptación funcional. Siguiente paso: optimizar runner por chunks
   y ampliar muestra sin perder causalidad.
+
+## Cierre documental reforzado
+
+Se agregó SDD específico de Misión 7 porque dejar la misión solo como extensión
+de Misión 6 podía inducir a confundir “secuencia real M1” con “protocolos de
+entrada calibrados”. El nuevo SDD declara explícitamente que PO3/Silver/Turtle
+están conectados en modo diagnóstico, pero la calibración de calidad y el gate
+2–3 semanal siguen pendientes.

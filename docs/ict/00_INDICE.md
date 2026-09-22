@@ -87,3 +87,18 @@ Trazabilidad: **regla (§0) → detector → pipeline → backtest → métrica 
 ## Inventario de estrategias materializadas (código ↔ grafo)
 
 - `12_ESTRATEGIAS_COMPLETAS.md` — Inventario real de TODAS las estrategias ICT ya materializadas en código (PO3, Turtle Soup, Silver Bullet, motor event-sequence, pipeline en vivo), anclado al código + grafo. **Creado 2026-07-12:** corrige que el TP/RR YA está implementado en `engine.py` (`fixed2r`/`liquidity`), no es hueco; documenta la fragmentación en 4 islas del grafo (comunidades 0/25/27/197, 0 aristas). [Pendiente revisión Ruben — sin commit.]
+
+## Estado de integración al backtest six-TF
+
+Misión 7 (2026-09-22) conectó los tres protocolos de tesis al backtest forense
+sin convertirlos en señales operativas:
+
+| Protocolo | Código conectado | Estado en backtest |
+| --- | --- | --- |
+| PO3 / AMD | `engine.po3.build_po3_state` | Conectado; apareció amplio en la ventana semanal y requiere calibración de calidad. |
+| Silver Bullet | `engine.silver_bullet.is_silver_bullet` + `engine.killzone.killzone_en` | Conectado; 0 completos en la ventana semanal validada. |
+| Turtle Soup | `engine.turtle_soup.is_turtle_soup` | Conectado; 0 completos en la ventana semanal validada. |
+
+Evidencia: `docs/planificacion/SDD_MISION7_ENTRY_PROTOCOLS_WORKERS_BACKTEST_V1.md`
+y `.hermes-worklog/2026-09-22_MISION7_ENTRY_PROTOCOLS_WORKERS_BACKTEST.md`.
+La política sigue siendo `can_trade=false`.

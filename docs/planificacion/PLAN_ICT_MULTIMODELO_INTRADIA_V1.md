@@ -1,6 +1,6 @@
 # Plan ICT Multimodelo Intradia v1
 
-**Estado:** `WORKING`
+**Estado:** `WORKING — BACKTEST_DIAGNOSTIC_CONNECTED`
 **Fecha:** 2026-09-16
 **Autoridad:** investigacion local sobre datos existentes; `can_trade=false`; `entry_authorized=false`.
 
@@ -25,6 +25,12 @@ causal, deduplicada y trazable por familia.
 | `execution_calibration_preflight_v2.py` | Incompleto al inicio | Ampliado para fuente declarada, ventanas causales y salida JSON/MD. |
 | `FREQ_GATE_2_3_WEEKLY` | No existe | Crear como contrato nuevo, sin condicion de optimizacion. |
 | Contrato de candidato multimodelo | No existe | Crear solo como interfaz comun; no duplica los contratos de estrategia. |
+
+Actualización 2026-09-22: Misión 7 conectó PO3, Turtle Soup y Silver Bullet al
+backtest six-TF forense como clasificación diagnóstica por episodio. El cableado
+funciona, pero PO3 aparece demasiado amplio y Silver/Turtle no aparecieron
+completos en la ventana semanal validada. El plan sigue en calibración; no hay
+edge ni autorización operativa.
 
 Las referencias de gobierno a `docs/specs/SDD_GOVERNANCE.md` apuntan a una
 ruta ausente. Es deuda documental transversal y no constituye autorizacion
@@ -53,6 +59,29 @@ para inventar reglas de estrategia; se registra como `OBSOLETE_REFERENCE`.
    sin optimizar sobre OOS. Si no la hay, informar el resultado cientifico.
 8. Solo despues de los pasos anteriores disenar el dataset de IA condicionado
    por `strategy_family` y sus condiciones explicitas.
+
+## Resultado diagnóstico Misión 7
+
+Ventana: 2022-03-07..2022-03-13, EURUSD local.
+
+- `PASS_DIAGNOSTIC` técnico.
+- 121 episodios.
+- Forense: PASS 121/121.
+- PO3 completo: 121.
+- Silver Bullet completo: 0.
+- Turtle Soup completo: 0.
+- IA shadow: `ACEPTAR_ANALISIS=40`, `ABSTENERSE=81`.
+- Resultado aceptado: 16 TP, 24 SL, `mean_net_R=-0.4300`.
+
+Interpretación:
+
+- El cableado multimodelo ya existe en el backtest.
+- El filtro PO3 debe endurecerse para no contar como protocolo completo toda
+  secuencia causal compatible.
+- Silver/Turtle requieren revisar mapeo de sweep, reversión, retest y killzone
+  antes de concluir que no existen oportunidades.
+- El siguiente objetivo sigue siendo 2–3 oportunidades/semana como meta de
+  calibración, no permiso operativo.
 
 ## Gates de detencion
 

@@ -52,3 +52,20 @@ de sacar conclusiones.
 
 Ningun veredicto de este gate es `PASS_EDGE`, autorizacion de entrada, orden,
 paper trading ni promocion de modelo.
+
+## Lectura Misión 7
+
+La ventana 2022-03-07..2022-03-13 no satisface todavía este gate. Es una
+aceptación funcional del cableado, no una medición formal de frecuencia:
+
+- población inicial: 121 episodios;
+- IA shadow aceptó 40 para análisis;
+- meta investigativa: 2–3 oportunidades/semana;
+- no hubo deduplicación final por `symbol|decision_time|direction` combinando
+  familias;
+- PO3 apareció completo en 121/121, lo que indica exceso de amplitud para un
+  gate de frecuencia.
+
+Veredicto actual: `REVIEW_CALIBRATION_REQUIRED`. La próxima corrida debe
+reducir población por calidad y deduplicar familias antes de evaluar
+`PASS_FREQUENCY_DIAGNOSTIC`.

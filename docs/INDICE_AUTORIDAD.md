@@ -108,6 +108,20 @@ Episodes/Funnel ya está implementado y revisado. La siguiente capa autorizada
 documentalmente es MTF Replay Orchestrator; no debe reimplementar Lifecycle,
 MarketState, Setup Builder ni Episodes.
 
+### Backtest six-TF forense y protocolos de entrada
+
+| Archivo | Rol | Estado |
+|---|---|---|
+| `docs/contratos/CONTRATO_BACKTEST_FORENSE_SIXTF_V1.md` | Auditoría de compresión temporal, sesiones, taxonomía y dataset IA shadow. | **NORMATIVO DIAGNÓSTICO; NO EDGE** |
+| `docs/contratos/CONTRATO_BACKTEST_SECUENCIA_REAL_SIXTF_V1.md` | Exige secuencia real M1 multi-bar y caja negra por episodio. | **NORMATIVO DIAGNÓSTICO; MISIÓN 7 EXTENDIDA** |
+| `docs/planificacion/SDD_MISION5_BACKTEST_FORENSE_SIXTF_IA_SHADOW_V1.md` | Diseño de la capa forense e IA shadow. | **IMPLEMENTADO LOCALMENTE** |
+| `docs/planificacion/SDD_MISION6_SECUENCIA_REAL_BACKTEST_BLACKBOX_V1.md` | Diseño de secuencia real M1 y caja negra. | **IMPLEMENTADO LOCALMENTE** |
+| `docs/planificacion/SDD_MISION7_ENTRY_PROTOCOLS_WORKERS_BACKTEST_V1.md` | Diseño de PO3/Silver/Turtle + workers por temporalidad en el backtest. | **IMPLEMENTADO LOCALMENTE; CALIBRACIÓN PENDIENTE** |
+| `.hermes-worklog/2026-09-22_MISION7_ENTRY_PROTOCOLS_WORKERS_BACKTEST.md` | Evidencia de pruebas, backtest semanal, límites y riesgos. | **CERRADO DIAGNÓSTICO** |
+
+Estos artefactos son consumidores de investigación. No promocionan señales,
+órdenes, demo ni real. La IA asociada sigue en modo shadow.
+
 ### MTF Replay Orchestrator
 
 | Archivo | Rol | Estado |

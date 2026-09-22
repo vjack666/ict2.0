@@ -1,0 +1,160 @@
+{
+  "can_trade": false,
+  "decision_time": "2022-03-31T12:00:00+00:00",
+  "diagnostic_only": true,
+  "edge_claimed": false,
+  "episode_count": 1,
+  "episodes": [
+    {
+      "canonical_setup_key": "EURUSD|2022-03-31T12:00:00+00:00|SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR|SIXTF|EURUSD|H4|ORDER_BLOCK|2022-03-31T08:00:00+00:00|BEAR|SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR|SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR|SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR|-1",
+      "component_tfs": {
+        "confirmation": "M5",
+        "context_htf": "D1",
+        "poi": "H4",
+        "refinement": "M15",
+        "trigger": "M1"
+      },
+      "confirmation_id": "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR",
+      "context_id": "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR",
+      "contract_version": "EPISODES_FUNNEL_V1",
+      "decision_time": "2022-03-31T12:00:00+00:00",
+      "direction": -1,
+      "episode_id": "EP_6f950b1aba7a32c09e939fca",
+      "generator_commit": "",
+      "lineage": {
+        "confirmation": "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR",
+        "context_htf": "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR",
+        "poi": "SIXTF|EURUSD|H4|ORDER_BLOCK|2022-03-31T08:00:00+00:00|BEAR",
+        "refinement": "SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR",
+        "trigger": "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR"
+      },
+      "meta": {},
+      "object_refs": [
+        "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|H4|ORDER_BLOCK|2022-03-31T08:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR",
+        "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR",
+        "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR"
+      ],
+      "poi_id": "SIXTF|EURUSD|H4|ORDER_BLOCK|2022-03-31T08:00:00+00:00|BEAR",
+      "reason": "",
+      "refinement_id": "SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR",
+      "stage": "EPISODE",
+      "status": "ACCEPTED",
+      "symbol": "EURUSD",
+      "trigger_id": "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR"
+    }
+  ],
+  "lineage_summary": {
+    "breaks": [],
+    "cycle_ids": [],
+    "depth": 4,
+    "future_links": [],
+    "leaves": [
+      "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR",
+      "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR"
+    ],
+    "lineage_validated": true,
+    "orphan_ids": [],
+    "provenance_by_tf": {
+      "D1": [
+        "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR"
+      ],
+      "H1": [
+        "SIXTF|EURUSD|H1|ORDER_BLOCK|2022-03-31T11:00:00+00:00|BEAR"
+      ],
+      "H4": [
+        "SIXTF|EURUSD|H4|ORDER_BLOCK|2022-03-31T08:00:00+00:00|BEAR"
+      ],
+      "M1": [
+        "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR"
+      ],
+      "M15": [
+        "SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR"
+      ],
+      "M5": [
+        "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR"
+      ]
+    },
+    "relation_counts": {
+      "PARENT_OBJECT": 3,
+      "RELATED_OBJECTS": 4
+    },
+    "roots": [
+      "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR"
+    ],
+    "six_tfs_complete": true,
+    "status": "LINEAGE_VALID",
+    "temporal_violations": [],
+    "tfs_present": [
+      "D1",
+      "H1",
+      "H4",
+      "M1",
+      "M15",
+      "M5"
+    ],
+    "unresolved_ids": []
+  },
+  "records": [
+    {
+      "accepted": false,
+      "candidate_key": "",
+      "decision_time": "2022-03-31T12:00:00+00:00",
+      "object_refs": [
+        "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|H1|ORDER_BLOCK|2022-03-31T11:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR",
+        "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR",
+        "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR"
+      ],
+      "reason": "INVALID_LINEAGE",
+      "stage": "LINEAGE",
+      "status": "REJECTED"
+    },
+    {
+      "accepted": true,
+      "candidate_key": "EURUSD|2022-03-31T12:00:00+00:00|SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR|SIXTF|EURUSD|H4|ORDER_BLOCK|2022-03-31T08:00:00+00:00|BEAR|SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR|SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR|SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR|-1",
+      "decision_time": "2022-03-31T12:00:00+00:00",
+      "object_refs": [
+        "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|H4|ORDER_BLOCK|2022-03-31T08:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR",
+        "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR",
+        "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR"
+      ],
+      "reason": "",
+      "stage": "EPISODE",
+      "status": "ACCEPTED"
+    }
+  ],
+  "rejection_count": 1,
+  "rejections": [
+    {
+      "accepted": false,
+      "candidate_key": "",
+      "decision_time": "2022-03-31T12:00:00+00:00",
+      "object_refs": [
+        "SIXTF|EURUSD|D1|ORDER_BLOCK|2022-03-31T00:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|H1|ORDER_BLOCK|2022-03-31T11:00:00+00:00|BEAR",
+        "SIXTF|EURUSD|M15|FVG|2022-03-31T11:45:00+00:00|BEAR",
+        "SIXTF|EURUSD|M5|BOS|2022-03-31T11:55:00+00:00|BEAR",
+        "SIXTF|EURUSD|M1|DISPLACEMENT|2022-03-31T12:00:00+00:00|BEAR"
+      ],
+      "reason": "INVALID_LINEAGE",
+      "stage": "LINEAGE",
+      "status": "REJECTED"
+    }
+  ],
+  "setup_count": 2,
+  "source": "data\\raw\\EURUSD",
+  "status": "PASS",
+  "timeframes": [
+    "D1",
+    "H4",
+    "H1",
+    "M15",
+    "M5",
+    "M1"
+  ]
+}

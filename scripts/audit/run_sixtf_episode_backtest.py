@@ -21,6 +21,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from backtest.economics import EconomicScenario
+from backtest.sixtf_forensic import (
+    attach_sessions,
+    audit_episodes,
+    build_ai_shadow_dataset,
+    failure_taxonomy,
+    summarize_by_session,
+    weekly_frequency,
+)
 from backtest.sixtf_episode_backtest import (
     SixTFBacktestConfig,
     backtest_episodes,
@@ -95,12 +103,20 @@ def run(
         config=backtest_config,
         economics=economic_scenario,
     )
+    trades = attach_sessions(trades)
+    forensic_audit = audit_episodes(window.get("episodes", []))
+    audit_rows = forensic_audit.get("episodes", [])
+    session_summary = summarize_by_session(trades)
+    weekly = weekly_frequency(trades)
+    taxonomy = failure_taxonomy(trades, audit_rows)
+    ai_shadow_dataset = build_ai_shadow_dataset(trades, audit_rows)
     summary = summarize_trades(trades)
     status = (
         "PASS_DIAGNOSTIC"
         if window.get("status") == "PASS"
         and window.get("window_gates", {}).get("full_prefix_all_pass") is True
         and summary["resolved_count"] > 0
+        and ai_shadow_dataset["feature_label_leakage_pass"] is True
         else "REVIEW"
     )
     report = {
@@ -143,7 +159,22 @@ def run(
             "orders_sent": False,
         },
         "summary": summary,
-        "report_checksum": _sha({"summary": summary, "trades": trades}),
+        "forensic_audit": forensic_audit,
+        "session_summary": session_summary,
+        "weekly_frequency": weekly,
+        "failure_taxonomy": taxonomy,
+        "ai_shadow_dataset": ai_shadow_dataset,
+        "report_checksum": _sha(
+            {
+                "summary": summary,
+                "forensic_audit": forensic_audit,
+                "session_summary": session_summary,
+                "weekly_frequency": weekly,
+                "failure_taxonomy": taxonomy,
+                "ai_shadow_dataset": ai_shadow_dataset,
+                "trades": trades,
+            }
+        ),
         "trades": trades,
     }
     output.write_text(json.dumps(_jsonable(report), indent=2, sort_keys=True), encoding="utf-8")

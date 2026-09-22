@@ -238,6 +238,33 @@ def _map_eligibility(setup: Setup) -> tuple[str, str]:
     return "REJECTED", "SETUP_BLOCKED"
 
 
+def _component_audit_meta(comps: dict[str, Optional[MarketObject]]) -> dict:
+    """Return causal component evidence without changing Episode semantics."""
+    out: dict[str, dict] = {}
+    for role, mo in comps.items():
+        if not isinstance(mo, MarketObject):
+            out[role] = {"present": False}
+            continue
+        out[role] = {
+            "present": True,
+            "id": mo.id,
+            "origin_tf": mo.origin_tf,
+            "type": mo.type.value if hasattr(mo.type, "value") else str(mo.type),
+            "role": mo.role.value if hasattr(mo.role, "value") else str(mo.role),
+            "bar_time": _ser(mo.bar_time),
+            "bar_index": mo.bar_index,
+            "candidate_time": _ser(mo.candidate_time),
+            "creation_time": _ser(mo.creation_time),
+            "confirmation_time": _ser(mo.confirmation_time),
+            "tradable_time": _ser(mo.tradable_time),
+            "parent_object": mo.parent_object,
+            "related_objects": list(mo.related_objects or []),
+            "closed_bar_only": bool((mo.meta or {}).get("closed_bar_only", False)),
+            "lineage_cutoff_time": (mo.meta or {}).get("lineage_cutoff_time"),
+        }
+    return out
+
+
 # --------------------------------------------------------------------------- #
 # Validaciones fail-closed (etapas del funnel)
 # --------------------------------------------------------------------------- #
@@ -506,6 +533,7 @@ def _process_candidate(
         component_tfs=component_tfs,
         lineage=lineage_map,
         object_refs=refs,
+        meta={"component_audit": _component_audit_meta(comps)},
         stage="EPISODE",
     )
     rec = FunnelRecord(
